@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "smart-data"
+version = "0.1.0"
+description = "A framework for smart data pipelines"
+authors = ["strondata"]
+readme = "README.md"
+packages = [{include = "smart_data"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.0"
+typer = {extras = ["all"], version = "^0.15"}
+rich = "^13.0"
+textual = "^0.60"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+pytest-cov = "^5.0"
+ruff = "^0.4"
+
+[tool.poetry.scripts]
+smart-data = "smart_data.cli.app:app"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
