@@ -1,15 +1,15 @@
-"""Tests for the core abstract contracts."""
+"""Tests for the core interfaces and base classes."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from pydantic import Field
 import pytest
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from smart_data.core.dataset import AbstractDataset
-from smart_data.core.pipeline import AbstractPipeline
-from smart_data.core.step import AbstractStep
+from smart_data.core.dataset import BaseDataset, IDataset
+from smart_data.core.pipeline import BasePipeline, IPipeline
+from smart_data.core.step import BaseStep, IStep
 
 
 # ---------------------------------------------------------------------------
@@ -17,10 +17,12 @@ from smart_data.core.step import AbstractStep
 # ---------------------------------------------------------------------------
 
 
-class _SimpleDataset(AbstractDataset):
+@pydantic_dataclass
+class _SimpleDataset(BaseDataset):
     """Concrete dataset that stores data in memory."""
 
-    _data: Any = None
+    def __post_init__(self) -> None:
+        self._data: Any = None
 
     def read(self) -> Any:
         return self._data
@@ -29,13 +31,14 @@ class _SimpleDataset(AbstractDataset):
         self._data = data
 
 
-class _DoubleStep(AbstractStep):
+@pydantic_dataclass
+class _DoubleStep(BaseStep):
     """Concrete step that doubles every element of a list dataset."""
 
-    def validate_inputs(self, inputs: list[AbstractDataset]) -> bool:
+    def validate_inputs(self, inputs: list[IDataset]) -> bool:
         return len(inputs) == 1
 
-    def execute(self, inputs: list[AbstractDataset]) -> AbstractDataset:
+    def execute(self, inputs: list[IDataset]) -> IDataset:
         source = inputs[0]
         data = source.read()
         out = _SimpleDataset(uri="memory://output", schema_metadata={"type": "list"})
@@ -43,14 +46,16 @@ class _DoubleStep(AbstractStep):
         return out
 
 
-class _SimplePipeline(AbstractPipeline):
+@pydantic_dataclass
+class _SimplePipeline(BasePipeline):
     """Concrete pipeline with a flat list of steps."""
 
-    steps: list[AbstractStep] = Field(default_factory=list)
-    _compiled: bool = False
+    def __post_init__(self) -> None:
+        self._steps: list[IStep] = []
+        self._compiled: bool = False
 
-    def register_step(self, step: AbstractStep) -> None:
-        self.steps.append(step)
+    def register_step(self, step: IStep) -> None:
+        self._steps.append(step)
 
     def compile_dag(self) -> None:
         self._compiled = True
@@ -60,22 +65,26 @@ class _SimplePipeline(AbstractPipeline):
             raise RuntimeError("Pipeline not compiled.")
         ds = _SimpleDataset(uri="memory://input")
         ds.write([1, 2, 3])
-        inputs: list[AbstractDataset] = [ds]
-        for step in self.steps:
+        inputs: list[IDataset] = [ds]
+        for step in self._steps:
             if step.validate_inputs(inputs):
                 result = step.execute(inputs)
                 inputs = [result]
 
 
 # ---------------------------------------------------------------------------
-# AbstractDataset tests
+# IDataset / BaseDataset tests
 # ---------------------------------------------------------------------------
 
 
-class TestAbstractDataset:
-    def test_cannot_instantiate_abstract(self):
+class TestIDataset:
+    def test_cannot_instantiate_interface(self):
         with pytest.raises(TypeError):
-            AbstractDataset(uri="s3://bucket/file")  # type: ignore[abstract]
+            IDataset()  # type: ignore[abstract]
+
+    def test_cannot_instantiate_base(self):
+        with pytest.raises(TypeError):
+            BaseDataset(uri="s3://bucket/file")  # type: ignore[abstract]
 
     def test_concrete_instantiation(self):
         ds = _SimpleDataset(uri="memory://test")
@@ -95,16 +104,25 @@ class TestAbstractDataset:
         with pytest.raises(Exception):
             _SimpleDataset()  # missing required field
 
+    def test_concrete_is_instance_of_interface(self):
+        ds = _SimpleDataset(uri="memory://test")
+        assert isinstance(ds, IDataset)
+        assert isinstance(ds, BaseDataset)
+
 
 # ---------------------------------------------------------------------------
-# AbstractStep tests
+# IStep / BaseStep tests
 # ---------------------------------------------------------------------------
 
 
-class TestAbstractStep:
-    def test_cannot_instantiate_abstract(self):
+class TestIStep:
+    def test_cannot_instantiate_interface(self):
         with pytest.raises(TypeError):
-            AbstractStep(step_id="s1")  # type: ignore[abstract]
+            IStep()  # type: ignore[abstract]
+
+    def test_cannot_instantiate_base(self):
+        with pytest.raises(TypeError):
+            BaseStep(step_id="s1")  # type: ignore[abstract]
 
     def test_step_id_field(self):
         step = _DoubleStep(step_id="double_step")
@@ -126,22 +144,31 @@ class TestAbstractStep:
         result = step.execute([ds])
         assert result.read() == [2, 4, 6]
 
+    def test_concrete_is_instance_of_interface(self):
+        step = _DoubleStep(step_id="s1")
+        assert isinstance(step, IStep)
+        assert isinstance(step, BaseStep)
+
 
 # ---------------------------------------------------------------------------
-# AbstractPipeline tests
+# IPipeline / BasePipeline tests
 # ---------------------------------------------------------------------------
 
 
-class TestAbstractPipeline:
-    def test_cannot_instantiate_abstract(self):
+class TestIPipeline:
+    def test_cannot_instantiate_interface(self):
         with pytest.raises(TypeError):
-            AbstractPipeline()  # type: ignore[abstract]
+            IPipeline()  # type: ignore[abstract]
 
-    def test_register_and_run(self):
+    def test_cannot_instantiate_base(self):
+        with pytest.raises(TypeError):
+            BasePipeline()  # type: ignore[abstract]
+
+    def test_register_step(self):
         pipeline = _SimplePipeline()
         step = _DoubleStep(step_id="double")
         pipeline.register_step(step)
-        assert len(pipeline.steps) == 1
+        assert len(pipeline._steps) == 1
 
     def test_compile_then_run(self):
         pipeline = _SimplePipeline()
@@ -155,3 +182,9 @@ class TestAbstractPipeline:
         pipeline.register_step(_DoubleStep(step_id="d1"))
         with pytest.raises(RuntimeError, match="not compiled"):
             pipeline.run()
+
+    def test_concrete_is_instance_of_interface(self):
+        pipeline = _SimplePipeline()
+        assert isinstance(pipeline, IPipeline)
+        assert isinstance(pipeline, BasePipeline)
+

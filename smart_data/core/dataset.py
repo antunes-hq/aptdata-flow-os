@@ -1,23 +1,20 @@
-"""Abstract dataset contract."""
+"""Dataset interface and base class."""
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 
-class AbstractDataset(BaseModel, ABC):
-    """Abstract base class for all datasets.
+@dataclass
+class IDataset(ABC):
+    """Dataclass interface for dataset types.
 
-    Combines Pydantic validation with ABC enforcement so that
-    every concrete dataset declares its URI, carries schema
-    metadata and implements both read and write operations.
+    All dataset contracts must implement :meth:`read` and :meth:`write`.
+    No concrete fields are defined here – field declarations live in
+    :class:`BaseDataset` and its subclasses.
     """
-
-    uri: str
-    schema_metadata: dict[str, Any] = Field(default_factory=dict)
-
-    model_config = {"arbitrary_types_allowed": True}
 
     @abstractmethod
     def read(self) -> Any:
@@ -26,3 +23,17 @@ class AbstractDataset(BaseModel, ABC):
     @abstractmethod
     def write(self, data: Any) -> None:
         """Write data to the dataset."""
+
+
+@pydantic_dataclass
+class BaseDataset(IDataset):
+    """Base dataset with Pydantic-validated fields.
+
+    Provides the canonical ``uri`` and ``schema_metadata`` fields.
+    Concrete dataset implementations must inherit from this class and
+    implement the :meth:`read` and :meth:`write` abstract methods
+    inherited from :class:`IDataset`.
+    """
+
+    uri: str
+    schema_metadata: dict[str, Any] = field(default_factory=dict)

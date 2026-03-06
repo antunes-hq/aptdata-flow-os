@@ -1,25 +1,25 @@
-"""Abstract pipeline contract."""
+"""Pipeline interface and base class."""
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from smart_data.core.step import AbstractStep
+from smart_data.core.step import BaseStep, IStep
 
 
-class AbstractPipeline(BaseModel, ABC):
-    """Abstract base class for all pipelines.
+@dataclass
+class IPipeline(ABC):
+    """Dataclass interface for pipeline types.
 
     A pipeline orchestrates a directed acyclic graph (DAG) of
-    :class:`AbstractStep` instances.  Concrete implementations must
-    register steps, compile the execution graph and provide a ``run``
-    entry-point.
+    :class:`~smart_data.core.step.IStep` instances.  Concrete
+    implementations must register steps, compile the execution graph
+    and provide a ``run`` entry-point.
     """
 
-    model_config = {"arbitrary_types_allowed": True}
-
     @abstractmethod
-    def register_step(self, step: AbstractStep) -> None:
+    def register_step(self, step: IStep) -> None:
         """Register a step into the pipeline."""
 
     @abstractmethod
@@ -29,3 +29,13 @@ class AbstractPipeline(BaseModel, ABC):
     @abstractmethod
     def run(self) -> None:
         """Execute the compiled pipeline."""
+
+
+@pydantic_dataclass
+class BasePipeline(IPipeline):
+    """Base pipeline class.
+
+    Concrete pipeline implementations must inherit from this class and
+    implement the :meth:`register_step`, :meth:`compile_dag` and
+    :meth:`run` abstract methods inherited from :class:`IPipeline`.
+    """

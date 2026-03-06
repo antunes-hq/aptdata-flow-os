@@ -1,7 +1,7 @@
 """Plugin registry for smart-data pipelines.
 
 Third-party adapters (Spark, REST APIs, databases, …) register concrete
-implementations of :class:`~smart_data.core.pipeline.AbstractPipeline` here
+implementations of :class:`~smart_data.core.pipeline.IPipeline` here
 so that the CLI can discover and instantiate them by name.
 
 Usage
@@ -25,16 +25,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from smart_data.core.pipeline import AbstractPipeline
+    from smart_data.core.pipeline import IPipeline
 
 
 class _PipelineRegistry:
     """Simple name → pipeline-class mapping."""
 
     def __init__(self) -> None:
-        self._store: dict[str, type[AbstractPipeline]] = {}
+        self._store: dict[str, type[IPipeline]] = {}
 
-    def register(self, name: str, pipeline_cls: type[AbstractPipeline]) -> None:
+    def register(self, name: str, pipeline_cls: type[IPipeline]) -> None:
         """Register *pipeline_cls* under *name*.
 
         Parameters
@@ -42,11 +42,11 @@ class _PipelineRegistry:
         name:
             Unique identifier used on the CLI (e.g. ``"pipeline_x"``).
         pipeline_cls:
-            A concrete subclass of :class:`AbstractPipeline`.
+            A concrete subclass of :class:`~smart_data.core.pipeline.IPipeline`.
         """
         self._store[name] = pipeline_cls
 
-    def get(self, name: str) -> type[AbstractPipeline] | None:
+    def get(self, name: str) -> type[IPipeline] | None:
         """Return the pipeline class registered under *name*, or ``None``."""
         return self._store.get(name)
 

@@ -1,7 +1,14 @@
-"""Core abstract contracts for smart-data."""
+"""Core interfaces and base classes for smart-data."""
 
-from smart_data.core.dataset import AbstractDataset
-from smart_data.core.step import AbstractStep
-from smart_data.core.pipeline import AbstractPipeline
+from smart_data.core.dataset import BaseDataset, IDataset
+from smart_data.core.pipeline import BasePipeline, IPipeline
+from smart_data.core.step import BaseStep, IStep
 
-__all__ = ["AbstractDataset", "AbstractStep", "AbstractPipeline"]
+__all__ = [
+    "IDataset",
+    "BaseDataset",
+    "IStep",
+    "BaseStep",
+    "IPipeline",
+    "BasePipeline",
+]

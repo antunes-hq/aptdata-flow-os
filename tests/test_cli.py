@@ -5,13 +5,14 @@ from __future__ import annotations
 import json
 
 import pytest
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typer.testing import CliRunner
 
 from smart_data.cli.app import app
 from smart_data.plugins import registry
-from smart_data.core.pipeline import AbstractPipeline
-from smart_data.core.step import AbstractStep
-from smart_data.core.dataset import AbstractDataset
+from smart_data.core.pipeline import BasePipeline, IPipeline
+from smart_data.core.step import BaseStep, IStep
+from smart_data.core.dataset import BaseDataset, IDataset
 
 
 runner = CliRunner()
@@ -22,7 +23,8 @@ runner = CliRunner()
 # ---------------------------------------------------------------------------
 
 
-class _MockDataset(AbstractDataset):
+@pydantic_dataclass
+class _MockDataset(BaseDataset):
     def read(self):
         return []
 
@@ -30,7 +32,8 @@ class _MockDataset(AbstractDataset):
         pass
 
 
-class _MockStep(AbstractStep):
+@pydantic_dataclass
+class _MockStep(BaseStep):
     def validate_inputs(self, inputs):
         return True
 
@@ -38,8 +41,10 @@ class _MockStep(AbstractStep):
         return _MockDataset(uri="memory://out")
 
 
-class _MockPipeline(AbstractPipeline):
-    _compiled: bool = False
+@pydantic_dataclass
+class _MockPipeline(BasePipeline):
+    def __post_init__(self) -> None:
+        self._compiled = False
 
     def register_step(self, step):
         pass
