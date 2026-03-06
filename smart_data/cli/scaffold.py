@@ -20,7 +20,7 @@ def _emit(payload: dict, *, error: bool = False) -> None:
 
 
 def _validate_project_name(name: str) -> bool:
-    return bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", name))
+    return bool(re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", name))
 
 
 def _render_main(project_name: str) -> str:
@@ -141,7 +141,7 @@ def scaffold(
             {
                 "event": "scaffold.error",
                 "project": project_name,
-                "error": "Project name must start with a letter and use only letters, numbers, '_' or '-'.",
+                "error": "Project name must start with a letter and use only letters, numbers, and '_'.",
             },
             error=True,
         )
