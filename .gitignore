@@ -27,6 +27,9 @@ htmlcov/
 # Poetry
 # poetry.lock is intentionally committed to the repo
 
+# MkDocs
+site/
+
 # IDE
 .idea/
 .vscode/
