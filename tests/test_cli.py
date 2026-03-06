@@ -136,3 +136,41 @@ class TestPluginRegistry:
         reg.register("b", _MockPipeline)
         reg.register("a", _MockPipeline)
         assert reg.list_pipelines() == ["a", "b"]
+
+
+class TestScaffoldCommand:
+    def test_scaffold_creates_hello_world_project(self, tmp_path):
+        project_name = "selecao_demo"
+        result = runner.invoke(
+            app, ["scaffold", project_name, "--output", str(tmp_path)]
+        )
+
+        assert result.exit_code == 0
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
+        assert len(lines) >= 2
+        assert json.loads(lines[0])["event"] == "scaffold.started"
+        completed_event = json.loads(lines[-1])
+        assert completed_event["event"] == "scaffold.completed"
+
+        project_dir = tmp_path / project_name
+        assert (project_dir / "main.py").exists()
+        assert (project_dir / "requirements.txt").exists()
+        assert (project_dir / "data" / "selecao_brasileira.json").exists()
+        assert (project_dir / "output").exists()
+
+    def test_scaffold_rejects_invalid_project_name(self):
+        result = runner.invoke(app, ["scaffold", "123-invalid"])
+        assert result.exit_code == 1
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
+        assert json.loads(lines[-1])["event"] == "scaffold.error"
+
+    def test_scaffold_fails_if_directory_exists(self, tmp_path):
+        project_dir = tmp_path / "existing_project"
+        project_dir.mkdir()
+
+        result = runner.invoke(
+            app, ["scaffold", "existing_project", "--output", str(tmp_path)]
+        )
+        assert result.exit_code == 1
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
+        assert json.loads(lines[-1])["event"] == "scaffold.error"

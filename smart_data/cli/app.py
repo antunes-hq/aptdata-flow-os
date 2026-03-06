@@ -14,9 +14,10 @@ from __future__ import annotations
 import json
 import sys
 import time
-from typing import Optional
 
 import typer
+
+from smart_data.cli.scaffold import scaffold
 
 app = typer.Typer(
     name="smart-data",
@@ -142,3 +143,6 @@ def monitor(
 
     app_instance = MonitorApp(refresh_interval=refresh)
     app_instance.run()
+
+
+app.command()(scaffold)
