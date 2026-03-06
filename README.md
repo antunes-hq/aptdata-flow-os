@@ -97,6 +97,7 @@ smart-data run my_pipeline
 ```
 smart-data run PIPELINE [--env ENV] [--dry-run]
 smart-data monitor [--refresh SECONDS]
+smart-data scaffold PROJECT_NAME [--output PATH]
 ```
 
 ---
