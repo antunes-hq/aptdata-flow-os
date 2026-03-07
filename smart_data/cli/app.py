@@ -73,8 +73,7 @@ def run(
         if pipeline_cls is None:
             raise LookupError(f"Pipeline '{pipeline}' not found in registry.")
 
-        instance = pipeline_cls()
-        instance.compile_dag()
+        instance = pipeline_cls(system_id=pipeline)
 
         if not dry_run:
             instance.run()
