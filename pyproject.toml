@@ -17,11 +17,14 @@ opentelemetry-api = "^1.40.0"
 opentelemetry-sdk = "^1.40.0"
 mcp = "^1.26.0"
 
+[tool.poetry.group.plugins]
+optional = true
+
 [tool.poetry.group.plugins.dependencies]
-httpx = {version = "^0.27", optional = true}
-sqlalchemy = {version = "^2.0", optional = true}
-psycopg2-binary = {version = "^2.9", optional = true}
-pyarrow = {version = "^15.0", optional = true}
+httpx = "^0.27"
+sqlalchemy = "^2.0"
+psycopg2-binary = "^2.9"
+pyarrow = "^15.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"

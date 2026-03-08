@@ -95,8 +95,9 @@ class PostgresWriter(BaseWriter):
 
         with engine.connect() as conn:
             if self.if_exists == "replace":
-                conn.execute(sa.text(f"DROP TABLE IF EXISTS {self.table}"))
-                conn.commit()
+                # Use SQLAlchemy DDL to avoid raw SQL interpolation
+                tbl = sa.Table(self.table, sa.MetaData())
+                tbl.drop(engine, checkfirst=True)
 
             # Auto-create a simple text-column table when it doesn't exist
             if not sa.inspect(engine).has_table(self.table):
