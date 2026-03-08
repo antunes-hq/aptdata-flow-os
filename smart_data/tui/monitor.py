@@ -1,18 +1,25 @@
 """Textual-based interactive monitoring dashboard.
 
-Displays the pipeline DAG, memory usage and task status in real time.
+Displays the pipeline DAG, memory usage, task status and agent trace in
+real time via a tabbed interface.
 """
 
 from __future__ import annotations
 
-import os
-import time
 from typing import ClassVar
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.containers import Horizontal, Vertical
-from textual.widgets import DataTable, Footer, Header, Label, Static
+from textual.containers import Vertical
+from textual.widgets import (
+    DataTable,
+    Footer,
+    Header,
+    RichLog,
+    Static,
+    TabbedContent,
+    TabPane,
+)
 
 
 class _DAGPanel(Static):
@@ -120,8 +127,30 @@ class _MemoryBar(Static):
                 self.update("[bold]Memory:[/bold] unavailable")
 
 
+class _AgentTraceLog(RichLog):
+    """Real-time log viewer for agent events and dynamic routing traces."""
+
+    DEFAULT_CSS = """
+    _AgentTraceLog {
+        border: solid $warning;
+        height: 1fr;
+        padding: 1 2;
+    }
+    """
+
+    def on_mount(self) -> None:
+        self.write("[bold yellow]Agent Trace[/bold yellow]")
+        self.write("[dim]Listening for branch_on / routing events…[/dim]")
+
+
 class MonitorApp(App):
     """Interactive monitoring dashboard for smart-data pipelines.
+
+    The dashboard is divided into three tabs:
+
+    1. **DAG View** – ASCII topology of the current pipeline.
+    2. **Metrics** – Resource usage table and memory bar.
+    3. **Agent Trace** – Real-time log of agent and routing events.
 
     Parameters
     ----------
@@ -141,34 +170,23 @@ class MonitorApp(App):
     Screen {
         layout: vertical;
     }
-
-    #top-row {
-        height: 1fr;
-        layout: horizontal;
-    }
-
-    #dag-panel {
-        width: 1fr;
-    }
-
-    #status-panel {
-        width: 2fr;
-    }
     """
 
     def __init__(self, refresh_interval: float = 1.0, **kwargs: object) -> None:
         super().__init__(**kwargs)
         self._refresh_interval = refresh_interval
-        self._status_table: _StatusTable | None = None
-        self._memory_bar: _MemoryBar | None = None
 
     def compose(self) -> ComposeResult:
         yield Header()
-        with Horizontal(id="top-row"):
-            yield _DAGPanel(id="dag-panel")
-            with Vertical(id="status-panel"):
-                yield _MemoryBar()
-                yield _StatusTable()
+        with TabbedContent("DAG View", "Metrics", "Agent Trace"):
+            with TabPane("DAG View", id="dag-tab"):
+                yield _DAGPanel(id="dag-panel")
+            with TabPane("Metrics", id="metrics-tab"):
+                with Vertical():
+                    yield _MemoryBar()
+                    yield _StatusTable()
+            with TabPane("Agent Trace", id="agent-trace-tab"):
+                yield _AgentTraceLog(id="agent-trace-log")
         yield Footer()
 
     def on_mount(self) -> None:
@@ -181,3 +199,8 @@ class MonitorApp(App):
 
         table = self.query_one(_StatusTable)
         table.populate()
+
+    def log_agent_event(self, message: str) -> None:
+        """Append *message* to the Agent Trace log tab."""
+        trace_log = self.query_one(_AgentTraceLog)
+        trace_log.write(message)

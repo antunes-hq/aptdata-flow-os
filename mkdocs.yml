@@ -50,6 +50,9 @@ nav:
       - CLI: api/cli.md
       - Plugins: api/plugins.md
   - Changelog: changelog.md
+  - AI Docs:
+      - llms.txt: llms.txt
+      - llms-full.txt: llms-full.txt
 
 markdown_extensions:
   - admonition

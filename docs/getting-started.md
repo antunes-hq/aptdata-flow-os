@@ -226,3 +226,55 @@ make test
 # or
 poetry run pytest tests/ -v
 ```
+
+---
+
+## AI Agent Integration
+
+smart-data ships with a built-in [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
+allowing AI agents such as **Claude Desktop**, **Copilot**, or **Devin** to
+discover and execute pipelines without consuming excessive context tokens.
+
+### Starting the MCP server
+
+```bash
+# Default (stdio transport – used by most desktop AI agents)
+smart-data mcp-start
+
+# SSE transport (for web-based integrations)
+smart-data mcp-start --transport sse
+```
+
+### Connecting Claude Desktop
+
+Add the following to your Claude Desktop `config.json` (typically
+`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS
+or `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
+
+```json
+{
+  "mcpServers": {
+    "smart-data": {
+      "command": "smart-data",
+      "args": ["mcp-start"]
+    }
+  }
+}
+```
+
+Once connected, the agent can:
+
+| MCP Tool | Description |
+|---|---|
+| `run_flow(flow_id)` | Execute a registered system and get status |
+| `list_registered_systems()` | Discover available pipelines |
+
+The agent can also read dataset metadata via the `schema://datasets/{name}`
+resource URI.
+
+### AI-friendly documentation
+
+For AI tools that support the `llms.txt` standard, we provide:
+
+- [`docs/llms.txt`](llms.txt) — high-level framework overview
+- [`docs/llms-full.txt`](llms-full.txt) — consolidated full documentation
