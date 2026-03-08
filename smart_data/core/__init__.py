@@ -14,6 +14,7 @@ from smart_data.core.system import (
     IFlow,
     ISystem,
 )
+from smart_data.core.workflow import BaseWorkflow, IWorkflow, WorkflowEdge, WorkflowNode
 
 __all__ = [
     "IDataset",
@@ -29,4 +30,8 @@ __all__ = [
     "BaseFlow",
     "ISystem",
     "BaseSystem",
+    "WorkflowEdge",
+    "WorkflowNode",
+    "IWorkflow",
+    "BaseWorkflow",
 ]
