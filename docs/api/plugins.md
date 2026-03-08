@@ -1,6 +1,6 @@
 # Plugins & Registry
 
-The plugin registry lets external packages register concrete pipeline
+The plugin registry lets external packages register concrete system
 implementations so the CLI can discover and instantiate them by name —
 without any changes to the `smart-data` core.
 
@@ -12,66 +12,62 @@ without any changes to the `smart-data` core.
 Your adapter package
         │
         │  from smart_data.plugins import registry
-        │  registry.register("my_pipeline", MyPipeline)
+        │  registry.register("my_system", MySystem)
         │
         ▼
 smart_data.plugins.registry
         │
-        │  registry.get("my_pipeline")  →  MyPipeline class
+        │  registry.get("my_system")  →  MySystem class
         │
         ▼
 smart-data CLI
-        smart-data run my_pipeline
+        smart-data run my_system
 ```
 
 ---
 
-## Registering a pipeline
+## Registering a system
 
 ```python
-# my_package/pipelines.py
+# my_package/systems.py
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BasePipeline, IStep
+from smart_data.core import BaseSystem, IFlow
 from smart_data.plugins import registry
 
 
 @pydantic_dataclass
-class SalesPipeline(BasePipeline):
+class SalesSystem(BaseSystem):
     def __post_init__(self) -> None:
-        self._steps: list[IStep] = []
+        self._flows: list[IFlow] = []
 
-    def register_step(self, step: IStep) -> None:
-        self._steps.append(step)
-
-    def compile_dag(self) -> None:
-        if not self._steps:
-            raise ValueError("Pipeline has no steps.")
+    def register_flow(self, flow: IFlow) -> None:
+        self._flows.append(flow)
 
     def run(self) -> None:
-        # Execute your steps here
-        ...
+        for flow in self._flows:
+            flow.run([])
 
 
 # Register at import time so the CLI can find it
-registry.register("sales_pipeline", SalesPipeline)
+registry.register("sales_system", SalesSystem)
 ```
 
 Then run it:
 
 ```bash
-smart-data run sales_pipeline --env prod
+smart-data run sales_system --env prod
 ```
 
 ---
 
 ## Auto-discovery with entry points
 
-You can auto-register pipelines when your package is installed by declaring a
-`smart_data.pipelines` entry-point group in your `pyproject.toml`:
+You can auto-register systems when your package is installed by declaring a
+`smart_data.systems` entry-point group in your `pyproject.toml`:
 
 ```toml
-[tool.poetry.plugins."smart_data.pipelines"]
-sales_pipeline = "my_package.pipelines:SalesPipeline"
+[tool.poetry.plugins."smart_data.systems"]
+sales_system = "my_package.systems:SalesSystem"
 ```
 
 !!! note
@@ -80,9 +76,9 @@ sales_pipeline = "my_package.pipelines:SalesPipeline"
 
 ---
 
-## `_PipelineRegistry` API
+## `_SystemRegistry` API
 
-::: smart_data.plugins._PipelineRegistry
+::: smart_data.plugins._SystemRegistry
 
 ---
 

@@ -42,13 +42,14 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  monitor  Open the interactive TUI monitoring dashboard.
-  run      Run a registered data pipeline.
+  monitor   Open the interactive TUI monitoring dashboard.
+  run       Run a registered data system.
+  scaffold  Scaffold a new smart-data project.
 ```
 
 ---
 
-## Writing your first pipeline
+## Building your first system
 
 ### 1. Create a dataset
 
@@ -75,79 +76,127 @@ class MemoryDataset(BaseDataset):
         self._data = data
 ```
 
-### 2. Create a step
+### 2. Create a component
 
-A step receives a list of `IDataset` objects, validates them and returns a
-single `IDataset` output.  Inherit from [`BaseStep`](api/core.md) and
-implement `validate_inputs` / `execute`:
+A component receives a list of `IDataset` objects, validates them and returns
+a **list** of `IDataset` outputs (supporting multi-output / branching flows).
+Inherit from [`BaseComponent`](api/core.md) and implement `validate_inputs` /
+`execute`:
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BaseStep, IDataset
+from smart_data.core import BaseComponent, ComponentMeta, ComponentKind, IDataset
 
 
 @pydantic_dataclass
-class DoubleStep(BaseStep):
+class DoubleComponent(BaseComponent):
     """Double every numeric value in the input list."""
 
     def validate_inputs(self, inputs: list[IDataset]) -> bool:
         return len(inputs) == 1
 
-    def execute(self, inputs: list[IDataset]) -> IDataset:
+    def execute(self, inputs: list[IDataset]) -> list[IDataset]:
         data = inputs[0].read()
         out = MemoryDataset(uri="memory://output")
         out.write([x * 2 for x in data])
-        return out
+        return [out]
 ```
 
-### 3. Create a pipeline
+Use `ComponentMeta` to annotate the component's role:
 
-A pipeline wires datasets and steps together.  Inherit from
-[`BasePipeline`](api/core.md) and implement `register_step`, `compile_dag`
+```python
+comp = DoubleComponent(
+    component_id="double",
+    metadata=ComponentMeta(kind=ComponentKind.TRANSFORM, tags=["math"]),
+)
+```
+
+### 3. Create a flow
+
+A flow wires components together in a directed graph.  Inherit from
+[`BaseFlow`](api/core.md) and implement `add_component`, `connect`, `compile`
 and `run`:
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BasePipeline, IStep, IDataset
+from smart_data.core import BaseFlow, IComponent, IDataset, FlowEdge, FlowNode
+from typing import Callable
 
 
 @pydantic_dataclass
-class SimplePipeline(BasePipeline):
+class SimpleFlow(BaseFlow):
     def __post_init__(self) -> None:
-        self._steps: list[IStep] = []
+        self._nodes: dict[str, FlowNode] = {}
+        self._edges: list[FlowEdge] = []
+        self._order: list[str] = []
 
-    def register_step(self, step: IStep) -> None:
-        self._steps.append(step)
+    def add_component(self, c: IComponent) -> None:
+        self._nodes[c.component_id] = FlowNode(component=c, flow=self)
 
-    def compile_dag(self) -> None:
-        pass  # validate DAG here
+    def connect(self, src: str, tgt: str,
+                condition: Callable | None = None) -> None:
+        self._edges.append(FlowEdge(source_id=src, target_id=tgt,
+                                    condition=condition))
+
+    def compile(self) -> None:
+        targets = {e.target_id for e in self._edges}
+        roots = [cid for cid in self._nodes if cid not in targets]
+        queue = list(roots)
+        while queue:
+            current = queue.pop(0)
+            self._order.append(current)
+            for e in self._edges:
+                if e.source_id == current:
+                    queue.append(e.target_id)
+
+    def run(self, inputs: list[IDataset]) -> list[IDataset]:
+        outputs = inputs
+        for cid in self._order:
+            comp = self._nodes[cid].component
+            if comp.validate_inputs(outputs):
+                outputs = comp.execute(outputs)
+        return outputs
+```
+
+### 4. Create a system and register it
+
+```python
+from pydantic.dataclasses import dataclass as pydantic_dataclass
+from smart_data.core import BaseSystem, IFlow
+from smart_data.plugins import registry
+
+
+@pydantic_dataclass
+class MySystem(BaseSystem):
+    def __post_init__(self) -> None:
+        self._flows: list[IFlow] = []
+
+    def register_flow(self, flow: IFlow) -> None:
+        self._flows.append(flow)
 
     def run(self) -> None:
         ds = MemoryDataset(uri="memory://input")
         ds.write([1, 2, 3])
-        inputs: list[IDataset] = [ds]
-        for step in self._steps:
-            if step.validate_inputs(inputs):
-                inputs = [step.execute(inputs)]
+        inputs = [ds]
+        for flow in self._flows:
+            inputs = flow.run(inputs)
+
+
+# my_systems.py
+registry.register("my_system", MySystem)
 ```
 
-### 4. Register and run via the CLI
-
-```python
-# my_pipelines.py
-from smart_data.plugins import registry
-registry.register("my_pipeline", SimplePipeline)
-```
+### 5. Run via the CLI
 
 ```bash
-smart-data run my_pipeline
+smart-data run my_system
 ```
 
 Expected output:
 
 ```json
-{"event": "pipeline.started", "pipeline": "my_pipeline", "env": "dev", "dry_run": false}
-{"event": "pipeline.completed", "pipeline": "my_pipeline", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001}
+{"event": "pipeline.started", "pipeline": "my_system", "env": "dev", "dry_run": false}
+{"event": "pipeline.completed", "pipeline": "my_system", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001}
 ```
 
 ---
@@ -158,9 +207,9 @@ Expected output:
 
 | Option | Default | Description |
 |---|---|---|
-| `pipeline` | *(required)* | Pipeline name registered in the plugin registry |
+| `name` | *(required)* | System name registered in the plugin registry |
 | `--env`, `-e` | `dev` | Target execution environment label |
-| `--dry-run` | `false` | Compile and validate without executing |
+| `--dry-run` | `false` | Instantiate without calling `run()` |
 
 ### `smart-data monitor`
 
