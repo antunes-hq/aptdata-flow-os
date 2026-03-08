@@ -14,6 +14,7 @@ from smart_data.config.parser import (
     ParsedConfig,
     YamlConfigParser,
 )
+from smart_data.config.secrets import SecretManager
 from smart_data.config.schema import export_domain_schema, write_domain_schema
 from smart_data.core.system import ComponentKind
 
@@ -94,6 +95,14 @@ system:
 
         with pytest.raises(ValidationError, match="component_id"):
             YamlConfigParser().parse_data(payload)
+
+    def test_parse_data_resolves_env_placeholders(self, monkeypatch):
+        monkeypatch.setenv("CFG_OWNER", "platform-secure")
+        parser = YamlConfigParser(secret_manager=SecretManager(load_dotenv_file=False))
+        parsed = parser.parse_data(
+            {"metadata": {"owner": "${CFG_OWNER}"}, "system": {"system_id": "demo"}}
+        )
+        assert parsed.metadata["owner"] == "platform-secure"
 
 
 class TestSchemaUtilities:

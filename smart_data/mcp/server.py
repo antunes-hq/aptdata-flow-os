@@ -12,8 +12,39 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 from smart_data.plugins import registry
+from smart_data.plugins.local_fs import CSVReader, CSVWriter, JSONReader, JSONWriter, ParquetReader, ParquetWriter
+from smart_data.plugins.manager import plugin_manager
+from smart_data.plugins.postgres import PostgresReader, PostgresWriter
+from smart_data.plugins.rest import APIReader
+from smart_data.telemetry.instrumentation import mask_telemetry_value
 
 mcp = FastMCP("smart-data")
+_MCP_REQUEST_COUNT = 0
+
+
+def _mark_request() -> None:
+    global _MCP_REQUEST_COUNT
+    _MCP_REQUEST_COUNT += 1
+
+
+def get_mcp_status() -> dict[str, Any]:
+    """Return MCP activity status for TUI and diagnostics."""
+    return {"active": True, "request_count": _MCP_REQUEST_COUNT}
+
+
+def _register_builtin_plugins() -> None:
+    plugin_manager.register_reader("csv_reader", CSVReader)
+    plugin_manager.register_reader("json_reader", JSONReader)
+    plugin_manager.register_reader("parquet_reader", ParquetReader)
+    plugin_manager.register_reader("api_reader", APIReader)
+    plugin_manager.register_reader("postgres_reader", PostgresReader)
+    plugin_manager.register_writer("csv_writer", CSVWriter)
+    plugin_manager.register_writer("json_writer", JSONWriter)
+    plugin_manager.register_writer("parquet_writer", ParquetWriter)
+    plugin_manager.register_writer("postgres_writer", PostgresWriter)
+
+
+_register_builtin_plugins()
 
 
 @mcp.tool()
@@ -33,6 +64,7 @@ def run_flow(flow_id: str) -> dict[str, Any]:
         ``elapsed_seconds`` on success, or ``status`` and ``error`` on
         failure.
     """
+    _mark_request()
     started_at = time.time()
     try:
         system_cls = registry.get(flow_id)
@@ -69,8 +101,43 @@ def list_registered_systems() -> dict[str, Any]:
     dict
         A dict with ``systems`` (list of names) and ``count``.
     """
+    _mark_request()
     systems = registry.list_systems()
     return {"systems": systems, "count": len(systems)}
+
+
+@mcp.tool()
+def list_available_plugins() -> dict[str, Any]:
+    """Return all installed plugins grouped by readers and writers."""
+    _mark_request()
+    plugins = plugin_manager.list_plugins()
+    return {"plugins": plugins, "count": len(plugins["readers"]) + len(plugins["writers"])}
+
+
+@mcp.tool()
+def get_plugin_schema(plugin_name: str) -> dict[str, Any]:
+    """Return constructor argument schema for a specific plugin."""
+    _mark_request()
+    try:
+        return plugin_manager.get_plugin_schema(plugin_name)
+    except KeyError as exc:
+        return {"status": "error", "error": str(exc), "plugin_name": plugin_name}
+
+
+@mcp.tool()
+def preview_dataset(plugin: str, **reader_config: Any) -> dict[str, Any]:
+    """Execute a reader plugin and return the first five rows."""
+    _mark_request()
+    try:
+        rows = plugin_manager.preview_dataset(plugin, **reader_config)
+        return {
+            "status": "ok",
+            "plugin": plugin,
+            "rows": mask_telemetry_value(rows),
+            "format": "json",
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {"status": "error", "plugin": plugin, "error": str(exc)}
 
 
 @mcp.resource("schema://datasets/{dataset_name}")

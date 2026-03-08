@@ -8,9 +8,13 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from smart_data.core.system import BaseSystem
 from smart_data.mcp.server import (
+    get_mcp_status,
     get_dataset_schema,
+    get_plugin_schema,
+    list_available_plugins,
     list_registered_systems,
     mcp,
+    preview_dataset,
     run_flow,
 )
 from smart_data.plugins import registry
@@ -51,6 +55,9 @@ class TestFastMCPInstance:
         tool_names = [t.name for t in tools]
         assert "run_flow" in tool_names
         assert "list_registered_systems" in tool_names
+        assert "list_available_plugins" in tool_names
+        assert "get_plugin_schema" in tool_names
+        assert "preview_dataset" in tool_names
 
 
 # ---------------------------------------------------------------------------
@@ -119,6 +126,30 @@ class TestListRegisteredSystems:
     def test_count_matches_list_length(self) -> None:
         result = list_registered_systems()
         assert result["count"] == len(result["systems"])
+
+
+class TestPluginExplorerTools:
+    def test_list_available_plugins(self) -> None:
+        result = list_available_plugins()
+        assert "plugins" in result
+        assert "readers" in result["plugins"]
+        assert "api_reader" in result["plugins"]["readers"]
+
+    def test_get_plugin_schema(self) -> None:
+        result = get_plugin_schema("postgres_reader")
+        argument_names = [arg["name"] for arg in result["arguments"]]
+        assert "connection_url" in argument_names
+        assert "query" in argument_names
+
+    def test_preview_dataset_returns_error_for_missing_plugin(self) -> None:
+        result = preview_dataset("unknown_reader")
+        assert result["status"] == "error"
+
+    def test_mcp_status_tracks_requests(self) -> None:
+        before = get_mcp_status()["request_count"]
+        list_registered_systems()
+        after = get_mcp_status()["request_count"]
+        assert after == before + 1
 
 
 # ---------------------------------------------------------------------------

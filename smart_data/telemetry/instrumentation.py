@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from opentelemetry import metrics, trace
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import MetricReader
@@ -9,6 +11,40 @@ from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor, SpanExporter
 from opentelemetry.trace import Tracer
+
+_SENSITIVE_KEYS = ("password", "secret", "token", "authorization", "api_key")
+_REGISTERED_SECRETS: dict[str, str] = {}
+
+
+def register_secret(name: str, value: str) -> None:
+    """Register secret values so telemetry payloads can be masked."""
+    _REGISTERED_SECRETS[name] = value
+
+
+def get_registered_secret_names() -> list[str]:
+    """Return registered secret keys, sorted for stable display."""
+    return sorted(_REGISTERED_SECRETS)
+
+
+def mask_telemetry_value(value: object, *, key: str | None = None) -> object:
+    """Mask sensitive values before they are exported to telemetry/logs."""
+    if value is None:
+        return value
+    if key is not None and any(token in key.lower() for token in _SENSITIVE_KEYS):
+        return "****"
+    if isinstance(value, str):
+        masked = value
+        for secret_value in _REGISTERED_SECRETS.values():
+            if secret_value and secret_value in masked:
+                masked = masked.replace(secret_value, "****")
+        return masked
+    if isinstance(value, Mapping):
+        return {k: mask_telemetry_value(v, key=str(k)) for k, v in value.items()}
+    if isinstance(value, list):
+        return [mask_telemetry_value(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(mask_telemetry_value(item) for item in value)
+    return value
 
 
 def configure_telemetry(

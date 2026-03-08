@@ -21,6 +21,9 @@ from textual.widgets import (
     TabPane,
 )
 
+from smart_data.mcp.server import get_mcp_status
+from smart_data.telemetry.instrumentation import get_registered_secret_names
+
 
 class _DAGPanel(Static):
     """Simple ASCII DAG visualisation panel."""
@@ -143,14 +146,45 @@ class _AgentTraceLog(RichLog):
         self.write("[dim]Listening for branch_on / routing events…[/dim]")
 
 
+class _MCPStatusPanel(Static):
+    """Panel showing MCP server status and secret injection metadata."""
+
+    DEFAULT_CSS = """
+    _MCPStatusPanel {
+        border: solid $accent;
+        height: 1fr;
+        padding: 1 2;
+    }
+    """
+
+    def on_mount(self) -> None:
+        self.refresh_status()
+
+    def refresh_status(self) -> None:
+        status = get_mcp_status()
+        secret_names = get_registered_secret_names()
+        if secret_names:
+            formatted_secrets = "\n".join(f"- {name}: ****" for name in secret_names)
+        else:
+            formatted_secrets = "- (none)"
+        self.update(
+            "[bold]MCP Status[/bold]\n"
+            f"- Active: {'yes' if status['active'] else 'no'}\n"
+            f"- Requests: {status['request_count']}\n\n"
+            "[bold]Injected Secrets[/bold]\n"
+            f"{formatted_secrets}"
+        )
+
+
 class MonitorApp(App):
     """Interactive monitoring dashboard for smart-data pipelines.
 
-    The dashboard is divided into three tabs:
+    The dashboard is divided into four tabs:
 
     1. **DAG View** – ASCII topology of the current pipeline.
     2. **Metrics** – Resource usage table and memory bar.
     3. **Agent Trace** – Real-time log of agent and routing events.
+    4. **MCP Status** – MCP server activity and injected secret names.
 
     Parameters
     ----------
@@ -178,7 +212,7 @@ class MonitorApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        with TabbedContent("DAG View", "Metrics", "Agent Trace"):
+        with TabbedContent("DAG View", "Metrics", "Agent Trace", "MCP Status"):
             with TabPane("DAG View", id="dag-tab"):
                 yield _DAGPanel(id="dag-panel")
             with TabPane("Metrics", id="metrics-tab"):
@@ -187,6 +221,8 @@ class MonitorApp(App):
                     yield _StatusTable()
             with TabPane("Agent Trace", id="agent-trace-tab"):
                 yield _AgentTraceLog(id="agent-trace-log")
+            with TabPane("MCP Status", id="mcp-status-tab"):
+                yield _MCPStatusPanel(id="mcp-status-panel")
         yield Footer()
 
     def on_mount(self) -> None:
@@ -199,6 +235,9 @@ class MonitorApp(App):
 
         table = self.query_one(_StatusTable)
         table.populate()
+
+        mcp_panel = self.query_one(_MCPStatusPanel)
+        mcp_panel.refresh_status()
 
     def log_agent_event(self, message: str) -> None:
         """Append *message* to the Agent Trace log tab."""
