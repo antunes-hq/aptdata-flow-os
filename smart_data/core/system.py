@@ -32,7 +32,7 @@ from typing import Any, Callable
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from smart_data.core.dataset import IDataset
-from smart_data.telemetry.instrumentation import get_tracer
+from smart_data.telemetry.instrumentation import get_tracer, mask_telemetry_value
 
 
 # ---------------------------------------------------------------------------
@@ -143,8 +143,14 @@ class BaseComponent(IComponent):
                 span.set_attribute("smart_data.component_id", self.component_id)
                 span.set_attribute("smart_data.kind", kind_value)
                 span.set_attribute("smart_data.tags", tags)
-                span.set_attribute("smart_data.branch_on", self.meta.branch_on)
-                span.set_attribute("smart_data.description", self.meta.description)
+                span.set_attribute(
+                    "smart_data.branch_on",
+                    mask_telemetry_value(self.meta.branch_on, key="branch_on"),
+                )
+                span.set_attribute(
+                    "smart_data.description",
+                    mask_telemetry_value(self.meta.description, key="description"),
+                )
                 return execute_fn(self, inputs)
 
         _instrumented_execute.__isabstractmethod__ = getattr(

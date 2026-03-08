@@ -9,6 +9,7 @@ optional third-party library that is not installed, a friendly
 from __future__ import annotations
 
 import importlib
+import inspect
 from typing import Any
 
 from smart_data.plugins.base import BaseReader, BaseWriter
@@ -84,6 +85,38 @@ class PluginManager:
             "readers": self.list_readers(),
             "writers": self.list_writers(),
         }
+
+    def get_plugin_schema(self, name: str) -> dict[str, Any]:
+        """Return constructor argument schema for a reader/writer plugin."""
+        plugin_cls: type[Any] | None = self.get_reader(name) or self.get_writer(name)
+        if plugin_cls is None:
+            raise KeyError(f"Plugin '{name}' is not registered.")
+
+        signature = inspect.signature(plugin_cls.__init__)
+        args: list[dict[str, Any]] = []
+        for param_name, param in signature.parameters.items():
+            if param_name == "self":
+                continue
+            args.append(
+                {
+                    "name": param_name,
+                    "required": param.default is inspect.Parameter.empty,
+                    "default": None if param.default is inspect.Parameter.empty else param.default,
+                }
+            )
+
+        plugin_type = "reader" if self.get_reader(name) is not None else "writer"
+        return {"name": name, "type": plugin_type, "arguments": args}
+
+    def preview_dataset(self, plugin_name: str, **kwargs: Any) -> list[dict[str, Any]]:
+        """Run a reader plugin and return the first five records."""
+        reader_cls = self.get_reader(plugin_name)
+        if reader_cls is None:
+            raise KeyError(f"Reader plugin '{plugin_name}' is not registered.")
+        reader = reader_cls(**kwargs)
+        dataset = reader.read()
+        records = dataset.read()
+        return records[:5]
 
     # -- dynamic loading ----------------------------------------------------
 

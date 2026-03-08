@@ -38,9 +38,22 @@ from smart_data.plugins.rest import APIReader
 
 
 class _StubReader(BaseReader):
+    def __init__(self, endpoint: str, token: str = "x") -> None:
+        self.endpoint = endpoint
+        self.token = token
+
     def read(self, **kwargs: Any) -> InMemoryDataset:
         ds = InMemoryDataset(uri="stub://reader")
-        ds.write([{"col": "val"}])
+        ds.write(
+            [
+                {"col": "val"},
+                {"col": "val2"},
+                {"col": "val3"},
+                {"col": "val4"},
+                {"col": "val5"},
+                {"col": "val6"},
+            ]
+        )
         return ds
 
 
@@ -63,9 +76,9 @@ class TestBaseReader:
             BaseReader()  # type: ignore[abstract]
 
     def test_concrete_read(self):
-        reader = _StubReader()
+        reader = _StubReader(endpoint="https://example.com")
         ds = reader.read()
-        assert ds.read() == [{"col": "val"}]
+        assert ds.read()[0] == {"col": "val"}
 
 
 class TestBaseWriter:
@@ -153,6 +166,22 @@ class TestPluginManager:
         pm.register_writer("w1", _StubWriter)
         result = pm.list_plugins()
         assert result == {"readers": ["r1"], "writers": ["w1"]}
+
+    def test_get_plugin_schema(self):
+        pm = PluginManager()
+        pm.register_reader("stub", _StubReader)
+        schema = pm.get_plugin_schema("stub")
+        assert schema["name"] == "stub"
+        assert schema["type"] == "reader"
+        assert any(arg["name"] == "endpoint" and arg["required"] for arg in schema["arguments"])
+        token_argument = next(arg for arg in schema["arguments"] if arg["name"] == "token")
+        assert token_argument["default"] == "x"
+
+    def test_preview_dataset_returns_five_rows(self):
+        pm = PluginManager()
+        pm.register_reader("stub", _StubReader)
+        rows = pm.preview_dataset("stub", endpoint="https://example.com")
+        assert len(rows) == 5
 
     def test_load_module_success(self):
         pm = PluginManager()

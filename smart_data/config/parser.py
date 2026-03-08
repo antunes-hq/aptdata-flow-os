@@ -10,6 +10,7 @@ import yaml
 from pydantic import TypeAdapter
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
+from smart_data.config.secrets import SecretManager
 from smart_data.core.dataset import IDataset
 from smart_data.core.system import BaseComponent, BaseFlow, BaseSystem, IFlow
 
@@ -98,6 +99,9 @@ class YamlConfigParser:
     _edge_adapter = TypeAdapter(ConfigEdge)
     _system_adapter = TypeAdapter(ConfigSystem)
 
+    def __init__(self, secret_manager: SecretManager | None = None) -> None:
+        self._secret_manager = secret_manager or SecretManager()
+
     def parse_file(self, path: str | Path) -> ParsedConfig:
         """Read and parse a YAML config file."""
         config_path = Path(path)
@@ -108,6 +112,7 @@ class YamlConfigParser:
 
     def parse_data(self, payload: dict[str, Any]) -> ParsedConfig:
         """Parse a loaded YAML dictionary."""
+        payload = self._secret_manager.resolve(payload)
         metadata = payload.get("metadata", {})
         system_payload = dict(payload.get("system", {}))
         flow_payloads = system_payload.pop("flows", payload.get("flows", []))

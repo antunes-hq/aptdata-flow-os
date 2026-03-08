@@ -16,6 +16,7 @@ pyyaml = "^6.0"
 opentelemetry-api = "^1.40.0"
 opentelemetry-sdk = "^1.40.0"
 mcp = "^1.26.0"
+python-dotenv = "^1.0"
 
 [tool.poetry.group.plugins]
 optional = true

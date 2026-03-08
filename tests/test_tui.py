@@ -9,6 +9,7 @@ import pytest
 
 from smart_data.tui.monitor import (
     MonitorApp,
+    _MCPStatusPanel,
     _AgentTraceLog,
     _DAGPanel,
     _MemoryBar,
@@ -78,6 +79,13 @@ class TestMonitorAppHeadless:
         async with monitor_app.run_test():
             trace = monitor_app.query_one(_AgentTraceLog)
             assert trace is not None
+
+    @pytest.mark.asyncio()
+    async def test_mcp_status_panel_present(self, monitor_app: MonitorApp) -> None:
+        async with monitor_app.run_test():
+            panel = monitor_app.query_one(_MCPStatusPanel)
+            assert panel is not None
+            assert "MCP Status" in str(panel.render())
 
     @pytest.mark.asyncio()
     async def test_log_agent_event(self, monitor_app: MonitorApp) -> None:
