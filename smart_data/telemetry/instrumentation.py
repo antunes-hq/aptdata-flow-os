@@ -33,6 +33,8 @@ def mask_telemetry_value(value: object, *, key: str | None = None) -> object:
     if key is not None and any(token in key.lower() for token in _SENSITIVE_KEYS):
         return "****"
     if isinstance(value, str):
+        if not _REGISTERED_SECRETS:
+            return value
         masked = value
         for secret_value in _REGISTERED_SECRETS.values():
             if secret_value and secret_value in masked:

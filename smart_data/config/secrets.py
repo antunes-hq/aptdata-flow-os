@@ -8,7 +8,7 @@ from typing import Any
 
 from smart_data.telemetry.instrumentation import register_secret
 
-_ENV_PATTERN = re.compile(r"\$\{([A-Z0-9_]+)\}")
+_ENV_PATTERN = re.compile(r"\$\{([A-Za-z0-9_]+)\}")
 
 
 class SecretManager:

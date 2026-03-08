@@ -174,6 +174,8 @@ class TestPluginManager:
         assert schema["name"] == "stub"
         assert schema["type"] == "reader"
         assert any(arg["name"] == "endpoint" and arg["required"] for arg in schema["arguments"])
+        token_argument = next(arg for arg in schema["arguments"] if arg["name"] == "token")
+        assert token_argument["default"] == "x"
 
     def test_preview_dataset_returns_five_rows(self):
         pm = PluginManager()

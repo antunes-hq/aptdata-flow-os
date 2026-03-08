@@ -7,6 +7,7 @@ and execute smart-data pipelines via the Model Context Protocol.
 from __future__ import annotations
 
 import time
+from threading import Lock
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
@@ -20,16 +21,20 @@ from smart_data.telemetry.instrumentation import mask_telemetry_value
 
 mcp = FastMCP("smart-data")
 _MCP_REQUEST_COUNT = 0
+_MCP_REQUEST_LOCK = Lock()
 
 
 def _mark_request() -> None:
     global _MCP_REQUEST_COUNT
-    _MCP_REQUEST_COUNT += 1
+    with _MCP_REQUEST_LOCK:
+        _MCP_REQUEST_COUNT += 1
 
 
 def get_mcp_status() -> dict[str, Any]:
     """Return MCP activity status for TUI and diagnostics."""
-    return {"active": True, "request_count": _MCP_REQUEST_COUNT}
+    with _MCP_REQUEST_LOCK:
+        request_count = _MCP_REQUEST_COUNT
+    return {"active": True, "request_count": request_count}
 
 
 def _register_builtin_plugins() -> None:
@@ -136,8 +141,17 @@ def preview_dataset(plugin: str, **reader_config: Any) -> dict[str, Any]:
             "rows": mask_telemetry_value(rows),
             "format": "json",
         }
+    except KeyError as exc:
+        return {"status": "error", "plugin": plugin, "error": str(exc), "error_type": "KeyError"}
+    except ValueError as exc:
+        return {"status": "error", "plugin": plugin, "error": str(exc), "error_type": "ValueError"}
     except Exception as exc:  # noqa: BLE001
-        return {"status": "error", "plugin": plugin, "error": str(exc)}
+        return {
+            "status": "error",
+            "plugin": plugin,
+            "error": str(exc),
+            "error_type": type(exc).__name__,
+        }
 
 
 @mcp.resource("schema://datasets/{dataset_name}")
