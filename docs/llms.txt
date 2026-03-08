@@ -1,0 +1,60 @@
+# smart-data
+
+> A declarative, extensible Python framework for building smart data pipelines.
+
+## Overview
+
+smart-data provides a clean **two-layer contract system** built around three
+universal abstractions — **Component**, **Flow**, and **System**:
+
+- **Layer 1 – Interfaces (`I*`):** Pure `@dataclass + ABC` contracts
+  (`IDataset`, `IComponent`, `IFlow`, `ISystem`).
+- **Layer 2 – Base classes (`Base*`):** Pydantic-validated implementations
+  (`BaseDataset`, `BaseComponent`, `BaseFlow`, `BaseSystem`).
+
+Users inherit from the `Base*` classes, implement the remaining abstract
+methods, and register their systems in the plugin registry.
+
+## Documentation Index
+
+- [Getting Started](getting-started.md): Installation and first system
+- [Architecture](architecture.md): Two-layer design and data-flow model
+- [API – Core](api/core.md): Component, Flow, System, Dataset reference
+- [API – CLI](api/cli.md): Command-line interface reference
+- [API – Plugins](api/plugins.md): Plugin registry reference
+- [Changelog](changelog.md): Version history
+
+## Core Abstractions
+
+| Abstraction | Interface | Base Class | Key Fields |
+|---|---|---|---|
+| Dataset | `IDataset` | `BaseDataset` | `uri`, `schema_metadata` |
+| Component | `IComponent` | `BaseComponent` | `component_id`, `metadata` |
+| Flow | `IFlow` | `BaseFlow` | `flow_id` |
+| System | `ISystem` | `BaseSystem` | `system_id` |
+
+## Key Capabilities
+
+- **Contract-first design** with runtime type-safety via Pydantic
+- **Metadata-driven components** (`ComponentMeta`, `ComponentKind`)
+- **Conditional flow edges** with optional predicates
+- **Plugin registry** for named system discovery
+- **Structured CLI** emitting machine-readable JSON lines
+- **Interactive TUI** (Textual) with DAG, Metrics, and Agent Trace tabs
+- **MCP Server** (Model Context Protocol) for AI agent integration
+- **OpenTelemetry** auto-instrumentation of component execution
+
+## MCP Integration
+
+smart-data exposes a FastMCP server so AI agents can discover and run
+pipelines. Available MCP tools:
+
+- `run_flow(flow_id)` – Execute a registered system
+- `list_registered_systems()` – List available pipelines
+
+Start the server: `smart-data mcp-start`
+
+## Links
+
+- [Source](https://github.com/strondata/smart-data)
+- [Documentation](https://strondata.github.io/smart-data)
