@@ -153,6 +153,38 @@ def monitor(
     app_instance.run()
 
 
+@app.command()
+def mcp_start(
+    transport: str = typer.Option(
+        "stdio",
+        "--transport",
+        "-t",
+        help="MCP transport to use (stdio or sse).",
+    ),
+) -> None:
+    """Start the MCP (Model Context Protocol) server.
+
+    This exposes smart-data tools and resources so that AI agents
+    (Claude Desktop, Copilot, Devin, …) can discover and run pipelines.
+
+    Examples
+    --------
+    smart-data mcp-start
+    smart-data mcp-start --transport sse
+    """
+    _emit({"event": "mcp.server.starting", "transport": transport})
+    try:
+        from smart_data.mcp.server import mcp as mcp_server  # noqa: PLC0415
+
+        mcp_server.run(transport=transport)
+    except Exception as exc:  # noqa: BLE001
+        _emit(
+            {"event": "mcp.server.error", "error": str(exc)},
+            error=True,
+        )
+        raise SystemExit(1) from exc
+
+
 app.command()(scaffold)
 app.add_typer(schema_app, name="schema")
 
