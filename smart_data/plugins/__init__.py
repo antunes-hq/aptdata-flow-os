@@ -1,8 +1,12 @@
-"""Plugin registry for smart-data systems.
+"""Plugin registry and plugin manager for smart-data.
 
 Third-party adapters (Spark, REST APIs, databases, …) register concrete
 implementations of :class:`~smart_data.core.system.ISystem` here
 so that the CLI can discover and instantiate them by name.
+
+The module also re-exports the :data:`plugin_manager` singleton from
+:mod:`smart_data.plugins.manager` and the abstract base classes from
+:mod:`smart_data.plugins.base` for convenience.
 
 Usage
 -----
@@ -23,6 +27,9 @@ Look up a system by name::
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
+from smart_data.plugins.base import BaseReader, BaseWriter
+from smart_data.plugins.manager import PluginDependencyError, PluginManager, plugin_manager
 
 if TYPE_CHECKING:
     from smart_data.core.system import ISystem
@@ -58,4 +65,12 @@ class _SystemRegistry:
 #: Global singleton registry – import this in adapter modules.
 registry = _SystemRegistry()
 
-__all__ = ["registry", "_SystemRegistry"]
+__all__ = [
+    "registry",
+    "_SystemRegistry",
+    "BaseReader",
+    "BaseWriter",
+    "PluginManager",
+    "PluginDependencyError",
+    "plugin_manager",
+]
