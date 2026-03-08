@@ -1,38 +1,53 @@
 # Architecture
 
-smart-data is built around a **two-layer contract system** that cleanly
-separates the *behavioural contract* (what a type must do) from the *data
-contract* (what fields it carries).
+smart-data is built around a **two-layer contract system** for each of its
+three universal abstractions — **Component**, **Flow**, and **System** — plus
+the foundational **Dataset** type.
+
+---
+
+## The three-abstraction model
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│  Abstraction   Purpose                                             │
+│  ──────────    ────────────────────────────────────────────────── │
+│  Component     A reusable unit of work (ETL step, filter, …)      │
+│  Flow          A directed graph of Components                      │
+│  System        Top-level orchestrator that owns one or more Flows  │
+└────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## The two layers
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Layer 1 – Interfaces (I*)                                  │
-│  @dataclass + ABC                                           │
-│                                                             │
-│  IDataset      IStep          IPipeline                     │
-│  ─────────     ──────────     ────────────────              │
-│  read()        validate_inputs()  register_step()           │
-│  write()       execute()          compile_dag()             │
-│                                   run()                     │
-└─────────────────────────────────────────────────────────────┘
-            │                   │                   │
-            ▼                   ▼                   ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Layer 2 – Base classes (Base*)                             │
-│  @pydantic_dataclass                                        │
-│                                                             │
-│  BaseDataset   BaseStep       BasePipeline                  │
-│  ─────────     ──────────     ────────────────              │
-│  uri: str      step_id: str   (no extra fields)             │
-│  schema_metadata: dict                                      │
-└─────────────────────────────────────────────────────────────┘
-            │                   │                   │
-            ▼                   ▼                   ▼
-        Your concrete implementations
+┌──────────────────────────────────────────────────────────────────────────┐
+│  Layer 1 – Interfaces (I*)                                               │
+│  @dataclass + ABC                                                        │
+│                                                                          │
+│  IDataset      IComponent           IFlow              ISystem           │
+│  ─────────     ──────────────────   ────────────────   ─────────────     │
+│  read()        validate_inputs()    add_component()    register_flow()   │
+│  write()       execute()            connect()          run()             │
+│                meta (property)      compile()                            │
+│                                     run()                                │
+└──────────────────────────────────────────────────────────────────────────┘
+             │               │                   │               │
+             ▼               ▼                   ▼               ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│  Layer 2 – Base classes (Base*)                                          │
+│  @pydantic_dataclass                                                     │
+│                                                                          │
+│  BaseDataset   BaseComponent        BaseFlow           BaseSystem        │
+│  ─────────     ──────────────────   ────────────────   ─────────────     │
+│  uri: str      component_id: str    flow_id: str       system_id: str    │
+│  schema_meta…  metadata: CompMeta                                        │
+└──────────────────────────────────────────────────────────────────────────┘
+             │               │                   │               │
+             ▼               ▼                   ▼               ▼
+         Your concrete implementations
 ```
 
 ---
@@ -59,10 +74,8 @@ class IDataset(ABC):
 **Why dataclasses?**
 
 - Standard-library, zero external dependencies for the interface layer.
-- ABCMeta enforcement: instantiating an `I*` class directly (without
-  implementing all abstract methods) raises `TypeError` at runtime.
-- IDE-friendly: tools understand `@dataclass` semantics and generate
-  accurate completions.
+- ABCMeta enforcement: instantiating an `I*` class directly raises `TypeError`.
+- IDE-friendly: tools understand `@dataclass` semantics.
 
 ---
 
@@ -70,8 +83,7 @@ class IDataset(ABC):
 
 Each `Base*` class uses Pydantic's `@pydantic_dataclass` decorator and
 inherits from the corresponding `I*` interface.  It adds **validated fields**
-but still does not implement the abstract methods, so it remains uninstantiable
-on its own.
+but still does not implement the abstract methods.
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -84,19 +96,12 @@ class BaseDataset(IDataset):
     schema_metadata: dict[str, Any] = field(default_factory=dict)
 ```
 
-**Why Pydantic dataclasses?**
-
-- Field validation (type coercion, constraints) at construction time.
-- Compatible with Pydantic's ecosystem (serialisation, settings, etc.).
-- Still a real Python dataclass under the hood, so `isinstance` checks and
-  `dataclasses.fields()` work as expected.
-
 ---
 
 ## Concrete implementations
 
-Users (and adapter packages) inherit from the `Base*` classes and implement
-the remaining abstract methods:
+Users inherit from the `Base*` classes and implement the remaining abstract
+methods:
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -104,10 +109,8 @@ from smart_data.core import BaseDataset, IDataset
 
 @pydantic_dataclass
 class ParquetDataset(BaseDataset):
-    """Reads and writes Parquet files using pandas."""
-
     def __post_init__(self) -> None:
-        self._df = None  # private mutable state lives here
+        self._df = None
 
     def read(self):
         import pandas as pd
@@ -126,52 +129,96 @@ class ParquetDataset(BaseDataset):
 
 ---
 
+## ComponentMeta & ComponentKind
+
+Every `BaseComponent` carries a `ComponentMeta` instance that describes its
+role, tags and branching behaviour:
+
+```python
+from smart_data.core import ComponentMeta, ComponentKind
+
+meta = ComponentMeta(
+    kind=ComponentKind.TRANSFORM,
+    tags=["etl", "prod"],
+    branch_on="status",          # field name used for conditional routing
+    description="Doubles values",
+    extra={"owner": "team-a"},
+)
+```
+
+`ComponentKind` values: `TRANSFORM`, `FILTER`, `AGGREGATE`, `EXTRACT`,
+`LOAD`, `CUSTOM`.
+
+---
+
+## Flow graph primitives
+
+`FlowEdge` connects two components and can carry an optional predicate to
+enable conditional / branching execution:
+
+```python
+from smart_data.core import FlowEdge
+
+# Unconditional edge
+FlowEdge(source_id="extract", target_id="transform")
+
+# Conditional edge – only traversed when the predicate returns True
+FlowEdge(source_id="transform", target_id="load",
+         condition=lambda outputs: len(outputs) > 0)
+```
+
+`FlowNode` wraps a component inside a flow and keeps a back-reference to the
+owning `IFlow`.
+
+---
+
 ## Plugin registry
 
-Concrete pipeline implementations are registered by name in the global
+Concrete system implementations are registered by name in the global
 `registry` singleton:
 
 ```
 smart_data.plugins.registry
        │
-       ├── "pipeline_a"  →  PipelineA (class)
-       ├── "pipeline_b"  →  PipelineB (class)
+       ├── "etl_system"  →  EtlSystem (class)
+       ├── "ml_system"   →  MlSystem  (class)
        └── ...
 ```
 
 The CLI calls `registry.get(name)` to resolve a name to a class, instantiates
-it, compiles the DAG, and calls `run()`.
+it with `system_id=name`, and calls `run()`.
 
 ```
-CLI  ──▶  registry.get("pipeline_x")
+CLI  ──▶  registry.get("etl_system")
                 │
                 ▼
-          PipelineX()
+          EtlSystem(system_id="etl_system")
                 │
-                ├── compile_dag()
                 └── run()
 ```
 
 ---
 
-## Data-flow through a pipeline
+## Data-flow through a system
 
 ```
-Input Dataset(s)
+Initial Dataset(s)
       │
       ▼
-  Step 1 – validate_inputs() → execute() → Output Dataset
-                                                  │
-                                                  ▼
-                                           Step 2 – ...
-                                                  │
-                                                  ▼
-                                            Final Dataset
+  Flow.compile()          ← validate graph structure
+      │
+      ▼
+  Component 1  ─ validate_inputs() → execute() → [Dataset, …]
+      │
+      ▼  (FlowEdge, optional condition)
+  Component 2  ─ validate_inputs() → execute() → [Dataset, …]
+      │
+      ▼
+  Final Dataset(s)
 ```
 
-Each step is responsible for validating its own inputs, executing its
-transformation, and returning a new dataset.  This makes steps **independently
-testable** without a full pipeline context.
+Each component validates its own inputs, executes its transformation, and
+returns a **list** of datasets (enabling multi-output / branching flows).
 
 ---
 
@@ -181,7 +228,7 @@ The `smart-data monitor` command launches a
 [Textual](https://textual.textualize.io/)-based terminal dashboard that
 displays:
 
-- An ASCII representation of the pipeline DAG.
-- A per-step status table (pending / running / done).
+- An ASCII representation of the flow graph.
+- A per-component status table (pending / running / done).
 - A memory-usage bar (uses `psutil` when available, falls back to
   `/proc/meminfo`).

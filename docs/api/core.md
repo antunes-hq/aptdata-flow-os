@@ -1,10 +1,11 @@
 # Core API
 
-The `smart_data.core` package exposes the two-layer contract system.
+The `smart_data.core` package exposes the two-layer contract system for all
+four foundational types.
 
 ---
 
-## Interfaces
+## Dataset
 
 ### `IDataset`
 
@@ -12,46 +13,89 @@ The `smart_data.core` package exposes the two-layer contract system.
 
 ---
 
-### `IStep`
-
-::: smart_data.core.step.IStep
-
----
-
-### `IPipeline`
-
-::: smart_data.core.pipeline.IPipeline
-
----
-
-## Base classes
-
 ### `BaseDataset`
 
 ::: smart_data.core.dataset.BaseDataset
 
 ---
 
-### `BaseStep`
+## Component
 
-::: smart_data.core.step.BaseStep
+### `ComponentKind`
+
+::: smart_data.core.system.ComponentKind
 
 ---
 
-### `BasePipeline`
+### `ComponentMeta`
 
-::: smart_data.core.pipeline.BasePipeline
+::: smart_data.core.system.ComponentMeta
+
+---
+
+### `IComponent`
+
+::: smart_data.core.system.IComponent
+
+---
+
+### `BaseComponent`
+
+::: smart_data.core.system.BaseComponent
+
+---
+
+## Flow
+
+### `FlowEdge`
+
+::: smart_data.core.system.FlowEdge
+
+---
+
+### `FlowNode`
+
+::: smart_data.core.system.FlowNode
+
+---
+
+### `IFlow`
+
+::: smart_data.core.system.IFlow
+
+---
+
+### `BaseFlow`
+
+::: smart_data.core.system.BaseFlow
+
+---
+
+## System
+
+### `ISystem`
+
+::: smart_data.core.system.ISystem
+
+---
+
+### `BaseSystem`
+
+::: smart_data.core.system.BaseSystem
 
 ---
 
 ## Quick-import
 
-All six names are re-exported from the top-level `smart_data.core` package:
+All names are re-exported from the top-level `smart_data.core` package:
 
 ```python
 from smart_data.core import (
     IDataset, BaseDataset,
-    IStep,    BaseStep,
-    IPipeline, BasePipeline,
+    ComponentKind, ComponentMeta,
+    IComponent,   BaseComponent,
+    FlowEdge,     FlowNode,
+    IFlow,        BaseFlow,
+    ISystem,      BaseSystem,
 )
 ```

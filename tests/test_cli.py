@@ -4,22 +4,20 @@ from __future__ import annotations
 
 import json
 
-import pytest
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typer.testing import CliRunner
 
 from smart_data.cli.app import app
 from smart_data.plugins import registry
-from smart_data.core.pipeline import BasePipeline, IPipeline
-from smart_data.core.step import BaseStep, IStep
-from smart_data.core.dataset import BaseDataset, IDataset
+from smart_data.core.system import BaseSystem
+from smart_data.core.dataset import BaseDataset
 
 
 runner = CliRunner()
 
 
 # ---------------------------------------------------------------------------
-# Helpers – minimal pipeline registered for CLI tests
+# Helpers – minimal system registered for CLI tests
 # ---------------------------------------------------------------------------
 
 
@@ -33,31 +31,19 @@ class _MockDataset(BaseDataset):
 
 
 @pydantic_dataclass
-class _MockStep(BaseStep):
-    def validate_inputs(self, inputs):
-        return True
-
-    def execute(self, inputs):
-        return _MockDataset(uri="memory://out")
-
-
-@pydantic_dataclass
-class _MockPipeline(BasePipeline):
+class _MockSystem(BaseSystem):
     def __post_init__(self) -> None:
-        self._compiled = False
+        self._flows = []
 
-    def register_step(self, step):
-        pass
-
-    def compile_dag(self):
-        self._compiled = True
+    def register_flow(self, flow):
+        self._flows.append(flow)
 
     def run(self):
         pass  # no-op for tests
 
 
 # Register at module level so tests share it
-registry.register("mock_pipeline", _MockPipeline)
+registry.register("mock_pipeline", _MockSystem)
 
 
 # ---------------------------------------------------------------------------
@@ -117,25 +103,25 @@ class TestRunCommand:
 
 class TestPluginRegistry:
     def test_register_and_get(self):
-        from smart_data.plugins import _PipelineRegistry
+        from smart_data.plugins import _SystemRegistry
 
-        reg = _PipelineRegistry()
-        reg.register("p1", _MockPipeline)
-        assert reg.get("p1") is _MockPipeline
+        reg = _SystemRegistry()
+        reg.register("s1", _MockSystem)
+        assert reg.get("s1") is _MockSystem
 
     def test_get_missing_returns_none(self):
-        from smart_data.plugins import _PipelineRegistry
+        from smart_data.plugins import _SystemRegistry
 
-        reg = _PipelineRegistry()
+        reg = _SystemRegistry()
         assert reg.get("missing") is None
 
-    def test_list_pipelines(self):
-        from smart_data.plugins import _PipelineRegistry
+    def test_list_systems(self):
+        from smart_data.plugins import _SystemRegistry
 
-        reg = _PipelineRegistry()
-        reg.register("b", _MockPipeline)
-        reg.register("a", _MockPipeline)
-        assert reg.list_pipelines() == ["a", "b"]
+        reg = _SystemRegistry()
+        reg.register("b", _MockSystem)
+        reg.register("a", _MockSystem)
+        assert reg.list_systems() == ["a", "b"]
 
 
 class TestScaffoldCommand:
