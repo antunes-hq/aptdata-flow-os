@@ -61,7 +61,7 @@ class TestRunCommand:
         result = runner.invoke(app, ["run", "mock_pipeline"])
         assert result.exit_code == 0
         # stdout should contain two JSON events
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert len(lines) >= 2
         started = json.loads(lines[0])
         completed = json.loads(lines[-1])
@@ -71,14 +71,14 @@ class TestRunCommand:
     def test_run_with_env_option(self):
         result = runner.invoke(app, ["run", "mock_pipeline", "--env", "prod"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         started = json.loads(lines[0])
         assert started["env"] == "prod"
 
     def test_run_dry_run_flag(self):
         result = runner.invoke(app, ["run", "mock_pipeline", "--dry-run"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         started = json.loads(lines[0])
         assert started["dry_run"] is True
 
@@ -89,7 +89,7 @@ class TestRunCommand:
     def test_run_unknown_pipeline_emits_error_json(self):
         result = runner.invoke(app, ["run", "nonexistent_pipeline"])
         # stderr and stdout are merged by the test runner
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert len(lines) >= 1
         error_event = json.loads(lines[-1])
         assert error_event["event"] == "pipeline.error"
@@ -160,3 +160,19 @@ class TestScaffoldCommand:
         assert result.exit_code == 1
         lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert json.loads(lines[-1])["event"] == "scaffold.error"
+
+
+class TestSchemaCommand:
+    def test_schema_export_writes_json_schema(self, tmp_path):
+        output = tmp_path / "schema.json"
+        result = runner.invoke(app, ["schema", "export", "--output", str(output)])
+
+        assert result.exit_code == 0
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
+        assert json.loads(lines[0])["event"] == "schema.export.started"
+        assert json.loads(lines[-1])["event"] == "schema.export.completed"
+        assert output.exists()
+
+        schema = json.loads(output.read_text(encoding="utf-8"))
+        assert schema["type"] == "object"
+        assert "system" in schema.get("properties", {})

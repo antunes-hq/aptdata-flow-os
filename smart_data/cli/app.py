@@ -14,16 +14,19 @@ from __future__ import annotations
 import json
 import sys
 import time
+from pathlib import Path
 
 import typer
 
 from smart_data.cli.scaffold import scaffold
+from smart_data.config.schema import write_domain_schema
 
 app = typer.Typer(
     name="smart-data",
     help="Smart Data – declarative data-pipeline framework.",
     add_completion=False,
 )
+schema_app = typer.Typer(help="Schema utilities for declarative configuration.")
 
 
 def _emit(payload: dict, *, error: bool = False) -> None:
@@ -145,3 +148,41 @@ def monitor(
 
 
 app.command()(scaffold)
+app.add_typer(schema_app, name="schema")
+
+
+@schema_app.command("export")
+def schema_export(
+    output: Path = typer.Option(
+        ...,
+        "--output",
+        "-o",
+        help="Output path for the generated JSON Schema.",
+    ),
+) -> None:
+    """Export JSON Schema for declarative YAML configs."""
+    started_at = time.time()
+    _emit({"event": "schema.export.started", "output": str(output)})
+    try:
+        write_domain_schema(output)
+        elapsed = round(time.time() - started_at, 3)
+        _emit(
+            {
+                "event": "schema.export.completed",
+                "output": str(output),
+                "elapsed_seconds": elapsed,
+            }
+        )
+        raise SystemExit(0)
+    except Exception as exc:  # noqa: BLE001
+        elapsed = round(time.time() - started_at, 3)
+        _emit(
+            {
+                "event": "schema.export.error",
+                "output": str(output),
+                "error": str(exc),
+                "elapsed_seconds": elapsed,
+            },
+            error=True,
+        )
+        raise SystemExit(1) from exc

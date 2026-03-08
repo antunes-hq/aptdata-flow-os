@@ -110,6 +110,7 @@ smart-data run my_system
 smart-data run SYSTEM_NAME [--env ENV] [--dry-run]
 smart-data monitor [--refresh SECONDS]
 smart-data scaffold PROJECT_NAME [--output PATH]
+smart-data schema export --output schema.json
 ```
 
 ---
