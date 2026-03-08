@@ -56,5 +56,5 @@ Start the server: `smart-data mcp-start`
 
 ## Links
 
-- Source: <https://github.com/strondata/smart-data>
-- Documentation: <https://strondata.github.io/smart-data>
+- [Source](https://github.com/strondata/smart-data)
+- [Documentation](https://strondata.github.io/smart-data)
