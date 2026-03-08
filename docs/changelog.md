@@ -11,7 +11,7 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- **`workflow.py`** — context-aware workflow module introducing:
+- **`smart_data.core.workflow`** — context-aware workflow module introducing:
   - `IWorkflow` / `BaseWorkflow` with `before_run` / `after_run` hooks.
   - `WorkflowNode` / `WorkflowEdge` graph primitives with optional conditional
     routing.

@@ -107,7 +107,9 @@ class BaseWorkflow(IWorkflow):
             adjacency[edge.source_id].append(edge)
             indegree[edge.target_id] += 1
 
-        queue = deque(component_id for component_id, degree in indegree.items() if degree == 0)
+        queue = deque(
+            component_id for component_id, in_degree in indegree.items() if in_degree == 0
+        )
         execution_order: list[str] = []
         while queue:
             current = queue.popleft()
@@ -143,6 +145,7 @@ class BaseWorkflow(IWorkflow):
         if self._execution_order:
             pending_inputs[self._execution_order[0]] = list(initial_inputs)
 
+        # Fallback when no component executes or no branch is traversed.
         terminal_outputs: list[IDataset] = list(initial_inputs)
         for component_id in self._execution_order:
             component = self._nodes[component_id].component
