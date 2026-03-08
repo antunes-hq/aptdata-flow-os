@@ -7,6 +7,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **`smart_data.core.workflow`** — context-aware workflow module introducing:
+  - `IWorkflow` / `BaseWorkflow` with `before_run` / `after_run` hooks.
+  - `WorkflowNode` / `WorkflowEdge` graph primitives with optional conditional
+    routing.
+  - `compile()` adjacency-list precomputation and cycle validation.
+  - `run()` execution with hook lifecycle and `ExecutionContext` integration.
+- **`tests/test_workflow.py`** — tests covering workflow primitives, lifecycle,
+  compile validation, and conditional execution behavior.
+
+### Changed
+
+- `smart_data.core.__init__` now exports workflow abstractions.
+
+---
+
 ## [0.0.2] – 2026-03-08
 
 ### Added

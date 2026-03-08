@@ -5,6 +5,10 @@ from __future__ import annotations
 from typing import Any, Callable
 
 import pytest
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from smart_data.core.dataset import BaseDataset, IDataset
@@ -378,3 +382,33 @@ class TestISystem:
         system = _SimpleSystem(system_id="s1")
         assert isinstance(system, ISystem)
         assert isinstance(system, BaseSystem)
+
+
+class TestTelemetry:
+    def test_flow_run_generates_component_spans(self):
+        exporter = InMemorySpanExporter()
+        provider = trace.get_tracer_provider()
+        if isinstance(provider, TracerProvider):
+            provider.add_span_processor(SimpleSpanProcessor(exporter))
+        else:
+            provider = TracerProvider()
+            provider.add_span_processor(SimpleSpanProcessor(exporter))
+            trace.set_tracer_provider(provider)
+
+        flow = _SimpleFlow(flow_id="f1")
+        flow.add_component(
+            _DoubleComponent(
+                component_id="c1",
+                metadata=ComponentMeta(kind=ComponentKind.TRANSFORM, tags=["unit"]),
+            )
+        )
+        flow.compile()
+        ds = _MemDataset(uri="memory://in")
+        ds.write([1, 2])
+        flow.run([ds])
+
+        spans = exporter.get_finished_spans()
+        assert len(spans) == 1
+        assert spans[0].name == "c1"
+        assert spans[0].attributes["smart_data.kind"] == "transform"
+        assert tuple(spans[0].attributes["smart_data.tags"]) == ("unit",)

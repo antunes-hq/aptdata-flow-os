@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import json
 
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typer.testing import CliRunner
 
-from smart_data.cli.app import app
+from smart_data.cli.app import _emit, app
 from smart_data.plugins import registry
 from smart_data.core.system import BaseSystem
 from smart_data.core.dataset import BaseDataset
@@ -61,7 +65,7 @@ class TestRunCommand:
         result = runner.invoke(app, ["run", "mock_pipeline"])
         assert result.exit_code == 0
         # stdout should contain two JSON events
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert len(lines) >= 2
         started = json.loads(lines[0])
         completed = json.loads(lines[-1])
@@ -71,14 +75,14 @@ class TestRunCommand:
     def test_run_with_env_option(self):
         result = runner.invoke(app, ["run", "mock_pipeline", "--env", "prod"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         started = json.loads(lines[0])
         assert started["env"] == "prod"
 
     def test_run_dry_run_flag(self):
         result = runner.invoke(app, ["run", "mock_pipeline", "--dry-run"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         started = json.loads(lines[0])
         assert started["dry_run"] is True
 
@@ -89,7 +93,7 @@ class TestRunCommand:
     def test_run_unknown_pipeline_emits_error_json(self):
         result = runner.invoke(app, ["run", "nonexistent_pipeline"])
         # stderr and stdout are merged by the test runner
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert len(lines) >= 1
         error_event = json.loads(lines[-1])
         assert error_event["event"] == "pipeline.error"
@@ -160,3 +164,38 @@ class TestScaffoldCommand:
         assert result.exit_code == 1
         lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert json.loads(lines[-1])["event"] == "scaffold.error"
+
+
+class TestSchemaCommand:
+    def test_schema_export_writes_json_schema(self, tmp_path):
+        output = tmp_path / "schema.json"
+        result = runner.invoke(app, ["schema", "export", "--output", str(output)])
+
+        assert result.exit_code == 0
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
+        assert json.loads(lines[0])["event"] == "schema.export.started"
+        assert json.loads(lines[-1])["event"] == "schema.export.completed"
+        assert output.exists()
+
+        schema = json.loads(output.read_text(encoding="utf-8"))
+        assert schema["type"] == "object"
+        assert "system" in schema.get("properties", {})
+
+
+class TestEmit:
+    def test_emit_includes_trace_id(self, capsys):
+        exporter = InMemorySpanExporter()
+        provider = trace.get_tracer_provider()
+        if isinstance(provider, TracerProvider):
+            provider.add_span_processor(SimpleSpanProcessor(exporter))
+        else:
+            provider = TracerProvider()
+            provider.add_span_processor(SimpleSpanProcessor(exporter))
+            trace.set_tracer_provider(provider)
+
+        tracer = trace.get_tracer("tests.cli")
+        with tracer.start_as_current_span("cli_test"):
+            _emit({"event": "custom"})
+        payload = json.loads(capsys.readouterr().out.strip())
+        assert payload["event"] == "custom"
+        assert payload["trace_id"] is not None

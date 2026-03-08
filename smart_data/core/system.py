@@ -26,11 +26,13 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
+from functools import wraps
 from typing import Any, Callable
 
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from smart_data.core.dataset import IDataset
+from smart_data.telemetry.instrumentation import get_tracer
 
 
 # ---------------------------------------------------------------------------
@@ -123,6 +125,33 @@ class BaseComponent(IComponent):
 
     component_id: str
     metadata: ComponentMeta = field(default_factory=ComponentMeta)
+
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        """Wrap subclass execute implementations with telemetry spans."""
+        super().__init_subclass__(**kwargs)
+        execute_fn = cls.__dict__.get("execute")
+        if execute_fn is None or getattr(execute_fn, "_smart_data_instrumented", False):
+            return
+
+        @wraps(execute_fn)
+        def _instrumented_execute(self: BaseComponent, inputs: list[IDataset]) -> list[IDataset]:
+            span_name = self.component_id or cls.__name__
+            kind = self.meta.kind
+            kind_value = kind.value if isinstance(kind, ComponentKind) else str(kind or "")
+            tags = sorted(self.meta.tags) if self.meta.tags else []
+            with get_tracer().start_as_current_span(span_name) as span:
+                span.set_attribute("smart_data.component_id", self.component_id)
+                span.set_attribute("smart_data.kind", kind_value)
+                span.set_attribute("smart_data.tags", tags)
+                span.set_attribute("smart_data.branch_on", self.meta.branch_on)
+                span.set_attribute("smart_data.description", self.meta.description)
+                return execute_fn(self, inputs)
+
+        _instrumented_execute.__isabstractmethod__ = getattr(
+            execute_fn, "__isabstractmethod__", False
+        )
+        _instrumented_execute._smart_data_instrumented = True  # type: ignore[attr-defined]
+        cls.execute = _instrumented_execute  # type: ignore[method-assign]
 
     @property
     def meta(self) -> ComponentMeta:
