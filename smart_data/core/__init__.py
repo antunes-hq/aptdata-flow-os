@@ -1,5 +1,6 @@
 """Core interfaces and base classes for smart-data."""
 
+from smart_data.core.context import ExecutionContext
 from smart_data.core.dataset import BaseDataset, IDataset
 from smart_data.core.system import (
     BaseComponent,
@@ -17,6 +18,7 @@ from smart_data.core.system import (
 __all__ = [
     "IDataset",
     "BaseDataset",
+    "ExecutionContext",
     "ComponentKind",
     "ComponentMeta",
     "IComponent",

@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import json
 
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typer.testing import CliRunner
 
-from smart_data.cli.app import app
+from smart_data.cli.app import _emit, app
 from smart_data.plugins import registry
 from smart_data.core.system import BaseSystem
 from smart_data.core.dataset import BaseDataset
@@ -176,3 +180,22 @@ class TestSchemaCommand:
         schema = json.loads(output.read_text(encoding="utf-8"))
         assert schema["type"] == "object"
         assert "system" in schema.get("properties", {})
+
+
+class TestEmit:
+    def test_emit_includes_trace_id(self, capsys):
+        exporter = InMemorySpanExporter()
+        provider = trace.get_tracer_provider()
+        if isinstance(provider, TracerProvider):
+            provider.add_span_processor(SimpleSpanProcessor(exporter))
+        else:
+            provider = TracerProvider()
+            provider.add_span_processor(SimpleSpanProcessor(exporter))
+            trace.set_tracer_provider(provider)
+
+        tracer = trace.get_tracer("tests.cli")
+        with tracer.start_as_current_span("cli_test"):
+            _emit({"event": "custom"})
+        payload = json.loads(capsys.readouterr().out.strip())
+        assert payload["event"] == "custom"
+        assert payload["trace_id"] is not None

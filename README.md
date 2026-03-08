@@ -98,8 +98,8 @@ registry.register("my_system", MySystem)
 
 ```bash
 smart-data run my_system
-# {"event": "pipeline.started", "pipeline": "my_system", "env": "dev", "dry_run": false}
-# {"event": "pipeline.completed", "pipeline": "my_system", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001}
+# {"event": "pipeline.started", "pipeline": "my_system", "env": "dev", "dry_run": false, "trace_id": null}
+# {"event": "pipeline.completed", "pipeline": "my_system", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001, "trace_id": null}
 ```
 
 ---

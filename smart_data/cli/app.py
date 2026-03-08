@@ -17,6 +17,7 @@ import time
 from pathlib import Path
 
 import typer
+from opentelemetry import trace
 
 from smart_data.cli.scaffold import scaffold
 from smart_data.config.schema import write_domain_schema
@@ -31,7 +32,12 @@ schema_app = typer.Typer(help="Schema utilities for declarative configuration.")
 
 def _emit(payload: dict, *, error: bool = False) -> None:
     """Emit *payload* as a single JSON line to stdout or stderr."""
-    line = json.dumps(payload, default=str)
+    event = dict(payload)
+    span_context = trace.get_current_span().get_span_context()
+    event["trace_id"] = (
+        f"{span_context.trace_id:032x}" if span_context.is_valid else None
+    )
+    line = json.dumps(event, default=str)
     if error:
         print(line, file=sys.stderr, flush=True)
     else:
