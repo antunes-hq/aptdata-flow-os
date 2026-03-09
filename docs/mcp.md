@@ -13,17 +13,16 @@ The MCP server is powered by [FastMCP](https://github.com/jlowin/fastmcp) and
 exposes your registered systems as callable **tools** and your dataset schemas
 as **resources**.
 
-```
-AI Agent  ──MCP──►  smart-data mcp-start
-                         │
-                    ┌────┴────────────────────┐
-                    │  Tools                  │
-                    │  · run_flow(flow_id)     │
-                    │  · list_registered_…()  │
-                    │                         │
-                    │  Resources              │
-                    │  · schema://datasets/…  │
-                    └─────────────────────────┘
+```mermaid
+graph LR
+    A["AI Agent\n(Claude / Copilot / Devin)"]
+    S["smart-data mcp-start"]
+    T["Tools\nrun_flow(flow_id)\nlist_registered_systems()"]
+    R["Resources\nschema://datasets/{name}"]
+
+    A -- "MCP protocol" --> S
+    S --> T
+    S --> R
 ```
 
 ---

@@ -12,13 +12,24 @@ Whenever `execute()` is called, the framework wraps the call in an
 OpenTelemetry span carrying rich component metadata.  No code changes to your
 components are needed.
 
-```
-BaseComponent.execute()
-  └─ span: smart_data.component
-       ├─ component.id      = <component_id>
-       ├─ component.kind    = TRANSFORM | FILTER | AGGREGATE | …
-       ├─ component.tags    = ["tag1", "tag2"]
-       └─ component.status  = success | error
+```mermaid
+graph TD
+    E["BaseComponent.execute()"]
+    S["span: smart_data.component"]
+    ID["component.id = <component_id>"]
+    K["component.kind = TRANSFORM | FILTER | AGGREGATE | …"]
+    T["component.tags = ['tag1', 'tag2']"]
+    ST["component.status = success | error"]
+    Q["child span: smart_data.quality.validate"]
+    G["child span: smart_data.governance.lineage"]
+
+    E --> S
+    S --> ID
+    S --> K
+    S --> T
+    S --> ST
+    S --> Q
+    S --> G
 ```
 
 Data-quality validators and governance hooks emit their own child spans so you

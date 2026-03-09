@@ -24,14 +24,12 @@ Three universal abstractions form the core: **Component**, **Flow**, and
 
 ## 2. Architecture
 
-```
-Interfaces (I*)             Base Classes (Base*)         Your Code
-─────────────────          ──────────────────────       ──────────
-IDataset                   BaseDataset(uri, …)          ConcreteDataset
-IComponent                 BaseComponent(component_id)  ConcreteComponent
-IFlow                      BaseFlow(flow_id)            ConcreteFlow
-ISystem                    BaseSystem(system_id)        ConcreteSystem
-```
+The framework enforces a two-layer contract:
+
+- Layer 1 (Interfaces): IDataset, IComponent, IFlow, ISystem — pure @dataclass + ABC
+- Layer 2 (Base classes): BaseDataset, BaseComponent, BaseFlow, BaseSystem — @pydantic_dataclass
+
+Hierarchy: Interfaces → Base classes → Your concrete implementations
 
 ### ComponentMeta & ComponentKind
 

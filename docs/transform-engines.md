@@ -115,6 +115,16 @@ result = wf.execute(spark_df)
 Both transformers implement :class:`~smart_data.plugins.base.BaseTransformer`
 and are compatible with :meth:`~smart_data.core.workflow.Workflow.add_step`:
 
+```mermaid
+flowchart LR
+    DS["Dataset\n(InMemoryDataset)"]
+    PT["PandasTransformer\nor PySparkTransformer"]
+    QV["QualityValidator\n(optional)"]
+    OUT["Transformed Dataset"]
+
+    DS --> PT --> QV --> OUT
+```
+
 ```python
 wf = Workflow("full_pipeline")
 wf.add_step(pandas_transformer.transform)

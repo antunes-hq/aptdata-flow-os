@@ -63,6 +63,18 @@ Commands:
 
 ## Building your first system
 
+```mermaid
+flowchart LR
+    DS["1️⃣ Dataset\nBaseDataset\nread / write"]
+    CO["2️⃣ Component\nBaseComponent\nvalidate_inputs / execute"]
+    FL["3️⃣ Flow\nBaseFlow\nadd_component / connect / compile / run"]
+    SY["4️⃣ System\nBaseSystem\nregister_flow / run"]
+    RG["5️⃣ Register\nregistry.register()"]
+    CLI["6️⃣ Run\nsmart-data run name"]
+
+    DS --> CO --> FL --> SY --> RG --> CLI
+```
+
 ### 1. Create a dataset
 
 A dataset is a Pydantic-validated dataclass that knows how to read and write
