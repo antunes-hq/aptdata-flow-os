@@ -45,6 +45,10 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Architecture: architecture.md
+  - Engines: transform-engines.md
+  - Quality: quality.md
+  - Governance: governance.md
+  - Scaffold Templates: scaffold-templates.md
   - API Reference:
       - Core: api/core.md
       - CLI: api/cli.md

@@ -1,7 +1,8 @@
-"""Abstract base interfaces for plugin readers and writers.
+"""Abstract base interfaces for plugin readers, writers, and transformers.
 
-Every concrete reader / writer must subclass :class:`BaseReader` or
-:class:`BaseWriter` and implement the corresponding abstract method.
+Every concrete reader / writer / transformer must subclass :class:`BaseReader`,
+:class:`BaseWriter`, or :class:`BaseTransformer` and implement the corresponding
+abstract method.
 """
 
 from __future__ import annotations
@@ -35,4 +36,22 @@ class BaseWriter(ABC):
         """Persist *dataset* to the target."""
 
 
-__all__ = ["BaseReader", "BaseWriter"]
+class BaseTransformer(ABC):
+    """Interface for transforming data using an engine-specific implementation.
+
+    Subclasses **must** implement :attr:`name` and :meth:`transform`.
+    Transformer instances are compatible with :meth:`Workflow.add_step` —
+    pass ``transformer.transform`` as the step callable.
+    """
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """Human-readable name identifying this transformer."""
+
+    @abstractmethod
+    def transform(self, data: Any) -> Any:
+        """Apply the transformation to *data* and return the result."""
+
+
+__all__ = ["BaseReader", "BaseWriter", "BaseTransformer"]

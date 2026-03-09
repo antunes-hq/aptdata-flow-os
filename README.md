@@ -109,9 +109,79 @@ smart-data run my_system
 ```
 smart-data run SYSTEM_NAME [--env ENV] [--dry-run]
 smart-data monitor [--refresh SECONDS]
-smart-data scaffold PROJECT_NAME [--output PATH]
+smart-data scaffold PROJECT_NAME [--template TEMPLATE] [--output PATH]
 smart-data schema export --output schema.json
 ```
+
+### Scaffold templates
+
+| Template            | Description                                         |
+|---------------------|-----------------------------------------------------|
+| `hello-world`       | Minimal pandas pipeline (default)                   |
+| `medallion`         | Bronze → Silver → Gold data lakehouse               |
+| `rag-ingestion`     | RAG pipeline: extract → chunk → embed → load        |
+| `data-quality-test` | Schema contract + expectation suite                  |
+
+```bash
+smart-data scaffold my_lakehouse --template medallion
+```
+
+---
+
+## Processing Engines
+
+Engine-agnostic transformation wrappers for pandas and PySpark:
+
+```python
+from smart_data.plugins.transform import PandasTransformer
+
+def clean(df):
+    return df.dropna().drop_duplicates()
+
+transformer = PandasTransformer("clean", clean)
+result = transformer.transform(my_dataset)
+```
+
+See [Transform Engines docs](docs/transform-engines.md) for PySpark usage.
+
+---
+
+## Data Quality & Contracts
+
+```python
+from smart_data.plugins.quality import (
+    EnforcementMode, ExpectColumnToNotBeNull,
+    QualityValidator, SchemaContract,
+)
+
+validator = QualityValidator(
+    expectations=[ExpectColumnToNotBeNull("id")],
+    enforcement=EnforcementMode.ABORT,
+)
+clean_data = validator.validate(raw_df)
+```
+
+See [Quality docs](docs/quality.md) for all built-in expectations.
+
+---
+
+## Data Governance
+
+```python
+from smart_data.plugins.governance import (
+    BusinessRule, DatasetCatalog, DatasetCatalogEntry, LineageStore,
+)
+from smart_data.core.lineage import LineageGraph, LineageNode, LineageEventType
+
+# Lineage tracking
+graph = LineageGraph(run_id="run-1", workflow_name="etl")
+graph.add_node(LineageNode(dataset_uri="s3://raw/data", event_type=LineageEventType.READ))
+
+store = LineageStore()
+store.save(graph)
+```
+
+See [Governance docs](docs/governance.md) for the full API.
 
 ---
 
