@@ -1,19 +1,37 @@
 name: Publish to PyPI
 
+# How to use:
+#   1. Tag release  : git tag v0.1.0 && git push origin v0.1.0
+#                     → triggers build + publish automatically.
+#   2. Manual run   : Actions → "Publish to PyPI" → Run workflow
+#                     → check "Publish to PyPI?" to actually publish,
+#                       or leave unchecked for a build-only dry run.
+#   3. Push to main : only runs the build step (no publish) to validate
+#                     that the package builds correctly.
+
 on:
   push:
     tags:
       - "v*.*.*"
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish to PyPI? (leave unchecked for build-only dry run)"
+        required: false
+        default: false
+        type: boolean
+
+# Minimal permissions at the workflow level; the publish job overrides as needed.
+permissions:
+  contents: read
 
 jobs:
-  build-and-publish:
-    name: Build and Publish
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/smart-data
     permissions:
-      id-token: write
       contents: read
 
     steps:
@@ -34,6 +52,34 @@ jobs:
 
       - name: Build project
         run: poetry build
+
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    name: Publish
+    needs: build
+    # Publish only when triggered by a version tag OR when manually requested.
+    if: >
+      startsWith(github.ref, 'refs/tags/v') ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish == true)
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/smart-data
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
