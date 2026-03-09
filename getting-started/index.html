@@ -604,6 +604,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#publishing-a-new-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing a new release
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#verifying-the-installation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1254,6 +1265,40 @@
 <h3 id="with-pip-once-published-to-pypi">With pip (once published to PyPI)<a class="headerlink" href="#with-pip-once-published-to-pypi" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>smart-data
 </code></pre></div>
+<hr />
+<h2 id="publishing-a-new-release">Publishing a new release<a class="headerlink" href="#publishing-a-new-release" title="Permanent link">&para;</a></h2>
+<p>The <strong>Publish to PyPI</strong> workflow supports three modes:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>How</th>
+<th>Publishes?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tag release</td>
+<td><code>git tag v0.1.0 &amp;&amp; git push origin v0.1.0</code></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Manual (publish)</td>
+<td>Actions → "Publish to PyPI" → Run workflow → check <strong>Publish to PyPI?</strong></td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Manual (dry run)</td>
+<td>Actions → "Publish to PyPI" → Run workflow → leave <strong>Publish to PyPI?</strong> unchecked</td>
+<td>❌ No (build only)</td>
+</tr>
+<tr>
+<td>Push to <code>main</code></td>
+<td>Normal push/merge</td>
+<td>❌ No (build only)</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h2 id="verifying-the-installation">Verifying the installation<a class="headerlink" href="#verifying-the-installation" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>smart-data<span class="w"> </span>--help
