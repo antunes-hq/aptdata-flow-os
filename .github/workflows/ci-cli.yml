@@ -1,0 +1,71 @@
+name: CI — CLI
+
+on:
+  push:
+    branches: ["main", "copilot/**"]
+    paths:
+      - "smart_data/cli/**"
+      - "tests/test_cli.py"
+      - "tests/test_cli_*.py"
+      - "tests/test_scaffold_templates.py"
+      - "tests/test_docs.py"
+      - "tests/conftest.py"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "smart_data/cli/**"
+      - "tests/test_cli.py"
+      - "tests/test_cli_*.py"
+      - "tests/test_scaffold_templates.py"
+      - "tests/test_docs.py"
+      - "tests/conftest.py"
+  workflow_dispatch:
+
+jobs:
+  test-cli:
+    name: CLI tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          pip install pytest pytest-cov pytest-asyncio pyyaml
+
+      - name: Run CLI tests
+        run: |
+          python -m pytest \
+            tests/test_cli.py \
+            tests/test_cli_completions.py \
+            tests/test_cli_config_cmd.py \
+            tests/test_cli_interactive.py \
+            tests/test_cli_plugin_cmd.py \
+            tests/test_cli_rendering.py \
+            tests/test_cli_system_cmd.py \
+            tests/test_cli_telemetry_cmd.py \
+            tests/test_scaffold_templates.py \
+            tests/test_docs.py \
+            -v \
+            --cov=smart_data/cli \
+            --cov-report=term-missing \
+            --cov-fail-under=75
+
+      - name: Upload coverage report
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-cli
+          path: .coverage

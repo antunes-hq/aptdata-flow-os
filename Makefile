@@ -1,4 +1,4 @@
-.PHONY: install test lint clean docs docs-serve
+.PHONY: install test test-cov test-unit test-integration test-e2e lint clean docs docs-serve
 
 install:
 	poetry install
@@ -7,10 +7,22 @@ test:
 	poetry run pytest tests/ -v
 
 test-cov:
-	poetry run pytest tests/ -v --cov=smart_data --cov-report=term-missing
+	poetry run pytest tests/ -v --cov=smart_data --cov-report=term-missing --cov-fail-under=80
+
+test-unit:
+	poetry run pytest tests/ -v -m "not integration and not e2e"
+
+test-integration:
+	poetry run pytest tests/test_integration.py -v -m integration
+
+test-e2e:
+	poetry run pytest tests/test_e2e.py -v -m e2e
 
 lint:
 	poetry run ruff check smart_data/ tests/
+
+lint-fix:
+	poetry run ruff check --fix smart_data/ tests/
 
 docs:
 	poetry run mkdocs build
@@ -24,4 +36,4 @@ clean:
 	find . -type f -name "*.pyo" -delete
 	find . -type d -name ".pytest_cache" -exec rm -rf {} +
 	find . -type d -name "*.egg-info" -exec rm -rf {} +
-	rm -rf site/
+	rm -rf site/ coverage.xml .coverage

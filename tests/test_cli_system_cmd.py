@@ -9,7 +9,7 @@ from typer.testing import CliRunner
 
 from smart_data.cli.app import app
 from smart_data.core.system import BaseSystem
-from smart_data.plugins import _SystemRegistry, registry
+from smart_data.plugins import registry
 
 runner = CliRunner()
 
@@ -48,7 +48,7 @@ class TestSystemList:
     def test_list_json_mode(self):
         result = runner.invoke(app, ["system", "list", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert len(lines) >= 1
         payload = json.loads(lines[0])
         assert "systems" in payload
@@ -57,7 +57,7 @@ class TestSystemList:
     def test_list_json_contains_registered_system(self):
         result = runner.invoke(app, ["system", "list", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         payload = json.loads(lines[0])
         assert "sys_cmd_test_a" in payload["systems"]
 
@@ -81,7 +81,7 @@ class TestSystemInfo:
     def test_info_json_mode(self):
         result = runner.invoke(app, ["system", "info", "sys_cmd_test_a", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         payload = json.loads(lines[0])
         assert payload["name"] == "sys_cmd_test_a"
         assert "class" in payload

@@ -335,7 +335,7 @@ def _run_docker_compose(component: str, comp_dir: Path, config: dict) -> None:
 
 
 def _build_job_wheel(component: str, comp_dir: Path) -> None:
-    cmd = [sys.executable, "-m", "pip", "wheel", ".", "-w", "dist/", "--no-deps"]
+    cmd = ["pip", "wheel", ".", "-w", "dist/", "--no-deps"]
     result = subprocess.run(cmd, cwd=comp_dir, check=False)  # noqa: S603
     if result.returncode != 0:
         raise RuntimeError(f"Wheel build for '{component}' failed with code {result.returncode}.")

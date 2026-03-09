@@ -59,3 +59,11 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v"
+
+[tool.coverage.run]
+source = ["smart_data"]
+omit = ["smart_data/plugins/transform/spark.py"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true

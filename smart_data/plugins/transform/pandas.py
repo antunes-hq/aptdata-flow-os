@@ -96,7 +96,6 @@ class PandasTransformer(BaseTransformer):
             df = pd.DataFrame([data] if data is not None else [])
 
         rows_in = len(df)
-        columns_in = list(df.columns)
 
         tracer = get_tracer("smart_data.transform")
         with tracer.start_as_current_span(self._name) as span:

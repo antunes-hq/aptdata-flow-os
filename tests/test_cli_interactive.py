@@ -6,7 +6,6 @@ from unittest.mock import patch, MagicMock
 
 from typer.testing import CliRunner
 
-from smart_data.cli.app import app
 from smart_data.cli import interactive as interactive_module
 
 runner = CliRunner()
@@ -48,9 +47,6 @@ class TestHelperFallbacks:
 class TestWizardRun:
     def test_wizard_run_no_systems(self, monkeypatch):
         """Wizard run warns when no systems are registered."""
-        from smart_data.plugins import _SystemRegistry
-
-        empty_registry = _SystemRegistry()
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
 
         with patch("smart_data.plugins.registry.list_systems", return_value=[]):

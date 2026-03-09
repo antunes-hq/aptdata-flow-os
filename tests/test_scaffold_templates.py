@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from smart_data.cli.scaffold import _scaffold_data_quality_test  # noqa: PLC2701
 from smart_data.cli.scaffold import _scaffold_hello_world  # noqa: PLC2701
 from smart_data.cli.scaffold import _scaffold_medallion  # noqa: PLC2701
@@ -471,8 +469,8 @@ class TestMeshCLI:
         )
         assert result.exit_code == 0
         import json
-        lines = [l for l in result.output.strip().splitlines() if l]
-        events = [json.loads(l) for l in lines]
+        lines = [line for line in result.output.strip().splitlines() if line]
+        events = [json.loads(line) for line in lines]
         event_names = [e.get("event") for e in events]
         assert "mesh.run.dry_run" in event_names
 
@@ -490,8 +488,8 @@ class TestMeshCLI:
         )
         assert result.exit_code == 0
         import json
-        lines = [l for l in result.output.strip().splitlines() if l]
-        events = [json.loads(l) for l in lines]
+        lines = [line for line in result.output.strip().splitlines() if line]
+        events = [json.loads(line) for line in lines]
         event_names = [e.get("event") for e in events]
         assert "mesh.run.dry_run" in event_names
 

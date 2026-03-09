@@ -46,7 +46,7 @@ class TestTelemetryStatus:
     def test_status_json_mode(self):
         result = runner.invoke(app, ["telemetry", "status", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert len(lines) >= 1
         payload = json.loads(lines[0])
         assert "configured" in payload

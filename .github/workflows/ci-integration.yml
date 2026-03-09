@@ -1,0 +1,77 @@
+name: CI — Integration & E2E
+
+on:
+  push:
+    branches: ["main", "copilot/**"]
+    paths:
+      - "smart_data/**"
+      - "tests/test_integration.py"
+      - "tests/test_e2e.py"
+      - "tests/conftest.py"
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  test-integration:
+    name: Integration tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          pip install pytest pytest-cov pytest-asyncio pyyaml
+          pip install pandas pyarrow || true
+
+      - name: Run integration tests
+        run: |
+          python -m pytest \
+            tests/test_integration.py \
+            -v \
+            -m integration \
+            --tb=short
+
+  test-e2e:
+    name: E2E tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          pip install pytest pytest-cov pytest-asyncio pyyaml
+
+      - name: Run E2E tests
+        run: |
+          python -m pytest \
+            tests/test_e2e.py \
+            -v \
+            -m e2e \
+            --tb=short

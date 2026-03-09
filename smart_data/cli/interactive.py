@@ -192,9 +192,6 @@ def _wizard_config() -> None:
 def _wizard_scaffold() -> None:
     """Guided wizard for project scaffolding."""
     from smart_data.cli.scaffold import TEMPLATE_NAMES  # noqa: PLC0415
-    from pathlib import Path  # noqa: PLC0415
-    import subprocess  # noqa: PLC0415
-    import sys  # noqa: PLC0415
 
     name = _text("Project name:")
     if not name:
