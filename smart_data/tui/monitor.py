@@ -22,7 +22,7 @@ from textual.widgets import (
 )
 
 from smart_data.mcp.server import get_mcp_status
-from smart_data.telemetry.instrumentation import get_registered_secret_names
+from smart_data.telemetry.instrumentation import get_ingestion_metrics, get_registered_secret_names
 
 
 class _DAGPanel(Static):
@@ -130,6 +130,34 @@ class _MemoryBar(Static):
                 self.update("[bold]Memory:[/bold] unavailable")
 
 
+class _IngestionMetricsPanel(Static):
+    """Panel with live ingestion throughput/cost/progress metrics."""
+
+    DEFAULT_CSS = """
+    _IngestionMetricsPanel {
+        border: solid $success;
+        height: 7;
+        padding: 1 2;
+    }
+    """
+
+    def on_mount(self) -> None:
+        self.refresh_metrics()
+
+    def refresh_metrics(self) -> None:
+        metrics = get_ingestion_metrics()
+        progress = float(metrics["progress_ratio"])
+        bar_width = 24
+        filled = int(progress * bar_width)
+        bar = "█" * filled + "░" * (bar_width - filled)
+        self.update(
+            "[bold green]Ingestion Metrics[/bold green]\n"
+            f"Throughput: {float(metrics['throughput_docs_per_sec']):.2f} docs/s\n"
+            f"Chunks: {metrics['chunks_processed']} | Tokens: {metrics['tokens_used']}\n"
+            f"Progress: [{bar}] {progress * 100:.1f}%"
+        )
+
+
 class _AgentTraceLog(RichLog):
     """Real-time log viewer for agent events and dynamic routing traces."""
 
@@ -218,6 +246,7 @@ class MonitorApp(App):
             with TabPane("Metrics", id="metrics-tab"):
                 with Vertical():
                     yield _MemoryBar()
+                    yield _IngestionMetricsPanel()
                     yield _StatusTable()
             with TabPane("Agent Trace", id="agent-trace-tab"):
                 yield _AgentTraceLog(id="agent-trace-log")
@@ -235,6 +264,9 @@ class MonitorApp(App):
 
         table = self.query_one(_StatusTable)
         table.populate()
+
+        ingestion_panel = self.query_one(_IngestionMetricsPanel)
+        ingestion_panel.refresh_metrics()
 
         mcp_panel = self.query_one(_MCPStatusPanel)
         mcp_panel.refresh_status()

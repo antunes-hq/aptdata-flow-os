@@ -17,6 +17,7 @@ from smart_data.plugins.local_fs import CSVReader, CSVWriter, JSONReader, JSONWr
 from smart_data.plugins.manager import plugin_manager
 from smart_data.plugins.postgres import PostgresReader, PostgresWriter
 from smart_data.plugins.rest import APIReader
+from smart_data.plugins.vector import QdrantWriter
 from smart_data.telemetry.instrumentation import mask_telemetry_value
 
 mcp = FastMCP("smart-data")
@@ -47,6 +48,7 @@ def _register_builtin_plugins() -> None:
     plugin_manager.register_writer("json_writer", JSONWriter)
     plugin_manager.register_writer("parquet_writer", ParquetWriter)
     plugin_manager.register_writer("postgres_writer", PostgresWriter)
+    plugin_manager.register_writer("qdrant_writer", QdrantWriter)
 
 
 _register_builtin_plugins()

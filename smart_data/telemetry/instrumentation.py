@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+from threading import Lock
+from time import perf_counter
 from collections.abc import Mapping
 
 from opentelemetry import metrics, trace
@@ -14,6 +17,22 @@ from opentelemetry.trace import Tracer
 
 _SENSITIVE_KEYS = ("password", "secret", "token", "authorization", "api_key")
 _REGISTERED_SECRETS: dict[str, str] = {}
+_METRICS_LOCK = Lock()
+_TOKEN_COUNTER = None
+
+
+@dataclass
+class IngestionMetrics:
+    """Runtime ingestion metrics exposed to telemetry and the TUI monitor."""
+
+    documents_total: int = 0
+    documents_processed: int = 0
+    chunks_processed: int = 0
+    tokens_used: int = 0
+    started_at: float = 0.0
+
+
+_INGESTION_METRICS = IngestionMetrics()
 
 
 def register_secret(name: str, value: str) -> None:
@@ -76,3 +95,68 @@ def get_tracer(name: str = "smart_data.component") -> Tracer:
 def get_meter(name: str = "smart_data.component"):
     """Return a configured meter instance."""
     return metrics.get_meter(name)
+
+
+def reset_ingestion_metrics() -> None:
+    """Reset in-memory ingestion metrics for a new workflow run."""
+    with _METRICS_LOCK:
+        _INGESTION_METRICS.documents_total = 0
+        _INGESTION_METRICS.documents_processed = 0
+        _INGESTION_METRICS.chunks_processed = 0
+        _INGESTION_METRICS.tokens_used = 0
+        _INGESTION_METRICS.started_at = perf_counter()
+
+
+def set_ingestion_total_documents(total: int) -> None:
+    """Set total expected document count for progress tracking."""
+    with _METRICS_LOCK:
+        _INGESTION_METRICS.documents_total = max(total, 0)
+
+
+def record_processed_documents(count: int) -> None:
+    """Increment processed document count."""
+    with _METRICS_LOCK:
+        _INGESTION_METRICS.documents_processed += max(count, 0)
+
+
+def record_processed_chunks(count: int) -> None:
+    """Increment processed chunk count."""
+    with _METRICS_LOCK:
+        _INGESTION_METRICS.chunks_processed += max(count, 0)
+
+
+def record_llm_tokens_used(tokens: int) -> None:
+    """Track consumed LLM tokens in memory and OpenTelemetry metrics."""
+    global _TOKEN_COUNTER
+    if tokens <= 0:
+        return
+    with _METRICS_LOCK:
+        _INGESTION_METRICS.tokens_used += tokens
+    if _TOKEN_COUNTER is None:
+        _TOKEN_COUNTER = get_meter("smart_data.ingestion").create_counter(
+            "llm.tokens.used",
+            description="Total LLM tokens consumed by embedding/LLM plugins.",
+            unit="1",
+        )
+    _TOKEN_COUNTER.add(tokens)
+
+
+def get_ingestion_metrics() -> dict[str, float | int]:
+    """Return a snapshot of ingestion metrics with throughput and progress."""
+    with _METRICS_LOCK:
+        elapsed = max(perf_counter() - _INGESTION_METRICS.started_at, 0.0)
+        docs = _INGESTION_METRICS.documents_processed
+        total = _INGESTION_METRICS.documents_total
+        progress = (docs / total) if total else 0.0
+        throughput = (docs / elapsed) if elapsed > 0 else 0.0
+        return {
+            "documents_total": total,
+            "documents_processed": docs,
+            "chunks_processed": _INGESTION_METRICS.chunks_processed,
+            "tokens_used": _INGESTION_METRICS.tokens_used,
+            "throughput_docs_per_sec": throughput,
+            "progress_ratio": min(progress, 1.0),
+        }
+
+
+reset_ingestion_metrics()

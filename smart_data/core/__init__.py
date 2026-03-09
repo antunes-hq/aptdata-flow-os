@@ -2,6 +2,7 @@
 
 from smart_data.core.context import ExecutionContext
 from smart_data.core.dataset import BaseDataset, IDataset
+from smart_data.core.state import StateBackend
 from smart_data.core.system import (
     BaseComponent,
     BaseFlow,
@@ -14,7 +15,7 @@ from smart_data.core.system import (
     IFlow,
     ISystem,
 )
-from smart_data.core.workflow import BaseWorkflow, IWorkflow, WorkflowEdge, WorkflowNode
+from smart_data.core.workflow import BaseWorkflow, IWorkflow, Workflow, WorkflowEdge, WorkflowNode
 
 __all__ = [
     "IDataset",
@@ -34,4 +35,6 @@ __all__ = [
     "WorkflowNode",
     "IWorkflow",
     "BaseWorkflow",
+    "Workflow",
+    "StateBackend",
 ]

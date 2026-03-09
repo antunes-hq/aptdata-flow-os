@@ -12,6 +12,7 @@ from smart_data.tui.monitor import (
     _MCPStatusPanel,
     _AgentTraceLog,
     _DAGPanel,
+    _IngestionMetricsPanel,
     _MemoryBar,
     _StatusTable,
 )
@@ -73,6 +74,13 @@ class TestMonitorAppHeadless:
         async with monitor_app.run_test():
             mem = monitor_app.query_one(_MemoryBar)
             assert mem is not None
+
+    @pytest.mark.asyncio()
+    async def test_ingestion_metrics_panel_present(self, monitor_app: MonitorApp) -> None:
+        async with monitor_app.run_test():
+            panel = monitor_app.query_one(_IngestionMetricsPanel)
+            assert panel is not None
+            assert "Ingestion Metrics" in str(panel.render())
 
     @pytest.mark.asyncio()
     async def test_agent_trace_present(self, monitor_app: MonitorApp) -> None:
