@@ -28,7 +28,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from smart_data.plugins.base import BaseReader, BaseWriter
+from smart_data.plugins.base import BaseReader, BaseWriter, BaseTransformer
 from smart_data.plugins.manager import PluginDependencyError, PluginManager, plugin_manager
 
 if TYPE_CHECKING:
@@ -70,6 +70,7 @@ __all__ = [
     "_SystemRegistry",
     "BaseReader",
     "BaseWriter",
+    "BaseTransformer",
     "PluginManager",
     "PluginDependencyError",
     "plugin_manager",
