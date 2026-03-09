@@ -122,6 +122,103 @@ python quality_pipeline.py
 
 ---
 
+### `job-wheel`
+
+A Python wheel executor template for packaging and running jobs portably.
+
+```bash
+smart-data scaffold my_job --template job-wheel
+```
+
+**Generated files:**
+
+```
+my_job/
+├── src/
+│   └── my_job/
+│       ├── __init__.py
+│       └── job.py          # Job logic + CLI entry-point
+├── dist/                   # Built wheel artifacts
+├── pyproject.toml          # Packaging metadata (setuptools + wheel)
+├── mesh.yaml               # Component descriptor (type: job-wheel)
+├── Makefile
+└── README.md
+```
+
+The generated `job.py` exposes a `run(config)` function and a `main()` CLI
+entry-point wired via `pyproject.toml [project.scripts]`.  Build and run with:
+
+```bash
+# Build the wheel
+make build        # or: pip wheel . -w dist/ --no-deps
+
+# Install and execute
+make install      # pip install dist/my_job-*.whl
+my_job-job
+
+# Or run directly
+smart-data mesh run my_job
+```
+
+---
+
+### `docker-compose-app`
+
+A multi-service Docker Compose application template.
+
+```bash
+smart-data scaffold my_service --template docker-compose-app
+```
+
+**Generated files:**
+
+```
+my_service/
+├── data/                   # Mounted data directory
+├── app.py                  # Application service entry-point
+├── Dockerfile              # Container image definition
+├── docker-compose.yml      # Service orchestration
+├── mesh.yaml               # Component descriptor (type: docker-compose-app)
+├── requirements.txt
+└── README.md
+```
+
+Add more services (databases, caches, queues) to `docker-compose.yml` and run:
+
+```bash
+docker compose up --build
+
+# Or via the mesh CLI
+smart-data mesh run my_service
+```
+
+---
+
+## Mesh CLI
+
+The `smart-data mesh` sub-command orchestrates components that include a
+`mesh.yaml` descriptor.
+
+```bash
+# List all mesh components under the current directory
+smart-data mesh list [--dir DIR] [--json]
+
+# Run a component (job-wheel or docker-compose-app)
+smart-data mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
+
+# Build a component (wheel or Docker image)
+smart-data mesh build COMPONENT [--dir DIR] [--json]
+```
+
+### Supported component types
+
+| Type                | Run command                 | Build command             |
+|---------------------|-----------------------------|---------------------------|
+| `job-wheel`         | Invokes the wheel entrypoint | `pip wheel .`            |
+| `docker-compose-app`| `docker compose up`         | `docker compose build`   |
+
+---
+
 ## Machine-readable output
 
 All scaffold events are emitted as JSON lines:

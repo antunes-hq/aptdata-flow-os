@@ -10,6 +10,8 @@ from smart_data.cli.scaffold import _scaffold_data_quality_test  # noqa: PLC2701
 from smart_data.cli.scaffold import _scaffold_hello_world  # noqa: PLC2701
 from smart_data.cli.scaffold import _scaffold_medallion  # noqa: PLC2701
 from smart_data.cli.scaffold import _scaffold_rag_ingestion  # noqa: PLC2701
+from smart_data.cli.scaffold import _scaffold_job_wheel  # noqa: PLC2701
+from smart_data.cli.scaffold import _scaffold_docker_compose_app  # noqa: PLC2701
 from smart_data.cli.scaffold import TEMPLATE_NAMES
 
 
@@ -24,9 +26,11 @@ class TestTemplateNames:
         assert "medallion" in TEMPLATE_NAMES
         assert "rag-ingestion" in TEMPLATE_NAMES
         assert "data-quality-test" in TEMPLATE_NAMES
+        assert "job-wheel" in TEMPLATE_NAMES
+        assert "docker-compose-app" in TEMPLATE_NAMES
 
     def test_template_count(self) -> None:
-        assert len(TEMPLATE_NAMES) == 4
+        assert len(TEMPLATE_NAMES) == 6
 
 
 # ---------------------------------------------------------------------------
@@ -275,5 +279,230 @@ class TestScaffoldCLITemplate:
         result = runner.invoke(
             app,
             ["scaffold", "proj", "--output", str(tmp_path), "--template", "nonexistent"],
+        )
+        assert result.exit_code != 0
+
+    def test_job_wheel_template(self, tmp_path: Path) -> None:
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        result = runner.invoke(
+            app,
+            ["scaffold", "myjob", "--output", str(tmp_path), "--template", "job-wheel"],
+        )
+        assert result.exit_code == 0
+        assert (tmp_path / "myjob" / "src" / "myjob" / "job.py").exists()
+
+    def test_docker_compose_template(self, tmp_path: Path) -> None:
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        result = runner.invoke(
+            app,
+            ["scaffold", "myapp", "--output", str(tmp_path), "--template", "docker-compose-app"],
+        )
+        assert result.exit_code == 0
+        assert (tmp_path / "myapp" / "docker-compose.yml").exists()
+
+
+# ---------------------------------------------------------------------------
+# job-wheel template
+# ---------------------------------------------------------------------------
+
+
+class TestJobWheelScaffold:
+    def test_generates_expected_files(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myjob"
+        project_dir.mkdir()
+        _scaffold_job_wheel("myjob", project_dir)
+
+        assert (project_dir / "src" / "myjob" / "__init__.py").exists()
+        assert (project_dir / "src" / "myjob" / "job.py").exists()
+        assert (project_dir / "pyproject.toml").exists()
+        assert (project_dir / "mesh.yaml").exists()
+        assert (project_dir / "Makefile").exists()
+        assert (project_dir / "README.md").exists()
+
+    def test_pyproject_contains_project_name(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myjob"
+        project_dir.mkdir()
+        _scaffold_job_wheel("myjob", project_dir)
+        content = (project_dir / "pyproject.toml").read_text()
+        assert "myjob" in content
+        assert "wheel" in content
+
+    def test_job_contains_main_function(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myjob"
+        project_dir.mkdir()
+        _scaffold_job_wheel("myjob", project_dir)
+        content = (project_dir / "src" / "myjob" / "job.py").read_text()
+        assert "def main" in content
+        assert "def run" in content
+
+    def test_mesh_yaml_type_is_job_wheel(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myjob"
+        project_dir.mkdir()
+        _scaffold_job_wheel("myjob", project_dir)
+        content = (project_dir / "mesh.yaml").read_text()
+        assert "job-wheel" in content
+        assert "myjob" in content
+
+    def test_readme_contains_project_name(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myjob"
+        project_dir.mkdir()
+        _scaffold_job_wheel("myjob", project_dir)
+        content = (project_dir / "README.md").read_text()
+        assert "myjob" in content
+
+
+# ---------------------------------------------------------------------------
+# docker-compose-app template
+# ---------------------------------------------------------------------------
+
+
+class TestDockerComposeAppScaffold:
+    def test_generates_expected_files(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myapp"
+        project_dir.mkdir()
+        _scaffold_docker_compose_app("myapp", project_dir)
+
+        assert (project_dir / "app.py").exists()
+        assert (project_dir / "Dockerfile").exists()
+        assert (project_dir / "docker-compose.yml").exists()
+        assert (project_dir / "mesh.yaml").exists()
+        assert (project_dir / "requirements.txt").exists()
+        assert (project_dir / "README.md").exists()
+        assert (project_dir / "data").is_dir()
+
+    def test_docker_compose_contains_project_name(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myapp"
+        project_dir.mkdir()
+        _scaffold_docker_compose_app("myapp", project_dir)
+        content = (project_dir / "docker-compose.yml").read_text()
+        assert "myapp" in content
+
+    def test_app_contains_main_function(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myapp"
+        project_dir.mkdir()
+        _scaffold_docker_compose_app("myapp", project_dir)
+        content = (project_dir / "app.py").read_text()
+        assert "def main" in content
+
+    def test_dockerfile_uses_python(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myapp"
+        project_dir.mkdir()
+        _scaffold_docker_compose_app("myapp", project_dir)
+        content = (project_dir / "Dockerfile").read_text()
+        assert "python" in content.lower()
+
+    def test_mesh_yaml_type_is_docker_compose(self, tmp_path: Path) -> None:
+        project_dir = tmp_path / "myapp"
+        project_dir.mkdir()
+        _scaffold_docker_compose_app("myapp", project_dir)
+        content = (project_dir / "mesh.yaml").read_text()
+        assert "docker-compose-app" in content
+        assert "myapp" in content
+
+
+# ---------------------------------------------------------------------------
+# mesh CLI command
+# ---------------------------------------------------------------------------
+
+
+class TestMeshCLI:
+    def test_mesh_list_no_components(self, tmp_path: Path) -> None:
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path), "--json"])
+        assert result.exit_code == 0
+        import json
+        data = json.loads(result.output.strip())
+        assert data["count"] == 0
+
+    def test_mesh_list_finds_job_wheel_component(self, tmp_path: Path) -> None:
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        # Create a job-wheel project
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "myjob", "--output", str(tmp_path), "--template", "job-wheel"])
+
+        result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path), "--json"])
+        assert result.exit_code == 0
+        import json
+        data = json.loads(result.output.strip())
+        assert data["count"] == 1
+        assert data["components"][0]["type"] == "job-wheel"
+
+    def test_mesh_list_finds_docker_compose_component(self, tmp_path: Path) -> None:
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "myapp", "--output", str(tmp_path), "--template", "docker-compose-app"])
+
+        result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path), "--json"])
+        assert result.exit_code == 0
+        import json
+        data = json.loads(result.output.strip())
+        assert data["count"] == 1
+        assert data["components"][0]["type"] == "docker-compose-app"
+
+    def test_mesh_run_dry_run_job_wheel(self, tmp_path: Path) -> None:
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "myjob", "--output", str(tmp_path), "--template", "job-wheel"])
+
+        result = runner.invoke(
+            app,
+            ["mesh", "run", "myjob", "--dir", str(tmp_path), "--dry-run", "--json"],
+        )
+        assert result.exit_code == 0
+        import json
+        lines = [l for l in result.output.strip().splitlines() if l]
+        events = [json.loads(l) for l in lines]
+        event_names = [e.get("event") for e in events]
+        assert "mesh.run.dry_run" in event_names
+
+    def test_mesh_run_dry_run_docker_compose(self, tmp_path: Path) -> None:
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "myapp", "--output", str(tmp_path), "--template", "docker-compose-app"])
+
+        result = runner.invoke(
+            app,
+            ["mesh", "run", "myapp", "--dir", str(tmp_path), "--dry-run", "--json"],
+        )
+        assert result.exit_code == 0
+        import json
+        lines = [l for l in result.output.strip().splitlines() if l]
+        events = [json.loads(l) for l in lines]
+        event_names = [e.get("event") for e in events]
+        assert "mesh.run.dry_run" in event_names
+
+    def test_mesh_run_unknown_component_exits_with_error(self, tmp_path: Path) -> None:
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        result = runner.invoke(
+            app,
+            ["mesh", "run", "nonexistent", "--dir", str(tmp_path), "--json"],
         )
         assert result.exit_code != 0
