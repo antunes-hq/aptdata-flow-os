@@ -91,12 +91,11 @@ class TestPandasTransformer:
         assert len(result) == 2
 
     def test_transform_in_memory_dataset_returns_dataset(self) -> None:
-        import pandas as pd
 
         from smart_data.plugins.dataset import InMemoryDataset
         from smart_data.plugins.transform import PandasTransformer
 
-        def noop(df: pd.DataFrame) -> pd.DataFrame:
+        def noop(df):
             return df
 
         t = PandasTransformer("noop", noop)
@@ -107,7 +106,6 @@ class TestPandasTransformer:
         assert len(result) == 2
 
     def test_transform_preserves_uri(self) -> None:
-        import pandas as pd
 
         from smart_data.plugins.dataset import InMemoryDataset
         from smart_data.plugins.transform import PandasTransformer

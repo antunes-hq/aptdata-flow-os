@@ -1,0 +1,85 @@
+name: CI — Plugins
+
+on:
+  push:
+    branches: ["main", "copilot/**"]
+    paths:
+      - "smart_data/plugins/**"
+      - "smart_data/mcp/**"
+      - "smart_data/telemetry/**"
+      - "tests/test_plugins.py"
+      - "tests/test_quality.py"
+      - "tests/test_transform.py"
+      - "tests/test_governance.py"
+      - "tests/test_mcp.py"
+      - "tests/test_rag_ingestion.py"
+      - "tests/test_telemetry_instrumentation.py"
+      - "tests/conftest.py"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "smart_data/plugins/**"
+      - "smart_data/mcp/**"
+      - "smart_data/telemetry/**"
+      - "tests/test_plugins.py"
+      - "tests/test_quality.py"
+      - "tests/test_transform.py"
+      - "tests/test_governance.py"
+      - "tests/test_mcp.py"
+      - "tests/test_rag_ingestion.py"
+      - "tests/test_telemetry_instrumentation.py"
+      - "tests/conftest.py"
+  workflow_dispatch:
+
+jobs:
+  test-plugins:
+    name: Plugin tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install core dependencies
+        run: |
+          pip install -e .
+          pip install pytest pytest-cov pytest-asyncio
+
+      - name: Install optional plugin dependencies
+        run: |
+          pip install pandas pyarrow || true
+          pip install httpx sqlalchemy || true
+
+      - name: Run plugin tests
+        run: |
+          python -m pytest \
+            tests/test_plugins.py \
+            tests/test_quality.py \
+            tests/test_transform.py \
+            tests/test_governance.py \
+            tests/test_mcp.py \
+            tests/test_rag_ingestion.py \
+            tests/test_telemetry_instrumentation.py \
+            -v \
+            --cov=smart_data/plugins \
+            --cov=smart_data/mcp \
+            --cov=smart_data/telemetry \
+            --cov-report=term-missing \
+            --cov-fail-under=70
+
+      - name: Upload coverage report
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-plugins
+          path: .coverage

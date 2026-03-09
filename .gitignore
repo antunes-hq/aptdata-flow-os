@@ -13,10 +13,12 @@ build/
 venv/
 env/
 
-# Pytest
+# Pytest / coverage
 .pytest_cache/
 .coverage
 htmlcov/
+coverage.json
+coverage.xml
 
 # MyPy
 .mypy_cache/

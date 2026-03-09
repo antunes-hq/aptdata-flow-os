@@ -1,0 +1,56 @@
+name: CI — TUI
+
+on:
+  push:
+    branches: ["main", "copilot/**"]
+    paths:
+      - "smart_data/tui/**"
+      - "tests/test_tui.py"
+      - "tests/conftest.py"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "smart_data/tui/**"
+      - "tests/test_tui.py"
+      - "tests/conftest.py"
+  workflow_dispatch:
+
+jobs:
+  test-tui:
+    name: TUI tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          pip install pytest pytest-cov pytest-asyncio textual
+
+      - name: Run TUI tests
+        run: |
+          python -m pytest \
+            tests/test_tui.py \
+            -v \
+            --cov=smart_data/tui \
+            --cov-report=term-missing \
+            --cov-fail-under=80
+
+      - name: Upload coverage report
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-tui
+          path: .coverage

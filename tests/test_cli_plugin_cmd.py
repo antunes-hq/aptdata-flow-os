@@ -55,7 +55,7 @@ class TestPluginList:
     def test_list_json_mode(self):
         result = runner.invoke(app, ["plugin", "list", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         assert len(lines) >= 1
         payload = json.loads(lines[0])
         assert "readers" in payload
@@ -64,14 +64,14 @@ class TestPluginList:
     def test_list_json_contains_reader(self):
         result = runner.invoke(app, ["plugin", "list", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         payload = json.loads(lines[0])
         assert "test_mock_reader" in payload["readers"]
 
     def test_list_json_contains_writer(self):
         result = runner.invoke(app, ["plugin", "list", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         payload = json.loads(lines[0])
         assert "test_mock_writer" in payload["writers"]
 
@@ -94,7 +94,7 @@ class TestPluginInspect:
     def test_inspect_json_mode(self):
         result = runner.invoke(app, ["plugin", "inspect", "test_mock_reader", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         payload = json.loads(lines[0])
         assert payload["name"] == "test_mock_reader"
         assert payload["type"] == "reader"
@@ -107,7 +107,7 @@ class TestPluginInspect:
     def test_inspect_writer_json_has_args(self):
         result = runner.invoke(app, ["plugin", "inspect", "test_mock_writer", "--json"])
         assert result.exit_code == 0
-        lines = [l for l in result.output.strip().splitlines() if l.strip()]
+        lines = [line for line in result.output.strip().splitlines() if line.strip()]
         payload = json.loads(lines[0])
         assert payload["type"] == "writer"
         # _MockWriter has 'target' arg with a default

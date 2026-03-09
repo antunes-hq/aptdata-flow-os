@@ -124,6 +124,9 @@ smart-data config show PATH
 smart-data config run PATH [--env ENV]
 smart-data telemetry status [--json]
 smart-data telemetry export [--format json]
+smart-data mesh list [--dir DIR] [--json]
+smart-data mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
+smart-data mesh build COMPONENT [--dir DIR] [--json]
 smart-data interactive
 ```
 
@@ -133,15 +136,19 @@ and syntax-highlighted output.
 
 ### Scaffold templates
 
-| Template            | Description                                         |
-|---------------------|-----------------------------------------------------|
-| `hello-world`       | Minimal pandas pipeline (default)                   |
-| `medallion`         | Bronze → Silver → Gold data lakehouse               |
-| `rag-ingestion`     | RAG pipeline: extract → chunk → embed → load        |
-| `data-quality-test` | Schema contract + expectation suite                  |
+| Template              | Description                                         |
+|-----------------------|-----------------------------------------------------|
+| `hello-world`         | Minimal pandas pipeline (default)                   |
+| `medallion`           | Bronze → Silver → Gold data lakehouse               |
+| `rag-ingestion`       | RAG pipeline: extract → chunk → embed → load        |
+| `data-quality-test`   | Schema contract + expectation suite                  |
+| `job-wheel`           | Python wheel executor for portable job packaging     |
+| `docker-compose-app`  | Multi-service Docker Compose application             |
 
 ```bash
 smart-data scaffold my_lakehouse --template medallion
+smart-data scaffold my_job --template job-wheel
+smart-data scaffold my_service --template docker-compose-app
 ```
 
 ---

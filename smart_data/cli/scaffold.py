@@ -582,6 +582,337 @@ def _scaffold_data_quality_test(project_name: str, project_dir: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
+# job-wheel template
+# ---------------------------------------------------------------------------
+
+_JOB_WHEEL_PYPROJECT = """\
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "{project_name}"
+version = "0.1.0"
+description = "Smart-data job executor — packaged as a Python wheel."
+requires-python = ">=3.10"
+dependencies = [
+    "smart-data",
+]
+
+[project.scripts]
+{project_name}-job = "{project_name}.job:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+"""
+
+_JOB_WHEEL_JOB = '''\
+"""Job executor entry-point for {project_name}."""
+from __future__ import annotations
+
+import json
+import sys
+import time
+from pathlib import Path
+
+
+def run(config: dict) -> dict:
+    """Execute the job logic.
+
+    Replace this stub with your actual processing logic.
+    """
+    started = time.perf_counter()
+    print(json.dumps({{"event": "job.started", "job": "{project_name}", "config": config}}), flush=True)
+
+    # --- your logic here ---
+
+    elapsed = round(time.perf_counter() - started, 4)
+    result = {{"event": "job.completed", "job": "{project_name}", "elapsed_seconds": elapsed}}
+    print(json.dumps(result), flush=True)
+    return result
+
+
+def main() -> None:
+    """CLI entry-point (installed via pyproject.toml [project.scripts])."""
+    config_path = Path(sys.argv[1]) if len(sys.argv) > 1 else None
+    config: dict = json.loads(config_path.read_text()) if config_path and config_path.exists() else {{}}
+    run(config)
+
+
+if __name__ == "__main__":
+    main()
+'''
+
+_JOB_WHEEL_MESH_YAML = """\
+component: {project_name}
+type: job-wheel
+version: "0.1.0"
+
+build:
+  backend: wheel
+  source: src/
+
+run:
+  entrypoint: "{project_name}-job"
+  args: []
+"""
+
+_JOB_WHEEL_MAKEFILE = """\
+.PHONY: build install clean run
+
+build:
+\tpip wheel . -w dist/ --no-deps
+
+install:
+\tpip install dist/{project_name}-*.whl
+
+clean:
+\trm -rf dist/ build/ src/{project_name}.egg-info/
+
+run:
+\t{project_name}-job
+"""
+
+_JOB_WHEEL_README = """\
+# {project_name} — Job Wheel
+
+A smart-data job executor packaged as a Python wheel for portable execution.
+
+## Structure
+
+```
+{project_name}/
+├── src/
+│   └── {project_name}/
+│       ├── __init__.py
+│       └── job.py          # Job logic + CLI entry-point
+├── pyproject.toml          # Packaging metadata
+├── mesh.yaml               # Component descriptor
+├── Makefile
+└── README.md
+```
+
+## Quick Start
+
+```bash
+# Build the wheel
+make build
+
+# Install locally
+make install
+
+# Run the job
+{project_name}-job [config.json]
+```
+
+## mesh.yaml
+
+Describes this component to the smart-data mesh orchestrator:
+
+```yaml
+component: {project_name}
+type: job-wheel
+```
+
+Run via the mesh CLI:
+
+```bash
+smart-data mesh run {project_name}
+```
+"""
+
+
+def _scaffold_job_wheel(project_name: str, project_dir: Path) -> None:
+    """Generate job-wheel project scaffold."""
+    src_pkg = project_dir / "src" / project_name
+    src_pkg.mkdir(parents=True, exist_ok=True)
+
+    (src_pkg / "__init__.py").write_text(
+        f'"""Job package for {project_name}."""\n', encoding="utf-8"
+    )
+    (src_pkg / "job.py").write_text(
+        _JOB_WHEEL_JOB.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "pyproject.toml").write_text(
+        _JOB_WHEEL_PYPROJECT.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "mesh.yaml").write_text(
+        _JOB_WHEEL_MESH_YAML.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "Makefile").write_text(
+        _JOB_WHEEL_MAKEFILE.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "README.md").write_text(
+        _JOB_WHEEL_README.format(project_name=project_name), encoding="utf-8"
+    )
+
+
+# ---------------------------------------------------------------------------
+# docker-compose-app template
+# ---------------------------------------------------------------------------
+
+_DOCKER_COMPOSE_APP_PY = '''\
+"""Application service entry-point for {project_name}."""
+from __future__ import annotations
+
+import json
+import os
+import time
+
+
+def main() -> None:
+    """Run the application service."""
+    port = int(os.getenv("APP_PORT", "8080"))
+    env = os.getenv("APP_ENV", "development")
+
+    print(json.dumps({{"event": "app.started", "service": "{project_name}", "port": port, "env": env}}), flush=True)
+
+    try:
+        # --- your service logic here ---
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print(json.dumps({{"event": "app.stopped", "service": "{project_name}"}}), flush=True)
+
+
+if __name__ == "__main__":
+    main()
+'''
+
+_DOCKER_COMPOSE_DOCKERFILE = """\
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app.py .
+
+ENV APP_PORT=8080
+ENV APP_ENV=production
+
+EXPOSE 8080
+
+CMD ["python", "app.py"]
+"""
+
+_DOCKER_COMPOSE_YML = """\
+version: "3.9"
+
+services:
+  {project_name}:
+    build: .
+    container_name: {project_name}
+    ports:
+      - "8080:8080"
+    environment:
+      APP_PORT: "8080"
+      APP_ENV: "development"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  # Add more services below, e.g.:
+  # db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: mydb
+  #     POSTGRES_USER: user
+  #     POSTGRES_PASSWORD: password
+"""
+
+_DOCKER_COMPOSE_MESH_YAML = """\
+component: {project_name}
+type: docker-compose-app
+version: "0.1.0"
+
+build:
+  compose_file: docker-compose.yml
+
+run:
+  service: {project_name}
+  command: "docker compose up"
+"""
+
+_DOCKER_COMPOSE_REQUIREMENTS = """\
+smart-data
+"""
+
+_DOCKER_COMPOSE_README = """\
+# {project_name} — Docker Compose Application
+
+A smart-data application scaffold using Docker Compose for multi-service orchestration.
+
+## Structure
+
+```
+{project_name}/
+├── data/                   # Mounted data directory
+├── app.py                  # Main application service
+├── Dockerfile              # Container image definition
+├── docker-compose.yml      # Service orchestration
+├── mesh.yaml               # Component descriptor
+├── requirements.txt
+└── README.md
+```
+
+## Quick Start
+
+```bash
+# Build and start all services
+docker compose up --build
+
+# Run in background
+docker compose up -d
+
+# Stop services
+docker compose down
+```
+
+## mesh.yaml
+
+Describes this component to the smart-data mesh orchestrator:
+
+```yaml
+component: {project_name}
+type: docker-compose-app
+```
+
+Run via the mesh CLI:
+
+```bash
+smart-data mesh run {project_name}
+```
+
+## Adding Services
+
+Edit `docker-compose.yml` to add more services (databases, caches, etc.)
+and update `mesh.yaml` accordingly.
+"""
+
+
+def _scaffold_docker_compose_app(project_name: str, project_dir: Path) -> None:
+    """Generate docker-compose-app project scaffold."""
+    (project_dir / "data").mkdir(parents=True, exist_ok=True)
+
+    (project_dir / "app.py").write_text(
+        _DOCKER_COMPOSE_APP_PY.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "Dockerfile").write_text(_DOCKER_COMPOSE_DOCKERFILE, encoding="utf-8")
+    (project_dir / "docker-compose.yml").write_text(
+        _DOCKER_COMPOSE_YML.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "mesh.yaml").write_text(
+        _DOCKER_COMPOSE_MESH_YAML.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "requirements.txt").write_text(_DOCKER_COMPOSE_REQUIREMENTS, encoding="utf-8")
+    (project_dir / "README.md").write_text(
+        _DOCKER_COMPOSE_README.format(project_name=project_name), encoding="utf-8"
+    )
+
+
+# ---------------------------------------------------------------------------
 # Template dispatch
 # ---------------------------------------------------------------------------
 
@@ -590,6 +921,8 @@ _TEMPLATES: dict[str, tuple[str, object]] = {
     "medallion": ("Gera um projeto Bronze/Silver/Gold (Medallion Architecture).", _scaffold_medallion),
     "rag-ingestion": ("Gera um pipeline RAG de ingestão de documentos.", _scaffold_rag_ingestion),
     "data-quality-test": ("Gera um pipeline de testes de qualidade de dados.", _scaffold_data_quality_test),
+    "job-wheel": ("Gera um executor JOB empacotado como Python wheel.", _scaffold_job_wheel),
+    "docker-compose-app": ("Gera uma aplicação Docker Compose multi-serviço.", _scaffold_docker_compose_app),
 }
 
 TEMPLATE_NAMES = list(_TEMPLATES)

@@ -158,7 +158,6 @@ class TestExpectColumnToNotBeNull:
         assert result.rows_failed == 0
 
     def test_fails_with_nulls(self) -> None:
-        import pandas as pd
 
         from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
         from smart_data.plugins.quality.report import CheckStatus

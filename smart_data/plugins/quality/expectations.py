@@ -7,9 +7,8 @@ DataFrame passed to :meth:`validate`.
 
 from __future__ import annotations
 
-import re
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from smart_data.plugins.quality.report import CheckResult, CheckStatus
@@ -213,7 +212,7 @@ class ExpectColumnValuesToBeUnique(BaseExpectation):
 
     def validate_spark(self, df: Any) -> CheckResult:
         """Check uniqueness using PySpark."""
-        from pyspark.sql import functions as F  # noqa: N812
+        from pyspark.sql import functions as F  # noqa: N812, F401
 
         total = df.count()
         unique_count = df.select(self.column).distinct().count()
