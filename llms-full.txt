@@ -1,0 +1,254 @@
+# smart-data – Full Documentation
+
+> Consolidated reference for AI agents and language models.
+
+---
+
+## 1. Overview
+
+smart-data is a declarative, extensible Python framework for building smart
+data pipelines. It targets Python 3.10+ and relies on Pydantic for runtime
+validation and OpenTelemetry for automatic observability.
+
+The framework enforces a two-layer contract system:
+
+1. **Layer 1 – Interfaces (`I*`):** Pure `@dataclass + ABC` contracts that
+   declare abstract methods with no fields or implementation.
+2. **Layer 2 – Base classes (`Base*`):** `@pydantic_dataclass` implementations
+   that add validated fields but keep abstract methods for users to implement.
+
+Three universal abstractions form the core: **Component**, **Flow**, and
+**System**, plus the foundational **Dataset** type.
+
+---
+
+## 2. Architecture
+
+```
+Interfaces (I*)             Base Classes (Base*)         Your Code
+─────────────────          ──────────────────────       ──────────
+IDataset                   BaseDataset(uri, …)          ConcreteDataset
+IComponent                 BaseComponent(component_id)  ConcreteComponent
+IFlow                      BaseFlow(flow_id)            ConcreteFlow
+ISystem                    BaseSystem(system_id)        ConcreteSystem
+```
+
+### ComponentMeta & ComponentKind
+
+Every `BaseComponent` carries a `ComponentMeta` with:
+- `kind` (`ComponentKind` enum: TRANSFORM, FILTER, AGGREGATE, EXTRACT, LOAD, CUSTOM)
+- `tags` (list of strings)
+- `branch_on` (field name for conditional routing)
+- `description` and `extra` metadata
+
+### Flow Graph Primitives
+
+- `FlowEdge(source_id, target_id, condition?)` — directed edge
+- `FlowNode(component, flow?)` — node wrapper with back-reference
+
+### Plugin Registry
+
+```python
+from smart_data.plugins import registry
+registry.register("my_system", MySystem)
+system_cls = registry.get("my_system")
+```
+
+---
+
+## 3. Getting Started
+
+### Installation
+
+```bash
+git clone https://github.com/strondata/smart-data.git
+cd smart-data
+poetry install
+```
+
+### Verify
+
+```bash
+smart-data --help
+```
+
+### Building a System
+
+1. Create a `BaseDataset` subclass (implement `read()`, `write()`)
+2. Create a `BaseComponent` subclass (implement `validate_inputs()`, `execute()`)
+3. Create a `BaseFlow` subclass (implement `add_component()`, `connect()`, `compile()`, `run()`)
+4. Create a `BaseSystem` subclass (implement `register_flow()`, `run()`)
+5. Register the system: `registry.register("name", SystemClass)`
+6. Run: `smart-data run name`
+
+---
+
+## 4. CLI Reference
+
+All static commands support `--json` for machine-readable JSON line output.
+Without `--json`, commands render Rich tables, panels, and highlighted output.
+
+### `smart-data run PIPELINE [--env ENV] [--dry-run]`
+
+Execute a registered system.
+
+### `smart-data monitor [--refresh SECONDS]`
+
+Open the interactive TUI dashboard with three tabs:
+- DAG View: ASCII pipeline topology
+- Metrics: Resource usage and memory bar
+- Agent Trace: Real-time event log
+
+### `smart-data scaffold PROJECT_NAME [--output PATH] [--template TEMPLATE]`
+
+Generate a project from a scaffold template (hello-world, medallion,
+rag-ingestion, data-quality-test).
+
+### `smart-data schema export --output PATH`
+
+Export JSON Schema for declarative YAML configs.
+
+### `smart-data mcp-start [--transport stdio|sse]`
+
+Start the MCP (Model Context Protocol) server for AI agent integration.
+
+### `smart-data system list|info|validate`
+
+Inspect and validate registered systems in the plugin registry.
+
+- `system list [--json]` – list all registered systems
+- `system info NAME [--json]` – show system class, module, docstring
+- `system validate NAME` – instantiate system and compile flows
+
+### `smart-data plugin list|inspect|preview|load`
+
+Manage registered reader/writer plugins.
+
+- `plugin list [--json]` – list all readers and writers
+- `plugin inspect NAME [--json]` – show constructor argument schema
+- `plugin preview READER [--limit N]` – preview first N records
+- `plugin load MODULE_PATH` – dynamically import a module
+
+### `smart-data config validate|init|show|run`
+
+Manage declarative YAML pipeline configurations.
+
+- `config validate PATH` – parse and validate a YAML file
+- `config init [--output PATH]` – generate a starter YAML template
+- `config show PATH` – pretty-print YAML with syntax highlighting
+- `config run PATH [--env ENV]` – parse, register, and execute
+
+### `smart-data telemetry status|export`
+
+Inspect OpenTelemetry configuration and export telemetry data.
+
+- `telemetry status [--json]` – show OTel provider status
+- `telemetry export [--format json]` – export collected telemetry
+
+### `smart-data interactive`
+
+Launch the guided menu-driven interactive wizard.  Uses questionary for
+prompts (falls back to typer.prompt if unavailable).
+
+---
+
+## 5. MCP Integration (Model Context Protocol)
+
+smart-data includes a FastMCP server enabling AI agents (Claude Desktop,
+Copilot, Devin, etc.) to discover and execute pipelines.
+
+### MCP Tools
+
+- **`run_flow(flow_id: str)`** — Execute a registered flow/system. Returns
+  `{"status": "completed"|"error", "flow_id": ..., "elapsed_seconds": ...}`.
+- **`list_registered_systems()`** — Returns
+  `{"systems": [...], "count": N}`.
+
+### MCP Resources
+
+- **`schema://datasets/{dataset_name}`** — Read metadata for a specific dataset.
+
+### Starting the MCP Server
+
+```bash
+smart-data mcp-start                  # stdio transport (default)
+smart-data mcp-start --transport sse  # SSE transport
+```
+
+### Claude Desktop Integration
+
+Add to your Claude Desktop `config.json`:
+
+```json
+{
+  "mcpServers": {
+    "smart-data": {
+      "command": "smart-data",
+      "args": ["mcp-start"]
+    }
+  }
+}
+```
+
+---
+
+## 6. Telemetry
+
+BaseComponent subclasses are auto-instrumented via `__init_subclass__`,
+creating OpenTelemetry spans around `execute()` with component metadata
+attributes (component_id, kind, tags, branch_on, description).
+
+Configure telemetry:
+
+```python
+from smart_data.telemetry import configure_telemetry
+provider, meter = configure_telemetry(service_name="my-service")
+```
+
+---
+
+## 7. Declarative Configuration
+
+Systems can be defined via YAML and parsed with `YamlConfigParser`:
+
+```python
+from smart_data.config import YamlConfigParser
+parser = YamlConfigParser()
+config = parser.parse_file("pipeline.yaml")
+```
+
+Export schema: `smart-data schema export --output schema.json`
+
+---
+
+## 8. Workflow Layer
+
+The `smart_data.core.workflow` module provides an alternative execution model:
+
+- `IWorkflow` / `BaseWorkflow` — workflow with context, lifecycle hooks
+  (`before_run`, `after_run`), topological sort via Kahn's algorithm
+- `WorkflowNode` / `WorkflowEdge` — stdlib dataclasses with workflow reference
+- Supports conditional branching via edge conditions
+
+---
+
+## 9. Project Structure
+
+```
+smart_data/
+├── __init__.py          # version
+├── core/                # IDataset, IComponent, IFlow, ISystem, workflow
+├── cli/                 # Typer CLI (run, monitor, scaffold, schema, mcp)
+├── config/              # YAML parser, schema export
+├── mcp/                 # FastMCP server (tools, resources)
+├── plugins/             # System registry
+├── telemetry/           # OpenTelemetry instrumentation
+└── tui/                 # Textual monitoring dashboard
+```
+
+---
+
+## 10. Links
+
+- Source: https://github.com/strondata/smart-data
+- Documentation: https://strondata.github.io/smart-data
