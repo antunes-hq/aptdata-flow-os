@@ -1,0 +1,120 @@
+name: Release
+
+# Triggered on every push to main. Reads the label(s) of the PR that was just
+# merged and – if a release label is present – bumps the version, creates a
+# commit + tag, and pushes them back to origin. The push of the new tag then
+# triggers the existing "Publish to PyPI" workflow automatically.
+#
+# Supported labels:
+#   release:patch  →  0.0.1 → 0.0.2
+#   release:minor  →  0.0.1 → 0.1.0
+#   release:major  →  0.0.1 → 1.0.0
+#   release:skip   →  no-op (explicit opt-out)
+#   (no label)     →  no-op (silent skip)
+#
+# Branch protection note:
+#   For the workflow to push the release commit and tag back to `main`, GitHub
+#   Actions must be allowed to bypass branch protection rules, OR the repository
+#   must be configured to allow Actions write access under:
+#   Settings → Actions → General → Workflow permissions → "Read and write permissions"
+#   and, if branch protection is enforced, "Allow GitHub Actions to bypass branch
+#   protection rules" must be enabled.
+
+on:
+  push:
+    branches:
+      - main
+
+# Minimal permissions at the workflow level; the release job overrides below.
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Auto-release on merge
+    runs-on: ubuntu-latest
+
+    # Skip automatically-generated release commits to avoid an infinite loop.
+    if: "!startsWith(github.event.head_commit.message, 'chore(release):')"
+
+    permissions:
+      contents: write       # push commit + tag
+      pull-requests: read   # read PR labels
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Full history is needed so that bump-my-version can inspect tags and
+          # the git log when creating the new commit + tag.
+          fetch-depth: 0
+          # Persist the GITHUB_TOKEN credential so subsequent `git push` works.
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Detect release label from merged PR
+        id: detect
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.sha;
+            core.info(`Looking for PRs associated with commit ${sha}`);
+
+            const { data: prs } =
+              await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                commit_sha: sha,
+              });
+
+            if (prs.length === 0) {
+              core.info('No merged PR found for this commit – skipping release.');
+              core.setOutput('bump', '');
+              return;
+            }
+
+            const pr = prs[0];
+            const labels = pr.labels.map(l => l.name);
+            core.info(`PR #${pr.number} labels: ${labels.join(', ') || '(none)'}`);
+
+            let bump = '';
+            if (labels.includes('release:skip')) {
+              bump = 'skip';
+            } else if (labels.includes('release:major')) {
+              bump = 'major';
+            } else if (labels.includes('release:minor')) {
+              bump = 'minor';
+            } else if (labels.includes('release:patch')) {
+              bump = 'patch';
+            }
+
+            core.setOutput('bump', bump);
+
+      # --- Steps below run only when a bump type was determined ---------------
+
+      - name: Set up Python
+        if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install bump-my-version
+        if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
+        run: pip install "bump-my-version>=0.20.0"
+
+      - name: Configure Git identity
+        if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version (${{ steps.detect.outputs.bump }})
+        if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
+        run: |
+          bump-my-version bump ${{ steps.detect.outputs.bump }}
+
+      - name: Push release commit and tag to origin
+        if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
+        run: |
+          # --follow-tags pushes any annotated tags created during the bump step.
+          git push origin main --follow-tags
