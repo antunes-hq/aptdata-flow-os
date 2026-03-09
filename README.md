@@ -111,7 +111,25 @@ smart-data run SYSTEM_NAME [--env ENV] [--dry-run]
 smart-data monitor [--refresh SECONDS]
 smart-data scaffold PROJECT_NAME [--template TEMPLATE] [--output PATH]
 smart-data schema export --output schema.json
+smart-data system list [--json]
+smart-data system info NAME [--json]
+smart-data system validate NAME
+smart-data plugin list [--json]
+smart-data plugin inspect NAME [--json]
+smart-data plugin preview READER [--limit N]
+smart-data plugin load MODULE_PATH
+smart-data config validate PATH
+smart-data config init [--output PATH]
+smart-data config show PATH
+smart-data config run PATH [--env ENV]
+smart-data telemetry status [--json]
+smart-data telemetry export [--format json]
+smart-data interactive
 ```
+
+Every static command supports `--json` for machine-readable JSON line output
+(backward compatible). Without `--json`, commands render Rich tables, panels,
+and syntax-highlighted output.
 
 ### Scaffold templates
 

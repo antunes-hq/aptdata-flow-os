@@ -21,6 +21,7 @@ methods, and register their systems in the plugin registry.
 - [Architecture](architecture.md): Two-layer design and data-flow model
 - [API – Core](api/core.md): Component, Flow, System, Dataset reference
 - [API – CLI](api/cli.md): Command-line interface reference
+- [API – CLI Interactive](api/cli-interactive.md): Interactive wizard documentation
 - [API – Plugins](api/plugins.md): Plugin registry reference
 - [Changelog](changelog.md): Version history
 
@@ -39,7 +40,11 @@ methods, and register their systems in the plugin registry.
 - **Metadata-driven components** (`ComponentMeta`, `ComponentKind`)
 - **Conditional flow edges** with optional predicates
 - **Plugin registry** for named system discovery
-- **Structured CLI** emitting machine-readable JSON lines
+- **Structured CLI** emitting machine-readable JSON lines (with Rich human-readable mode)
+- **Rich rendering layer** with dual-mode output (JSON lines or Rich tables/panels)
+- **Sub-commands**: `system`, `plugin`, `config`, `telemetry`
+- **Interactive wizard** mode (`smart-data interactive`) powered by questionary
+- **Shell completions** for system names, plugin names, environments, templates
 - **Interactive TUI** (Textual) with DAG, Metrics, and Agent Trace tabs
 - **MCP Server** (Model Context Protocol) for AI agent integration
 - **OpenTelemetry** auto-instrumentation of component execution

@@ -85,7 +85,8 @@ smart-data --help
 
 ## 4. CLI Reference
 
-All commands emit structured JSON lines on stdout/stderr.
+All static commands support `--json` for machine-readable JSON line output.
+Without `--json`, commands render Rich tables, panels, and highlighted output.
 
 ### `smart-data run PIPELINE [--env ENV] [--dry-run]`
 
@@ -98,9 +99,10 @@ Open the interactive TUI dashboard with three tabs:
 - Metrics: Resource usage and memory bar
 - Agent Trace: Real-time event log
 
-### `smart-data scaffold PROJECT_NAME [--output PATH]`
+### `smart-data scaffold PROJECT_NAME [--output PATH] [--template TEMPLATE]`
 
-Generate a hello-world pandas project.
+Generate a project from a scaffold template (hello-world, medallion,
+rag-ingestion, data-quality-test).
 
 ### `smart-data schema export --output PATH`
 
@@ -109,6 +111,44 @@ Export JSON Schema for declarative YAML configs.
 ### `smart-data mcp-start [--transport stdio|sse]`
 
 Start the MCP (Model Context Protocol) server for AI agent integration.
+
+### `smart-data system list|info|validate`
+
+Inspect and validate registered systems in the plugin registry.
+
+- `system list [--json]` – list all registered systems
+- `system info NAME [--json]` – show system class, module, docstring
+- `system validate NAME` – instantiate system and compile flows
+
+### `smart-data plugin list|inspect|preview|load`
+
+Manage registered reader/writer plugins.
+
+- `plugin list [--json]` – list all readers and writers
+- `plugin inspect NAME [--json]` – show constructor argument schema
+- `plugin preview READER [--limit N]` – preview first N records
+- `plugin load MODULE_PATH` – dynamically import a module
+
+### `smart-data config validate|init|show|run`
+
+Manage declarative YAML pipeline configurations.
+
+- `config validate PATH` – parse and validate a YAML file
+- `config init [--output PATH]` – generate a starter YAML template
+- `config show PATH` – pretty-print YAML with syntax highlighting
+- `config run PATH [--env ENV]` – parse, register, and execute
+
+### `smart-data telemetry status|export`
+
+Inspect OpenTelemetry configuration and export telemetry data.
+
+- `telemetry status [--json]` – show OTel provider status
+- `telemetry export [--format json]` – export collected telemetry
+
+### `smart-data interactive`
+
+Launch the guided menu-driven interactive wizard.  Uses questionary for
+prompts (falls back to typer.prompt if unavailable).
 
 ---
 
