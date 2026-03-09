@@ -188,6 +188,20 @@ def mcp_start(
 app.command()(scaffold)
 app.add_typer(schema_app, name="schema")
 
+from smart_data.cli.commands import system_app, plugin_app, config_app, telemetry_app  # noqa: E402
+from smart_data.cli.interactive import interactive_command  # noqa: E402
+
+app.add_typer(system_app, name="system")
+app.add_typer(plugin_app, name="plugin")
+app.add_typer(config_app, name="config")
+app.add_typer(telemetry_app, name="telemetry")
+
+
+@app.command("interactive")
+def interactive() -> None:
+    """Launch the interactive wizard mode."""
+    interactive_command()
+
 
 @schema_app.command("export")
 def schema_export(
