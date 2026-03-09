@@ -504,3 +504,154 @@ class TestMeshCLI:
             ["mesh", "run", "nonexistent", "--dir", str(tmp_path), "--json"],
         )
         assert result.exit_code != 0
+
+    def test_mesh_list_no_components_rich_mode(self, tmp_path: Path) -> None:
+        """mesh list without --json emits a warning when no components found."""
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path)])
+        assert result.exit_code == 0
+
+    def test_mesh_list_finds_component_rich_mode(self, tmp_path: Path) -> None:
+        """mesh list without --json renders a Rich table when components exist."""
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "richjob", "--output", str(tmp_path), "--template", "job-wheel"])
+        result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path)])
+        assert result.exit_code == 0
+
+    def test_mesh_run_dry_run_rich_mode(self, tmp_path: Path) -> None:
+        """mesh run --dry-run without --json prints a plain-text description."""
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "richjob2", "--output", str(tmp_path), "--template", "job-wheel"])
+        result = runner.invoke(
+            app,
+            ["mesh", "run", "richjob2", "--dir", str(tmp_path), "--dry-run"],
+        )
+        assert result.exit_code == 0
+
+    def test_mesh_run_unknown_component_rich_mode(self, tmp_path: Path) -> None:
+        """mesh run on unknown component without --json exits non-zero."""
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        result = runner.invoke(
+            app,
+            ["mesh", "run", "ghost", "--dir", str(tmp_path)],
+        )
+        assert result.exit_code != 0
+
+    def test_mesh_build_component_not_found_rich_mode(self, tmp_path: Path) -> None:
+        """mesh build on unknown component without --json exits non-zero."""
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        result = runner.invoke(
+            app,
+            ["mesh", "build", "ghost_component", "--dir", str(tmp_path)],
+        )
+        assert result.exit_code != 0
+
+    def test_mesh_build_component_not_found_json_mode(self, tmp_path: Path) -> None:
+        """mesh build on unknown component with --json emits mesh.error event."""
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        result = runner.invoke(
+            app,
+            ["mesh", "build", "ghost_component", "--dir", str(tmp_path), "--json"],
+        )
+        assert result.exit_code != 0
+        import json
+        lines = [line for line in result.output.strip().splitlines() if line]
+        events = [json.loads(line) for line in lines]
+        event_names = [e.get("event") for e in events]
+        assert "mesh.error" in event_names
+
+    def test_mesh_build_job_wheel_json_mode(self, tmp_path: Path) -> None:
+        """mesh build job-wheel component succeeds (mocked subprocess) and emits build events."""
+        from unittest.mock import patch, MagicMock
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "buildme", "--output", str(tmp_path), "--template", "job-wheel"])
+
+        mock_proc = MagicMock()
+        mock_proc.returncode = 0
+
+        with patch("smart_data.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+            result = runner.invoke(
+                app,
+                ["mesh", "build", "buildme", "--dir", str(tmp_path), "--json"],
+            )
+        assert result.exit_code == 0
+        import json
+        lines = [line for line in result.output.strip().splitlines() if line]
+        events = [json.loads(line) for line in lines]
+        event_names = [e.get("event") for e in events]
+        assert "mesh.build.started" in event_names
+        assert "mesh.build.completed" in event_names
+
+    def test_mesh_build_job_wheel_rich_mode(self, tmp_path: Path) -> None:
+        """mesh build job-wheel component succeeds (mocked subprocess) in rich mode."""
+        from unittest.mock import patch, MagicMock
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "buildme2", "--output", str(tmp_path), "--template", "job-wheel"])
+
+        mock_proc = MagicMock()
+        mock_proc.returncode = 0
+
+        with patch("smart_data.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+            result = runner.invoke(
+                app,
+                ["mesh", "build", "buildme2", "--dir", str(tmp_path)],
+            )
+        assert result.exit_code == 0
+
+    def test_mesh_run_job_wheel_with_mock(self, tmp_path: Path) -> None:
+        """mesh run job-wheel component succeeds with mocked subprocess."""
+        from unittest.mock import patch, MagicMock
+        from typer.testing import CliRunner
+
+        from smart_data.cli.app import app
+
+        runner = CliRunner()
+        runner.invoke(app, ["scaffold", "runjob", "--output", str(tmp_path), "--template", "job-wheel"])
+
+        mock_proc = MagicMock()
+        mock_proc.returncode = 0
+
+        with patch("smart_data.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+            result = runner.invoke(
+                app,
+                ["mesh", "run", "runjob", "--dir", str(tmp_path), "--json"],
+            )
+        assert result.exit_code == 0
+        import json
+        lines = [line for line in result.output.strip().splitlines() if line]
+        events = [json.loads(line) for line in lines]
+        event_names = [e.get("event") for e in events]
+        assert "mesh.run.started" in event_names
+        assert "mesh.run.completed" in event_names

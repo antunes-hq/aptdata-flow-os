@@ -7,6 +7,7 @@ Each test is marked ``@pytest.mark.integration``.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -265,6 +266,8 @@ class TestScaffoldFileIntegration:
 
     def test_job_wheel_pyproject_valid_toml(self, tmp_path: Path, cli_runner, cli_app) -> None:
         """The job-wheel pyproject.toml is syntactically valid."""
+        if sys.version_info < (3, 11):
+            pytest.skip("tomllib requires Python ≥ 3.11")
         import tomllib  # noqa: PLC0415
 
         cli_runner.invoke(
