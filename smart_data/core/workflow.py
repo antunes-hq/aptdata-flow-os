@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable as ABCCallable
 from abc import ABC, abstractmethod
 from collections import deque
 from dataclasses import dataclass, field
-from time import sleep, time
+from time import sleep, time_ns
 from typing import Any, Callable
 from uuid import uuid4
 
@@ -184,7 +183,7 @@ class BaseWorkflow(IWorkflow):
 
 @dataclass
 class _WorkflowStep:
-    fn: ABCCallable[..., Any]
+    fn: Callable[..., Any]
     retries: int = 0
     backoff: float = 0.0
 
@@ -206,7 +205,7 @@ class Workflow:
 
     def add_step(
         self,
-        step: ABCCallable[..., Any],
+        step: Callable[..., Any],
         *,
         retries: int = 0,
         backoff: float = 0.0,
@@ -216,7 +215,7 @@ class Workflow:
 
     def execute(self, data: Any | None = None) -> Any:
         """Execute workflow from the first step."""
-        run_id = f"{self.name}_{int(time())}_{uuid4().hex[:8]}"
+        run_id = f"{self.name}_{time_ns()}_{uuid4().hex[:8]}"
         return self._run(run_id=run_id, start_index=0, data=data)
 
     def resume(self, run_id: str, data: Any | None = None) -> Any:
@@ -285,7 +284,8 @@ class Workflow:
                     last_error = exc
                     span.record_exception(exc)
                     if attempt < step.retries:
-                        sleep(step.backoff * (2**attempt) if step.backoff else 0.0)
+                        backoff_seconds = step.backoff * (2**attempt) if step.backoff else 0.0
+                        sleep(min(backoff_seconds, 30.0))
         if self.enable_checkpointing:
             self.state_backend.save(
                 run_id,

@@ -56,8 +56,9 @@ class TestWorkflowResilience:
         wf_resume.add_step(lambda dataset: dataset)
 
         resumed = wf_resume.resume(run_id)
-        assert resumed.read()[0]["document_id"] == "1"
-        assert resumed.read()[0]["trace_id"]
+        first_row = resumed.read()[0]
+        assert first_row["document_id"] == "1"
+        assert first_row["trace_id"]
 
 
 class TestAIPlugins:
@@ -123,8 +124,8 @@ class TestSpansLinkage:
             trace.set_tracer_provider(provider)
 
         dataset = InMemoryDataset(uri="memory://docs")
-        dataset.write([{"id": "1", "artigo": "A B C"}])
-        chunker = TextChunker(column="artigo", max_tokens=2)
+        dataset.write([{"id": "1", "text": "A B C"}])
+        chunker = TextChunker(column="text", max_tokens=2)
         embedder = EmbeddingTransformer(column="artigo_chunk")
         writer = QdrantWriter(collection="support")
 
