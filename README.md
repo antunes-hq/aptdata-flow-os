@@ -210,6 +210,35 @@ See [Governance docs](docs/governance.md) for the full API.
 
 ---
 
+## Release process
+
+Releases are automated via the [Release workflow](.github/workflows/release.yml).
+After a PR is merged into `main`, the CI reads its labels and bumps the version
+accordingly.
+
+| Label | Effect |
+|---|---|
+| `release:patch` | `0.0.1 → 0.0.2` |
+| `release:minor` | `0.0.1 → 0.1.0` |
+| `release:major` | `0.0.1 → 1.0.0` |
+| `release:skip` | no release (explicit opt-out) |
+| *(no label)* | no release (silent skip) |
+
+The workflow will:
+1. Detect the merged PR and its labels.
+2. Run `bump-my-version bump <part>` to update `pyproject.toml` and
+   `smart_data/__init__.py`.
+3. Create a `chore(release): bump version to X.Y.Z` commit and a `vX.Y.Z` tag.
+4. Push the commit and tag to `main`.
+5. The tag push automatically triggers the **Publish to PyPI** workflow.
+
+> **Branch protection note:** GitHub Actions must have *read and write
+> permissions* (Settings → Actions → General → Workflow permissions) and, if
+> branch protection is enabled on `main`, the rule must allow GitHub Actions
+> to bypass it.
+
+---
+
 ## Development
 
 ```bash
