@@ -38,6 +38,23 @@ pipelines and scripted workflows.
 
 ## Installation
 
+### From PyPI
+
+```bash
+pip install smart-data
+```
+
+### Optional extras
+
+```bash
+pip install smart-data[pandas]   # pandas support
+pip install smart-data[spark]    # PySpark support
+pip install smart-data[plugins]  # REST, PostgreSQL, Parquet I/O
+pip install smart-data[all]      # everything
+```
+
+### From source (development)
+
 ```bash
 git clone https://github.com/strondata/smart-data.git
 cd smart-data
@@ -127,6 +144,7 @@ smart-data telemetry export [--format json]
 smart-data mesh list [--dir DIR] [--json]
 smart-data mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
 smart-data mesh build COMPONENT [--dir DIR] [--json]
+smart-data mcp-start [--transport TRANSPORT]
 smart-data interactive
 ```
 

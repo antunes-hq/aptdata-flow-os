@@ -232,7 +232,27 @@ The `smart_data.core.workflow` module provides an alternative execution model:
 
 ---
 
-## 9. Project Structure
+## 10. New Documentation Pages
+
+The following dedicated documentation pages are available:
+
+- **[Telemetry](telemetry.md)** — OpenTelemetry auto-instrumentation, span
+  attributes, CLI commands (`telemetry status`, `telemetry export`), and
+  backend integrations (Jaeger, OTLP).
+- **[MCP Server](mcp.md)** — Full Model Context Protocol integration guide,
+  available tools, resources, and AI agent setup instructions.
+- **[Configuration](configuration.md)** — `smart-data.yaml` format, schema,
+  CLI commands (`config validate`, `config init`, `config show`, `config run`),
+  and environment variable substitution.
+- **[Scaffold Templates](scaffold-templates.md)** — Project bootstrapping with
+  `hello-world`, `medallion`, `rag-ingestion`, `data-quality-test`,
+  `job-wheel`, and `docker-compose-app` templates.
+- **[API – CLI Interactive](api/cli-interactive.md)** — Interactive wizard
+  (`smart-data interactive`) powered by questionary.
+
+---
+
+## 11. Project Structure
 
 ```
 smart_data/
@@ -248,7 +268,7 @@ smart_data/
 
 ---
 
-## 10. Links
+## 12. Links
 
 - Source: https://github.com/strondata/smart-data
 - Documentation: https://strondata.github.io/smart-data

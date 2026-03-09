@@ -9,6 +9,21 @@
 
 ## Installation
 
+### From PyPI
+
+```bash
+pip install smart-data
+```
+
+### Optional extras
+
+```bash
+pip install smart-data[pandas]   # pandas support
+pip install smart-data[spark]    # PySpark support
+pip install smart-data[plugins]  # REST, PostgreSQL, Parquet I/O
+pip install smart-data[all]      # everything
+```
+
 ### From source (development)
 
 ```bash
@@ -17,24 +32,8 @@ cd smart-data
 poetry install
 ```
 
-### With pip (once published to PyPI)
-
-```bash
-pip install smart-data
-```
-
----
-
-## Publishing a new release
-
-The **Publish to PyPI** workflow supports three modes:
-
-| Mode | How | Publishes? |
-|------|-----|-----------|
-| Tag release | `git tag v0.1.0 && git push origin v0.1.0` | ✅ Yes |
-| Manual (publish) | Actions → "Publish to PyPI" → Run workflow → check **Publish to PyPI?** | ✅ Yes |
-| Manual (dry run) | Actions → "Publish to PyPI" → Run workflow → leave **Publish to PyPI?** unchecked | ❌ No (build only) |
-| Push to `main` | Normal push/merge | ❌ No (build only) |
+> **For maintainers:** See the [Release process](https://github.com/strondata/smart-data#release-process)
+> section in the README for details on publishing new releases to PyPI.
 
 ---
 

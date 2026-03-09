@@ -51,9 +51,13 @@ nav:
   - Quality: quality.md
   - Governance: governance.md
   - Scaffold Templates: scaffold-templates.md
+  - Telemetry: telemetry.md
+  - MCP Server: mcp.md
+  - Configuration: configuration.md
   - API Reference:
       - Core: api/core.md
       - CLI: api/cli.md
+      - CLI Interactive: api/cli-interactive.md
       - Plugins: api/plugins.md
   - Changelog: changelog.md
   - AI Docs:

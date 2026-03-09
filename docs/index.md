@@ -58,5 +58,12 @@ class FilterComponent(BaseComponent):
 
 - 🚀 [Getting Started](getting-started.md) — install and run your first system
 - 🏛 [Architecture](architecture.md) — understand the `I*` → `Base*` design
+- ⚙️ [Transform Engines](transform-engines.md) — pandas & PySpark wrappers
+- ✅ [Data Quality](quality.md) — schema contracts & expectations
+- 🏗 [Governance](governance.md) — lineage, catalog & classification
+- 🧩 [Scaffold Templates](scaffold-templates.md) — project bootstrapping
+- 📡 [Telemetry](telemetry.md) — OpenTelemetry integration
+- 🤖 [MCP Server](mcp.md) — AI agent integration
+- ⚙️ [Configuration](configuration.md) — YAML config files
 - 📖 [API Reference](api/core.md) — full class and method documentation
 - 📋 [Changelog](changelog.md) — version history
