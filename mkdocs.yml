@@ -31,6 +31,8 @@ theme:
 
 plugins:
   - search
+  - autorefs:
+      link_titles: auto
   - mkdocstrings:
       handlers:
         python:
