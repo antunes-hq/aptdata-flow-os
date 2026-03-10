@@ -10,7 +10,13 @@ import time
 from threading import Lock
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError as exc:
+    raise ImportError(
+        "The MCP server dependencies are not installed. "
+        "Please run `pip install aptdata[ai]` to use mcp-start."
+    ) from exc
 
 from aptdata.core.lineage import LineageEventType, LineageGraph, LineageNode
 from aptdata.plugins import registry
