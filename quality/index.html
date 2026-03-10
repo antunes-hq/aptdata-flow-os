@@ -27,7 +27,7 @@
     
     
       
-        <title>Quality - smart-data</title>
+        <title>Quality - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1328,13 +1328,13 @@
 
 
 <h1 id="data-quality">Data Quality<a class="headerlink" href="#data-quality" title="Permanent link">&para;</a></h1>
-<p>smart-data provides a lightweight data quality layer that works with both
+<p>aptdata provides a lightweight data quality layer that works with both
 pandas DataFrames and PySpark DataFrames.</p>
 <hr />
 <h2 id="schema-contracts">Schema Contracts<a class="headerlink" href="#schema-contracts" title="Permanent link">&para;</a></h2>
-<p>A :class:<code>~smart_data.plugins.quality.contract.SchemaContract</code> declares the
+<p>A :class:<code>~aptdata.plugins.quality.contract.SchemaContract</code> declares the
 expected shape, types, and sensitivity of a dataset.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">ColumnClassification</span><span class="p">,</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">ColumnContract</span><span class="p">,</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">EnforcementMode</span><span class="p">,</span>
@@ -1401,37 +1401,37 @@ expected shape, types, and sensitivity of a dataset.</p>
 <hr />
 <h2 id="expectations">Expectations<a class="headerlink" href="#expectations" title="Permanent link">&para;</a></h2>
 <p>Expectations are individual checks that validate a single property of a
-column.  They all extend :class:<code>~smart_data.plugins.quality.expectations.BaseExpectation</code>
-and return a :class:<code>~smart_data.plugins.quality.report.CheckResult</code>.</p>
+column.  They all extend :class:<code>~aptdata.plugins.quality.expectations.BaseExpectation</code>
+and return a :class:<code>~aptdata.plugins.quality.report.CheckResult</code>.</p>
 <p>Each expectation has both a <code>validate_pandas(df)</code> and a <code>validate_spark(df)</code>
 implementation.  Call <code>validate(df)</code> and the engine is detected automatically.</p>
 <h3 id="built-in-expectations">Built-in expectations<a class="headerlink" href="#built-in-expectations" title="Permanent link">&para;</a></h3>
 <h4 id="expectcolumntonotbenull"><code>ExpectColumnToNotBeNull</code><a class="headerlink" href="#expectcolumntonotbenull" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectColumnToNotBeNull</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectColumnToNotBeNull</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">ExpectColumnToNotBeNull</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="expectcolumnvaluesinrange"><code>ExpectColumnValuesInRange</code><a class="headerlink" href="#expectcolumnvaluesinrange" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectColumnValuesInRange</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectColumnValuesInRange</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">ExpectColumnValuesInRange</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="expectcolumnvaluestobeunique"><code>ExpectColumnValuesToBeUnique</code><a class="headerlink" href="#expectcolumnvaluestobeunique" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectColumnValuesToBeUnique</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectColumnValuesToBeUnique</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">ExpectColumnValuesToBeUnique</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="expectcolumnvaluestomatchregex"><code>ExpectColumnValuesToMatchRegex</code><a class="headerlink" href="#expectcolumnvaluestomatchregex" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectColumnValuesToMatchRegex</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectColumnValuesToMatchRegex</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">ExpectColumnValuesToMatchRegex</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;[A-Z]\d</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </code></pre></div>
 <hr />
 <h2 id="quality-validator">Quality Validator<a class="headerlink" href="#quality-validator" title="Permanent link">&para;</a></h2>
-<p>:class:<code>~smart_data.plugins.quality.validator.QualityValidator</code> runs a suite of
+<p>:class:<code>~aptdata.plugins.quality.validator.QualityValidator</code> runs a suite of
 expectations and enforces the result according to the configured
-:class:<code>~smart_data.plugins.quality.contract.EnforcementMode</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+:class:<code>~aptdata.plugins.quality.contract.EnforcementMode</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">EnforcementMode</span><span class="p">,</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">ExpectColumnToNotBeNull</span><span class="p">,</span>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">ExpectColumnValuesToBeUnique</span><span class="p">,</span>
@@ -1449,7 +1449,7 @@ expectations and enforces the result according to the configured
 <a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">)</span>
 <a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>
 <a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="c1"># Compatible with Workflow.add_step()</span>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
 <a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
 <a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;quality_pipeline&quot;</span><span class="p">)</span>
 <a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">)</span>
@@ -1480,10 +1480,10 @@ expectations and enforces the result according to the configured
 </table>
 <hr />
 <h2 id="quality-report">Quality Report<a class="headerlink" href="#quality-report" title="Permanent link">&para;</a></h2>
-<p>After validation a :class:<code>~smart_data.plugins.quality.report.QualityReport</code>
+<p>After validation a :class:<code>~aptdata.plugins.quality.report.QualityReport</code>
 is built internally.  Its <code>passed</code> property returns <code>True</code> only when no check
 has a <code>FAILED</code> status, and <code>summary</code> returns counts per status.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.quality.report</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckStatus</span><span class="p">,</span> <span class="n">QualityReport</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality.report</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckStatus</span><span class="p">,</span> <span class="n">QualityReport</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">report</span> <span class="o">=</span> <span class="n">QualityReport</span><span class="p">(</span><span class="n">dataset_uri</span><span class="o">=</span><span class="s2">&quot;s3://bucket/data.parquet&quot;</span><span class="p">)</span>
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># ... checks appended by validator ...</span>
@@ -1493,7 +1493,7 @@ has a <code>FAILED</code> status, and <code>summary</code> returns counts per st
 </code></pre></div>
 <hr />
 <h2 id="otel-integration">OTel integration<a class="headerlink" href="#otel-integration" title="Permanent link">&para;</a></h2>
-<p>:class:<code>~smart_data.plugins.quality.validator.QualityValidator</code> emits an OTel
+<p>:class:<code>~aptdata.plugins.quality.validator.QualityValidator</code> emits an OTel
 span with the following attributes:</p>
 <table>
 <thead>
@@ -1504,27 +1504,27 @@ span with the following attributes:</p>
 </thead>
 <tbody>
 <tr>
-<td><code>smart_data.quality.validator_name</code></td>
+<td><code>aptdata.quality.validator_name</code></td>
 <td>Validator name</td>
 </tr>
 <tr>
-<td><code>smart_data.quality.enforcement</code></td>
+<td><code>aptdata.quality.enforcement</code></td>
 <td>Enforcement mode</td>
 </tr>
 <tr>
-<td><code>smart_data.quality.num_expectations</code></td>
+<td><code>aptdata.quality.num_expectations</code></td>
 <td>Number of expectations</td>
 </tr>
 <tr>
-<td><code>smart_data.quality.passed</code></td>
+<td><code>aptdata.quality.passed</code></td>
 <td>Overall result</td>
 </tr>
 <tr>
-<td><code>smart_data.quality.num_checks</code></td>
+<td><code>aptdata.quality.num_checks</code></td>
 <td>Total checks run</td>
 </tr>
 <tr>
-<td><code>smart_data.quality.failed_checks</code></td>
+<td><code>aptdata.quality.failed_checks</code></td>
 <td>Number of failures</td>
 </tr>
 </tbody>

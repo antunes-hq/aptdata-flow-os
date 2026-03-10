@@ -27,7 +27,7 @@
     
     
       
-        <title>Telemetry - smart-data</title>
+        <title>Telemetry - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1294,7 +1294,7 @@
 
 
 <h1 id="telemetry">Telemetry<a class="headerlink" href="#telemetry" title="Permanent link">&para;</a></h1>
-<p>smart-data integrates <a href="https://opentelemetry.io/">OpenTelemetry</a> to give you
+<p>aptdata integrates <a href="https://opentelemetry.io/">OpenTelemetry</a> to give you
 automatic, zero-configuration observability for every pipeline execution.</p>
 <hr />
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
@@ -1304,13 +1304,13 @@ OpenTelemetry span carrying rich component metadata.  No code changes to your
 components are needed.</p>
 <pre class="mermaid"><code>graph TD
     E["BaseComponent.execute()"]
-    S["span: smart_data.component"]
+    S["span: aptdata.component"]
     ID["component.id = &lt;component_id&gt;"]
     K["component.kind = TRANSFORM | FILTER | AGGREGATE | …"]
     T["component.tags = ['tag1', 'tag2']"]
     ST["component.status = success | error"]
-    Q["child span: smart_data.quality.validate"]
-    G["child span: smart_data.governance.lineage"]
+    Q["child span: aptdata.quality.validate"]
+    G["child span: aptdata.governance.lineage"]
 
     E --&gt; S
     S --&gt; ID
@@ -1325,23 +1325,23 @@ get end-to-end trace visibility across the entire pipeline.</p>
 <h2 id="cli-commands">CLI commands<a class="headerlink" href="#cli-commands" title="Permanent link">&para;</a></h2>
 <h3 id="telemetry-status"><code>telemetry status</code><a class="headerlink" href="#telemetry-status" title="Permanent link">&para;</a></h3>
 <p>Display the current OpenTelemetry configuration:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>smart-data<span class="w"> </span>telemetry<span class="w"> </span>status
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>smart-data<span class="w"> </span>telemetry<span class="w"> </span>status<span class="w"> </span>--json
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span>status
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span>status<span class="w"> </span>--json
 </code></pre></div>
 <p><strong>Example output (Rich):</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌──────────────────────────────────────┐
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│ Telemetry Status                     │
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├─────────────────────┬────────────────┤
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│ Exporter            │ console        │
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│ Service name        │ smart-data     │
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│ Service name        │ aptdata     │
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│ SDK version         │ 1.x.x          │
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│ Status              │ active         │
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>└─────────────────────┴────────────────┘
 </code></pre></div>
 <h3 id="telemetry-export"><code>telemetry export</code><a class="headerlink" href="#telemetry-export" title="Permanent link">&para;</a></h3>
 <p>Flush and export collected spans:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>smart-data<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>smart-data<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--format<span class="w"> </span>json
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--format<span class="w"> </span>json
 </code></pre></div>
 <hr />
 <h2 id="auto-instrumented-spans">Auto-instrumented spans<a class="headerlink" href="#auto-instrumented-spans" title="Permanent link">&para;</a></h2>
@@ -1355,22 +1355,22 @@ get end-to-end trace visibility across the entire pipeline.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>smart_data.component</code></td>
+<td><code>aptdata.component</code></td>
 <td><code>BaseComponent.execute()</code></td>
 <td><code>component.id</code>, <code>component.kind</code>, <code>component.tags</code></td>
 </tr>
 <tr>
-<td><code>smart_data.quality.validate</code></td>
+<td><code>aptdata.quality.validate</code></td>
 <td><code>QualityValidator.validate()</code></td>
 <td><code>quality.rule_count</code>, <code>quality.enforcement</code></td>
 </tr>
 <tr>
-<td><code>smart_data.governance.lineage</code></td>
+<td><code>aptdata.governance.lineage</code></td>
 <td><code>LineageStore.save()</code></td>
 <td><code>lineage.run_id</code>, <code>lineage.workflow</code></td>
 </tr>
 <tr>
-<td><code>smart_data.transform</code></td>
+<td><code>aptdata.transform</code></td>
 <td><code>PandasTransformer</code> / <code>PySparkTransformer</code></td>
 <td><code>transform.engine</code>, <code>transform.rows_in</code>, <code>transform.rows_out</code></td>
 </tr>
@@ -1385,10 +1385,10 @@ get end-to-end trace visibility across the entire pipeline.</p>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>-p<span class="w"> </span><span class="m">4317</span>:4317<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>jaegertracing/all-in-one:latest
 </code></pre></div>
-<p>Configure smart-data via environment variables:</p>
+<p>Configure aptdata via environment variables:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span>http://localhost:4317
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SERVICE_NAME</span><span class="o">=</span>smart-data
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>smart-data<span class="w"> </span>run<span class="w"> </span>my_system
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SERVICE_NAME</span><span class="o">=</span>aptdata
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>aptdata<span class="w"> </span>run<span class="w"> </span>my_system
 </code></pre></div>
 <p>Open <code>http://localhost:16686</code> to explore traces.</p>
 <h3 id="otlp-production">OTLP (production)<a class="headerlink" href="#otlp-production" title="Permanent link">&para;</a></h3>
@@ -1396,14 +1396,14 @@ get end-to-end trace visibility across the entire pipeline.</p>
 Datadog, etc.):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span>https://api.honeycomb.io
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_HEADERS</span><span class="o">=</span><span class="s2">&quot;x-honeycomb-team=&lt;API_KEY&gt;&quot;</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SERVICE_NAME</span><span class="o">=</span>smart-data
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>smart-data<span class="w"> </span>run<span class="w"> </span>my_system
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SERVICE_NAME</span><span class="o">=</span>aptdata
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>aptdata<span class="w"> </span>run<span class="w"> </span>my_system
 </code></pre></div>
 <hr />
 <h2 id="disabling-telemetry">Disabling telemetry<a class="headerlink" href="#disabling-telemetry" title="Permanent link">&para;</a></h2>
 <p>Set the standard OpenTelemetry SDK variable to suppress all spans:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SDK_DISABLED</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>smart-data<span class="w"> </span>run<span class="w"> </span>my_system
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>aptdata<span class="w"> </span>run<span class="w"> </span>my_system
 </code></pre></div>
 <hr />
 <h2 id="further-reading">Further reading<a class="headerlink" href="#further-reading" title="Permanent link">&para;</a></h2>

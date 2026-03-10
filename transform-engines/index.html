@@ -27,7 +27,7 @@
     
     
       
-        <title>Engines - smart-data</title>
+        <title>Engines - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1305,11 +1305,11 @@
 
 
 <h1 id="transform-engines">Transform Engines<a class="headerlink" href="#transform-engines" title="Permanent link">&para;</a></h1>
-<p>smart-data provides <strong>engine-agnostic transformation wrappers</strong> that integrate
-with the :class:<code>~smart_data.core.workflow.Workflow</code> pipeline, emit OpenTelemetry
+<p>aptdata provides <strong>engine-agnostic transformation wrappers</strong> that integrate
+with the :class:<code>~aptdata.core.workflow.Workflow</code> pipeline, emit OpenTelemetry
 spans, and work transparently with
-:class:<code>~smart_data.plugins.dataset.InMemoryDataset</code>.</p>
-<p>Both transformers are in <code>smart_data.plugins.transform</code> and require an optional
+:class:<code>~aptdata.plugins.dataset.InMemoryDataset</code>.</p>
+<p>Both transformers are in <code>aptdata.plugins.transform</code> and require an optional
 dependency group:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># pandas</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>pip<span class="w"> </span>install<span class="w"> </span>pandas
@@ -1319,7 +1319,7 @@ dependency group:</p>
 </code></pre></div>
 <hr />
 <h2 id="pandastransformer">PandasTransformer<a class="headerlink" href="#pandastransformer" title="Permanent link">&para;</a></h2>
-<p>:class:<code>~smart_data.plugins.transform.pandas.PandasTransformer</code> wraps any
+<p>:class:<code>~aptdata.plugins.transform.pandas.PandasTransformer</code> wraps any
 callable <code>(pd.DataFrame) → pd.DataFrame</code> and handles input/output conversion
 automatically.</p>
 <h3 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h3>
@@ -1377,35 +1377,35 @@ automatically.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>smart_data.transformer.name</code></td>
+<td><code>aptdata.transformer.name</code></td>
 <td>Transformer name</td>
 </tr>
 <tr>
-<td><code>smart_data.transformer.engine</code></td>
+<td><code>aptdata.transformer.engine</code></td>
 <td><code>"pandas"</code></td>
 </tr>
 <tr>
-<td><code>smart_data.transformer.rows_in</code></td>
+<td><code>aptdata.transformer.rows_in</code></td>
 <td>Input row count</td>
 </tr>
 <tr>
-<td><code>smart_data.transformer.rows_out</code></td>
+<td><code>aptdata.transformer.rows_out</code></td>
 <td>Output row count</td>
 </tr>
 <tr>
-<td><code>smart_data.transformer.columns_out</code></td>
+<td><code>aptdata.transformer.columns_out</code></td>
 <td>Output column names</td>
 </tr>
 <tr>
-<td><code>smart_data.transformer.compute_time_ms</code></td>
+<td><code>aptdata.transformer.compute_time_ms</code></td>
 <td>Wall-clock time (ms)</td>
 </tr>
 </tbody>
 </table>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
@@ -1418,7 +1418,7 @@ automatically.</p>
 </code></pre></div>
 <hr />
 <h2 id="pysparktransformer">PySparkTransformer<a class="headerlink" href="#pysparktransformer" title="Permanent link">&para;</a></h2>
-<p>:class:<code>~smart_data.plugins.transform.spark.PySparkTransformer</code> wraps a
+<p>:class:<code>~aptdata.plugins.transform.spark.PySparkTransformer</code> wraps a
 callable <code>(SparkSession, DataFrame) → DataFrame</code>.</p>
 <h3 id="constructor_1">Constructor<a class="headerlink" href="#constructor_1" title="Permanent link">&para;</a></h3>
 <table>
@@ -1458,19 +1458,19 @@ callable <code>(SparkSession, DataFrame) → DataFrame</code>.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>smart_data.spark.app_name</code></td>
+<td><code>aptdata.spark.app_name</code></td>
 <td>Spark application name</td>
 </tr>
 <tr>
-<td><code>smart_data.spark.ui_url</code></td>
+<td><code>aptdata.spark.ui_url</code></td>
 <td>Spark UI URL (if available)</td>
 </tr>
 </tbody>
 </table>
 <h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PySparkTransformer</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PySparkTransformer</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">compute_revenue</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;revenue&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;quantity&quot;</span><span class="p">))</span>
@@ -1483,8 +1483,8 @@ callable <code>(SparkSession, DataFrame) → DataFrame</code>.</p>
 </code></pre></div>
 <hr />
 <h2 id="workflow-integration">Workflow integration<a class="headerlink" href="#workflow-integration" title="Permanent link">&para;</a></h2>
-<p>Both transformers implement :class:<code>~smart_data.plugins.base.BaseTransformer</code>
-and are compatible with :meth:<code>~smart_data.core.workflow.Workflow.add_step</code>:</p>
+<p>Both transformers implement :class:<code>~aptdata.plugins.base.BaseTransformer</code>
+and are compatible with :meth:<code>~aptdata.core.workflow.Workflow.add_step</code>:</p>
 <pre class="mermaid"><code>flowchart LR
     DS["Dataset\n(InMemoryDataset)"]
     PT["PandasTransformer\nor PySparkTransformer"]
@@ -1500,10 +1500,10 @@ and are compatible with :meth:<code>~smart_data.core.workflow.Workflow.add_step<
 <hr />
 <h2 id="lazy-imports">Lazy imports<a class="headerlink" href="#lazy-imports" title="Permanent link">&para;</a></h2>
 <p>Neither pandas nor pyspark is required at import time.  A
-:class:<code>~smart_data.plugins.manager.PluginDependencyError</code> is raised only at
+:class:<code>~aptdata.plugins.manager.PluginDependencyError</code> is raised only at
 instantiation time if the required library is missing.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># This import always succeeds, even without pandas/pyspark installed:</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span><span class="p">,</span> <span class="n">PySparkTransformer</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span><span class="p">,</span> <span class="n">PySparkTransformer</span>
 </code></pre></div>
 
 

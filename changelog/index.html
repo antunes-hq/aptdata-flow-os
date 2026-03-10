@@ -27,7 +27,7 @@
     
     
       
-        <title>Changelog - smart-data</title>
+        <title>Changelog - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1289,14 +1289,14 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
-<p>All notable changes to <strong>smart-data</strong> are documented here.</p>
+<p>All notable changes to <strong>aptdata</strong> are documented here.</p>
 <p>The format follows <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a> and
 this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <hr />
 <h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong><code>smart_data.core.workflow</code></strong> — context-aware workflow module introducing:</li>
+<li><strong><code>aptdata.core.workflow</code></strong> — context-aware workflow module introducing:</li>
 <li><code>IWorkflow</code> / <code>BaseWorkflow</code> with <code>before_run</code> / <code>after_run</code> hooks.</li>
 <li><code>WorkflowNode</code> / <code>WorkflowEdge</code> graph primitives with optional conditional
     routing.</li>
@@ -1307,7 +1307,7 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>smart_data.core.__init__</code> now exports workflow abstractions.</li>
+<li><code>aptdata.core.__init__</code> now exports workflow abstractions.</li>
 </ul>
 <hr />
 <h2 id="002-2026-03-08">[0.0.2] – 2026-03-08<a class="headerlink" href="#002-2026-03-08" title="Permanent link">&para;</a></h2>
@@ -1329,18 +1329,18 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
 </ul>
 <h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>smart_data.plugins</code>: <code>_PipelineRegistry</code> renamed to <code>_SystemRegistry</code>;
+<li><code>aptdata.plugins</code>: <code>_PipelineRegistry</code> renamed to <code>_SystemRegistry</code>;
   <code>list_pipelines()</code> renamed to <code>list_systems()</code>.</li>
-<li><code>smart_data.cli.app</code>: CLI now instantiates systems with <code>system_id=&lt;name&gt;</code>.</li>
-<li><code>smart_data.core.__init__</code>: exports updated to the new architecture.</li>
+<li><code>aptdata.cli.app</code>: CLI now instantiates systems with <code>system_id=&lt;name&gt;</code>.</li>
+<li><code>aptdata.core.__init__</code>: exports updated to the new architecture.</li>
 <li><code>tests/test_core.py</code>: stripped to dataset-only tests.</li>
 <li><code>tests/test_cli.py</code>: mock updated from <code>_MockPipeline</code> to <code>_MockSystem</code>.</li>
 <li>All documentation updated to reflect the new System/Component/Flow model.</li>
 </ul>
 <h3 id="removed">Removed<a class="headerlink" href="#removed" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>smart_data/core/pipeline.py</code> (<code>IPipeline</code>, <code>BasePipeline</code>).</li>
-<li><code>smart_data/core/step.py</code> (<code>IStep</code>, <code>BaseStep</code>).</li>
+<li><code>aptdata/core/pipeline.py</code> (<code>IPipeline</code>, <code>BasePipeline</code>).</li>
+<li><code>aptdata/core/step.py</code> (<code>IStep</code>, <code>BaseStep</code>).</li>
 </ul>
 <hr />
 <h2 id="001-2026-03-06">[0.0.1] – 2026-03-06<a class="headerlink" href="#001-2026-03-06" title="Permanent link">&para;</a></h2>
@@ -1349,11 +1349,11 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
 <li><strong>Two-layer contract system</strong> – pure <code>@dataclass + ABC</code> interfaces
   (<code>IDataset</code>, <code>IStep</code>, <code>IPipeline</code>) and Pydantic-validated base classes
   (<code>BaseDataset</code>, <code>BaseStep</code>, <code>BasePipeline</code>).</li>
-<li><strong>Plugin registry</strong> – <code>smart_data.plugins.registry</code> singleton for
+<li><strong>Plugin registry</strong> – <code>aptdata.plugins.registry</code> singleton for
   registering and discovering concrete pipeline implementations by name.</li>
-<li><strong>CLI</strong> – <code>smart-data run</code> command: runs a registered pipeline and emits
+<li><strong>CLI</strong> – <code>aptdata run</code> command: runs a registered pipeline and emits
   structured JSON events to stdout/stderr.</li>
-<li><strong>CLI</strong> – <code>smart-data monitor</code> command: launches the interactive Textual TUI
+<li><strong>CLI</strong> – <code>aptdata monitor</code> command: launches the interactive Textual TUI
   monitoring dashboard.</li>
 <li><strong>TUI</strong> – <code>MonitorApp</code> with DAG panel, per-step status table and
   memory-usage bar; auto-refreshes at a configurable interval.</li>

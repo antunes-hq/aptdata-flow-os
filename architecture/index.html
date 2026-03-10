@@ -27,7 +27,7 @@
     
     
       
-        <title>Architecture - smart-data</title>
+        <title>Architecture - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1282,7 +1282,7 @@
 
 
 <h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
-<p>smart-data is built around a <strong>two-layer contract system</strong> for each of its
+<p>aptdata is built around a <strong>two-layer contract system</strong> for each of its
 three universal abstractions — <strong>Component</strong>, <strong>Flow</strong>, and <strong>System</strong> — plus
 the foundational <strong>Dataset</strong> type.</p>
 <hr />
@@ -1385,7 +1385,7 @@ but still does not implement the abstract methods.</p>
 <p>Users inherit from the <code>Base*</code> classes and implement the remaining abstract
 methods:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic.dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span> <span class="k">as</span> <span class="n">pydantic_dataclass</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDataset</span><span class="p">,</span> <span class="n">IDataset</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDataset</span><span class="p">,</span> <span class="n">IDataset</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nd">@pydantic_dataclass</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">ParquetDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
@@ -1411,7 +1411,7 @@ is treated as a plain Python attribute.</p>
 <h2 id="componentmeta-componentkind">ComponentMeta &amp; ComponentKind<a class="headerlink" href="#componentmeta-componentkind" title="Permanent link">&para;</a></h2>
 <p>Every <code>BaseComponent</code> carries a <code>ComponentMeta</code> instance that describes its
 role, tags and branching behaviour:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComponentMeta</span><span class="p">,</span> <span class="n">ComponentKind</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComponentMeta</span><span class="p">,</span> <span class="n">ComponentKind</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">meta</span> <span class="o">=</span> <span class="n">ComponentMeta</span><span class="p">(</span>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">kind</span><span class="o">=</span><span class="n">ComponentKind</span><span class="o">.</span><span class="n">TRANSFORM</span><span class="p">,</span>
@@ -1427,7 +1427,7 @@ role, tags and branching behaviour:</p>
 <h2 id="flow-graph-primitives">Flow graph primitives<a class="headerlink" href="#flow-graph-primitives" title="Permanent link">&para;</a></h2>
 <p><code>FlowEdge</code> connects two components and can carry an optional predicate to
 enable conditional / branching execution:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlowEdge</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlowEdge</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># Unconditional edge</span>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">FlowEdge</span><span class="p">(</span><span class="n">source_id</span><span class="o">=</span><span class="s2">&quot;extract&quot;</span><span class="p">,</span> <span class="n">target_id</span><span class="o">=</span><span class="s2">&quot;transform&quot;</span><span class="p">)</span>
@@ -1443,7 +1443,7 @@ owning <code>IFlow</code>.</p>
 <p>Concrete system implementations are registered by name in the global
 <code>registry</code> singleton:</p>
 <pre class="mermaid"><code>graph LR
-    R["smart_data.plugins.registry"]
+    R["aptdata.plugins.registry"]
     R --&gt; E["\"etl_system\" → EtlSystem"]
     R --&gt; M["\"ml_system\" → MlSystem"]
     R --&gt; D["\"...\""]</code></pre>
@@ -1476,7 +1476,7 @@ returns a <strong>list</strong> of datasets (enabling multi-output / branching f
 When a <code>FlowEdge</code> has no condition, it is always traversed.</p>
 <hr />
 <h2 id="monitoring-tui">Monitoring (TUI)<a class="headerlink" href="#monitoring-tui" title="Permanent link">&para;</a></h2>
-<p>The <code>smart-data monitor</code> command launches a
+<p>The <code>aptdata monitor</code> command launches a
 <a href="https://textual.textualize.io/">Textual</a>-based terminal dashboard that
 displays:</p>
 <ul>

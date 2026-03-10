@@ -1,10 +1,10 @@
-# smart-data
+# aptdata
 
 > A declarative, extensible Python framework for building smart data pipelines.
 
 ## Overview
 
-smart-data provides a clean **two-layer contract system** built around three
+aptdata provides a clean **two-layer contract system** built around three
 universal abstractions — **Component**, **Flow**, and **System**:
 
 - **Layer 1 – Interfaces (`I*`):** Pure `@dataclass + ABC` contracts
@@ -50,7 +50,7 @@ methods, and register their systems in the plugin registry.
 - **Structured CLI** emitting machine-readable JSON lines (with Rich human-readable mode)
 - **Rich rendering layer** with dual-mode output (JSON lines or Rich tables/panels)
 - **Sub-commands**: `system`, `plugin`, `config`, `telemetry`
-- **Interactive wizard** mode (`smart-data interactive`) powered by questionary
+- **Interactive wizard** mode (`aptdata interactive`) powered by questionary
 - **Shell completions** for system names, plugin names, environments, templates
 - **Interactive TUI** (Textual) with DAG, Metrics, and Agent Trace tabs
 - **MCP Server** (Model Context Protocol) for AI agent integration
@@ -58,13 +58,13 @@ methods, and register their systems in the plugin registry.
 
 ## MCP Integration
 
-smart-data exposes a FastMCP server so AI agents can discover and run
+aptdata exposes a FastMCP server so AI agents can discover and run
 pipelines. Available MCP tools:
 
 - `run_flow(flow_id)` – Execute a registered system
 - `list_registered_systems()` – List available pipelines
 
-Start the server: `smart-data mcp-start`
+Start the server: `aptdata mcp-start`
 
 ## Links
 

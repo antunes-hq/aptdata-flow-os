@@ -27,7 +27,7 @@
     
     
       
-        <title>Scaffold Templates - smart-data</title>
+        <title>Scaffold Templates - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1294,8 +1294,8 @@
 
 
 <h1 id="scaffold-templates">Scaffold Templates<a class="headerlink" href="#scaffold-templates" title="Permanent link">&para;</a></h1>
-<p>The <code>smart-data scaffold</code> command bootstraps a project from a pre-built template.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>smart-data<span class="w"> </span>scaffold<span class="w"> </span>&lt;project-name&gt;<span class="w"> </span><span class="o">[</span>--template<span class="w"> </span>TEMPLATE<span class="o">]</span><span class="w"> </span><span class="o">[</span>--output<span class="w"> </span>DIR<span class="o">]</span>
+<p>The <code>aptdata scaffold</code> command bootstraps a project from a pre-built template.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>&lt;project-name&gt;<span class="w"> </span><span class="o">[</span>--template<span class="w"> </span>TEMPLATE<span class="o">]</span><span class="w"> </span><span class="o">[</span>--output<span class="w"> </span>DIR<span class="o">]</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1328,7 +1328,7 @@
 <h3 id="hello-world-default"><code>hello-world</code> (default)<a class="headerlink" href="#hello-world-default" title="Permanent link">&para;</a></h3>
 <p>A minimal pandas pipeline that ingests a JSON file, processes it, and saves
 CSV/JSON output.  Great for getting started.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>smart-data<span class="w"> </span>scaffold<span class="w"> </span>my_project
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>my_project
 </code></pre></div>
 <p><strong>Generated files:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>my_project/
@@ -1342,7 +1342,7 @@ CSV/JSON output.  Great for getting started.</p>
 <hr />
 <h3 id="medallion"><code>medallion</code><a class="headerlink" href="#medallion" title="Permanent link">&para;</a></h3>
 <p>A three-layer Bronze → Silver → Gold data lakehouse pattern.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>smart-data<span class="w"> </span>scaffold<span class="w"> </span>my_lakehouse<span class="w"> </span>--template<span class="w"> </span>medallion
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>my_lakehouse<span class="w"> </span>--template<span class="w"> </span>medallion
 </code></pre></div>
 <pre class="mermaid"><code>flowchart LR
     Raw["Raw Source\n(CSV / JSON)"]
@@ -1358,19 +1358,19 @@ CSV/JSON output.  Great for getting started.</p>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>├── bronze.py           # Raw ingestion (CSVReader)
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>├── silver.py           # Cleaning + PandasTransformer + QualityValidator
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>├── gold.py             # Aggregation + ParquetWriter
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>├── smart-data.yaml     # Connector config
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>├── aptdata.yaml     # Connector config
 <a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>├── requirements.txt
 <a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>└── README.md
 </code></pre></div>
 <p>The Silver layer demonstrates wiring a
-:class:<code>~smart_data.plugins.transform.pandas.PandasTransformer</code> with a
-:class:<code>~smart_data.plugins.quality.validator.QualityValidator</code> inside a
-:class:<code>~smart_data.core.workflow.Workflow</code>.</p>
+:class:<code>~aptdata.plugins.transform.pandas.PandasTransformer</code> with a
+:class:<code>~aptdata.plugins.quality.validator.QualityValidator</code> inside a
+:class:<code>~aptdata.core.workflow.Workflow</code>.</p>
 <hr />
 <h3 id="rag-ingestion"><code>rag-ingestion</code><a class="headerlink" href="#rag-ingestion" title="Permanent link">&para;</a></h3>
 <p>An end-to-end Retrieval-Augmented Generation (RAG) ingestion pipeline:
 extract → chunk → embed → load.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>smart-data<span class="w"> </span>scaffold<span class="w"> </span>my_rag_app<span class="w"> </span>--template<span class="w"> </span>rag-ingestion
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>my_rag_app<span class="w"> </span>--template<span class="w"> </span>rag-ingestion
 </code></pre></div>
 <pre class="mermaid"><code>flowchart LR
     Src["📄 Source\n(documents)"]
@@ -1384,7 +1384,7 @@ extract → chunk → embed → load.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>my_rag_app/
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>├── data/
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├── pipeline.py         # 4-step Workflow (extract/chunk/embed/load)
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>├── smart-data.yaml
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>├── aptdata.yaml
 <a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>├── requirements.txt
 <a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>└── README.md
 </code></pre></div>
@@ -1394,8 +1394,8 @@ vector database client.</p>
 <hr />
 <h3 id="data-quality-test"><code>data-quality-test</code><a class="headerlink" href="#data-quality-test" title="Permanent link">&para;</a></h3>
 <p>A data quality enforcement pipeline using
-:class:<code>~smart_data.plugins.quality.contract.SchemaContract</code> and expectations.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>smart-data<span class="w"> </span>scaffold<span class="w"> </span>my_dq_suite<span class="w"> </span>--template<span class="w"> </span>data-quality-test
+:class:<code>~aptdata.plugins.quality.contract.SchemaContract</code> and expectations.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>my_dq_suite<span class="w"> </span>--template<span class="w"> </span>data-quality-test
 </code></pre></div>
 <pre class="mermaid"><code>flowchart LR
     Raw["Raw Dataset"]
@@ -1409,7 +1409,7 @@ vector database client.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>my_dq_suite/
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>├── data/
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>├── quality_pipeline.py  # SchemaContract + QualityValidator + Workflow
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>├── smart-data.yaml
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>├── aptdata.yaml
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>├── requirements.txt
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>└── README.md
 </code></pre></div>
@@ -1419,7 +1419,7 @@ vector database client.</p>
 <hr />
 <h3 id="job-wheel"><code>job-wheel</code><a class="headerlink" href="#job-wheel" title="Permanent link">&para;</a></h3>
 <p>A Python wheel executor template for packaging and running jobs portably.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>smart-data<span class="w"> </span>scaffold<span class="w"> </span>my_job<span class="w"> </span>--template<span class="w"> </span>job-wheel
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>my_job<span class="w"> </span>--template<span class="w"> </span>job-wheel
 </code></pre></div>
 <p><strong>Generated files:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>my_job/
@@ -1443,12 +1443,12 @@ entry-point wired via <code>pyproject.toml [project.scripts]</code>.  Build and 
 <a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>my_job-job
 <a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
 <a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="c1"># Or run directly</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>smart-data<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>my_job
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>my_job
 </code></pre></div>
 <hr />
 <h3 id="docker-compose-app"><code>docker-compose-app</code><a class="headerlink" href="#docker-compose-app" title="Permanent link">&para;</a></h3>
 <p>A multi-service Docker Compose application template.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>smart-data<span class="w"> </span>scaffold<span class="w"> </span>my_service<span class="w"> </span>--template<span class="w"> </span>docker-compose-app
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>my_service<span class="w"> </span>--template<span class="w"> </span>docker-compose-app
 </code></pre></div>
 <p><strong>Generated files:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>my_service/
@@ -1464,20 +1464,20 @@ entry-point wired via <code>pyproject.toml [project.scripts]</code>.  Build and 
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>--build
 <a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
 <a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># Or via the mesh CLI</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>smart-data<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>my_service
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>my_service
 </code></pre></div>
 <hr />
 <h2 id="mesh-cli">Mesh CLI<a class="headerlink" href="#mesh-cli" title="Permanent link">&para;</a></h2>
-<p>The <code>smart-data mesh</code> sub-command orchestrates components that include a
+<p>The <code>aptdata mesh</code> sub-command orchestrates components that include a
 <code>mesh.yaml</code> descriptor.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># List all mesh components under the current directory</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>smart-data<span class="w"> </span>mesh<span class="w"> </span>list<span class="w"> </span><span class="o">[</span>--dir<span class="w"> </span>DIR<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>list<span class="w"> </span><span class="o">[</span>--dir<span class="w"> </span>DIR<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
 <a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
 <a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># Run a component (job-wheel or docker-compose-app)</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>smart-data<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>COMPONENT<span class="w"> </span><span class="o">[</span>--dir<span class="w"> </span>DIR<span class="o">]</span><span class="w"> </span><span class="o">[</span>--dry-run<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>COMPONENT<span class="w"> </span><span class="o">[</span>--dir<span class="w"> </span>DIR<span class="o">]</span><span class="w"> </span><span class="o">[</span>--dry-run<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
 <a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
 <a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># Build a component (wheel or Docker image)</span>
-<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>smart-data<span class="w"> </span>mesh<span class="w"> </span>build<span class="w"> </span>COMPONENT<span class="w"> </span><span class="o">[</span>--dir<span class="w"> </span>DIR<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>build<span class="w"> </span>COMPONENT<span class="w"> </span><span class="o">[</span>--dir<span class="w"> </span>DIR<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
 </code></pre></div>
 <h3 id="supported-component-types">Supported component types<a class="headerlink" href="#supported-component-types" title="Permanent link">&para;</a></h3>
 <table>

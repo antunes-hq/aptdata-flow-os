@@ -27,7 +27,7 @@
     
     
       
-        <title>Configuration - smart-data</title>
+        <title>Configuration - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1294,7 +1294,7 @@
 
 
 <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h1>
-<p>smart-data supports declarative pipeline configuration via a <code>smart-data.yaml</code>
+<p>aptdata supports declarative pipeline configuration via a <code>aptdata.yaml</code>
 file, allowing you to define, validate, and run pipelines without writing any
 Python bootstrap code.</p>
 <hr />
@@ -1331,22 +1331,22 @@ Python bootstrap code.</p>
 <hr />
 <h2 id="cli-commands">CLI commands<a class="headerlink" href="#cli-commands" title="Permanent link">&para;</a></h2>
 <h3 id="config-validate"><code>config validate</code><a class="headerlink" href="#config-validate" title="Permanent link">&para;</a></h3>
-<p>Validate a <code>smart-data.yaml</code> file against the schema without running anything:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>smart-data<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>smart-data.yaml
+<p>Validate a <code>aptdata.yaml</code> file against the schema without running anything:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>aptdata.yaml
 </code></pre></div>
 <h3 id="config-init"><code>config init</code><a class="headerlink" href="#config-init" title="Permanent link">&para;</a></h3>
-<p>Generate a starter <code>smart-data.yaml</code> in the current directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>smart-data<span class="w"> </span>config<span class="w"> </span>init
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>smart-data<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--output<span class="w"> </span>/path/to/smart-data.yaml
+<p>Generate a starter <code>aptdata.yaml</code> in the current directory:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>init
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>aptdata<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--output<span class="w"> </span>/path/to/aptdata.yaml
 </code></pre></div>
 <h3 id="config-show"><code>config show</code><a class="headerlink" href="#config-show" title="Permanent link">&para;</a></h3>
 <p>Pretty-print the resolved configuration (after environment variable substitution):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>smart-data<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>smart-data.yaml
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>aptdata.yaml
 </code></pre></div>
 <h3 id="config-run"><code>config run</code><a class="headerlink" href="#config-run" title="Permanent link">&para;</a></h3>
 <p>Load the configuration file and execute all enabled systems:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>smart-data<span class="w"> </span>config<span class="w"> </span>run<span class="w"> </span>smart-data.yaml
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>smart-data<span class="w"> </span>config<span class="w"> </span>run<span class="w"> </span>smart-data.yaml<span class="w"> </span>--env<span class="w"> </span>production
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>run<span class="w"> </span>aptdata.yaml
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>aptdata<span class="w"> </span>config<span class="w"> </span>run<span class="w"> </span>aptdata.yaml<span class="w"> </span>--env<span class="w"> </span>production
 </code></pre></div>
 <hr />
 <h2 id="environment-variable-substitution">Environment variable substitution<a class="headerlink" href="#environment-variable-substitution" title="Permanent link">&para;</a></h2>
@@ -1357,10 +1357,10 @@ Python bootstrap code.</p>
 </code></pre></div>
 <hr />
 <h2 id="scaffold-templates">Scaffold templates<a class="headerlink" href="#scaffold-templates" title="Permanent link">&para;</a></h2>
-<p>The <code>scaffold</code> command generates a <code>smart-data.yaml</code> as part of the project
+<p>The <code>scaffold</code> command generates a <code>aptdata.yaml</code> as part of the project
 skeleton.  For example:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>smart-data<span class="w"> </span>scaffold<span class="w"> </span>my_project<span class="w"> </span>--template<span class="w"> </span>medallion
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># creates my_project/smart-data.yaml with a pre-filled configuration</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>my_project<span class="w"> </span>--template<span class="w"> </span>medallion
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># creates my_project/aptdata.yaml with a pre-filled configuration</span>
 </code></pre></div>
 <p>See <a href="../scaffold-templates/">Scaffold Templates</a> for all available templates.</p>
 <hr />

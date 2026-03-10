@@ -27,7 +27,7 @@
     
     
       
-        <title>Plugins - smart-data</title>
+        <title>Plugins - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href="../.." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href="../.." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1039,7 +1039,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#smart_data.plugins._SystemRegistry" class="md-nav__link">
+  <a href="#aptdata.plugins._SystemRegistry" class="md-nav__link">
     <span class="md-ellipsis">
       
         _SystemRegistry
@@ -1051,7 +1051,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#smart_data.plugins._SystemRegistry-functions" class="md-nav__link">
+  <a href="#aptdata.plugins._SystemRegistry-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
         Functions
@@ -1063,7 +1063,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#smart_data.plugins._SystemRegistry.register" class="md-nav__link">
+  <a href="#aptdata.plugins._SystemRegistry.register" class="md-nav__link">
     <span class="md-ellipsis">
       
         register
@@ -1074,7 +1074,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#smart_data.plugins._SystemRegistry.get" class="md-nav__link">
+  <a href="#aptdata.plugins._SystemRegistry.get" class="md-nav__link">
     <span class="md-ellipsis">
       
         get
@@ -1085,7 +1085,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#smart_data.plugins._SystemRegistry.list_systems" class="md-nav__link">
+  <a href="#aptdata.plugins._SystemRegistry.list_systems" class="md-nav__link">
     <span class="md-ellipsis">
       
         list_systems
@@ -1117,7 +1117,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#smart_data.plugins.registry" class="md-nav__link">
+  <a href="#aptdata.plugins.registry" class="md-nav__link">
     <span class="md-ellipsis">
       
         registry
@@ -1310,24 +1310,24 @@
 <h1 id="plugins-registry">Plugins &amp; Registry<a class="headerlink" href="#plugins-registry" title="Permanent link">&para;</a></h1>
 <p>The plugin registry lets external packages register concrete system
 implementations so the CLI can discover and instantiate them by name —
-without any changes to the <code>smart-data</code> core.</p>
+without any changes to the <code>aptdata</code> core.</p>
 <hr />
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>sequenceDiagram
     participant Pkg as Your adapter package
-    participant Reg as smart_data.plugins.registry
-    participant CLI as smart-data CLI
+    participant Reg as aptdata.plugins.registry
+    participant CLI as aptdata CLI
 
     Pkg-&gt;&gt;Reg: registry.register("my_system", MySystem)
     CLI-&gt;&gt;Reg: registry.get("my_system")
     Reg--&gt;&gt;CLI: MySystem class
-    CLI-&gt;&gt;CLI: smart-data run my_system</code></pre>
+    CLI-&gt;&gt;CLI: aptdata run my_system</code></pre>
 <hr />
 <h2 id="registering-a-system">Registering a system<a class="headerlink" href="#registering-a-system" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># my_package/systems.py</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic.dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span> <span class="k">as</span> <span class="n">pydantic_dataclass</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSystem</span><span class="p">,</span> <span class="n">IFlow</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">registry</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSystem</span><span class="p">,</span> <span class="n">IFlow</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">registry</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nd">@pydantic_dataclass</span>
@@ -1347,13 +1347,13 @@ without any changes to the <code>smart-data</code> core.</p>
 <a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;sales_system&quot;</span><span class="p">,</span> <span class="n">SalesSystem</span><span class="p">)</span>
 </code></pre></div>
 <p>Then run it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>smart-data<span class="w"> </span>run<span class="w"> </span>sales_system<span class="w"> </span>--env<span class="w"> </span>prod
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aptdata<span class="w"> </span>run<span class="w"> </span>sales_system<span class="w"> </span>--env<span class="w"> </span>prod
 </code></pre></div>
 <hr />
 <h2 id="auto-discovery-with-entry-points">Auto-discovery with entry points<a class="headerlink" href="#auto-discovery-with-entry-points" title="Permanent link">&para;</a></h2>
 <p>You can auto-register systems when your package is installed by declaring a
-<code>smart_data.systems</code> entry-point group in your <code>pyproject.toml</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">[tool.poetry.plugins.</span><span class="s2">&quot;smart_data.systems&quot;</span><span class="k">]</span>
+<code>aptdata.systems</code> entry-point group in your <code>pyproject.toml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">[tool.poetry.plugins.</span><span class="s2">&quot;aptdata.systems&quot;</span><span class="k">]</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">sales_system</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_package.systems:SalesSystem&quot;</span>
 </code></pre></div>
 <div class="admonition note">
@@ -1369,11 +1369,11 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
 
 
 
-<h2 id="smart_data.plugins._SystemRegistry" class="doc doc-heading">
-            <code>smart_data.plugins._SystemRegistry</code>
+<h2 id="aptdata.plugins._SystemRegistry" class="doc doc-heading">
+            <code>aptdata.plugins._SystemRegistry</code>
 
 
-<a href="#smart_data.plugins._SystemRegistry" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#aptdata.plugins._SystemRegistry" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents first">
@@ -1382,7 +1382,7 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
       <p>Simple name → system-class mapping.</p>
 
               <details class="quote">
-                <summary>Source code in <code>smart_data/plugins/__init__.py</code></summary>
+                <summary>Source code in <code>aptdata/plugins/__init__.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-38">38</a></span>
 <span class="normal"><a href="#__codelineno-0-39">39</a></span>
 <span class="normal"><a href="#__codelineno-0-40">40</a></span>
@@ -1421,7 +1421,7 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
 <a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">        name:</span>
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">            Unique identifier used on the CLI (e.g. ``&quot;pipeline_x&quot;``).</span>
 <a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">        system_cls:</span>
-<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">            A concrete subclass of :class:`~smart_data.core.system.ISystem`.</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">            A concrete subclass of :class:`~aptdata.core.system.ISystem`.</span>
 <a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">        &quot;&quot;&quot;</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">system_cls</span>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a>
@@ -1445,15 +1445,15 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
 
 
 
-<h3 id="smart_data.plugins._SystemRegistry-functions">Functions<a href="#smart_data.plugins._SystemRegistry-functions" class="headerlink" title="Permanent link">&para;</a></h3>
+<h3 id="aptdata.plugins._SystemRegistry-functions">Functions<a href="#aptdata.plugins._SystemRegistry-functions" class="headerlink" title="Permanent link">&para;</a></h3>
 
 <div class="doc doc-object doc-function">
 
 
-<h4 id="smart_data.plugins._SystemRegistry.register" class="doc doc-heading">
+<h4 id="aptdata.plugins._SystemRegistry.register" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">register</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">system_cls</span><span class="p">)</span></code>
 
-<a href="#smart_data.plugins._SystemRegistry.register" class="headerlink" title="Permanent link">&para;</a></h4>
+<a href="#aptdata.plugins._SystemRegistry.register" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
@@ -1489,11 +1489,11 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
           <tr class="doc-section-item">
             <td><code>system_cls</code></td>
             <td>
-                  <code><span title="type">type</span>[<a class="autorefs autorefs-internal" title="smart_data.core.system.ISystem" href="../core/#smart_data.core.system.ISystem">ISystem</a>]</code>
+                  <code><span title="type">type</span>[<a class="autorefs autorefs-internal" title="aptdata.core.system.ISystem" href="../core/#aptdata.core.system.ISystem">ISystem</a>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A concrete subclass of :class:<code>~smart_data.core.system.ISystem</code>.</p>
+                <p>A concrete subclass of :class:<code>~aptdata.core.system.ISystem</code>.</p>
               </div>
             </td>
             <td>
@@ -1504,7 +1504,7 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
     </table>
 
             <details class="quote">
-              <summary>Source code in <code>smart_data/plugins/__init__.py</code></summary>
+              <summary>Source code in <code>aptdata/plugins/__init__.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-44">44</a></span>
 <span class="normal"><a href="#__codelineno-0-45">45</a></span>
 <span class="normal"><a href="#__codelineno-0-46">46</a></span>
@@ -1523,7 +1523,7 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
 <a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">    name:</span>
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">        Unique identifier used on the CLI (e.g. ``&quot;pipeline_x&quot;``).</span>
 <a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">    system_cls:</span>
-<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">        A concrete subclass of :class:`~smart_data.core.system.ISystem`.</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">        A concrete subclass of :class:`~aptdata.core.system.ISystem`.</span>
 <a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">system_cls</span>
 </code></pre></div></td></tr></table></div>
@@ -1535,10 +1535,10 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
 <div class="doc doc-object doc-function">
 
 
-<h4 id="smart_data.plugins._SystemRegistry.get" class="doc doc-heading">
+<h4 id="aptdata.plugins._SystemRegistry.get" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
 
-<a href="#smart_data.plugins._SystemRegistry.get" class="headerlink" title="Permanent link">&para;</a></h4>
+<a href="#aptdata.plugins._SystemRegistry.get" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
@@ -1546,7 +1546,7 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
       <p>Return the system class registered under <em>name</em>, or <code>None</code>.</p>
 
             <details class="quote">
-              <summary>Source code in <code>smart_data/plugins/__init__.py</code></summary>
+              <summary>Source code in <code>aptdata/plugins/__init__.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-56">56</a></span>
 <span class="normal"><a href="#__codelineno-0-57">57</a></span>
 <span class="normal"><a href="#__codelineno-0-58">58</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">ISystem</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
@@ -1561,10 +1561,10 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
 <div class="doc doc-object doc-function">
 
 
-<h4 id="smart_data.plugins._SystemRegistry.list_systems" class="doc doc-heading">
+<h4 id="aptdata.plugins._SystemRegistry.list_systems" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">list_systems</span><span class="p">()</span></code>
 
-<a href="#smart_data.plugins._SystemRegistry.list_systems" class="headerlink" title="Permanent link">&para;</a></h4>
+<a href="#aptdata.plugins._SystemRegistry.list_systems" class="headerlink" title="Permanent link">&para;</a></h4>
 
 
     <div class="doc doc-contents ">
@@ -1572,7 +1572,7 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
       <p>Return a sorted list of all registered system names.</p>
 
             <details class="quote">
-              <summary>Source code in <code>smart_data/plugins/__init__.py</code></summary>
+              <summary>Source code in <code>aptdata/plugins/__init__.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-60">60</a></span>
 <span class="normal"><a href="#__codelineno-0-61">61</a></span>
 <span class="normal"><a href="#__codelineno-0-62">62</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="k">def</span><span class="w"> </span><span class="nf">list_systems</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -1598,14 +1598,14 @@ For now, call <code>registry.register()</code> explicitly at import time.</p>
 
 
 
-<h2 id="smart_data.plugins.registry" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">smart_data</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">registry</span> <span class="o">=</span> <span class="n">_SystemRegistry</span><span class="p">()</span></code>
+<h2 id="aptdata.plugins.registry" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">aptdata</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">registry</span> <span class="o">=</span> <span class="n">_SystemRegistry</span><span class="p">()</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
   </span>
 
-<a href="#smart_data.plugins.registry" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#aptdata.plugins.registry" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents first">

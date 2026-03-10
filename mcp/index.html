@@ -27,7 +27,7 @@
     
     
       
-        <title>MCP Server - smart-data</title>
+        <title>MCP Server - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1277,7 +1277,7 @@
 
 
 <h1 id="mcp-server">MCP Server<a class="headerlink" href="#mcp-server" title="Permanent link">&para;</a></h1>
-<p>smart-data ships a built-in <a href="https://modelcontextprotocol.io/">Model Context Protocol</a>
+<p>aptdata ships a built-in <a href="https://modelcontextprotocol.io/">Model Context Protocol</a>
 (MCP) server so AI agents — Claude Desktop, GitHub Copilot, Devin, and others
 — can discover and execute your pipelines without consuming excessive context
 tokens.</p>
@@ -1288,7 +1288,7 @@ exposes your registered systems as callable <strong>tools</strong> and your data
 as <strong>resources</strong>.</p>
 <pre class="mermaid"><code>graph LR
     A["AI Agent\n(Claude / Copilot / Devin)"]
-    S["smart-data mcp-start"]
+    S["aptdata mcp-start"]
     T["Tools\nrun_flow(flow_id)\nlist_registered_systems()"]
     R["Resources\nschema://datasets/{name}"]
 
@@ -1299,11 +1299,11 @@ as <strong>resources</strong>.</p>
 <h2 id="starting-the-server">Starting the server<a class="headerlink" href="#starting-the-server" title="Permanent link">&para;</a></h2>
 <h3 id="stdio-transport-default">stdio transport (default)<a class="headerlink" href="#stdio-transport-default" title="Permanent link">&para;</a></h3>
 <p>Used by most desktop AI agents (Claude Desktop, Continue.dev, etc.):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>smart-data<span class="w"> </span>mcp-start
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aptdata<span class="w"> </span>mcp-start
 </code></pre></div>
 <h3 id="sse-transport">SSE transport<a class="headerlink" href="#sse-transport" title="Permanent link">&para;</a></h3>
 <p>For web-based or HTTP integrations:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>smart-data<span class="w"> </span>mcp-start<span class="w"> </span>--transport<span class="w"> </span>sse
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aptdata<span class="w"> </span>mcp-start<span class="w"> </span>--transport<span class="w"> </span>sse
 </code></pre></div>
 <hr />
 <h2 id="available-tools">Available tools<a class="headerlink" href="#available-tools" title="Permanent link">&para;</a></h2>
@@ -1368,8 +1368,8 @@ as <strong>resources</strong>.</p>
 </ul>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;smart-data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;smart-data&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;aptdata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;aptdata&quot;</span><span class="p">,</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;mcp-start&quot;</span><span class="p">]</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="p">}</span>
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="p">}</span>
@@ -1380,7 +1380,7 @@ as <strong>resources</strong>.</p>
 execute them.</p>
 <hr />
 <h2 id="integrating-with-other-agents">Integrating with other agents<a class="headerlink" href="#integrating-with-other-agents" title="Permanent link">&para;</a></h2>
-<p>Any MCP-compatible client can connect to smart-data.  For agents that support
+<p>Any MCP-compatible client can connect to aptdata.  For agents that support
 SSE, start the server with <code>--transport sse</code> and point the client at
 <code>http://localhost:8000/sse</code> (default port).</p>
 <hr />

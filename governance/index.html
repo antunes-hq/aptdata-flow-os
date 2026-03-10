@@ -27,7 +27,7 @@
     
     
       
-        <title>Governance - smart-data</title>
+        <title>Governance - aptdata</title>
       
     
     
@@ -94,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="smart-data" class="md-header__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            smart-data
+            aptdata
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -494,13 +494,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="smart-data" class="md-nav__button md-logo" aria-label="smart-data" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    smart-data
+    aptdata
   </label>
   
     <div class="md-nav__source">
@@ -1272,7 +1272,7 @@
 
 
 <h1 id="governance">Governance<a class="headerlink" href="#governance" title="Permanent link">&para;</a></h1>
-<p>smart-data ships a first-class governance layer that covers:</p>
+<p>aptdata ships a first-class governance layer that covers:</p>
 <ul>
 <li><strong>Data lineage</strong> — provenance graph tracking every read, transform, and write</li>
 <li><strong>Data quality &amp; contracts</strong> — schema contracts and expectation suites</li>
@@ -1294,16 +1294,16 @@
 <hr />
 <h2 id="data-lineage">Data Lineage<a class="headerlink" href="#data-lineage" title="Permanent link">&para;</a></h2>
 <h3 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h3>
-<p>The lineage subsystem lives in <code>smart_data.core.lineage</code>.  Every workflow run
-produces a :class:<code>~smart_data.core.lineage.LineageGraph</code> that contains an
-ordered list of :class:<code>~smart_data.core.lineage.LineageNode</code> objects.</p>
+<p>The lineage subsystem lives in <code>aptdata.core.lineage</code>.  Every workflow run
+produces a :class:<code>~aptdata.core.lineage.LineageGraph</code> that contains an
+ordered list of :class:<code>~aptdata.core.lineage.LineageNode</code> objects.</p>
 <pre class="mermaid"><code>flowchart LR
     R["READ\ns3://raw/orders.parquet\n50,000 rows out"]
     T["TRANSFORM\ns3://clean/orders.parquet\n48,500 rows out\nrevenue = price × quantity"]
     W["WRITE\ns3://final/orders.parquet"]
 
     R --&gt; T --&gt; W</code></pre>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.core.lineage</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.lineage</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">ColumnLineage</span><span class="p">,</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">LineageEventType</span><span class="p">,</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">LineageGraph</span><span class="p">,</span>
@@ -1346,9 +1346,9 @@ ordered list of :class:<code>~smart_data.core.lineage.LineageNode</code> objects
 <a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="n">d</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>  <span class="c1"># plain dict, JSON-serialisable</span>
 </code></pre></div>
 <h3 id="lineage-store">Lineage Store<a class="headerlink" href="#lineage-store" title="Permanent link">&para;</a></h3>
-<p>Use :class:<code>~smart_data.plugins.governance.lineage_store.LineageStore</code> to
+<p>Use :class:<code>~aptdata.plugins.governance.lineage_store.LineageStore</code> to
 persist and query graphs in memory across a session.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineageStore</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineageStore</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">store</span> <span class="o">=</span> <span class="n">LineageStore</span><span class="p">()</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">store</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
@@ -1359,7 +1359,7 @@ persist and query graphs in memory across a session.</p>
 </code></pre></div>
 <hr />
 <h2 id="business-rules-registry">Business Rules Registry<a class="headerlink" href="#business-rules-registry" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">BusinessRule</span><span class="p">,</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">RuleAuditEntry</span><span class="p">,</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">RuleRegistry</span><span class="p">,</span>
@@ -1397,8 +1397,8 @@ persist and query graphs in memory across a session.</p>
 </code></pre></div>
 <hr />
 <h2 id="dataset-catalog">Dataset Catalog<a class="headerlink" href="#dataset-catalog" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetCatalog</span><span class="p">,</span> <span class="n">DatasetCatalogEntry</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.governance.classification</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnClassification</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetCatalog</span><span class="p">,</span> <span class="n">DatasetCatalogEntry</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.governance.classification</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnClassification</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">catalog</span> <span class="o">=</span> <span class="n">DatasetCatalog</span><span class="p">()</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
@@ -1419,7 +1419,7 @@ persist and query graphs in memory across a session.</p>
 </code></pre></div>
 <hr />
 <h2 id="data-classification">Data Classification<a class="headerlink" href="#data-classification" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.governance.classification</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.governance.classification</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">ColumnClassification</span><span class="p">,</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">DataClassificationPolicy</span><span class="p">,</span>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
@@ -1475,8 +1475,8 @@ persist and query graphs in memory across a session.</p>
 <hr />
 <h2 id="schema-contracts">Schema Contracts<a class="headerlink" href="#schema-contracts" title="Permanent link">&para;</a></h2>
 <p>Schema contracts (see <a href="../quality/">Quality</a>) integrate with the catalog:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnClassification</span><span class="p">,</span> <span class="n">ColumnContract</span><span class="p">,</span> <span class="n">SchemaContract</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">smart_data.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetCatalog</span><span class="p">,</span> <span class="n">DatasetCatalogEntry</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnClassification</span><span class="p">,</span> <span class="n">ColumnContract</span><span class="p">,</span> <span class="n">SchemaContract</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetCatalog</span><span class="p">,</span> <span class="n">DatasetCatalogEntry</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">contract</span> <span class="o">=</span> <span class="n">SchemaContract</span><span class="p">(</span>
 <a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;orders_v1&quot;</span><span class="p">,</span>
