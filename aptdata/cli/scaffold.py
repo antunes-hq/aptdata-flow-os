@@ -358,7 +358,7 @@ workflow.add_step(load_to_vector_store)
 
 if __name__ == "__main__":
     source_docs = [
-        {"content": "Smart-data is a framework for building smart data pipelines."},
+        {"content": "aptdata is a framework for building smart data pipelines."},
         {"content": "It supports RAG ingestion, quality checks, and governance."},
     ]
     result = workflow.execute(source_docs)
@@ -593,7 +593,7 @@ build-backend = "setuptools.backends.legacy:build"
 [project]
 name = "{project_name}"
 version = "0.1.0"
-description = "Smart-data job executor — packaged as a Python wheel."
+description = "aptdata job executor — packaged as a Python wheel."
 requires-python = ">=3.10"
 dependencies = [
     "aptdata",
@@ -676,7 +676,7 @@ run:
 _JOB_WHEEL_README = """\
 # {project_name} — Job Wheel
 
-A aptdata job executor packaged as a Python wheel for portable execution.
+An aptdata job executor packaged as a Python wheel for portable execution.
 
 ## Structure
 
@@ -842,7 +842,7 @@ aptdata
 _DOCKER_COMPOSE_README = """\
 # {project_name} — Docker Compose Application
 
-A aptdata application scaffold using Docker Compose for multi-service orchestration.
+An aptdata application scaffold using Docker Compose for multi-service orchestration.
 
 ## Structure
 
