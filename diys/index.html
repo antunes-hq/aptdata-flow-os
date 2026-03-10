@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://strondata.github.io/smart-data/transform-engines/">
+        <link rel="canonical" href="https://strondata.github.io/smart-data/diys/">
       
       
-        <link rel="prev" href="../architecture/">
+        <link rel="prev" href="../getting-started/">
       
       
-        <link rel="next" href="../quality/">
+        <link rel="next" href="../ci-logs/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Engines - aptdata</title>
+        <title>DIYs & Snippets - aptdata</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#transform-engines" class="md-skip">
+        <a href="#diys-snippets" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Engines
+              DIYs & Snippets
             
           </span>
         </div>
@@ -263,9 +263,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../diys/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -320,11 +322,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../transform-engines/" class="md-tabs__link">
         
   
   
@@ -615,10 +615,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../diys/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DIYs & Snippets
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -634,6 +661,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-minimal-data-transformer-with-pandas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Minimal Data Transformer with Pandas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-enforcing-schema-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Enforcing Schema Contracts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-emitting-lineage-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Emitting Lineage Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-from-your-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run from your Browser
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -696,37 +787,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Engines
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../transform-engines/" class="md-nav__link">
         
   
   
@@ -742,159 +806,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#pandastransformer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PandasTransformer
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="PandasTransformer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#constructor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constructor
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#supported-input-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Supported input types
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#otel-span-attributes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OTel span attributes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pysparktransformer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PySparkTransformer
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="PySparkTransformer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#constructor_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constructor
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#otel-span-attributes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OTel span attributes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#workflow-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Workflow integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#lazy-imports" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Lazy imports
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1398,207 +1309,90 @@
   
 
 
-<h1 id="transform-engines">Transform Engines<a class="headerlink" href="#transform-engines" title="Permanent link">&para;</a></h1>
-<p>aptdata provides <strong>engine-agnostic transformation wrappers</strong> that integrate
-with the :class:<code>~aptdata.core.workflow.Workflow</code> pipeline, emit OpenTelemetry
-spans, and work transparently with
-:class:<code>~aptdata.plugins.dataset.InMemoryDataset</code>.</p>
-<p>Both transformers are in <code>aptdata.plugins.transform</code> and require an optional
-dependency group:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># pandas</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>pip<span class="w"> </span>install<span class="w"> </span>pandas
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># pyspark</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>pip<span class="w"> </span>install<span class="w"> </span>pyspark
+<h1 id="diys-snippets">DIYs &amp; Snippets<a class="headerlink" href="#diys-snippets" title="Permanent link">&para;</a></h1>
+<p>Welcome to the <strong>DIY (Do It Yourself)</strong> section! Here you will find copy-pasteable snippets and mini-tutorials for solving common data engineering problems using <strong>aptdata</strong>.</p>
+<hr />
+<h2 id="1-minimal-data-transformer-with-pandas">1. Minimal Data Transformer with Pandas<a class="headerlink" href="#1-minimal-data-transformer-with-pandas" title="Permanent link">&para;</a></h2>
+<p>Often you just want to take an existing <code>pandas.DataFrame</code>, clean it up, and return it. Using <code>PandasTransformer</code>, you can wrap simple functions directly into an <code>aptdata</code> component.</p>
+<div class="highlight"><span class="filename">clean_data.py</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic.dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDataset</span><span class="p">,</span> <span class="n">IDataset</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">class</span><span class="w"> </span><span class="nc">DataFrameDataset</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A simple dataset holding a pandas DataFrame.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># 1. Define your standard pandas logic</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">drop_nulls_and_dedup</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1"># 2. Wrap it with PandasTransformer</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">transformer</span> <span class="o">=</span> <span class="n">PandasTransformer</span><span class="p">(</span><span class="s2">&quot;clean_data&quot;</span><span class="p">,</span> <span class="n">drop_nulls_and_dedup</span><span class="p">)</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1"># 3. Use it!</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="n">raw_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">]})</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">DataFrameDataset</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s2">&quot;memory://raw&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="n">dataset</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">raw_df</span><span class="p">)</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="c1"># Output dataset</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">result</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </code></pre></div>
 <hr />
-<h2 id="pandastransformer">PandasTransformer<a class="headerlink" href="#pandastransformer" title="Permanent link">&para;</a></h2>
-<p>:class:<code>~aptdata.plugins.transform.pandas.PandasTransformer</code> wraps any
-callable <code>(pd.DataFrame) → pd.DataFrame</code> and handles input/output conversion
-automatically.</p>
-<h3 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>name</code></td>
-<td><code>str</code></td>
-<td>Human-readable identifier</td>
-</tr>
-<tr>
-<td><code>transform_func</code></td>
-<td><code>Callable[[pd.DataFrame], pd.DataFrame]</code></td>
-<td>Transformation function</td>
-</tr>
-</tbody>
-</table>
-<h3 id="supported-input-types">Supported input types<a class="headerlink" href="#supported-input-types" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Input</th>
-<th>Behaviour</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>InMemoryDataset</code></td>
-<td>Converted to DataFrame; result returned as <code>InMemoryDataset</code></td>
-</tr>
-<tr>
-<td><code>pd.DataFrame</code></td>
-<td>Used directly; result is a <code>pd.DataFrame</code></td>
-</tr>
-<tr>
-<td><code>list[dict]</code></td>
-<td>Converted to DataFrame; result is a <code>pd.DataFrame</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="otel-span-attributes">OTel span attributes<a class="headerlink" href="#otel-span-attributes" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>aptdata.transformer.name</code></td>
-<td>Transformer name</td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.engine</code></td>
-<td><code>"pandas"</code></td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.rows_in</code></td>
-<td>Input row count</td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.rows_out</code></td>
-<td>Output row count</td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.columns_out</code></td>
-<td>Output column names</td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.compute_time_ms</code></td>
-<td>Wall-clock time (ms)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">transformer</span> <span class="o">=</span> <span class="n">PandasTransformer</span><span class="p">(</span><span class="s2">&quot;clean&quot;</span><span class="p">,</span> <span class="n">clean</span><span class="p">)</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;my_pipeline&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">result</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">my_dataset</span><span class="p">)</span>
+<h2 id="2-enforcing-schema-contracts">2. Enforcing Schema Contracts<a class="headerlink" href="#2-enforcing-schema-contracts" title="Permanent link">&para;</a></h2>
+<p>This snippet shows how to enforce that a dataset contains no nulls on a primary key column before proceeding to the next step. If it fails, execution aborts.</p>
+<div class="highlight"><span class="filename">quality_check.py</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.quality</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">EnforcementMode</span><span class="p">,</span> <span class="n">ExpectColumnToNotBeNull</span><span class="p">,</span> <span class="n">QualityValidator</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># Set up validation rules</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">validator</span> <span class="o">=</span> <span class="n">QualityValidator</span><span class="p">(</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">expectations</span><span class="o">=</span><span class="p">[</span><span class="n">ExpectColumnToNotBeNull</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)],</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">enforcement</span><span class="o">=</span><span class="n">EnforcementMode</span><span class="o">.</span><span class="n">ABORT</span><span class="p">,</span> <span class="c1"># Fail fast!</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">)</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">raw_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">]})</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="n">clean_data</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">raw_df</span><span class="p">)</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<h2 id="pysparktransformer">PySparkTransformer<a class="headerlink" href="#pysparktransformer" title="Permanent link">&para;</a></h2>
-<p>:class:<code>~aptdata.plugins.transform.spark.PySparkTransformer</code> wraps a
-callable <code>(SparkSession, DataFrame) → DataFrame</code>.</p>
-<h3 id="constructor_1">Constructor<a class="headerlink" href="#constructor_1" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>name</code></td>
-<td><code>str</code></td>
-<td>Human-readable name</td>
-</tr>
-<tr>
-<td><code>transform_func</code></td>
-<td><code>Callable[[SparkSession, DataFrame], DataFrame]</code></td>
-<td>Transformation function</td>
-</tr>
-<tr>
-<td><code>app_name</code></td>
-<td><code>str</code></td>
-<td>Spark app name</td>
-</tr>
-</tbody>
-</table>
-<h3 id="otel-span-attributes_1">OTel span attributes<a class="headerlink" href="#otel-span-attributes_1" title="Permanent link">&para;</a></h3>
-<p>All attributes from <code>PandasTransformer</code> plus:</p>
-<table>
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>aptdata.spark.app_name</code></td>
-<td>Spark application name</td>
-</tr>
-<tr>
-<td><code>aptdata.spark.ui_url</code></td>
-<td>Spark UI URL (if available)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PySparkTransformer</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">compute_revenue</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;revenue&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;quantity&quot;</span><span class="p">))</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">transformer</span> <span class="o">=</span> <span class="n">PySparkTransformer</span><span class="p">(</span><span class="s2">&quot;compute_revenue&quot;</span><span class="p">,</span> <span class="n">compute_revenue</span><span class="p">,</span> <span class="n">app_name</span><span class="o">=</span><span class="s2">&quot;ETL&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;spark_pipeline&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">result</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">spark_df</span><span class="p">)</span>
+<h2 id="3-emitting-lineage-data">3. Emitting Lineage Data<a class="headerlink" href="#3-emitting-lineage-data" title="Permanent link">&para;</a></h2>
+<p>Tracking where data comes from and where it goes is crucial for governance. Here is how you can use <code>LineageGraph</code> to emit basic lineage data.</p>
+<div class="highlight"><span class="filename">lineage.py</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.lineage</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineageGraph</span><span class="p">,</span> <span class="n">LineageNode</span><span class="p">,</span> <span class="n">LineageEventType</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.governance</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineageStore</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># 1. Initialize a Graph for a specific run</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">graph</span> <span class="o">=</span> <span class="n">LineageGraph</span><span class="p">(</span><span class="n">run_id</span><span class="o">=</span><span class="s2">&quot;run-1024&quot;</span><span class="p">,</span> <span class="n">workflow_name</span><span class="o">=</span><span class="s2">&quot;daily_etl&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># 2. Record read and write events</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">LineageNode</span><span class="p">(</span><span class="n">dataset_uri</span><span class="o">=</span><span class="s2">&quot;s3://bronze/sales&quot;</span><span class="p">,</span> <span class="n">event_type</span><span class="o">=</span><span class="n">LineageEventType</span><span class="o">.</span><span class="n">READ</span><span class="p">))</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">LineageNode</span><span class="p">(</span><span class="n">dataset_uri</span><span class="o">=</span><span class="s2">&quot;s3://silver/sales_clean&quot;</span><span class="p">,</span> <span class="n">event_type</span><span class="o">=</span><span class="n">LineageEventType</span><span class="o">.</span><span class="n">WRITE</span><span class="p">))</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># 3. Save it to your store (defaults to logging/memory)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">store</span> <span class="o">=</span> <span class="n">LineageStore</span><span class="p">()</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">store</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lineage recorded successfully.&quot;</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<h2 id="workflow-integration">Workflow integration<a class="headerlink" href="#workflow-integration" title="Permanent link">&para;</a></h2>
-<p>Both transformers implement :class:<code>~aptdata.plugins.base.BaseTransformer</code>
-and are compatible with :meth:<code>~aptdata.core.workflow.Workflow.add_step</code>:</p>
-<pre class="mermaid"><code>flowchart LR
-    DS["Dataset\n(InMemoryDataset)"]
-    PT["PandasTransformer\nor PySparkTransformer"]
-    QV["QualityValidator\n(optional)"]
-    OUT["Transformed Dataset"]
-
-    DS --&gt; PT --&gt; QV --&gt; OUT</code></pre>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;full_pipeline&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">pandas_transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">quality_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">)</span>   <span class="c1"># see quality docs</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-</code></pre></div>
-<hr />
-<h2 id="lazy-imports">Lazy imports<a class="headerlink" href="#lazy-imports" title="Permanent link">&para;</a></h2>
-<p>Neither pandas nor pyspark is required at import time.  A
-:class:<code>~aptdata.plugins.manager.PluginDependencyError</code> is raised only at
-instantiation time if the required library is missing.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># This import always succeeds, even without pandas/pyspark installed:</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span><span class="p">,</span> <span class="n">PySparkTransformer</span>
-</code></pre></div>
+<h2 id="run-from-your-browser">Run from your Browser<a class="headerlink" href="#run-from-your-browser" title="Permanent link">&para;</a></h2>
+<p>Want to try <code>aptdata</code> without installing anything? You can run a sandbox environment directly in your browser using Google Colab!</p>
+<p><a href="https://colab.research.google.com/github/strondata/smart-data/blob/main/docs/notebooks/aptdata_quickstart.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<blockquote>
+<p><strong>Note:</strong> The Colab notebook will automatically install <code>aptdata</code> using <code>pip install aptdata</code> inside the environment so you can run the code snippets above immediately.</p>
+</blockquote>
 
 
 

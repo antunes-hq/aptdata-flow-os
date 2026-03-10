@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://strondata.github.io/smart-data/transform-engines/">
+        <link rel="canonical" href="https://strondata.github.io/smart-data/ci-logs/">
       
       
-        <link rel="prev" href="../architecture/">
+        <link rel="prev" href="../diys/">
       
       
-        <link rel="next" href="../quality/">
+        <link rel="next" href="../architecture/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Engines - aptdata</title>
+        <title>CI & Execution Logs - aptdata</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#transform-engines" class="md-skip">
+        <a href="#ci-execution-logs" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Engines
+              CI & Execution Logs
             
           </span>
         </div>
@@ -282,9 +282,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../ci-logs/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -320,11 +322,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../transform-engines/" class="md-tabs__link">
         
   
   
@@ -642,10 +642,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ci-logs/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI & Execution Logs
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -661,6 +688,59 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#github-actions-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Actions Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#realistic-execution-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Realistic Execution Logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-cli-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard CLI Output
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -696,37 +776,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Engines
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../transform-engines/" class="md-nav__link">
         
   
   
@@ -742,159 +795,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#pandastransformer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PandasTransformer
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="PandasTransformer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#constructor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constructor
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#supported-input-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Supported input types
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#otel-span-attributes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OTel span attributes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pysparktransformer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PySparkTransformer
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="PySparkTransformer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#constructor_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constructor
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#otel-span-attributes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OTel span attributes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#workflow-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Workflow integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#lazy-imports" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Lazy imports
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1398,206 +1298,79 @@
   
 
 
-<h1 id="transform-engines">Transform Engines<a class="headerlink" href="#transform-engines" title="Permanent link">&para;</a></h1>
-<p>aptdata provides <strong>engine-agnostic transformation wrappers</strong> that integrate
-with the :class:<code>~aptdata.core.workflow.Workflow</code> pipeline, emit OpenTelemetry
-spans, and work transparently with
-:class:<code>~aptdata.plugins.dataset.InMemoryDataset</code>.</p>
-<p>Both transformers are in <code>aptdata.plugins.transform</code> and require an optional
-dependency group:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># pandas</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>pip<span class="w"> </span>install<span class="w"> </span>pandas
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># pyspark</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>pip<span class="w"> </span>install<span class="w"> </span>pyspark
+<h1 id="ci-execution-logs">CI &amp; Execution Logs<a class="headerlink" href="#ci-execution-logs" title="Permanent link">&para;</a></h1>
+<p><strong>aptdata</strong> is designed to integrate seamlessly into CI/CD pipelines. Because every execution log and command output can be formatted as structured JSON lines (<code>--json</code>), it becomes incredibly easy to capture, parse, and analyze the results of your data pipelines within automated workflows.</p>
+<h2 id="github-actions-example">GitHub Actions Example<a class="headerlink" href="#github-actions-example" title="Permanent link">&para;</a></h2>
+<p>Here is a complete example of how you can run an <code>aptdata</code> system inside a GitHub Actions workflow. This workflow sets up Python, installs the project dependencies, and runs the data pipeline.</p>
+<div class="highlight"><span class="filename">.github/workflows/data-pipeline.yml</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Data Pipeline</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">on</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&quot;main&quot;</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="c1"># Run daily at midnight</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*&#39;</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="nt">run-pipeline</span><span class="p">:</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Python 3.10</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v4</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.10&#39;</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">        </span><span class="no">python -m pip install --upgrade pip</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">        </span><span class="no">pip install aptdata</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run aptdata system</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">        </span><span class="no"># Run the system named &quot;my_system&quot; and output structured JSON logs</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">        </span><span class="no">aptdata run my_system --json &gt; pipeline_run.json</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Archive execution logs</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v3</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aptdata-execution-logs</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pipeline_run.json</span>
 </code></pre></div>
-<hr />
-<h2 id="pandastransformer">PandasTransformer<a class="headerlink" href="#pandastransformer" title="Permanent link">&para;</a></h2>
-<p>:class:<code>~aptdata.plugins.transform.pandas.PandasTransformer</code> wraps any
-callable <code>(pd.DataFrame) → pd.DataFrame</code> and handles input/output conversion
-automatically.</p>
-<h3 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>name</code></td>
-<td><code>str</code></td>
-<td>Human-readable identifier</td>
-</tr>
-<tr>
-<td><code>transform_func</code></td>
-<td><code>Callable[[pd.DataFrame], pd.DataFrame]</code></td>
-<td>Transformation function</td>
-</tr>
-</tbody>
-</table>
-<h3 id="supported-input-types">Supported input types<a class="headerlink" href="#supported-input-types" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Input</th>
-<th>Behaviour</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>InMemoryDataset</code></td>
-<td>Converted to DataFrame; result returned as <code>InMemoryDataset</code></td>
-</tr>
-<tr>
-<td><code>pd.DataFrame</code></td>
-<td>Used directly; result is a <code>pd.DataFrame</code></td>
-</tr>
-<tr>
-<td><code>list[dict]</code></td>
-<td>Converted to DataFrame; result is a <code>pd.DataFrame</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="otel-span-attributes">OTel span attributes<a class="headerlink" href="#otel-span-attributes" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>aptdata.transformer.name</code></td>
-<td>Transformer name</td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.engine</code></td>
-<td><code>"pandas"</code></td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.rows_in</code></td>
-<td>Input row count</td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.rows_out</code></td>
-<td>Output row count</td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.columns_out</code></td>
-<td>Output column names</td>
-</tr>
-<tr>
-<td><code>aptdata.transformer.compute_time_ms</code></td>
-<td>Wall-clock time (ms)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">transformer</span> <span class="o">=</span> <span class="n">PandasTransformer</span><span class="p">(</span><span class="s2">&quot;clean&quot;</span><span class="p">,</span> <span class="n">clean</span><span class="p">)</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;my_pipeline&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">result</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">my_dataset</span><span class="p">)</span>
+<h2 id="realistic-execution-logs">Realistic Execution Logs<a class="headerlink" href="#realistic-execution-logs" title="Permanent link">&para;</a></h2>
+<p>When you run <code>aptdata</code> with the <code>--json</code> flag, it emits structured NDJSON (Newline Delimited JSON) logs. This is perfect for machine readability.</p>
+<p>Here is an example of what the execution logs might look like when running a system:</p>
+<div class="highlight"><span class="filename">pipeline_run.json</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;system.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;system_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_system&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prod&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;dry_run&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:00.000000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;flow_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extract_flow&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:00.050000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;component.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;component_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres_extractor&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:00.100000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;component.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;component_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres_extractor&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;elapsed_seconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.45</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:02.550000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;component.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;component_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data_validator&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:02.600000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;component.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;component_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data_validator&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;elapsed_seconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.82</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:03.420000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;flow_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extract_flow&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;elapsed_seconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.42</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:03.470000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;flow_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;transform_flow&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:03.500000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;component.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;component_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pandas_transformer&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:03.550000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;component.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;component_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pandas_transformer&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;elapsed_seconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.12</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:08.670000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;flow_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;transform_flow&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;elapsed_seconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.22</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:08.720000Z&quot;</span><span class="p">}</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;system.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;system_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_system&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prod&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;dry_run&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;elapsed_seconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.77</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:08.770000Z&quot;</span><span class="p">}</span>
 </code></pre></div>
-<hr />
-<h2 id="pysparktransformer">PySparkTransformer<a class="headerlink" href="#pysparktransformer" title="Permanent link">&para;</a></h2>
-<p>:class:<code>~aptdata.plugins.transform.spark.PySparkTransformer</code> wraps a
-callable <code>(SparkSession, DataFrame) → DataFrame</code>.</p>
-<h3 id="constructor_1">Constructor<a class="headerlink" href="#constructor_1" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>name</code></td>
-<td><code>str</code></td>
-<td>Human-readable name</td>
-</tr>
-<tr>
-<td><code>transform_func</code></td>
-<td><code>Callable[[SparkSession, DataFrame], DataFrame]</code></td>
-<td>Transformation function</td>
-</tr>
-<tr>
-<td><code>app_name</code></td>
-<td><code>str</code></td>
-<td>Spark app name</td>
-</tr>
-</tbody>
-</table>
-<h3 id="otel-span-attributes_1">OTel span attributes<a class="headerlink" href="#otel-span-attributes_1" title="Permanent link">&para;</a></h3>
-<p>All attributes from <code>PandasTransformer</code> plus:</p>
-<table>
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>aptdata.spark.app_name</code></td>
-<td>Spark application name</td>
-</tr>
-<tr>
-<td><code>aptdata.spark.ui_url</code></td>
-<td>Spark UI URL (if available)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pyspark.sql</span><span class="w"> </span><span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PySparkTransformer</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workflow</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">compute_revenue</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;revenue&quot;</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;quantity&quot;</span><span class="p">))</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">transformer</span> <span class="o">=</span> <span class="n">PySparkTransformer</span><span class="p">(</span><span class="s2">&quot;compute_revenue&quot;</span><span class="p">,</span> <span class="n">compute_revenue</span><span class="p">,</span> <span class="n">app_name</span><span class="o">=</span><span class="s2">&quot;ETL&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;spark_pipeline&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">result</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">spark_df</span><span class="p">)</span>
-</code></pre></div>
-<hr />
-<h2 id="workflow-integration">Workflow integration<a class="headerlink" href="#workflow-integration" title="Permanent link">&para;</a></h2>
-<p>Both transformers implement :class:<code>~aptdata.plugins.base.BaseTransformer</code>
-and are compatible with :meth:<code>~aptdata.core.workflow.Workflow.add_step</code>:</p>
-<pre class="mermaid"><code>flowchart LR
-    DS["Dataset\n(InMemoryDataset)"]
-    PT["PandasTransformer\nor PySparkTransformer"]
-    QV["QualityValidator\n(optional)"]
-    OUT["Transformed Dataset"]
-
-    DS --&gt; PT --&gt; QV --&gt; OUT</code></pre>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;full_pipeline&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">pandas_transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">wf</span><span class="o">.</span><span class="n">add_step</span><span class="p">(</span><span class="n">quality_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">)</span>   <span class="c1"># see quality docs</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-</code></pre></div>
-<hr />
-<h2 id="lazy-imports">Lazy imports<a class="headerlink" href="#lazy-imports" title="Permanent link">&para;</a></h2>
-<p>Neither pandas nor pyspark is required at import time.  A
-:class:<code>~aptdata.plugins.manager.PluginDependencyError</code> is raised only at
-instantiation time if the required library is missing.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># This import always succeeds, even without pandas/pyspark installed:</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.plugins.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">PandasTransformer</span><span class="p">,</span> <span class="n">PySparkTransformer</span>
+<h2 id="standard-cli-output">Standard CLI Output<a class="headerlink" href="#standard-cli-output" title="Permanent link">&para;</a></h2>
+<p>If you run the CLI without the <code>--json</code> flag, you get rich, interactive console output powered by <code>Rich</code>, complete with progress bars and syntax highlighting.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>$<span class="w"> </span>aptdata<span class="w"> </span>run<span class="w"> </span>my_system
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="o">[</span><span class="m">10</span>:00:00<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>System<span class="w"> </span><span class="s1">&#39;my_system&#39;</span><span class="w"> </span>started<span class="w"> </span><span class="k">in</span><span class="w"> </span>env<span class="w"> </span><span class="s1">&#39;prod&#39;</span>.
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="o">[</span><span class="m">10</span>:00:00<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Flow<span class="w"> </span><span class="s1">&#39;extract_flow&#39;</span><span class="w"> </span>started.
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="o">[</span><span class="m">10</span>:00:00<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Component<span class="w"> </span><span class="s1">&#39;postgres_extractor&#39;</span><span class="w"> </span>running...
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="o">[</span><span class="m">10</span>:00:02<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Component<span class="w"> </span><span class="s1">&#39;postgres_extractor&#39;</span><span class="w"> </span>completed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">2</span>.45s.
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="o">[</span><span class="m">10</span>:00:02<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Component<span class="w"> </span><span class="s1">&#39;data_validator&#39;</span><span class="w"> </span>running...
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="o">[</span><span class="m">10</span>:00:03<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Component<span class="w"> </span><span class="s1">&#39;data_validator&#39;</span><span class="w"> </span>completed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.82s.
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="o">[</span><span class="m">10</span>:00:03<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Flow<span class="w"> </span><span class="s1">&#39;extract_flow&#39;</span><span class="w"> </span>completed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">3</span>.42s.
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="o">[</span><span class="m">10</span>:00:03<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Flow<span class="w"> </span><span class="s1">&#39;transform_flow&#39;</span><span class="w"> </span>started.
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="o">[</span><span class="m">10</span>:00:03<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Component<span class="w"> </span><span class="s1">&#39;pandas_transformer&#39;</span><span class="w"> </span>running...
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="o">[</span><span class="m">10</span>:00:08<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Component<span class="w"> </span><span class="s1">&#39;pandas_transformer&#39;</span><span class="w"> </span>completed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">5</span>.12s.
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="o">[</span><span class="m">10</span>:00:08<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Flow<span class="w"> </span><span class="s1">&#39;transform_flow&#39;</span><span class="w"> </span>completed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">5</span>.22s.
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="o">[</span><span class="m">10</span>:00:08<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>System<span class="w"> </span><span class="s1">&#39;my_system&#39;</span><span class="w"> </span>completed<span class="w"> </span>successfully<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">8</span>.77s.
 </code></pre></div>
 
 
