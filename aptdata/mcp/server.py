@@ -12,16 +12,43 @@ from typing import Any
 
 try:
     from mcp.server.fastmcp import FastMCP
-except ImportError as exc:
-    raise ImportError(
-        "The MCP server dependencies are not installed. "
-        "Please run `pip install aptdata[ai]` to use mcp-start."
-    ) from exc
+    _MCP_AVAILABLE = True
+except ImportError:
+    FastMCP = None
+    _MCP_AVAILABLE = False
 
-from aptdata.core.lineage import LineageEventType, LineageGraph, LineageNode
-from aptdata.plugins import registry
-from aptdata.plugins.governance.rules import BusinessRule, RuleRegistry
-from aptdata.plugins.local_fs import (
+
+class _MockMCP:
+    """Fallback object for when MCP dependencies are missing."""
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def tool(self, *args: Any, **kwargs: Any) -> Any:
+        def decorator(func: Any) -> Any:
+            return func
+        return decorator
+
+    def resource(self, *args: Any, **kwargs: Any) -> Any:
+        def decorator(func: Any) -> Any:
+            return func
+        return decorator
+
+    def run(self, *args: Any, **kwargs: Any) -> None:
+        raise ImportError(
+            "The MCP server dependencies are not installed. "
+            "Please run `pip install aptdata[ai]` to use mcp-start."
+        )
+
+
+from aptdata.core.lineage import (  # noqa: E402
+    LineageEventType,
+    LineageGraph,
+    LineageNode,
+)
+from aptdata.plugins import registry  # noqa: E402
+from aptdata.plugins.governance.rules import BusinessRule, RuleRegistry  # noqa: E402
+from aptdata.plugins.local_fs import (  # noqa: E402
     CSVReader,
     CSVWriter,
     JSONReader,
@@ -29,14 +56,18 @@ from aptdata.plugins.local_fs import (
     ParquetReader,
     ParquetWriter,
 )
-from aptdata.plugins.manager import plugin_manager
-from aptdata.plugins.postgres import PostgresReader, PostgresWriter
-from aptdata.plugins.quality.report import CheckResult, CheckStatus, QualityReport
-from aptdata.plugins.rest import APIReader
-from aptdata.plugins.vector import QdrantWriter
-from aptdata.telemetry.instrumentation import mask_telemetry_value
+from aptdata.plugins.manager import plugin_manager  # noqa: E402
+from aptdata.plugins.postgres import PostgresReader, PostgresWriter  # noqa: E402
+from aptdata.plugins.quality.report import (  # noqa: E402
+    CheckResult,
+    CheckStatus,
+    QualityReport,
+)
+from aptdata.plugins.rest import APIReader  # noqa: E402
+from aptdata.plugins.vector import QdrantWriter  # noqa: E402
+from aptdata.telemetry.instrumentation import mask_telemetry_value  # noqa: E402
 
-mcp = FastMCP("aptdata")
+mcp = FastMCP("aptdata") if _MCP_AVAILABLE else _MockMCP("aptdata")
 _MCP_REQUEST_COUNT = 0
 _MCP_REQUEST_LOCK = Lock()
 
