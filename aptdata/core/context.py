@@ -44,6 +44,7 @@ class IContext(ABC):
 
 from pydantic import ConfigDict
 
+
 @pydantic_dataclass(config=ConfigDict(arbitrary_types_allowed=True))
 class ExecutionContext(IContext):
     """Simple in-memory key/value state container."""

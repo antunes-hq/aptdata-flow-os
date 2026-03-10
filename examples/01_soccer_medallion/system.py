@@ -1,16 +1,17 @@
-import json
+import os
+import sys
+
 from aptdata.core.system import BaseSystem, IContext
 from aptdata.telemetry import TelemetryProvider
 
-import sys
-import os
 sys.path.insert(0, os.path.dirname(__file__))
 
 from flows.soccer_flows import (
     BronzeFlow,
-    SilverFlow,
     GoldFlow,
+    SilverFlow,
 )
+
 
 class SoccerMedallionSystem(BaseSystem):
     name = "soccer_medallion_pipeline"

@@ -1,6 +1,6 @@
-from typing import Optional
 
 from pydantic import BaseModel, Field
+
 
 class SilverMatchModel(BaseModel):
     match_id: str = Field(..., description="UUID da partida")

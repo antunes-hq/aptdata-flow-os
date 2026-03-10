@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
 
 from aptdata.telemetry.instrumentation import configure_telemetry, get_meter, get_tracer
+
 
 @dataclass
 class TelemetryProvider:
     """A wrapper providing telemetry resources."""
 
-    _instance: "TelemetryProvider | None" = None
+    _instance: TelemetryProvider | None = None
 
     @classmethod
-    def get_instance(cls) -> "TelemetryProvider":
+    def get_instance(cls) -> TelemetryProvider:
         if cls._instance is None:
             # For scaffold default to configuring standard console telemetry
             configure_telemetry()

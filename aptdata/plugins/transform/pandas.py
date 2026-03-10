@@ -12,7 +12,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from aptdata.core.context import ExecutionContext, IContext
-from aptdata.core.dataset import IDataset, PydanticDataset
+from aptdata.core.dataset import IDataset
 from aptdata.core.system import BaseComponent
 from aptdata.plugins.base import BaseTransformer
 from aptdata.plugins.dataset import InMemoryDataset
@@ -139,7 +139,7 @@ class PandasTransformComponent(BaseComponent):
     def validate_inputs(self, inputs: list[IDataset]) -> bool:
         return True
 
-    def transform(self, df: "pd.DataFrame", context: IContext) -> "pd.DataFrame":
+    def transform(self, df: pd.DataFrame, context: IContext) -> pd.DataFrame:
         """Apply business logic to the dataframe."""
         raise NotImplementedError
 
@@ -165,15 +165,15 @@ class PandasTransformComponent(BaseComponent):
                     dfs.append(pd.DataFrame([data] if data is not None else []))
             df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
 
-        # Execute business logic
-        context = ExecutionContext()
+        # Execute business logic using injected context if available
+        context = self.context if getattr(self, "context", None) is not None else ExecutionContext()
         result_df = self.transform(df, context)
 
         # Encapsulate back into an IDataset
-        # Usually BaseFlow wraps this in a PydanticDataset if output_contract is provided.
-        # Otherwise, fallback to an InMemoryDataset
+        # Use a raw DataFrame to keep PydanticDataset fast path validation.
+        # InMemoryDataset accepts `Any` for its `data` argument in `write()`.
         out_ds = InMemoryDataset(uri=f"memory://{self.component_id}_output")
-        out_ds.write(result_df.to_dict(orient="records"))
+        out_ds.write(result_df)
 
         return [out_ds]
 

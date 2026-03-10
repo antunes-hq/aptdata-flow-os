@@ -97,6 +97,18 @@ class IComponent(ABC):
 
     @property
     @abstractmethod
+    def context(self) -> IContext | None:
+        """The execution context injected by the orchestrator."""
+        pass
+
+    @context.setter
+    @abstractmethod
+    def context(self, value: IContext | None) -> None:
+        """Set the execution context."""
+        pass
+
+    @property
+    @abstractmethod
     def meta(self) -> ComponentMeta:
         """Metadata describing this component."""
 
@@ -127,6 +139,17 @@ class BaseComponent(IComponent):
 
     component_id: str
     metadata: ComponentMeta = field(default_factory=ComponentMeta)
+
+    # Use generic Any because pydantic doesn't know IContext unless arbitrary types are allowed
+    _context: Any = Field(default=None, init=False, repr=False, exclude=True)
+
+    @property
+    def context(self) -> IContext | None:
+        return self._context
+
+    @context.setter
+    def context(self, value: IContext | None) -> None:
+        self._context = value
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """Wrap subclass execute implementations with telemetry spans."""
@@ -228,6 +251,18 @@ class IFlow(ABC):
     and driving execution (:meth:`run`).
     """
 
+    @property
+    @abstractmethod
+    def context(self) -> IContext | None:
+        """The execution context injected by the orchestrator."""
+        pass
+
+    @context.setter
+    @abstractmethod
+    def context(self, value: IContext | None) -> None:
+        """Set the execution context."""
+        pass
+
     @abstractmethod
     def build(self) -> None:
         """Declarative hook to define components and edges before compilation."""
@@ -292,6 +327,17 @@ class BaseFlow(IFlow):
     _nodes: dict[str, FlowNode] = field(default_factory=dict, init=False, repr=False)
     _edges: list[FlowEdge] = field(default_factory=list, init=False, repr=False)
 
+    # Use generic Any because pydantic doesn't know IContext unless arbitrary types are allowed
+    _context: Any = Field(default=None, init=False, repr=False, exclude=True)
+
+    @property
+    def context(self) -> IContext | None:
+        return self._context
+
+    @context.setter
+    def context(self, value: IContext | None) -> None:
+        self._context = value
+
     def build(self) -> None:
         pass
 
@@ -302,6 +348,9 @@ class BaseFlow(IFlow):
             comp_instance = component(component_id=component.__name__) # type: ignore
         else:
             comp_instance = component
+
+        if self._context:
+            comp_instance.context = self._context
 
         # Optional: Wrap execution to enforce output_contract if needed,
         # though usually components themselves should use PydanticDataset directly if they want.
@@ -414,6 +463,10 @@ class BaseSystem(ISystem):
         # A simple system execution
         current_inputs: list[IDataset] = []
         for flow in self._flows:
+            flow.context = self._context
+            if isinstance(flow, BaseFlow):
+                for node in flow._nodes.values():
+                    node.component.context = self._context
             current_inputs = flow.run(current_inputs)
 
         self.on_complete(self._context)

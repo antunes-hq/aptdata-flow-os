@@ -1,11 +1,12 @@
+from components.soccer_components import (
+    AggregateTeamStatsComponent,
+    CleanMatchDataComponent,
+    IngestMatchDataComponent,
+)
+from domain.models import GoldTeamStatsModel, SilverMatchModel
+
 from aptdata.core.system import BaseFlow
 
-from components.soccer_components import (
-    IngestMatchDataComponent,
-    CleanMatchDataComponent,
-    AggregateTeamStatsComponent,
-)
-from domain.models import SilverMatchModel, GoldTeamStatsModel
 
 class BronzeFlow(BaseFlow):
     def build(self):

@@ -1,17 +1,18 @@
-import pytest
+import os
+import sys
+
 import pandas as pd
+import pytest
+
 from aptdata.core.dataset import DataContractError
 from aptdata.plugins.dataset import InMemoryDataset
-from aptdata.core.context import ExecutionContext
 
-import sys
-import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from domain.models import SilverMatchModel
 from components.soccer_components import CleanMatchDataComponent
 from flows.soccer_flows import SilverFlow
 from system import SoccerMedallionSystem
+
 
 def test_system_dependency_injection():
     """Testa se o sistema sobe corretamente com as dependencias e os fluxos"""

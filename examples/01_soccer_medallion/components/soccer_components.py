@@ -1,29 +1,32 @@
-import os
-from aptdata.core.system import BaseComponent, IContext
+from pathlib import Path
+from typing import TYPE_CHECKING
+
 from aptdata.core.dataset import IDataset
-from aptdata.plugins.dataset import InMemoryDataset
+from aptdata.core.system import BaseComponent, IContext
+from aptdata.plugins.local_fs import CSVReader
 from aptdata.plugins.transform.pandas import PandasTransformComponent
+
+if TYPE_CHECKING:
+    import pandas as pd
+
+# Caminho para os dados raw mockados. Em um ambiente real
+# isso viria de configuração ou Secret
+MOCK_DATA_PATH = Path(__file__).parent.parent / "data" / "raw" / "matches_mock.csv"
 
 
 class IngestMatchDataComponent(BaseComponent):
-    """Bronze component: Reads mock CSV and pushes to memory without strict validation."""
+    """Bronze component: Reads mock CSV and pushes to memory.
+    No strict validation."""
 
     def validate_inputs(self, inputs: list[IDataset]) -> bool:
         return True
 
     def execute(self, inputs: list[IDataset]) -> list[IDataset]:
-        import pandas as pd
-
-        filepath = os.path.join(
-            os.path.dirname(__file__), "..", "data", "raw", "matches_mock.csv"
-        )
-        # Note: I/O is contained entirely here on the edge (Ingestion)
-        df = pd.read_csv(filepath)
-
-        out_ds = InMemoryDataset(uri="memory://bronze_matches")
-        out_ds.write(df.to_dict(orient="records"))
+        # Utiliza o leitor nativo do framework (CSVReader)
+        # zero I/O de pandas aqui. O CSVReader já gera o Dataset InMemory.
+        reader = CSVReader(str(MOCK_DATA_PATH))
+        out_ds = reader.read()
         return [out_ds]
-
 
 class CleanMatchDataComponent(PandasTransformComponent):
     """Silver component: Cleans and standardises types.
@@ -39,7 +42,10 @@ class CleanMatchDataComponent(PandasTransformComponent):
 
         # Ensure only the fields required by the contract are passed,
         # plus maybe 'date'.
-        return df_cleaned[['match_id', 'home_team', 'away_team', 'home_goals', 'away_goals', 'date']]
+        columns = [
+            'match_id', 'home_team', 'away_team', 'home_goals', 'away_goals', 'date'
+        ]
+        return df_cleaned[columns]
 
 
 class AggregateTeamStatsComponent(PandasTransformComponent):
