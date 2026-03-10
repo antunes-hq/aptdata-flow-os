@@ -8,20 +8,16 @@ without any changes to the `smart-data` core.
 
 ## How it works
 
-```
-Your adapter package
-        │
-        │  from smart_data.plugins import registry
-        │  registry.register("my_system", MySystem)
-        │
-        ▼
-smart_data.plugins.registry
-        │
-        │  registry.get("my_system")  →  MySystem class
-        │
-        ▼
-smart-data CLI
-        smart-data run my_system
+```mermaid
+sequenceDiagram
+    participant Pkg as Your adapter package
+    participant Reg as smart_data.plugins.registry
+    participant CLI as smart-data CLI
+
+    Pkg->>Reg: registry.register("my_system", MySystem)
+    CLI->>Reg: registry.get("my_system")
+    Reg-->>CLI: MySystem class
+    CLI->>CLI: smart-data run my_system
 ```
 
 ---

@@ -8,6 +8,20 @@ smart-data ships a first-class governance layer that covers:
 - **Dataset catalog** — searchable metadata store for every dataset
 - **Data classification** — sensitivity policies (PII, PHI, CONFIDENTIAL, …)
 
+```mermaid
+graph LR
+    L["📈 Data Lineage\nLineageGraph + LineageStore"]
+    Q["✅ Schema Contracts\nSchemaContract + Expectations"]
+    R["📋 Business Rules\nRuleRegistry + AuditLog"]
+    C["🗂 Dataset Catalog\nDatasetCatalog + CatalogEntry"]
+    D["🔒 Classification\nColumnClassification + Policy"]
+
+    L --- C
+    Q --- C
+    R --- C
+    D --- Q
+```
+
 ---
 
 ## Data Lineage
@@ -17,6 +31,15 @@ smart-data ships a first-class governance layer that covers:
 The lineage subsystem lives in `smart_data.core.lineage`.  Every workflow run
 produces a :class:`~smart_data.core.lineage.LineageGraph` that contains an
 ordered list of :class:`~smart_data.core.lineage.LineageNode` objects.
+
+```mermaid
+flowchart LR
+    R["READ\ns3://raw/orders.parquet\n50,000 rows out"]
+    T["TRANSFORM\ns3://clean/orders.parquet\n48,500 rows out\nrevenue = price × quantity"]
+    W["WRITE\ns3://final/orders.parquet"]
+
+    R --> T --> W
+```
 
 ```python
 from smart_data.core.lineage import (

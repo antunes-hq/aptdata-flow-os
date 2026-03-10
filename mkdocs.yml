@@ -29,6 +29,12 @@ theme:
     - content.code.copy
     - content.code.annotate
 
+  icon:
+    repo: fontawesome/brands/github
+
+extra_javascript:
+  - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+
 plugins:
   - search
   - autorefs:
@@ -51,9 +57,13 @@ nav:
   - Quality: quality.md
   - Governance: governance.md
   - Scaffold Templates: scaffold-templates.md
+  - Telemetry: telemetry.md
+  - MCP Server: mcp.md
+  - Configuration: configuration.md
   - API Reference:
       - Core: api/core.md
       - CLI: api/cli.md
+      - CLI Interactive: api/cli-interactive.md
       - Plugins: api/plugins.md
   - Changelog: changelog.md
   - AI Docs:
@@ -63,7 +73,11 @@ nav:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite

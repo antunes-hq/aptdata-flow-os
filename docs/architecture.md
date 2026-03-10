@@ -8,46 +8,69 @@ the foundational **Dataset** type.
 
 ## The three-abstraction model
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│  Abstraction   Purpose                                             │
-│  ──────────    ────────────────────────────────────────────────── │
-│  Component     A reusable unit of work (ETL step, filter, …)      │
-│  Flow          A directed graph of Components                      │
-│  System        Top-level orchestrator that owns one or more Flows  │
-└────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph LR
+    C["🔧 Component\nReusable unit of work\n(ETL step, filter, …)"]
+    F["🔀 Flow\nDirected graph of Components"]
+    S["🏛 System\nTop-level orchestrator\nthat owns one or more Flows"]
+
+    C --> F --> S
 ```
 
 ---
 
 ## The two layers
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│  Layer 1 – Interfaces (I*)                                               │
-│  @dataclass + ABC                                                        │
-│                                                                          │
-│  IDataset      IComponent           IFlow              ISystem           │
-│  ─────────     ──────────────────   ────────────────   ─────────────     │
-│  read()        validate_inputs()    add_component()    register_flow()   │
-│  write()       execute()            connect()          run()             │
-│                meta (property)      compile()                            │
-│                                     run()                                │
-└──────────────────────────────────────────────────────────────────────────┘
-             │               │                   │               │
-             ▼               ▼                   ▼               ▼
-┌──────────────────────────────────────────────────────────────────────────┐
-│  Layer 2 – Base classes (Base*)                                          │
-│  @pydantic_dataclass                                                     │
-│                                                                          │
-│  BaseDataset   BaseComponent        BaseFlow           BaseSystem        │
-│  ─────────     ──────────────────   ────────────────   ─────────────     │
-│  uri: str      component_id: str    flow_id: str       system_id: str    │
-│  schema_meta…  metadata: CompMeta                                        │
-└──────────────────────────────────────────────────────────────────────────┘
-             │               │                   │               │
-             ▼               ▼                   ▼               ▼
-         Your concrete implementations
+```mermaid
+classDiagram
+    class IDataset {
+        <<interface>>
+        +read() Any
+        +write(data) None
+    }
+    class IComponent {
+        <<interface>>
+        +validate_inputs(inputs) bool
+        +execute(inputs) list
+        +meta() ComponentMeta
+    }
+    class IFlow {
+        <<interface>>
+        +add_component(c) None
+        +connect(src, tgt) None
+        +compile() None
+        +run(inputs) list
+    }
+    class ISystem {
+        <<interface>>
+        +register_flow(flow) None
+        +run() None
+    }
+
+    class BaseDataset {
+        +uri: str
+        +schema_metadata: dict
+    }
+    class BaseComponent {
+        +component_id: str
+        +metadata: ComponentMeta
+    }
+    class BaseFlow {
+        +flow_id: str
+    }
+    class BaseSystem {
+        +system_id: str
+    }
+
+    IDataset <|-- BaseDataset : implements
+    IComponent <|-- BaseComponent : implements
+    IFlow <|-- BaseFlow : implements
+    ISystem <|-- BaseSystem : implements
+
+    BaseDataset <|-- YourDataset : extends
+    BaseComponent <|-- YourComponent : extends
+    BaseFlow <|-- YourFlow : extends
+    BaseSystem <|-- YourSystem : extends
 ```
 
 ---
@@ -177,48 +200,50 @@ owning `IFlow`.
 Concrete system implementations are registered by name in the global
 `registry` singleton:
 
-```
-smart_data.plugins.registry
-       │
-       ├── "etl_system"  →  EtlSystem (class)
-       ├── "ml_system"   →  MlSystem  (class)
-       └── ...
+```mermaid
+graph LR
+    R["smart_data.plugins.registry"]
+    R --> E["\"etl_system\" → EtlSystem"]
+    R --> M["\"ml_system\" → MlSystem"]
+    R --> D["\"...\""]
 ```
 
 The CLI calls `registry.get(name)` to resolve a name to a class, instantiates
 it with `system_id=name`, and calls `run()`.
 
-```
-CLI  ──▶  registry.get("etl_system")
-                │
-                ▼
-          EtlSystem(system_id="etl_system")
-                │
-                └── run()
+```mermaid
+sequenceDiagram
+    participant CLI
+    participant Registry as registry
+    participant System as EtlSystem
+
+    CLI->>Registry: get("etl_system")
+    Registry-->>CLI: EtlSystem class
+    CLI->>System: EtlSystem(system_id="etl_system")
+    CLI->>System: run()
 ```
 
 ---
 
 ## Data-flow through a system
 
-```
-Initial Dataset(s)
-      │
-      ▼
-  Flow.compile()          ← validate graph structure
-      │
-      ▼
-  Component 1  ─ validate_inputs() → execute() → [Dataset, …]
-      │
-      ▼  (FlowEdge, optional condition)
-  Component 2  ─ validate_inputs() → execute() → [Dataset, …]
-      │
-      ▼
-  Final Dataset(s)
+```mermaid
+flowchart TD
+    A["Initial Dataset(s)"]
+    B["Flow.compile()\nvalidate graph structure"]
+    C["Component 1\nvalidate_inputs() → execute()"]
+    D{{"FlowEdge condition\n(optional predicate)"}}
+    E["Component 2\nvalidate_inputs() → execute()"]
+    F["Final Dataset(s)"]
+
+    A --> B --> C --> D
+    D -->|"predicate returns True\nor no condition set"| E --> F
+    D -->|"predicate returns False\n(edge skipped)"| F
 ```
 
 Each component validates its own inputs, executes its transformation, and
 returns a **list** of datasets (enabling multi-output / branching flows).
+When a `FlowEdge` has no condition, it is always traversed.
 
 ---
 

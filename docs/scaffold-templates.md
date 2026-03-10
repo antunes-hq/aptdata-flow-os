@@ -47,6 +47,16 @@ A three-layer Bronze → Silver → Gold data lakehouse pattern.
 smart-data scaffold my_lakehouse --template medallion
 ```
 
+```mermaid
+flowchart LR
+    Raw["Raw Source\n(CSV / JSON)"]
+    Bronze["🥉 Bronze Layer\nbronze.py\nRaw ingestion"]
+    Silver["🥈 Silver Layer\nsilver.py\nCleaning + Quality"]
+    Gold["🥇 Gold Layer\ngold.py\nAggregation + Parquet"]
+
+    Raw --> Bronze --> Silver --> Gold
+```
+
 **Generated files:**
 
 ```
@@ -77,6 +87,17 @@ extract → chunk → embed → load.
 smart-data scaffold my_rag_app --template rag-ingestion
 ```
 
+```mermaid
+flowchart LR
+    Src["📄 Source\n(documents)"]
+    Extract["1️⃣ Extract\nload raw docs"]
+    Chunk["2️⃣ Chunk\nsplit into pieces"]
+    Embed["3️⃣ Embed\nvectorise chunks"]
+    Load["4️⃣ Load\nvector store"]
+
+    Src --> Extract --> Chunk --> Embed --> Load
+```
+
 **Generated files:**
 
 ```
@@ -101,6 +122,17 @@ A data quality enforcement pipeline using
 
 ```bash
 smart-data scaffold my_dq_suite --template data-quality-test
+```
+
+```mermaid
+flowchart LR
+    Raw["Raw Dataset"]
+    SC["SchemaContract\ncolumn types + PII flags"]
+    Exp["Expectations\nNotNull / Unique / Range"]
+    QV["QualityValidator\nenforce mode: ABORT | WARN | TAG"]
+    Out["Clean Dataset\nor raise ValueError"]
+
+    Raw --> SC --> Exp --> QV --> Out
 ```
 
 **Generated files:**

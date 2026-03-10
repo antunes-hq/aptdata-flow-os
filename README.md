@@ -14,12 +14,13 @@
 **Flow**, and **Component** — that cover every data-processing paradigm in a
 single, coherent model:
 
-```
-IComponent / IFlow / ISystem       ← @dataclass + ABC  (pure interfaces)
-         ↓
-BaseComponent / BaseFlow / BaseSystem  ← @pydantic_dataclass  (validated fields)
-         ↓
-Your concrete implementations
+```mermaid
+flowchart TD
+    I["IComponent / IFlow / ISystem\n@dataclass + ABC — pure interfaces"]
+    B["BaseComponent / BaseFlow / BaseSystem\n@pydantic_dataclass — validated fields"]
+    Y["Your concrete implementations"]
+
+    I --> B --> Y
 ```
 
 Datasets remain the fundamental data-exchange contract (`IDataset` /
@@ -37,6 +38,23 @@ pipelines and scripted workflows.
 ---
 
 ## Installation
+
+### From PyPI
+
+```bash
+pip install smart-data
+```
+
+### Optional extras
+
+```bash
+pip install smart-data[pandas]   # pandas support
+pip install smart-data[spark]    # PySpark support
+pip install smart-data[plugins]  # REST, PostgreSQL, Parquet I/O
+pip install smart-data[all]      # everything
+```
+
+### From source (development)
 
 ```bash
 git clone https://github.com/strondata/smart-data.git
@@ -127,6 +145,7 @@ smart-data telemetry export [--format json]
 smart-data mesh list [--dir DIR] [--json]
 smart-data mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
 smart-data mesh build COMPONENT [--dir DIR] [--json]
+smart-data mcp-start [--transport TRANSPORT]
 smart-data interactive
 ```
 
