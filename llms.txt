@@ -19,6 +19,13 @@ methods, and register their systems in the plugin registry.
 
 - [Getting Started](getting-started.md): Installation and first system
 - [Architecture](architecture.md): Two-layer design and data-flow model
+- [Transform Engines](transform-engines.md): Pandas & PySpark wrappers
+- [Data Quality](quality.md): Schema contracts and expectations
+- [Governance](governance.md): Lineage, catalog & classification
+- [Scaffold Templates](scaffold-templates.md): Project bootstrapping
+- [Telemetry](telemetry.md): OpenTelemetry auto-instrumentation
+- [MCP Server](mcp.md): AI agent integration via Model Context Protocol
+- [Configuration](configuration.md): YAML config files and CLI commands
 - [API – Core](api/core.md): Component, Flow, System, Dataset reference
 - [API – CLI](api/cli.md): Command-line interface reference
 - [API – CLI Interactive](api/cli-interactive.md): Interactive wizard documentation
