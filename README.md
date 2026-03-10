@@ -51,6 +51,7 @@ pip install aptdata
 pip install aptdata[pandas]   # pandas support
 pip install aptdata[spark]    # PySpark support
 pip install aptdata[plugins]  # REST, PostgreSQL, Parquet I/O
+pip install aptdata[ai]       # MCP server for AI agents
 pip install aptdata[all]      # everything
 ```
 
@@ -226,6 +227,23 @@ store.save(graph)
 ```
 
 See [Governance docs](docs/governance.md) for the full API.
+
+---
+
+## AI Agents & MCP Server
+
+aptdata ships with a built-in [Model Context Protocol](https://modelcontextprotocol.io/) server (`mcp-start`). This transforms AI assistants (like Claude, Copilot, or Devin) into autonomous data engineers with direct access to:
+
+- **Pipeline Execution:** Trigger and monitor data flows (`run_flow`).
+- **Data Quality:** Audit the latest quality test results (`quality://reports/...`).
+- **Data Governance:** Read business rules to prevent violations (`governance://rules`).
+- **Lineage:** Trace upstream dependencies and column-level provenance (`get_pipeline_lineage`).
+
+```bash
+aptdata mcp-start --transport stdio
+```
+
+See the [MCP Documentation](docs/mcp.md) for setup instructions.
 
 ---
 

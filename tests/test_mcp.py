@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import json
 
+import pytest
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from aptdata.core.system import BaseSystem
-from aptdata.mcp.server import (
+
+pytest.importorskip("mcp")
+
+from aptdata.mcp.server import (  # noqa: E402
     get_dataset_schema,
     get_mcp_status,
     get_plugin_schema,
@@ -17,7 +21,7 @@ from aptdata.mcp.server import (
     preview_dataset,
     run_flow,
 )
-from aptdata.plugins import registry
+from aptdata.plugins import registry  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Helpers

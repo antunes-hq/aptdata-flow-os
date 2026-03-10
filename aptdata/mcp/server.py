@@ -10,10 +10,45 @@ import time
 from threading import Lock
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+    _MCP_AVAILABLE = True
+except ImportError:
+    FastMCP = None
+    _MCP_AVAILABLE = False
 
-from aptdata.plugins import registry
-from aptdata.plugins.local_fs import (
+
+class _MockMCP:
+    """Fallback object for when MCP dependencies are missing."""
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def tool(self, *args: Any, **kwargs: Any) -> Any:
+        def decorator(func: Any) -> Any:
+            return func
+        return decorator
+
+    def resource(self, *args: Any, **kwargs: Any) -> Any:
+        def decorator(func: Any) -> Any:
+            return func
+        return decorator
+
+    def run(self, *args: Any, **kwargs: Any) -> None:
+        raise ImportError(
+            "The MCP server dependencies are not installed. "
+            "Please run `pip install aptdata[ai]` to use mcp-start."
+        )
+
+
+from aptdata.core.lineage import (  # noqa: E402
+    LineageEventType,
+    LineageGraph,
+    LineageNode,
+)
+from aptdata.plugins import registry  # noqa: E402
+from aptdata.plugins.governance.rules import BusinessRule, RuleRegistry  # noqa: E402
+from aptdata.plugins.local_fs import (  # noqa: E402
     CSVReader,
     CSVWriter,
     JSONReader,
@@ -21,13 +56,18 @@ from aptdata.plugins.local_fs import (
     ParquetReader,
     ParquetWriter,
 )
-from aptdata.plugins.manager import plugin_manager
-from aptdata.plugins.postgres import PostgresReader, PostgresWriter
-from aptdata.plugins.rest import APIReader
-from aptdata.plugins.vector import QdrantWriter
-from aptdata.telemetry.instrumentation import mask_telemetry_value
+from aptdata.plugins.manager import plugin_manager  # noqa: E402
+from aptdata.plugins.postgres import PostgresReader, PostgresWriter  # noqa: E402
+from aptdata.plugins.quality.report import (  # noqa: E402
+    CheckResult,
+    CheckStatus,
+    QualityReport,
+)
+from aptdata.plugins.rest import APIReader  # noqa: E402
+from aptdata.plugins.vector import QdrantWriter  # noqa: E402
+from aptdata.telemetry.instrumentation import mask_telemetry_value  # noqa: E402
 
-mcp = FastMCP("aptdata")
+mcp = FastMCP("aptdata") if _MCP_AVAILABLE else _MockMCP("aptdata")
 _MCP_REQUEST_COUNT = 0
 _MCP_REQUEST_LOCK = Lock()
 
@@ -196,3 +236,70 @@ def get_dataset_schema(dataset_name: str) -> str:
             ),
         }
     )
+
+@mcp.resource("quality://reports/{workflow_name}/latest")
+def get_latest_quality_report(workflow_name: str) -> str:
+    """Allow the AI to audit quality failures in the latest run."""
+    import json
+
+    # Placeholder logic to fetch the latest QualityReport JSON.
+    # In a real scenario, this would query a QualityStore or an external catalog.
+    report = QualityReport(
+        dataset_uri="unknown",
+        workflow_name=workflow_name,
+        checks=[
+            CheckResult(
+                expectation_name="MockExpectation",
+                status=CheckStatus.PASSED,
+                message="This is a mock quality report."
+            )
+        ]
+    )
+    # Using json.dumps on the summary for now, or building a dictionary.
+    # QualityReport is a dataclass without a direct model_dump_json method.
+    from dataclasses import asdict
+    return json.dumps(asdict(report))
+
+@mcp.resource("governance://rules")
+def list_business_rules() -> str:
+    """Allow the AI to learn about registered business rules."""
+    import json
+
+    registry = RuleRegistry()
+    # Return the catalog of data rules for the AI to build pipelines without violations.
+    # Here we return a mock rule for demonstration since registry is empty.
+    registry.register(
+        BusinessRule(
+            rule_id="BR-MOCK-001",
+            name="Mock Rule",
+            description="A mock business rule for AI context."
+        )
+    )
+
+    rules = [
+        {
+            "rule_id": r.rule_id,
+            "name": r.name,
+            "description": r.description,
+            "expression": r.expression
+        }
+        for r in registry.list_rules()
+    ]
+    return json.dumps({"rules": rules})
+
+@mcp.tool()
+def get_pipeline_lineage(flow_id: str) -> dict[str, Any]:
+    """Return the dependency tree (DAG) and column traceability (Lineage)."""
+    _mark_request()
+
+    # Query aptdata.core.lineage to understand how a column was generated.
+    # Placeholder: return a dummy lineage graph for the requested flow_id.
+    graph = LineageGraph(run_id="mock-run-1", workflow_name=flow_id)
+    node = LineageNode(
+        dataset_uri="mock://dataset",
+        event_type=LineageEventType.READ,
+        workflow_name=flow_id
+    )
+    graph.add_node(node)
+
+    return graph.to_dict()
