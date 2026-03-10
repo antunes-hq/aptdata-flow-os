@@ -1371,20 +1371,23 @@
 
 
 <h1 id="mcp-server">MCP Server<a class="headerlink" href="#mcp-server" title="Permanent link">&para;</a></h1>
-<p>aptdata ships a built-in <a href="https://modelcontextprotocol.io/">Model Context Protocol</a>
-(MCP) server so AI agents — Claude Desktop, GitHub Copilot, Devin, and others
-— can discover and execute your pipelines without consuming excessive context
-tokens.</p>
+<p>aptdata includes a built-in <a href="https://modelcontextprotocol.io/">Model Context Protocol</a>
+(MCP) server, transforming AI agents (Claude, Copilot, Devin) into autonomous
+Data Engineers. Instead of merely generating code, the AI can discover, audit,
+and execute pipelines directly against your data infrastructure without consuming
+excessive context tokens.</p>
 <hr />
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The MCP server is powered by <a href="https://github.com/jlowin/fastmcp">FastMCP</a> and
-exposes your registered systems as callable <strong>tools</strong> and your dataset schemas
-as <strong>resources</strong>.</p>
+<p>Powered by <a href="https://github.com/jlowin/fastmcp">FastMCP</a>, the server exposes your
+infrastructure through <strong>tools</strong> (actions) and <strong>resources</strong> (read-only state).</p>
+<p>Through MCP, the AI gains access to <strong>Data Quality</strong> reports, <strong>Lineage</strong> tracking,
+and <strong>Governance</strong> rules, allowing it to autonomously debug failures or design
+compliant pipelines.</p>
 <pre class="mermaid"><code>graph LR
     A["AI Agent\n(Claude / Copilot / Devin)"]
     S["aptdata mcp-start"]
-    T["Tools\nrun_flow(flow_id)\nlist_registered_systems()"]
-    R["Resources\nschema://datasets/{name}"]
+    T["Tools\nrun_flow(flow_id)\nget_pipeline_lineage(flow_id)"]
+    R["Resources\nquality://reports/.../latest\ngovernance://rules"]
 
     A -- "MCP protocol" --&gt; S
     S --&gt; T
@@ -1435,6 +1438,11 @@ as <strong>resources</strong>.</p>
 <td><code>preview_dataset(reader: str, limit: int)</code></td>
 <td>Preview the first N rows from a dataset reader</td>
 </tr>
+<tr>
+<td><code>get_pipeline_lineage</code></td>
+<td><code>get_pipeline_lineage(flow_id: str)</code></td>
+<td>Return the dependency tree (DAG) and column traceability (Lineage)</td>
+</tr>
 </tbody>
 </table>
 <hr />
@@ -1451,23 +1459,34 @@ as <strong>resources</strong>.</p>
 <td><code>schema://datasets/{name}</code></td>
 <td>JSON schema for the named dataset</td>
 </tr>
+<tr>
+<td><code>quality://reports/{workflow_name}/latest</code></td>
+<td>Fetch the latest quality report for a given workflow</td>
+</tr>
+<tr>
+<td><code>governance://rules</code></td>
+<td>List registered business rules</td>
+</tr>
 </tbody>
 </table>
 <hr />
 <h2 id="integrating-with-claude-desktop">Integrating with Claude Desktop<a class="headerlink" href="#integrating-with-claude-desktop" title="Permanent link">&para;</a></h2>
+<p>To make the MCP integration available, you can optionally install the <code>ai</code> extra:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip<span class="w"> </span>install<span class="w"> </span>aptdata<span class="o">[</span>ai<span class="o">]</span>
+</code></pre></div>
 <p>Add the following to your Claude Desktop configuration file:</p>
 <ul>
 <li><strong>macOS:</strong> <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
 <li><strong>Windows:</strong> <code>%APPDATA%\Claude\claude_desktop_config.json</code></li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;aptdata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;aptdata&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;mcp-start&quot;</span><span class="p">]</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">&quot;smart-data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;aptdata&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;mcp-start&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--transport&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">]</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">}</span>
 </code></pre></div>
 <p>Restart Claude Desktop.  The agent will now be able to call
 <code>list_registered_systems()</code> to discover your pipelines and <code>run_flow()</code>  to
