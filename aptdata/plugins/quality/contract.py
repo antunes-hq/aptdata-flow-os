@@ -107,7 +107,11 @@ class SchemaContract:
 
     def get_pii_columns(self) -> list[ColumnContract]:
         """Return columns that are flagged as PII."""
-        return [c for c in self.columns if c.pii or c.classification == ColumnClassification.PII]
+        return [
+            c
+            for c in self.columns
+            if c.pii or c.classification == ColumnClassification.PII
+        ]
 
     def get_columns_by_classification(
         self, classification: ColumnClassification

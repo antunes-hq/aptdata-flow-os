@@ -1,4 +1,7 @@
-"""Tests for transform plugins — PandasTransformer, PySparkTransformer, BaseTransformer."""
+"""Tests for transform plugins.
+
+PandasTransformer, PySparkTransformer, BaseTransformer.
+"""
 
 from __future__ import annotations
 
@@ -6,7 +9,6 @@ import pytest
 
 from aptdata.plugins.base import BaseTransformer
 from aptdata.plugins.manager import PluginDependencyError
-
 
 # ---------------------------------------------------------------------------
 # BaseTransformer ABC
@@ -162,7 +164,9 @@ class TestPySparkTransformerInterface:
 
         assert issubclass(PySparkTransformer, BaseTransformer)
 
-    def test_dependency_error_when_pyspark_missing(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_dependency_error_when_pyspark_missing(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Instantiation raises PluginDependencyError when pyspark is not available."""
         import builtins
 

@@ -17,7 +17,9 @@ class StateBackend:
     def save(self, run_id: str, state: dict[str, Any]) -> None:
         """Persist *state* for *run_id*."""
         path = self.base_dir / f"{run_id}.json"
-        path.write_text(json.dumps(state, ensure_ascii=False, default=str), encoding="utf-8")
+        path.write_text(
+            json.dumps(state, ensure_ascii=False, default=str), encoding="utf-8"
+        )
 
     def load(self, run_id: str) -> dict[str, Any]:
         """Load state for *run_id*."""

@@ -90,7 +90,9 @@ class APIReader(BaseReader):
             else:
                 raise ValueError(f"Cannot traverse key '{key}' in a non-dict value.")
         if not isinstance(current, list):
-            raise ValueError(f"Expected a list at path '{path}', got {type(current).__name__}.")
+            raise ValueError(
+                f"Expected a list at path '{path}', got {type(current).__name__}."
+            )
         return current
 
     # -- BaseReader ---------------------------------------------------------
@@ -103,7 +105,9 @@ class APIReader(BaseReader):
         with httpx.Client(timeout=self.timeout) as client:
             if self.pagination_key is None:
                 response = client.get(
-                    self.endpoint, headers=self.headers, params=self.params,
+                    self.endpoint,
+                    headers=self.headers,
+                    params=self.params,
                 )
                 response.raise_for_status()
                 all_records = self._extract_records(response.json(), self.records_path)
@@ -111,10 +115,14 @@ class APIReader(BaseReader):
                 for page in range(1, self.max_pages + 1):
                     params = {**self.params, self.pagination_key: page}
                     response = client.get(
-                        self.endpoint, headers=self.headers, params=params,
+                        self.endpoint,
+                        headers=self.headers,
+                        params=params,
                     )
                     response.raise_for_status()
-                    page_records = self._extract_records(response.json(), self.records_path)
+                    page_records = self._extract_records(
+                        response.json(), self.records_path
+                    )
                     if not page_records:
                         break
                     all_records.extend(page_records)

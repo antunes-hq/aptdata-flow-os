@@ -12,7 +12,10 @@ from aptdata.core.workflow import Workflow
 from aptdata.plugins.ai import EmbeddingTransformer, TextChunker
 from aptdata.plugins.dataset import InMemoryDataset
 from aptdata.plugins.vector import QdrantWriter
-from aptdata.telemetry.instrumentation import get_ingestion_metrics, reset_ingestion_metrics
+from aptdata.telemetry.instrumentation import (
+    get_ingestion_metrics,
+    reset_ingestion_metrics,
+)
 
 
 class TestWorkflowResilience:
@@ -34,7 +37,9 @@ class TestWorkflowResilience:
         def fail_after_checkpoint(dataset):
             raise RuntimeError("stop for resume")
 
-        wf = Workflow("ingestion_test", enable_checkpointing=True, state_backend=backend)
+        wf = Workflow(
+            "ingestion_test", enable_checkpointing=True, state_backend=backend
+        )
         wf.add_step(extract)
         wf.add_step(flaky_transform, retries=1, backoff=0)
         wf.add_step(fail_after_checkpoint)
@@ -50,7 +55,9 @@ class TestWorkflowResilience:
         state = backend.load(run_id)
         assert state["next_step_index"] == 2
 
-        wf_resume = Workflow("ingestion_test", enable_checkpointing=True, state_backend=backend)
+        wf_resume = Workflow(
+            "ingestion_test", enable_checkpointing=True, state_backend=backend
+        )
         wf_resume.add_step(extract)
         wf_resume.add_step(flaky_transform, retries=1, backoff=0)
         wf_resume.add_step(lambda dataset: dataset)

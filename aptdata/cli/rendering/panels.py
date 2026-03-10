@@ -13,7 +13,10 @@ def system_detail_panel(name: str, system_cls: Any) -> Panel:
     """Return a Rich Panel with detailed system information."""
     doc = (system_cls.__doc__ or "No description.").strip()
     module = getattr(system_cls, "__module__", "unknown")
-    content = f"[bold]Class:[/bold] {system_cls.__name__}\n[bold]Module:[/bold] {module}\n\n{doc}"
+    content = (
+        f"[bold]Class:[/bold] {system_cls.__name__}\n"
+        f"[bold]Module:[/bold] {module}\n\n{doc}"
+    )
     return Panel(content, title=f"[bold cyan]System: {name}[/bold cyan]", expand=False)
 
 
@@ -40,7 +43,9 @@ def flow_tree(flow: Any) -> Tree:
         for child in children.get(node, []):
             _add(child, b)
 
-    component_ids = [getattr(c, "component_id", str(i)) for i, c in enumerate(components)]
+    component_ids = [
+        getattr(c, "component_id", str(i)) for i, c in enumerate(components)
+    ]
     all_targets: set[str] = {t for targets in children.values() for t in targets}
     roots = [cid for cid in component_ids if cid not in all_targets]
     if not roots:
@@ -77,4 +82,6 @@ def component_panel(component: Any) -> Panel:
         desc = getattr(meta, "description", "")
         if desc:
             lines.append(f"[bold]Description:[/bold] {desc}")
-    return Panel("\n".join(lines), title=f"[bold cyan]Component: {cid}[/bold cyan]", expand=False)
+    return Panel(
+        "\n".join(lines), title=f"[bold cyan]Component: {cid}[/bold cyan]", expand=False
+    )

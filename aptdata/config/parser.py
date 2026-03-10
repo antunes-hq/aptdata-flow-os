@@ -88,7 +88,9 @@ class ParsedConfig:
     """Hydrated config document with metadata and validated domain objects."""
 
     metadata: dict[str, Any] = field(default_factory=dict)
-    system: ConfigSystem = field(default_factory=lambda: ConfigSystem(system_id="default"))
+    system: ConfigSystem = field(
+        default_factory=lambda: ConfigSystem(system_id="default")
+    )
 
 
 class YamlConfigParser:

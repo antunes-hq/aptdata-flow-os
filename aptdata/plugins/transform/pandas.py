@@ -8,7 +8,8 @@ raised at instantiation time if pandas is not available.
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING, Any, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from aptdata.plugins.base import BaseTransformer
 from aptdata.plugins.manager import PluginDependencyError
@@ -110,9 +111,7 @@ class PandasTransformer(BaseTransformer):
             rows_out = len(result_df)
             columns_out = list(result_df.columns)
             span.set_attribute("aptdata.transformer.rows_out", rows_out)
-            span.set_attribute(
-                "aptdata.transformer.columns_out", str(columns_out)
-            )
+            span.set_attribute("aptdata.transformer.columns_out", str(columns_out))
             span.set_attribute(
                 "aptdata.transformer.compute_time_ms", round(compute_time_ms, 3)
             )

@@ -62,7 +62,9 @@ class DatasetCatalog:
     ::
 
         catalog = DatasetCatalog()
-        catalog.register(DatasetCatalogEntry(uri="s3://bucket/data.parquet", name="Sales"))
+        catalog.register(
+            DatasetCatalogEntry(uri="s3://bucket/data.parquet", name="Sales")
+        )
         entry = catalog.get("s3://bucket/data.parquet")
         results = catalog.search(owner="data-team", tag="finance")
     """
@@ -71,7 +73,8 @@ class DatasetCatalog:
         self._entries: dict[str, DatasetCatalogEntry] = {}
 
     def register(self, entry: DatasetCatalogEntry) -> None:
-        """Register or replace a catalog entry under its :attr:`~DatasetCatalogEntry.uri`."""
+        """Register or replace a catalog entry under its
+        :attr:`~DatasetCatalogEntry.uri`."""
         self._entries[entry.uri] = entry
 
     def get(self, uri: str) -> DatasetCatalogEntry | None:

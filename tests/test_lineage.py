@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 from aptdata.core.lineage import (
     ColumnLineage,
     LineageEventType,
@@ -32,7 +31,14 @@ class TestColumnLineage:
 
 class TestLineageEventType:
     def test_all_members(self) -> None:
-        expected = {"READ", "TRANSFORM", "QUALITY_CHECK", "BUSINESS_RULE", "WRITE", "SCHEMA_CHANGE"}
+        expected = {
+            "READ",
+            "TRANSFORM",
+            "QUALITY_CHECK",
+            "BUSINESS_RULE",
+            "WRITE",
+            "SCHEMA_CHANGE",
+        }
         assert {e.value for e in LineageEventType} == expected
 
     def test_string_value(self) -> None:
@@ -54,7 +60,9 @@ class TestLineageNode:
         assert "T" in n.timestamp  # ISO-8601 format
 
     def test_defaults(self) -> None:
-        n = LineageNode(dataset_uri="s3://bucket/data", event_type=LineageEventType.WRITE)
+        n = LineageNode(
+            dataset_uri="s3://bucket/data", event_type=LineageEventType.WRITE
+        )
         assert n.workflow_name == ""
         assert n.rows_in == 0
         assert n.rows_out == 0

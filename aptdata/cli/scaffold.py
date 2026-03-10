@@ -48,11 +48,19 @@ def ingest(json_path: Path) -> pd.DataFrame:
 def process(dataframe: pd.DataFrame) -> pd.DataFrame:
     processed = dataframe.copy()
     processed["idade"] = pd.to_numeric(processed["idade"], errors="coerce")
-    processed["jogos_selecao"] = pd.to_numeric(processed["jogos_selecao"], errors="coerce")
-    processed["gols_selecao"] = pd.to_numeric(processed["gols_selecao"], errors="coerce")
-    processed["participacoes_copa"] = pd.to_numeric(processed["participacoes_copa"], errors="coerce")
+    processed["jogos_selecao"] = pd.to_numeric(
+        processed["jogos_selecao"], errors="coerce"
+    )
+    processed["gols_selecao"] = pd.to_numeric(
+        processed["gols_selecao"], errors="coerce"
+    )
+    processed["participacoes_copa"] = pd.to_numeric(
+        processed["participacoes_copa"], errors="coerce"
+    )
 
-    processed["taxa_gols"] = (processed["gols_selecao"] / processed["jogos_selecao"]).fillna(0).round(3)
+    processed["taxa_gols"] = (
+        (processed["gols_selecao"] / processed["jogos_selecao"]).fillna(0).round(3)
+    )
     processed["indice_experiencia"] = (
         processed["jogos_selecao"] + (processed["participacoes_copa"] * 5)
     )
@@ -102,7 +110,8 @@ if __name__ == "__main__":
 def _render_readme(project_name: str) -> str:
     return f"""# {project_name}
 
-Pipeline dummy (hello-world) com pandas para executar ingestão → processamento → salvamento de dados da seleção brasileira.
+Pipeline dummy (hello-world) com pandas para executar ingestão →
+processamento → salvamento de dados da seleção brasileira.
 
 ## Como executar
 
@@ -122,11 +131,16 @@ python main.py
 
 
 SAMPLE_INPUT = """[
-  {"nome": "Alisson", "posicao": "Goleiro", "idade": 31, "jogos_selecao": 63, "gols_selecao": 0, "participacoes_copa": 2},
-  {"nome": "Marquinhos", "posicao": "Zagueiro", "idade": 31, "jogos_selecao": 85, "gols_selecao": 6, "participacoes_copa": 2},
-  {"nome": "Bruno Guimaraes", "posicao": "Meio-campo", "idade": 28, "jogos_selecao": 31, "gols_selecao": 1, "participacoes_copa": 1},
-  {"nome": "Vinicius Junior", "posicao": "Atacante", "idade": 25, "jogos_selecao": 35, "gols_selecao": 5, "participacoes_copa": 1},
-  {"nome": "Rodrygo", "posicao": "Atacante", "idade": 25, "jogos_selecao": 30, "gols_selecao": 7, "participacoes_copa": 1}
+  {"nome": "Alisson", "posicao": "Goleiro", "idade": 31,
+   "jogos_selecao": 63, "gols_selecao": 0, "participacoes_copa": 2},
+  {"nome": "Marquinhos", "posicao": "Zagueiro", "idade": 31,
+   "jogos_selecao": 85, "gols_selecao": 6, "participacoes_copa": 2},
+  {"nome": "Bruno Guimaraes", "posicao": "Meio-campo", "idade": 28,
+   "jogos_selecao": 31, "gols_selecao": 1, "participacoes_copa": 1},
+  {"nome": "Vinicius Junior", "posicao": "Atacante", "idade": 25,
+   "jogos_selecao": 35, "gols_selecao": 5, "participacoes_copa": 1},
+  {"nome": "Rodrygo", "posicao": "Atacante", "idade": 25,
+   "jogos_selecao": 30, "gols_selecao": 7, "participacoes_copa": 1}
 ]
 """
 
@@ -137,9 +151,13 @@ def _scaffold_hello_world(project_name: str, project_dir: Path) -> None:
     (project_dir / "output").mkdir(parents=True, exist_ok=True)
 
     (project_dir / "requirements.txt").write_text("pandas>=2.0\n", encoding="utf-8")
-    (project_dir / "README.md").write_text(_render_readme(project_name), encoding="utf-8")
+    (project_dir / "README.md").write_text(
+        _render_readme(project_name), encoding="utf-8"
+    )
     (project_dir / "main.py").write_text(_render_main(project_name), encoding="utf-8")
-    (project_dir / "data" / "selecao_brasileira.json").write_text(SAMPLE_INPUT, encoding="utf-8")
+    (project_dir / "data" / "selecao_brasileira.json").write_text(
+        SAMPLE_INPUT, encoding="utf-8"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -298,7 +316,9 @@ def _scaffold_medallion(project_name: str, project_dir: Path) -> None:
     (project_dir / "aptdata.yaml").write_text(
         _MEDALLION_YAML.format(project_name=project_name), encoding="utf-8"
     )
-    (project_dir / "requirements.txt").write_text(_MEDALLION_REQUIREMENTS, encoding="utf-8")
+    (project_dir / "requirements.txt").write_text(
+        _MEDALLION_REQUIREMENTS, encoding="utf-8"
+    )
     (project_dir / "README.md").write_text(
         _MEDALLION_README.format(project_name=project_name), encoding="utf-8"
     )
@@ -332,7 +352,9 @@ def chunk(data):
         if not text:
             continue
         for i, start in enumerate(range(0, len(text), 512)):
-            chunks.append({"chunk_id": f"{record['id']}-{i}", "text": text[start:start + 512]})
+            chunks.append(
+                {"chunk_id": f"{record['id']}-{i}", "text": text[start : start + 512]}
+            )
     return chunks
 
 
@@ -340,7 +362,10 @@ def embed(data):
     """Step 3: Generate embeddings (replace with your embedding provider)."""
     if not isinstance(data, list):
         return data
-    return [{"chunk_id": r["chunk_id"], "text": r["text"], "embedding": [0.0] * 384} for r in data]
+    return [
+        {"chunk_id": r["chunk_id"], "text": r["text"], "embedding": [0.0] * 384}
+        for r in data
+    ]
 
 
 def load_to_vector_store(data):
@@ -622,12 +647,21 @@ def run(config: dict) -> dict:
     Replace this stub with your actual processing logic.
     """
     started = time.perf_counter()
-    print(json.dumps({{"event": "job.started", "job": "{project_name}", "config": config}}), flush=True)
+    print(
+        json.dumps(
+            {{"event": "job.started", "job": "{project_name}", "config": config}}
+        ),
+        flush=True,
+    )
 
     # --- your logic here ---
 
     elapsed = round(time.perf_counter() - started, 4)
-    result = {{"event": "job.completed", "job": "{project_name}", "elapsed_seconds": elapsed}}
+    result = {{
+        "event": "job.completed",
+        "job": "{project_name}",
+        "elapsed_seconds": elapsed,
+    }}
     print(json.dumps(result), flush=True)
     return result
 
@@ -635,7 +669,11 @@ def run(config: dict) -> dict:
 def main() -> None:
     """CLI entry-point (installed via pyproject.toml [project.scripts])."""
     config_path = Path(sys.argv[1]) if len(sys.argv) > 1 else None
-    config: dict = json.loads(config_path.read_text()) if config_path and config_path.exists() else {{}}
+    config: dict = (
+        json.loads(config_path.read_text())
+        if config_path and config_path.exists()
+        else {{}}
+    )
     run(config)
 
 
@@ -765,14 +803,25 @@ def main() -> None:
     port = int(os.getenv("APP_PORT", "8080"))
     env = os.getenv("APP_ENV", "development")
 
-    print(json.dumps({{"event": "app.started", "service": "{project_name}", "port": port, "env": env}}), flush=True)
+    print(
+        json.dumps({{
+            "event": "app.started",
+            "service": "{project_name}",
+            "port": port,
+            "env": env,
+        }}),
+        flush=True,
+    )
 
     try:
         # --- your service logic here ---
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        print(json.dumps({{"event": "app.stopped", "service": "{project_name}"}}), flush=True)
+        print(
+            json.dumps({{"event": "app.stopped", "service": "{project_name}"}}),
+            flush=True,
+        )
 
 
 if __name__ == "__main__":
@@ -899,14 +948,18 @@ def _scaffold_docker_compose_app(project_name: str, project_dir: Path) -> None:
     (project_dir / "app.py").write_text(
         _DOCKER_COMPOSE_APP_PY.format(project_name=project_name), encoding="utf-8"
     )
-    (project_dir / "Dockerfile").write_text(_DOCKER_COMPOSE_DOCKERFILE, encoding="utf-8")
+    (project_dir / "Dockerfile").write_text(
+        _DOCKER_COMPOSE_DOCKERFILE, encoding="utf-8"
+    )
     (project_dir / "docker-compose.yml").write_text(
         _DOCKER_COMPOSE_YML.format(project_name=project_name), encoding="utf-8"
     )
     (project_dir / "mesh.yaml").write_text(
         _DOCKER_COMPOSE_MESH_YAML.format(project_name=project_name), encoding="utf-8"
     )
-    (project_dir / "requirements.txt").write_text(_DOCKER_COMPOSE_REQUIREMENTS, encoding="utf-8")
+    (project_dir / "requirements.txt").write_text(
+        _DOCKER_COMPOSE_REQUIREMENTS, encoding="utf-8"
+    )
     (project_dir / "README.md").write_text(
         _DOCKER_COMPOSE_README.format(project_name=project_name), encoding="utf-8"
     )
@@ -917,12 +970,30 @@ def _scaffold_docker_compose_app(project_name: str, project_dir: Path) -> None:
 # ---------------------------------------------------------------------------
 
 _TEMPLATES: dict[str, tuple[str, object]] = {
-    "hello-world": ("Gera um projeto dummy pandas (hello-world).", _scaffold_hello_world),
-    "medallion": ("Gera um projeto Bronze/Silver/Gold (Medallion Architecture).", _scaffold_medallion),
-    "rag-ingestion": ("Gera um pipeline RAG de ingestão de documentos.", _scaffold_rag_ingestion),
-    "data-quality-test": ("Gera um pipeline de testes de qualidade de dados.", _scaffold_data_quality_test),
-    "job-wheel": ("Gera um executor JOB empacotado como Python wheel.", _scaffold_job_wheel),
-    "docker-compose-app": ("Gera uma aplicação Docker Compose multi-serviço.", _scaffold_docker_compose_app),
+    "hello-world": (
+        "Gera um projeto dummy pandas (hello-world).",
+        _scaffold_hello_world,
+    ),
+    "medallion": (
+        "Gera um projeto Bronze/Silver/Gold (Medallion Architecture).",
+        _scaffold_medallion,
+    ),
+    "rag-ingestion": (
+        "Gera um pipeline RAG de ingestão de documentos.",
+        _scaffold_rag_ingestion,
+    ),
+    "data-quality-test": (
+        "Gera um pipeline de testes de qualidade de dados.",
+        _scaffold_data_quality_test,
+    ),
+    "job-wheel": (
+        "Gera um executor JOB empacotado como Python wheel.",
+        _scaffold_job_wheel,
+    ),
+    "docker-compose-app": (
+        "Gera uma aplicação Docker Compose multi-serviço.",
+        _scaffold_docker_compose_app,
+    ),
 }
 
 TEMPLATE_NAMES = list(_TEMPLATES)
@@ -949,10 +1020,7 @@ def scaffold(
         "hello-world",
         "--template",
         "-t",
-        help=(
-            "Template a ser gerado. "
-            f"Opções: {', '.join(TEMPLATE_NAMES)}."
-        ),
+        help=(f"Template a ser gerado. Opções: {', '.join(TEMPLATE_NAMES)}."),
     ),
 ) -> None:
     """Gera um projeto aptdata a partir de um template."""
@@ -961,7 +1029,10 @@ def scaffold(
             {
                 "event": "scaffold.error",
                 "project": project_name,
-                "error": "Project name must start with a letter and use only letters, numbers, and '_'.",
+                "error": (
+                    "Project name must start with a letter"
+                    " and use only letters, numbers, and '_'."
+                ),
             },
             error=True,
         )
@@ -972,7 +1043,10 @@ def scaffold(
             {
                 "event": "scaffold.error",
                 "project": project_name,
-                "error": f"Unknown template '{template}'. Available: {', '.join(TEMPLATE_NAMES)}.",
+                "error": (
+                    f"Unknown template '{template}'."
+                    f" Available: {', '.join(TEMPLATE_NAMES)}."
+                ),
             },
             error=True,
         )
@@ -992,12 +1066,14 @@ def scaffold(
         )
         raise SystemExit(1)
 
-    _emit({
-        "event": "scaffold.started",
-        "project": project_name,
-        "template": template,
-        "output": str(project_dir),
-    })
+    _emit(
+        {
+            "event": "scaffold.started",
+            "project": project_name,
+            "template": template,
+            "output": str(project_dir),
+        }
+    )
 
     project_dir.mkdir(parents=True, exist_ok=True)
     _, generator = _TEMPLATES[template]

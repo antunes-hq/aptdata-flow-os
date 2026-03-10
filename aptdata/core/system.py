@@ -24,16 +24,16 @@ Design goals
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from aptdata.core.dataset import IDataset
 from aptdata.telemetry.instrumentation import get_tracer, mask_telemetry_value
-
 
 # ---------------------------------------------------------------------------
 # Component metadata
@@ -134,10 +134,14 @@ class BaseComponent(IComponent):
             return
 
         @wraps(execute_fn)
-        def _instrumented_execute(self: BaseComponent, inputs: list[IDataset]) -> list[IDataset]:
+        def _instrumented_execute(
+            self: BaseComponent, inputs: list[IDataset]
+        ) -> list[IDataset]:
             span_name = self.component_id or cls.__name__
             kind = self.meta.kind
-            kind_value = kind.value if isinstance(kind, ComponentKind) else str(kind or "")
+            kind_value = (
+                kind.value if isinstance(kind, ComponentKind) else str(kind or "")
+            )
             tags = sorted(self.meta.tags) if self.meta.tags else []
             with get_tracer().start_as_current_span(span_name) as span:
                 span.set_attribute("aptdata.component_id", self.component_id)

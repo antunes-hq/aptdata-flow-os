@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from time import sleep, time_ns
-from typing import Any, Callable
+from typing import Any
 from uuid import uuid4
 
+from opentelemetry import trace
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from aptdata.core.context import ExecutionContext
@@ -21,7 +23,6 @@ from aptdata.telemetry.instrumentation import (
     reset_ingestion_metrics,
     set_ingestion_total_documents,
 )
-from opentelemetry import trace
 
 
 @dataclass
@@ -90,7 +91,9 @@ class BaseWorkflow(IWorkflow):
         self._compiled = False
 
     def add_component(self, component: IComponent) -> None:
-        self._nodes[component.component_id] = WorkflowNode(component=component, workflow=self)
+        self._nodes[component.component_id] = WorkflowNode(
+            component=component, workflow=self
+        )
         self._compiled = False
 
     def connect(
@@ -99,7 +102,9 @@ class BaseWorkflow(IWorkflow):
         target_id: str,
         condition: Callable[[list[IDataset]], bool] | None = None,
     ) -> None:
-        self._edges.append(WorkflowEdge(source_id=source_id, target_id=target_id, condition=condition))
+        self._edges.append(
+            WorkflowEdge(source_id=source_id, target_id=target_id, condition=condition)
+        )
         self._compiled = False
 
     def compile(self) -> None:
@@ -107,7 +112,9 @@ class BaseWorkflow(IWorkflow):
             raise ValueError("Workflow has no components.")
 
         indegree = {component_id: 0 for component_id in self._nodes}
-        adjacency: dict[str, list[WorkflowEdge]] = {component_id: [] for component_id in self._nodes}
+        adjacency: dict[str, list[WorkflowEdge]] = {
+            component_id: [] for component_id in self._nodes
+        }
 
         for edge in self._edges:
             if edge.source_id not in self._nodes:
@@ -118,7 +125,9 @@ class BaseWorkflow(IWorkflow):
             indegree[edge.target_id] += 1
 
         queue = deque(
-            component_id for component_id, in_degree in indegree.items() if in_degree == 0
+            component_id
+            for component_id, in_degree in indegree.items()
+            if in_degree == 0
         )
         execution_order: list[str] = []
         while queue:
@@ -211,7 +220,9 @@ class Workflow:
         backoff: float = 0.0,
     ) -> None:
         """Add a callable pipeline step with optional retry/backoff policy."""
-        self._steps.append(_WorkflowStep(fn=step, retries=max(0, retries), backoff=max(0.0, backoff)))
+        self._steps.append(
+            _WorkflowStep(fn=step, retries=max(0, retries), backoff=max(0.0, backoff))
+        )
 
     def execute(self, data: Any | None = None) -> Any:
         """Execute workflow from the first step."""
@@ -233,7 +244,9 @@ class Workflow:
             return data
         reset_ingestion_metrics()
         trace_id = None
-        with trace.get_tracer("aptdata.workflow").start_as_current_span(f"{self.name}.run") as span:
+        with trace.get_tracer("aptdata.workflow").start_as_current_span(
+            f"{self.name}.run"
+        ) as span:
             trace_id = f"{span.get_span_context().trace_id:032x}"
             payload = self._attach_lineage(data, trace_id=trace_id)
             set_ingestion_total_documents(self._count_records(payload))
@@ -273,7 +286,9 @@ class Workflow:
                 f"{self.name}.step.{step_index}"
             ) as span:
                 span.set_attribute("aptdata.step.index", step_index)
-                span.set_attribute("aptdata.step.name", getattr(step.fn, "__name__", "step"))
+                span.set_attribute(
+                    "aptdata.step.name", getattr(step.fn, "__name__", "step")
+                )
                 span.set_attribute("aptdata.retry.attempt", attempt + 1)
                 span.set_attribute("aptdata.retry.max_attempts", step.retries + 1)
                 span.set_attribute("aptdata.trace_id", trace_id)
@@ -284,7 +299,9 @@ class Workflow:
                     last_error = exc
                     span.record_exception(exc)
                     if attempt < step.retries:
-                        backoff_seconds = step.backoff * (2**attempt) if step.backoff else 0.0
+                        backoff_seconds = (
+                            step.backoff * (2**attempt) if step.backoff else 0.0
+                        )
                         sleep(min(backoff_seconds, 30.0))
         if self.enable_checkpointing:
             self.state_backend.save(

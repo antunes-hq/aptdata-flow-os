@@ -13,7 +13,9 @@ from aptdata.plugins.vector.base import VectorWriter
 class QdrantWriter(VectorWriter):
     """Write embeddings to an in-memory Qdrant-like collection buffer."""
 
-    def __init__(self, *, collection: str, vector_column: str = "artigo_chunk_embedding") -> None:
+    def __init__(
+        self, *, collection: str, vector_column: str = "artigo_chunk_embedding"
+    ) -> None:
         self.collection = collection
         self.vector_column = vector_column
         self.points: list[dict[str, Any]] = []
@@ -28,7 +30,9 @@ class QdrantWriter(VectorWriter):
                 if vector is None:
                     continue
                 point = {
-                    "id": row.get("document_id") or row.get("id") or f"{self.collection}-{index}",
+                    "id": row.get("document_id")
+                    or row.get("id")
+                    or f"{self.collection}-{index}",
                     "vector": vector,
                     "payload": row,
                 }

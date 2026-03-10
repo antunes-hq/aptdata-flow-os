@@ -51,7 +51,11 @@ class TestCheckResult:
 
 class TestQualityReport:
     def test_passed_all_pass(self) -> None:
-        from aptdata.plugins.quality.report import CheckResult, CheckStatus, QualityReport
+        from aptdata.plugins.quality.report import (
+            CheckResult,
+            CheckStatus,
+            QualityReport,
+        )
 
         report = QualityReport(dataset_uri="memory://test")
         report.checks.append(CheckResult("A", status=CheckStatus.PASSED))
@@ -59,22 +63,32 @@ class TestQualityReport:
         assert report.passed is True
 
     def test_passed_with_failure(self) -> None:
-        from aptdata.plugins.quality.report import CheckResult, CheckStatus, QualityReport
+        from aptdata.plugins.quality.report import (
+            CheckResult,
+            CheckStatus,
+            QualityReport,
+        )
 
         report = QualityReport(dataset_uri="memory://test")
         report.checks.append(CheckResult("A", status=CheckStatus.FAILED))
         assert report.passed is False
 
     def test_summary_counts(self) -> None:
-        from aptdata.plugins.quality.report import CheckResult, CheckStatus, QualityReport
+        from aptdata.plugins.quality.report import (
+            CheckResult,
+            CheckStatus,
+            QualityReport,
+        )
 
         report = QualityReport(dataset_uri="memory://test")
-        report.checks.extend([
-            CheckResult("A", status=CheckStatus.PASSED),
-            CheckResult("B", status=CheckStatus.PASSED),
-            CheckResult("C", status=CheckStatus.FAILED),
-            CheckResult("D", status=CheckStatus.WARNING),
-        ])
+        report.checks.extend(
+            [
+                CheckResult("A", status=CheckStatus.PASSED),
+                CheckResult("B", status=CheckStatus.PASSED),
+                CheckResult("C", status=CheckStatus.FAILED),
+                CheckResult("D", status=CheckStatus.WARNING),
+            ]
+        )
         summary = report.summary
         assert summary[CheckStatus.PASSED] == 2
         assert summary[CheckStatus.FAILED] == 1
@@ -109,26 +123,38 @@ class TestSchemaContract:
         assert [c.name for c in pii] == ["email", "ssn"]
 
     def test_get_pii_columns_by_classification(self) -> None:
-        from aptdata.plugins.quality.contract import ColumnClassification, ColumnContract, SchemaContract
+        from aptdata.plugins.quality.contract import (
+            ColumnClassification,
+            ColumnContract,
+            SchemaContract,
+        )
 
         contract = SchemaContract(
             name="test",
             columns=[
                 ColumnContract(name="id", pii=False),
-                ColumnContract(name="name", classification=ColumnClassification.PII, pii=False),
+                ColumnContract(
+                    name="name", classification=ColumnClassification.PII, pii=False
+                ),
             ],
         )
         pii = contract.get_pii_columns()
         assert any(c.name == "name" for c in pii)
 
     def test_get_columns_by_classification(self) -> None:
-        from aptdata.plugins.quality.contract import ColumnClassification, ColumnContract, SchemaContract
+        from aptdata.plugins.quality.contract import (
+            ColumnClassification,
+            ColumnContract,
+            SchemaContract,
+        )
 
         contract = SchemaContract(
             name="test",
             columns=[
                 ColumnContract(name="a", classification=ColumnClassification.PUBLIC),
-                ColumnContract(name="b", classification=ColumnClassification.CONFIDENTIAL),
+                ColumnContract(
+                    name="b", classification=ColumnClassification.CONFIDENTIAL
+                ),
                 ColumnContract(name="c", classification=ColumnClassification.PUBLIC),
             ],
         )
@@ -263,11 +289,11 @@ class TestExpectColumnValuesToMatchRegex:
 
 class TestQualityValidator:
     def test_abort_on_failure(self) -> None:
+        import pandas as pd
+
         from aptdata.plugins.quality.contract import EnforcementMode
         from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
         from aptdata.plugins.quality.validator import QualityValidator
-
-        import pandas as pd
 
         df = pd.DataFrame({"age": [1, None]})
         validator = QualityValidator(
@@ -278,11 +304,11 @@ class TestQualityValidator:
             validator.validate(df)
 
     def test_warn_on_failure(self) -> None:
+        import pandas as pd
+
         from aptdata.plugins.quality.contract import EnforcementMode
         from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
         from aptdata.plugins.quality.validator import QualityValidator
-
-        import pandas as pd
 
         df = pd.DataFrame({"age": [1, None]})
         validator = QualityValidator(
@@ -313,11 +339,11 @@ class TestQualityValidator:
         assert result.schema_metadata["quality_report"]["passed"] is False
 
     def test_pass_through_on_success(self) -> None:
+        import pandas as pd
+
         from aptdata.plugins.quality.contract import EnforcementMode
         from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
         from aptdata.plugins.quality.validator import QualityValidator
-
-        import pandas as pd
 
         df = pd.DataFrame({"age": [1, 2, 3]})
         validator = QualityValidator(
@@ -328,14 +354,14 @@ class TestQualityValidator:
         assert result is df
 
     def test_multiple_expectations(self) -> None:
+        import pandas as pd
+
         from aptdata.plugins.quality.contract import EnforcementMode
         from aptdata.plugins.quality.expectations import (
             ExpectColumnToNotBeNull,
             ExpectColumnValuesToBeUnique,
         )
         from aptdata.plugins.quality.validator import QualityValidator
-
-        import pandas as pd
 
         df = pd.DataFrame({"id": [1, 2, 3], "name": ["a", "b", "c"]})
         validator = QualityValidator(

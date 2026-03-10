@@ -13,5 +13,7 @@ class VectorWriter(BaseWriter):
     """Base writer for vector databases."""
 
     @abstractmethod
-    def write(self, dataset: BaseDataset, **kwargs: Any) -> None:  # pragma: no cover - interface only
+    def write(
+        self, dataset: BaseDataset, **kwargs: Any
+    ) -> None:  # pragma: no cover - interface only
         """Persist vectors from *dataset* into the destination vector store."""

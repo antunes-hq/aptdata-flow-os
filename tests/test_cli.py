@@ -12,10 +12,9 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typer.testing import CliRunner
 
 from aptdata.cli.app import _emit, app
-from aptdata.plugins import registry
-from aptdata.core.system import BaseSystem
 from aptdata.core.dataset import BaseDataset
-
+from aptdata.core.system import BaseSystem
+from aptdata.plugins import registry
 
 runner = CliRunner()
 

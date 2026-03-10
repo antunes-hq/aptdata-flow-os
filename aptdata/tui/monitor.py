@@ -22,7 +22,10 @@ from textual.widgets import (
 )
 
 from aptdata.mcp.server import get_mcp_status
-from aptdata.telemetry.instrumentation import get_ingestion_metrics, get_registered_secret_names
+from aptdata.telemetry.instrumentation import (
+    get_ingestion_metrics,
+    get_registered_secret_names,
+)
 
 
 class _DAGPanel(Static):
@@ -112,9 +115,7 @@ class _MemoryBar(Static):
                     lines = {
                         k: int(v.split()[0])
                         for k, v in (
-                            line.strip().split(":")
-                            for line in f
-                            if ":" in line
+                            line.strip().split(":") for line in f if ":" in line
                         )
                     }
                 total = lines.get("MemTotal", 0)
@@ -153,7 +154,8 @@ class _IngestionMetricsPanel(Static):
         self.update(
             "[bold green]Ingestion Metrics[/bold green]\n"
             f"Throughput: {float(metrics['throughput_docs_per_sec']):.2f} docs/s\n"
-            f"Chunks: {metrics['chunks_processed']} | Tokens: {metrics['tokens_used']}\n"
+            f"Chunks: {metrics['chunks_processed']}"
+            f" | Tokens: {metrics['tokens_used']}\n"
             f"Progress: [{bar}] {progress * 100:.1f}%"
         )
 

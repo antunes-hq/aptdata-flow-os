@@ -9,10 +9,10 @@ import pytest
 
 from aptdata.tui.monitor import (
     MonitorApp,
-    _MCPStatusPanel,
     _AgentTraceLog,
     _DAGPanel,
     _IngestionMetricsPanel,
+    _MCPStatusPanel,
     _MemoryBar,
     _StatusTable,
 )
@@ -76,7 +76,9 @@ class TestMonitorAppHeadless:
             assert mem is not None
 
     @pytest.mark.asyncio()
-    async def test_ingestion_metrics_panel_present(self, monitor_app: MonitorApp) -> None:
+    async def test_ingestion_metrics_panel_present(
+        self, monitor_app: MonitorApp
+    ) -> None:
         async with monitor_app.run_test():
             panel = monitor_app.query_one(_IngestionMetricsPanel)
             assert panel is not None

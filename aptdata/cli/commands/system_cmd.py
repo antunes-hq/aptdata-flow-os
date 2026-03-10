@@ -7,8 +7,8 @@ import json
 import typer
 
 from aptdata.cli.rendering.console import SmartConsole
-from aptdata.cli.rendering.tables import systems_table
 from aptdata.cli.rendering.panels import system_detail_panel
+from aptdata.cli.rendering.tables import systems_table
 
 system_app = typer.Typer(name="system", help="Inspect and validate registered systems.")
 

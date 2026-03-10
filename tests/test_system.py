@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import pytest
 from opentelemetry import trace
@@ -24,7 +25,6 @@ from aptdata.core.system import (
     IFlow,
     ISystem,
 )
-
 
 # ---------------------------------------------------------------------------
 # Minimal concrete helpers used only within tests
@@ -79,7 +79,9 @@ class _SimpleFlow(BaseFlow):
         target_id: str,
         condition: Callable[[list[IDataset]], bool] | None = None,
     ) -> None:
-        self._edges.append(FlowEdge(source_id=source_id, target_id=target_id, condition=condition))
+        self._edges.append(
+            FlowEdge(source_id=source_id, target_id=target_id, condition=condition)
+        )
 
     def compile(self) -> None:
         """Build a topological execution order (simple linear walk for tests)."""

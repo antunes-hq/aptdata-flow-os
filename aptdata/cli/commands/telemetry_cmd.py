@@ -9,7 +9,9 @@ import typer
 from aptdata.cli.rendering.console import SmartConsole
 from aptdata.cli.rendering.tables import telemetry_status_table
 
-telemetry_app = typer.Typer(name="telemetry", help="Inspect OpenTelemetry telemetry status.")
+telemetry_app = typer.Typer(
+    name="telemetry", help="Inspect OpenTelemetry telemetry status."
+)
 
 
 def _get_telemetry_status() -> dict:

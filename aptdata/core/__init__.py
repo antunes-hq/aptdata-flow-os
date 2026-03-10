@@ -15,7 +15,13 @@ from aptdata.core.system import (
     IFlow,
     ISystem,
 )
-from aptdata.core.workflow import BaseWorkflow, IWorkflow, Workflow, WorkflowEdge, WorkflowNode
+from aptdata.core.workflow import (
+    BaseWorkflow,
+    IWorkflow,
+    Workflow,
+    WorkflowEdge,
+    WorkflowNode,
+)
 
 __all__ = [
     "IDataset",

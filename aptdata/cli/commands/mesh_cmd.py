@@ -5,13 +5,14 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 import typer
 
 from aptdata.cli.rendering.console import SmartConsole
 
-mesh_app = typer.Typer(name="mesh", help="Orchestrate mesh components (job-wheel, docker-compose-app, …).")
+mesh_app = typer.Typer(
+    name="mesh", help="Orchestrate mesh components (job-wheel, docker-compose-app, …)."
+)
 
 _MESH_FILE = "mesh.yaml"
 
@@ -40,7 +41,7 @@ def _load_mesh(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
-def _find_mesh_yaml(directory: Path) -> Optional[Path]:  # noqa: UP007
+def _find_mesh_yaml(directory: Path) -> Path | None:  # noqa: UP007
     """Return the path to mesh.yaml in *directory* or None if not found."""
     candidate = directory / _MESH_FILE
     return candidate if candidate.exists() else None
@@ -96,7 +97,9 @@ def mesh_list(
             )
 
     if json_mode:
-        print(json.dumps({"components": components, "count": len(components)}), flush=True)
+        print(
+            json.dumps({"components": components, "count": len(components)}), flush=True
+        )
     else:
         if not components:
             console.warning(f"No mesh.yaml files found under '{root}'.")
@@ -116,7 +119,9 @@ def mesh_list(
 
 @mesh_app.command("run")
 def mesh_run(
-    component: str = typer.Argument(..., help="Component name or path containing mesh.yaml."),
+    component: str = typer.Argument(
+        ..., help="Component name or path containing mesh.yaml."
+    ),
     directory: Path = typer.Option(
         Path("."),
         "--dir",
@@ -125,7 +130,9 @@ def mesh_run(
         exists=False,
         resolve_path=True,
     ),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would run without executing."),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Show what would run without executing."
+    ),
     json_mode: bool = typer.Option(False, "--json", help="Emit JSON lines."),
 ) -> None:
     """Run a mesh component by name.
@@ -146,7 +153,7 @@ def mesh_run(
     root = directory.resolve()
 
     # Find mesh.yaml for the given component (by name or direct path)
-    mesh_file: Optional[Path] = None  # noqa: UP007
+    mesh_file: Path | None = None  # noqa: UP007
     component_path = root / component
     if component_path.is_dir():
         mesh_file = _find_mesh_yaml(component_path)
@@ -163,7 +170,12 @@ def mesh_run(
     if mesh_file is None:
         msg = f"Component '{component}' not found. No mesh.yaml located under '{root}'."
         if json_mode:
-            print(json.dumps({"event": "mesh.error", "component": component, "error": msg}), flush=True)
+            print(
+                json.dumps(
+                    {"event": "mesh.error", "component": component, "error": msg}
+                ),
+                flush=True,
+            )
         else:
             console.error(msg)
         raise typer.Exit(1)
@@ -174,7 +186,14 @@ def mesh_run(
 
     if json_mode:
         print(
-            json.dumps({"event": "mesh.run.started", "component": component, "type": comp_type, "dry_run": dry_run}),
+            json.dumps(
+                {
+                    "event": "mesh.run.started",
+                    "component": component,
+                    "type": comp_type,
+                    "dry_run": dry_run,
+                }
+            ),
             flush=True,
         )
     else:
@@ -193,20 +212,40 @@ def mesh_run(
             raise ValueError(f"Unsupported component type '{comp_type}'.")
     except Exception as exc:  # noqa: BLE001
         if json_mode:
-            print(json.dumps({"event": "mesh.run.error", "component": component, "error": str(exc)}), flush=True)
+            print(
+                json.dumps(
+                    {
+                        "event": "mesh.run.error",
+                        "component": component,
+                        "error": str(exc),
+                    }
+                ),
+                flush=True,
+            )
         else:
             console.error(f"Failed to run '{component}': {exc}")
         raise typer.Exit(1) from exc
 
     if json_mode:
-        print(json.dumps({"event": "mesh.run.completed", "component": component, "type": comp_type}), flush=True)
+        print(
+            json.dumps(
+                {
+                    "event": "mesh.run.completed",
+                    "component": component,
+                    "type": comp_type,
+                }
+            ),
+            flush=True,
+        )
     else:
         console.success(f"Component [bold cyan]{component}[/] finished successfully.")
 
 
 @mesh_app.command("build")
 def mesh_build(
-    component: str = typer.Argument(..., help="Component name or path containing mesh.yaml."),
+    component: str = typer.Argument(
+        ..., help="Component name or path containing mesh.yaml."
+    ),
     directory: Path = typer.Option(
         Path("."),
         "--dir",
@@ -232,7 +271,7 @@ def mesh_build(
     console = SmartConsole(json_mode=json_mode)
     root = directory.resolve()
 
-    mesh_file: Optional[Path] = None  # noqa: UP007
+    mesh_file: Path | None = None  # noqa: UP007
     component_path = root / component
     if component_path.is_dir():
         mesh_file = _find_mesh_yaml(component_path)
@@ -249,7 +288,12 @@ def mesh_build(
     if mesh_file is None:
         msg = f"Component '{component}' not found. No mesh.yaml located under '{root}'."
         if json_mode:
-            print(json.dumps({"event": "mesh.error", "component": component, "error": msg}), flush=True)
+            print(
+                json.dumps(
+                    {"event": "mesh.error", "component": component, "error": msg}
+                ),
+                flush=True,
+            )
         else:
             console.error(msg)
         raise typer.Exit(1)
@@ -259,9 +303,20 @@ def mesh_build(
     comp_dir = mesh_file.parent
 
     if json_mode:
-        print(json.dumps({"event": "mesh.build.started", "component": component, "type": comp_type}), flush=True)
+        print(
+            json.dumps(
+                {
+                    "event": "mesh.build.started",
+                    "component": component,
+                    "type": comp_type,
+                }
+            ),
+            flush=True,
+        )
     else:
-        console.info(f"Building component [bold cyan]{component}[/] (type: {comp_type})")
+        console.info(
+            f"Building component [bold cyan]{component}[/] (type: {comp_type})"
+        )
 
     try:
         if comp_type == "job-wheel":
@@ -272,13 +327,31 @@ def mesh_build(
             raise ValueError(f"Unsupported component type '{comp_type}'.")
     except Exception as exc:  # noqa: BLE001
         if json_mode:
-            print(json.dumps({"event": "mesh.build.error", "component": component, "error": str(exc)}), flush=True)
+            print(
+                json.dumps(
+                    {
+                        "event": "mesh.build.error",
+                        "component": component,
+                        "error": str(exc),
+                    }
+                ),
+                flush=True,
+            )
         else:
             console.error(f"Failed to build '{component}': {exc}")
         raise typer.Exit(1) from exc
 
     if json_mode:
-        print(json.dumps({"event": "mesh.build.completed", "component": component, "type": comp_type}), flush=True)
+        print(
+            json.dumps(
+                {
+                    "event": "mesh.build.completed",
+                    "component": component,
+                    "type": comp_type,
+                }
+            ),
+            flush=True,
+        )
     else:
         console.success(f"Component [bold cyan]{component}[/] built successfully.")
 
@@ -306,7 +379,14 @@ def _show_dry_run(
 
     if json_mode:
         print(
-            json.dumps({"event": "mesh.run.dry_run", "component": component, "type": comp_type, "command": cmd}),
+            json.dumps(
+                {
+                    "event": "mesh.run.dry_run",
+                    "component": component,
+                    "type": comp_type,
+                    "command": cmd,
+                }
+            ),
             flush=True,
         )
     else:
@@ -331,18 +411,25 @@ def _run_docker_compose(component: str, comp_dir: Path, config: dict) -> None:
     cmd = ["docker", "compose", "up"]
     result = subprocess.run(cmd, cwd=comp_dir, check=False)  # noqa: S603
     if result.returncode != 0:
-        raise RuntimeError(f"Docker Compose app '{component}' exited with code {result.returncode}.")
+        raise RuntimeError(
+            f"Docker Compose app '{component}' exited with code {result.returncode}."
+        )
 
 
 def _build_job_wheel(component: str, comp_dir: Path) -> None:
     cmd = ["pip", "wheel", ".", "-w", "dist/", "--no-deps"]
     result = subprocess.run(cmd, cwd=comp_dir, check=False)  # noqa: S603
     if result.returncode != 0:
-        raise RuntimeError(f"Wheel build for '{component}' failed with code {result.returncode}.")
+        raise RuntimeError(
+            f"Wheel build for '{component}' failed with code {result.returncode}."
+        )
 
 
 def _build_docker_compose(component: str, comp_dir: Path) -> None:
     cmd = ["docker", "compose", "build"]
     result = subprocess.run(cmd, cwd=comp_dir, check=False)  # noqa: S603
     if result.returncode != 0:
-        raise RuntimeError(f"Docker Compose build for '{component}' failed with code {result.returncode}.")
+        raise RuntimeError(
+            f"Docker Compose build for '{component}' failed"
+            f" with code {result.returncode}."
+        )

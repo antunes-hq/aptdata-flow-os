@@ -14,20 +14,29 @@ import pytest
 
 from tests.conftest import assert_json_event
 
-
 # ---------------------------------------------------------------------------
 # Scaffold → mesh list → mesh run (dry-run) pipeline
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.integration
 class TestScaffoldMeshIntegration:
     """Scaffold a component then orchestrate it via mesh CLI."""
 
-    def test_job_wheel_scaffold_and_mesh_list(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_job_wheel_scaffold_and_mesh_list(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """Scaffold a job-wheel project and verify mesh list finds it."""
         result = cli_runner.invoke(
             cli_app,
-            ["scaffold", "integ_job", "--output", str(tmp_path), "--template", "job-wheel"],
+            [
+                "scaffold",
+                "integ_job",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
         )
         assert result.exit_code == 0, result.output
 
@@ -40,11 +49,20 @@ class TestScaffoldMeshIntegration:
         assert data["components"][0]["component"] == "integ_job"
         assert data["components"][0]["type"] == "job-wheel"
 
-    def test_docker_compose_scaffold_and_mesh_list(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_docker_compose_scaffold_and_mesh_list(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """Scaffold a docker-compose-app and verify mesh list finds it."""
         result = cli_runner.invoke(
             cli_app,
-            ["scaffold", "integ_app", "--output", str(tmp_path), "--template", "docker-compose-app"],
+            [
+                "scaffold",
+                "integ_app",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "docker-compose-app",
+            ],
         )
         assert result.exit_code == 0, result.output
 
@@ -56,20 +74,39 @@ class TestScaffoldMeshIntegration:
         assert data["count"] == 1
         assert data["components"][0]["type"] == "docker-compose-app"
 
-    def test_mesh_run_dry_run_produces_event(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_mesh_run_dry_run_produces_event(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """mesh run --dry-run must emit a mesh.run.dry_run event."""
         cli_runner.invoke(
             cli_app,
-            ["scaffold", "integ_job2", "--output", str(tmp_path), "--template", "job-wheel"],
+            [
+                "scaffold",
+                "integ_job2",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
         )
         result = cli_runner.invoke(
             cli_app,
-            ["mesh", "run", "integ_job2", "--dir", str(tmp_path), "--dry-run", "--json"],
+            [
+                "mesh",
+                "run",
+                "integ_job2",
+                "--dir",
+                str(tmp_path),
+                "--dry-run",
+                "--json",
+            ],
         )
         assert result.exit_code == 0
         assert_json_event(result.output, "mesh.run.dry_run")
 
-    def test_multiple_components_mesh_list(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_multiple_components_mesh_list(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """Scaffold two components and verify both appear in mesh list."""
         for name, template in [
             ("job_a", "job-wheel"),
@@ -93,6 +130,7 @@ class TestScaffoldMeshIntegration:
 # ---------------------------------------------------------------------------
 # Quality validator + expectations integration
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.integration
 class TestQualityValidatorIntegration:
@@ -191,6 +229,7 @@ class TestQualityValidatorIntegration:
             name="multi_check",
         )
         import warnings
+
         with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
             result = validator.validate(df)
@@ -200,6 +239,7 @@ class TestQualityValidatorIntegration:
 # ---------------------------------------------------------------------------
 # Transform + quality pipeline integration
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.integration
 class TestTransformQualityPipelineIntegration:
@@ -238,6 +278,7 @@ class TestTransformQualityPipelineIntegration:
 # Scaffold → file verification integration
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.integration
 class TestScaffoldFileIntegration:
     """Verify scaffolded project files contain expected content."""
@@ -264,7 +305,9 @@ class TestScaffoldFileIntegration:
         assert config["project"] == "lh"
         assert config["template"] == "medallion"
 
-    def test_job_wheel_pyproject_valid_toml(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_job_wheel_pyproject_valid_toml(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """The job-wheel pyproject.toml is syntactically valid."""
         if sys.version_info < (3, 11):
             pytest.skip("tomllib requires Python ≥ 3.11")

@@ -7,8 +7,8 @@ from pathlib import Path
 import typer
 
 from aptdata.cli.rendering.console import SmartConsole
-from aptdata.cli.rendering.tables import config_summary_table
 from aptdata.cli.rendering.panels import yaml_preview
+from aptdata.cli.rendering.tables import config_summary_table
 
 config_app = typer.Typer(name="config", help="Manage declarative YAML configurations.")
 
@@ -71,7 +71,9 @@ def config_init(
         "-o",
         help="Output file path.",
     ),
-    template: bool = typer.Option(False, "--template", help="Use the starter template."),
+    template: bool = typer.Option(
+        False, "--template", help="Use the starter template."
+    ),
 ) -> None:
     """Generate a starter YAML configuration file."""
     console = SmartConsole(json_mode=False)

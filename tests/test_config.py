@@ -14,8 +14,8 @@ from aptdata.config.parser import (
     ParsedConfig,
     YamlConfigParser,
 )
-from aptdata.config.secrets import SecretManager
 from aptdata.config.schema import export_domain_schema, write_domain_schema
+from aptdata.config.secrets import SecretManager
 from aptdata.core.system import ComponentKind
 
 
@@ -79,7 +79,9 @@ system:
                 "flows": [
                     {
                         "flow_id": "f1",
-                        "components": [{"component_id": "c1", "metadata": {"kind": "invalid"}}],
+                        "components": [
+                            {"component_id": "c1", "metadata": {"kind": "invalid"}}
+                        ],
                     }
                 ],
             }
@@ -90,7 +92,10 @@ system:
 
     def test_parse_data_missing_component_id_raises_pydantic_error(self):
         payload = {
-            "system": {"system_id": "demo", "flows": [{"flow_id": "f1", "components": [{}]}]}
+            "system": {
+                "system_id": "demo",
+                "flows": [{"flow_id": "f1", "components": [{}]}],
+            }
         }
 
         with pytest.raises(ValidationError, match="component_id"):

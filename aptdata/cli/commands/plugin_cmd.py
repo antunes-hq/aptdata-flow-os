@@ -7,7 +7,7 @@ import json
 import typer
 
 from aptdata.cli.rendering.console import SmartConsole
-from aptdata.cli.rendering.tables import plugins_table, plugin_schema_table
+from aptdata.cli.rendering.tables import plugin_schema_table, plugins_table
 
 plugin_app = typer.Typer(name="plugin", help="Manage and inspect plugins.")
 

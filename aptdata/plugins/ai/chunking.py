@@ -33,7 +33,9 @@ class TextChunker:
         ) as span:
             for row in rows:
                 text = str(row.get(self.column, ""))
-                paragraphs = [part.strip() for part in text.split("\n\n") if part.strip()]
+                paragraphs = [
+                    part.strip() for part in text.split("\n\n") if part.strip()
+                ]
                 doc_id = row.get("document_id") or row.get("id")
                 trace_id = row.get("trace_id")
                 chunk_index = 0
@@ -57,6 +59,8 @@ class TextChunker:
                         start += self.max_tokens
             record_processed_chunks(len(chunked_rows))
             span.set_attribute("aptdata.chunks.generated", len(chunked_rows))
-        out = InMemoryDataset(uri=f"{dataset.uri}#chunked", schema_metadata=dict(dataset.schema_metadata))
+        out = InMemoryDataset(
+            uri=f"{dataset.uri}#chunked", schema_metadata=dict(dataset.schema_metadata)
+        )
         out.write(chunked_rows)
         return out

@@ -101,7 +101,9 @@ class PluginManager:
                 {
                     "name": param_name,
                     "required": param.default is inspect.Parameter.empty,
-                    "default": None if param.default is inspect.Parameter.empty else param.default,
+                    "default": None
+                    if param.default is inspect.Parameter.empty
+                    else param.default,
                 }
             )
 

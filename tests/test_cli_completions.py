@@ -10,10 +10,9 @@ from aptdata.cli.completions import (
     complete_template_names,
     complete_writer_names,
 )
-from aptdata.plugins import registry, plugin_manager
+from aptdata.plugins import plugin_manager, registry
 from aptdata.plugins.base import BaseReader, BaseWriter
 from aptdata.plugins.dataset import InMemoryDataset
-
 
 # ---------------------------------------------------------------------------
 # Fixtures — register test entries
@@ -53,6 +52,7 @@ class TestCompleteSystemNames:
     def test_filters_by_prefix(self):
         # Register a system to ensure there's something to match
         from pydantic.dataclasses import dataclass as pydantic_dataclass
+
         from aptdata.core.system import BaseSystem
 
         @pydantic_dataclass

@@ -102,8 +102,11 @@ def _wizard_run() -> None:
 
 def _wizard_list() -> None:
     """Guided wizard for listing systems / plugins."""
-    from aptdata.plugins import registry, plugin_manager  # noqa: PLC0415
-    from aptdata.cli.rendering.tables import systems_table, plugins_table  # noqa: PLC0415
+    from aptdata.cli.rendering.tables import (  # noqa: PLC0415
+        plugins_table,
+        systems_table,
+    )
+    from aptdata.plugins import plugin_manager, registry  # noqa: PLC0415
 
     choice = _select(
         "What to list?",
@@ -123,12 +126,10 @@ def _wizard_list() -> None:
 
 def _wizard_inspect() -> None:
     """Guided wizard for plugin inspection."""
-    from aptdata.plugins import plugin_manager  # noqa: PLC0415
     from aptdata.cli.rendering.tables import plugin_schema_table  # noqa: PLC0415
+    from aptdata.plugins import plugin_manager  # noqa: PLC0415
 
-    all_plugins = sorted(
-        plugin_manager.list_readers() + plugin_manager.list_writers()
-    )
+    all_plugins = sorted(plugin_manager.list_readers() + plugin_manager.list_writers())
     if not all_plugins:
         _console.warning("No plugins registered.")
         return
@@ -143,10 +144,11 @@ def _wizard_inspect() -> None:
 
 def _wizard_config() -> None:
     """Guided wizard for YAML config validation / run."""
-    from aptdata.config.parser import YamlConfigParser  # noqa: PLC0415
+    from pathlib import Path  # noqa: PLC0415
+
     from aptdata.cli.rendering.panels import yaml_preview  # noqa: PLC0415
     from aptdata.cli.rendering.tables import config_summary_table  # noqa: PLC0415
-    from pathlib import Path  # noqa: PLC0415
+    from aptdata.config.parser import YamlConfigParser  # noqa: PLC0415
 
     action = _select("Config action:", ["Load and validate", "Generate template"])
 
@@ -204,6 +206,7 @@ def _wizard_scaffold() -> None:
     _console.rule(f"Scaffolding '{name}' [{template}]")
     try:
         from typer.testing import CliRunner  # noqa: PLC0415
+
         from aptdata.cli.app import app  # noqa: PLC0415
 
         runner = CliRunner()
@@ -221,7 +224,9 @@ def _wizard_scaffold() -> None:
 
 def _wizard_telemetry() -> None:
     """Guided wizard for telemetry inspection."""
-    from aptdata.cli.commands.telemetry_cmd import _get_telemetry_status  # noqa: PLC0415
+    from aptdata.cli.commands.telemetry_cmd import (
+        _get_telemetry_status,  # noqa: PLC0415
+    )
     from aptdata.cli.rendering.tables import telemetry_status_table  # noqa: PLC0415
 
     status = _get_telemetry_status()

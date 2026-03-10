@@ -8,8 +8,8 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from aptdata.core.system import BaseSystem
 from aptdata.mcp.server import (
-    get_mcp_status,
     get_dataset_schema,
+    get_mcp_status,
     get_plugin_schema,
     list_available_plugins,
     list_registered_systems,
@@ -18,7 +18,6 @@ from aptdata.mcp.server import (
     run_flow,
 )
 from aptdata.plugins import registry
-
 
 # ---------------------------------------------------------------------------
 # Helpers

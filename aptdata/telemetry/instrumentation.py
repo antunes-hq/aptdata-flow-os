@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from threading import Lock
 from time import perf_counter
-from collections.abc import Mapping
 
 from opentelemetry import metrics, trace
 from opentelemetry.sdk.metrics import MeterProvider
@@ -147,7 +147,9 @@ def get_ingestion_metrics() -> dict[str, float | int]:
         elapsed = max(perf_counter() - _INGESTION_METRICS.started_at, 0.0)
         docs = _INGESTION_METRICS.documents_processed
         total = _INGESTION_METRICS.documents_total
-        progress = 1.0 if (total == 0 and docs > 0) else ((docs / total) if total else 0.0)
+        progress = (
+            1.0 if (total == 0 and docs > 0) else ((docs / total) if total else 0.0)
+        )
         throughput = (docs / elapsed) if elapsed > 0 else 0.0
         return {
             "documents_total": total,

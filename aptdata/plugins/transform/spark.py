@@ -8,7 +8,8 @@ raised at instantiation time if pyspark is not available.
 from __future__ import annotations
 
 import time
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from aptdata.plugins.base import BaseTransformer
 from aptdata.plugins.manager import PluginDependencyError
@@ -76,7 +77,6 @@ class PySparkTransformer(BaseTransformer):
             The transformed PySpark ``DataFrame``.
         """
         from pyspark.sql import SparkSession
-
         from pyspark.sql.types import StructType
 
         from aptdata.plugins.dataset import InMemoryDataset
@@ -86,9 +86,17 @@ class PySparkTransformer(BaseTransformer):
         # Convert input to a PySpark DataFrame if needed.
         if isinstance(data, InMemoryDataset):
             records = data.read()
-            df = spark.createDataFrame(records) if records else spark.createDataFrame([], StructType([]))
+            df = (
+                spark.createDataFrame(records)
+                if records
+                else spark.createDataFrame([], StructType([]))
+            )
         elif isinstance(data, list):
-            df = spark.createDataFrame(data) if data else spark.createDataFrame([], StructType([]))
+            df = (
+                spark.createDataFrame(data)
+                if data
+                else spark.createDataFrame([], StructType([]))
+            )
         else:
             # Assume it's already a PySpark DataFrame.
             df = data

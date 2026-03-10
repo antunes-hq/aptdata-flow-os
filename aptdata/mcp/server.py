@@ -13,7 +13,14 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 
 from aptdata.plugins import registry
-from aptdata.plugins.local_fs import CSVReader, CSVWriter, JSONReader, JSONWriter, ParquetReader, ParquetWriter
+from aptdata.plugins.local_fs import (
+    CSVReader,
+    CSVWriter,
+    JSONReader,
+    JSONWriter,
+    ParquetReader,
+    ParquetWriter,
+)
 from aptdata.plugins.manager import plugin_manager
 from aptdata.plugins.postgres import PostgresReader, PostgresWriter
 from aptdata.plugins.rest import APIReader
@@ -118,7 +125,10 @@ def list_available_plugins() -> dict[str, Any]:
     """Return all installed plugins grouped by readers and writers."""
     _mark_request()
     plugins = plugin_manager.list_plugins()
-    return {"plugins": plugins, "count": len(plugins["readers"]) + len(plugins["writers"])}
+    return {
+        "plugins": plugins,
+        "count": len(plugins["readers"]) + len(plugins["writers"]),
+    }
 
 
 @mcp.tool()
@@ -144,9 +154,19 @@ def preview_dataset(plugin: str, **reader_config: Any) -> dict[str, Any]:
             "format": "json",
         }
     except KeyError as exc:
-        return {"status": "error", "plugin": plugin, "error": str(exc), "error_type": "KeyError"}
+        return {
+            "status": "error",
+            "plugin": plugin,
+            "error": str(exc),
+            "error_type": "KeyError",
+        }
     except ValueError as exc:
-        return {"status": "error", "plugin": plugin, "error": str(exc), "error_type": "ValueError"}
+        return {
+            "status": "error",
+            "plugin": plugin,
+            "error": str(exc),
+            "error_type": "ValueError",
+        }
     except Exception as exc:  # noqa: BLE001
         return {
             "status": "error",
@@ -171,6 +191,8 @@ def get_dataset_schema(dataset_name: str) -> str:
         {
             "dataset": dataset_name,
             "fields": [],
-            "description": f"Schema metadata for '{dataset_name}' (no catalogue loaded).",
+            "description": (
+                f"Schema metadata for '{dataset_name}' (no catalogue loaded)."
+            ),
         }
     )

@@ -31,7 +31,6 @@ from aptdata.plugins.local_fs import (
 from aptdata.plugins.manager import PluginDependencyError, PluginManager, plugin_manager
 from aptdata.plugins.rest import APIReader
 
-
 # ---------------------------------------------------------------------------
 # Concrete stubs for abstract base classes
 # ---------------------------------------------------------------------------
@@ -173,8 +172,12 @@ class TestPluginManager:
         schema = pm.get_plugin_schema("stub")
         assert schema["name"] == "stub"
         assert schema["type"] == "reader"
-        assert any(arg["name"] == "endpoint" and arg["required"] for arg in schema["arguments"])
-        token_argument = next(arg for arg in schema["arguments"] if arg["name"] == "token")
+        assert any(
+            arg["name"] == "endpoint" and arg["required"] for arg in schema["arguments"]
+        )
+        token_argument = next(
+            arg for arg in schema["arguments"] if arg["name"] == "token"
+        )
         assert token_argument["default"] == "x"
 
     def test_preview_dataset_returns_five_rows(self):

@@ -12,7 +12,9 @@ if TYPE_CHECKING:
 
 def systems_table(names: list[str]) -> Table:
     """Return a Rich Table of registered system names."""
-    table = Table(title="Registered Systems", show_header=True, header_style="bold cyan")
+    table = Table(
+        title="Registered Systems", show_header=True, header_style="bold cyan"
+    )
     table.add_column("#", style="dim", width=4)
     table.add_column("Name", style="bold")
     for i, name in enumerate(names, 1):
@@ -22,7 +24,9 @@ def systems_table(names: list[str]) -> Table:
 
 def plugins_table(plugins: dict[str, list[str]]) -> Table:
     """Return a Rich Table of readers and writers."""
-    table = Table(title="Registered Plugins", show_header=True, header_style="bold cyan")
+    table = Table(
+        title="Registered Plugins", show_header=True, header_style="bold cyan"
+    )
     table.add_column("Kind", style="bold magenta", width=10)
     table.add_column("Name", style="bold")
     for name in plugins.get("readers", []):
@@ -49,7 +53,7 @@ def plugin_schema_table(schema: dict[str, Any]) -> Table:
     return table
 
 
-def config_summary_table(parsed: "ParsedConfig") -> Table:
+def config_summary_table(parsed: ParsedConfig) -> Table:
     """Return a Rich Table summarising a parsed YAML config."""
     table = Table(title="Config Summary", show_header=True, header_style="bold cyan")
     table.add_column("Field", style="bold")

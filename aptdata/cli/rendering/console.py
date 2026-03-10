@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import json
 import sys
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any, Generator
+from typing import Any
 
 from rich.console import Console
 from rich.status import Status
@@ -54,33 +55,47 @@ class SmartConsole:
         if self.json_mode:
             print(json.dumps(payload, default=str), flush=True)
         else:
-            self._console.print(f"[event]▶ {event}[/event]", json.dumps(data, default=str))
+            self._console.print(
+                f"[event]▶ {event}[/event]", json.dumps(data, default=str)
+            )
 
     def info(self, msg: str) -> None:
         """Emit an informational message."""
         if self.json_mode:
-            print(json.dumps({"level": "info", "message": msg}, default=str), flush=True)
+            print(
+                json.dumps({"level": "info", "message": msg}, default=str), flush=True
+            )
         else:
             self._console.print(f"[info]ℹ {msg}[/info]")
 
     def success(self, msg: str) -> None:
         """Emit a success message."""
         if self.json_mode:
-            print(json.dumps({"level": "success", "message": msg}, default=str), flush=True)
+            print(
+                json.dumps({"level": "success", "message": msg}, default=str),
+                flush=True,
+            )
         else:
             self._console.print(f"[success]✓ {msg}[/success]")
 
     def warning(self, msg: str) -> None:
         """Emit a warning message."""
         if self.json_mode:
-            print(json.dumps({"level": "warning", "message": msg}, default=str), flush=True)
+            print(
+                json.dumps({"level": "warning", "message": msg}, default=str),
+                flush=True,
+            )
         else:
             self._console.print(f"[warning]⚠ {msg}[/warning]")
 
     def error(self, msg: str) -> None:
         """Emit an error message to stderr."""
         if self.json_mode:
-            print(json.dumps({"level": "error", "message": msg}, default=str), file=sys.stderr, flush=True)
+            print(
+                json.dumps({"level": "error", "message": msg}, default=str),
+                file=sys.stderr,
+                flush=True,
+            )
         else:
             self._err_console.print(f"[error]✗ {msg}[/error]")
 

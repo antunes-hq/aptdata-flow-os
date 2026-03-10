@@ -44,7 +44,9 @@ class EmbeddingTransformer:
             span.set_attribute("llm.model", self.model)
             span.set_attribute("llm.token_estimation_method", "whitespace")
         record_llm_tokens_used(total_tokens)
-        out = InMemoryDataset(uri=f"{dataset.uri}#embedded", schema_metadata=dict(dataset.schema_metadata))
+        out = InMemoryDataset(
+            uri=f"{dataset.uri}#embedded", schema_metadata=dict(dataset.schema_metadata)
+        )
         out.write(transformed)
         return out
 

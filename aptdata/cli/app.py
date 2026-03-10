@@ -188,7 +188,13 @@ def mcp_start(
 app.command()(scaffold)
 app.add_typer(schema_app, name="schema")
 
-from aptdata.cli.commands import system_app, plugin_app, config_app, telemetry_app, mesh_app  # noqa: E402
+from aptdata.cli.commands import (  # noqa: E402
+    config_app,
+    mesh_app,
+    plugin_app,
+    system_app,
+    telemetry_app,
+)
 from aptdata.cli.interactive import interactive_command  # noqa: E402
 
 app.add_typer(system_app, name="system")

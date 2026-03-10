@@ -95,7 +95,9 @@ class QualityValidator:
         with tracer.start_as_current_span(self.name) as span:
             span.set_attribute("aptdata.quality.validator_name", self.name)
             span.set_attribute("aptdata.quality.enforcement", self.enforcement.value)
-            span.set_attribute("aptdata.quality.num_expectations", len(self.expectations))
+            span.set_attribute(
+                "aptdata.quality.num_expectations", len(self.expectations)
+            )
 
             for expectation in self.expectations:
                 result = expectation.validate(resolved)
@@ -123,7 +125,9 @@ class QualityValidator:
                 logger.warning("Quality validation warning: %s", summary_msg)
             else:
                 # TAG mode — attach quality metadata; pass-through
-                if hasattr(data, "schema_metadata") and isinstance(data.schema_metadata, dict):
+                if hasattr(data, "schema_metadata") and isinstance(
+                    data.schema_metadata, dict
+                ):
                     data.schema_metadata["quality_report"] = {
                         "passed": False,
                         "failed_checks": [c.expectation_name for c in failed_checks],

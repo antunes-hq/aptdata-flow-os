@@ -4,14 +4,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from aptdata.cli.scaffold import _scaffold_data_quality_test  # noqa: PLC2701
-from aptdata.cli.scaffold import _scaffold_hello_world  # noqa: PLC2701
-from aptdata.cli.scaffold import _scaffold_medallion  # noqa: PLC2701
-from aptdata.cli.scaffold import _scaffold_rag_ingestion  # noqa: PLC2701
-from aptdata.cli.scaffold import _scaffold_job_wheel  # noqa: PLC2701
-from aptdata.cli.scaffold import _scaffold_docker_compose_app  # noqa: PLC2701
-from aptdata.cli.scaffold import TEMPLATE_NAMES
-
+from aptdata.cli.scaffold import (
+    TEMPLATE_NAMES,
+    _scaffold_data_quality_test,  # noqa: PLC2701
+    _scaffold_docker_compose_app,  # noqa: PLC2701
+    _scaffold_hello_world,  # noqa: PLC2701
+    _scaffold_job_wheel,  # noqa: PLC2701
+    _scaffold_medallion,  # noqa: PLC2701
+    _scaffold_rag_ingestion,  # noqa: PLC2701
+)
 
 # ---------------------------------------------------------------------------
 # Template name registry
@@ -223,7 +224,9 @@ class TestScaffoldCLITemplate:
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        result = runner.invoke(app, ["scaffold", "myproject", "--output", str(tmp_path)])
+        result = runner.invoke(
+            app, ["scaffold", "myproject", "--output", str(tmp_path)]
+        )
         assert result.exit_code == 0
         assert (tmp_path / "myproject" / "main.py").exists()
 
@@ -235,7 +238,14 @@ class TestScaffoldCLITemplate:
         runner = CliRunner()
         result = runner.invoke(
             app,
-            ["scaffold", "myproject", "--output", str(tmp_path), "--template", "medallion"],
+            [
+                "scaffold",
+                "myproject",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "medallion",
+            ],
         )
         assert result.exit_code == 0
         assert (tmp_path / "myproject" / "bronze.py").exists()
@@ -250,7 +260,14 @@ class TestScaffoldCLITemplate:
         runner = CliRunner()
         result = runner.invoke(
             app,
-            ["scaffold", "ragproject", "--output", str(tmp_path), "--template", "rag-ingestion"],
+            [
+                "scaffold",
+                "ragproject",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "rag-ingestion",
+            ],
         )
         assert result.exit_code == 0
         assert (tmp_path / "ragproject" / "pipeline.py").exists()
@@ -263,7 +280,14 @@ class TestScaffoldCLITemplate:
         runner = CliRunner()
         result = runner.invoke(
             app,
-            ["scaffold", "dqproject", "--output", str(tmp_path), "--template", "data-quality-test"],
+            [
+                "scaffold",
+                "dqproject",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "data-quality-test",
+            ],
         )
         assert result.exit_code == 0
         assert (tmp_path / "dqproject" / "quality_pipeline.py").exists()
@@ -276,7 +300,14 @@ class TestScaffoldCLITemplate:
         runner = CliRunner()
         result = runner.invoke(
             app,
-            ["scaffold", "proj", "--output", str(tmp_path), "--template", "nonexistent"],
+            [
+                "scaffold",
+                "proj",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "nonexistent",
+            ],
         )
         assert result.exit_code != 0
 
@@ -301,7 +332,14 @@ class TestScaffoldCLITemplate:
         runner = CliRunner()
         result = runner.invoke(
             app,
-            ["scaffold", "myapp", "--output", str(tmp_path), "--template", "docker-compose-app"],
+            [
+                "scaffold",
+                "myapp",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "docker-compose-app",
+            ],
         )
         assert result.exit_code == 0
         assert (tmp_path / "myapp" / "docker-compose.yml").exists()
@@ -421,6 +459,7 @@ class TestMeshCLI:
         result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path), "--json"])
         assert result.exit_code == 0
         import json
+
         data = json.loads(result.output.strip())
         assert data["count"] == 0
 
@@ -431,11 +470,15 @@ class TestMeshCLI:
 
         # Create a job-wheel project
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "myjob", "--output", str(tmp_path), "--template", "job-wheel"])
+        runner.invoke(
+            app,
+            ["scaffold", "myjob", "--output", str(tmp_path), "--template", "job-wheel"],
+        )
 
         result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path), "--json"])
         assert result.exit_code == 0
         import json
+
         data = json.loads(result.output.strip())
         assert data["count"] == 1
         assert data["components"][0]["type"] == "job-wheel"
@@ -446,11 +489,22 @@ class TestMeshCLI:
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "myapp", "--output", str(tmp_path), "--template", "docker-compose-app"])
+        runner.invoke(
+            app,
+            [
+                "scaffold",
+                "myapp",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "docker-compose-app",
+            ],
+        )
 
         result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path), "--json"])
         assert result.exit_code == 0
         import json
+
         data = json.loads(result.output.strip())
         assert data["count"] == 1
         assert data["components"][0]["type"] == "docker-compose-app"
@@ -461,7 +515,10 @@ class TestMeshCLI:
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "myjob", "--output", str(tmp_path), "--template", "job-wheel"])
+        runner.invoke(
+            app,
+            ["scaffold", "myjob", "--output", str(tmp_path), "--template", "job-wheel"],
+        )
 
         result = runner.invoke(
             app,
@@ -469,6 +526,7 @@ class TestMeshCLI:
         )
         assert result.exit_code == 0
         import json
+
         lines = [line for line in result.output.strip().splitlines() if line]
         events = [json.loads(line) for line in lines]
         event_names = [e.get("event") for e in events]
@@ -480,7 +538,17 @@ class TestMeshCLI:
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "myapp", "--output", str(tmp_path), "--template", "docker-compose-app"])
+        runner.invoke(
+            app,
+            [
+                "scaffold",
+                "myapp",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "docker-compose-app",
+            ],
+        )
 
         result = runner.invoke(
             app,
@@ -488,6 +556,7 @@ class TestMeshCLI:
         )
         assert result.exit_code == 0
         import json
+
         lines = [line for line in result.output.strip().splitlines() if line]
         events = [json.loads(line) for line in lines]
         event_names = [e.get("event") for e in events]
@@ -522,7 +591,17 @@ class TestMeshCLI:
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "richjob", "--output", str(tmp_path), "--template", "job-wheel"])
+        runner.invoke(
+            app,
+            [
+                "scaffold",
+                "richjob",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
+        )
         result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path)])
         assert result.exit_code == 0
 
@@ -533,7 +612,17 @@ class TestMeshCLI:
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "richjob2", "--output", str(tmp_path), "--template", "job-wheel"])
+        runner.invoke(
+            app,
+            [
+                "scaffold",
+                "richjob2",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
+        )
         result = runner.invoke(
             app,
             ["mesh", "run", "richjob2", "--dir", str(tmp_path), "--dry-run"],
@@ -579,31 +668,47 @@ class TestMeshCLI:
         )
         assert result.exit_code != 0
         import json
+
         lines = [line for line in result.output.strip().splitlines() if line]
         events = [json.loads(line) for line in lines]
         event_names = [e.get("event") for e in events]
         assert "mesh.error" in event_names
 
     def test_mesh_build_job_wheel_json_mode(self, tmp_path: Path) -> None:
-        """mesh build job-wheel component succeeds (mocked subprocess) and emits build events."""
-        from unittest.mock import patch, MagicMock
+        """mesh build job-wheel component succeeds (mocked subprocess) and emits
+        build events."""
+        from unittest.mock import MagicMock, patch
+
         from typer.testing import CliRunner
 
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "buildme", "--output", str(tmp_path), "--template", "job-wheel"])
+        runner.invoke(
+            app,
+            [
+                "scaffold",
+                "buildme",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
+        )
 
         mock_proc = MagicMock()
         mock_proc.returncode = 0
 
-        with patch("aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+        with patch(
+            "aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc
+        ):
             result = runner.invoke(
                 app,
                 ["mesh", "build", "buildme", "--dir", str(tmp_path), "--json"],
             )
         assert result.exit_code == 0
         import json
+
         lines = [line for line in result.output.strip().splitlines() if line]
         events = [json.loads(line) for line in lines]
         event_names = [e.get("event") for e in events]
@@ -612,18 +717,31 @@ class TestMeshCLI:
 
     def test_mesh_build_job_wheel_rich_mode(self, tmp_path: Path) -> None:
         """mesh build job-wheel component succeeds (mocked subprocess) in rich mode."""
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import MagicMock, patch
+
         from typer.testing import CliRunner
 
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "buildme2", "--output", str(tmp_path), "--template", "job-wheel"])
+        runner.invoke(
+            app,
+            [
+                "scaffold",
+                "buildme2",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
+        )
 
         mock_proc = MagicMock()
         mock_proc.returncode = 0
 
-        with patch("aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+        with patch(
+            "aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc
+        ):
             result = runner.invoke(
                 app,
                 ["mesh", "build", "buildme2", "--dir", str(tmp_path)],
@@ -632,24 +750,38 @@ class TestMeshCLI:
 
     def test_mesh_run_job_wheel_with_mock(self, tmp_path: Path) -> None:
         """mesh run job-wheel component succeeds with mocked subprocess."""
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import MagicMock, patch
+
         from typer.testing import CliRunner
 
         from aptdata.cli.app import app
 
         runner = CliRunner()
-        runner.invoke(app, ["scaffold", "runjob", "--output", str(tmp_path), "--template", "job-wheel"])
+        runner.invoke(
+            app,
+            [
+                "scaffold",
+                "runjob",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
+        )
 
         mock_proc = MagicMock()
         mock_proc.returncode = 0
 
-        with patch("aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+        with patch(
+            "aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc
+        ):
             result = runner.invoke(
                 app,
                 ["mesh", "run", "runjob", "--dir", str(tmp_path), "--json"],
             )
         assert result.exit_code == 0
         import json
+
         lines = [line for line in result.output.strip().splitlines() if line]
         events = [json.loads(line) for line in lines]
         event_names = [e.get("event") for e in events]

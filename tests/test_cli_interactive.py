@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from typer.testing import CliRunner
 
@@ -73,8 +73,12 @@ class TestWizardRun:
 
         with patch("aptdata.plugins.registry.list_systems", return_value=["my_sys"]):
             with patch("aptdata.plugins.registry.get", return_value=mock_sys_cls):
-                with patch.object(interactive_module, "_select", side_effect=["my_sys", "dev"]):
-                    with patch.object(interactive_module, "_confirm", return_value=False):
+                with patch.object(
+                    interactive_module, "_select", side_effect=["my_sys", "dev"]
+                ):
+                    with patch.object(
+                        interactive_module, "_confirm", return_value=False
+                    ):
                         interactive_module._wizard_run()
 
         mock_sys.run.assert_called_once()
@@ -86,9 +90,13 @@ class TestWizardList:
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
         rendered = []
 
-        with patch.object(interactive_module._console, "render", side_effect=rendered.append):
+        with patch.object(
+            interactive_module._console, "render", side_effect=rendered.append
+        ):
             with patch.object(interactive_module, "_select", return_value="Systems"):
-                with patch("aptdata.plugins.registry.list_systems", return_value=["a_sys"]):
+                with patch(
+                    "aptdata.plugins.registry.list_systems", return_value=["a_sys"]
+                ):
                     interactive_module._wizard_list()
 
     def test_wizard_list_plugins(self, monkeypatch):
@@ -96,7 +104,9 @@ class TestWizardList:
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
 
         with patch.object(interactive_module._console, "render"):
-            with patch.object(interactive_module, "_select", return_value="All plugins"):
+            with patch.object(
+                interactive_module, "_select", return_value="All plugins"
+            ):
                 with patch(
                     "aptdata.plugins.plugin_manager.list_plugins",
                     return_value={"readers": ["r1"], "writers": ["w1"]},
@@ -110,9 +120,13 @@ class TestWizardInspect:
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
         warnings = []
 
-        with patch.object(interactive_module._console, "warning", side_effect=warnings.append):
+        with patch.object(
+            interactive_module._console, "warning", side_effect=warnings.append
+        ):
             with patch("aptdata.plugins.plugin_manager.list_readers", return_value=[]):
-                with patch("aptdata.plugins.plugin_manager.list_writers", return_value=[]):
+                with patch(
+                    "aptdata.plugins.plugin_manager.list_writers", return_value=[]
+                ):
                     interactive_module._wizard_inspect()
 
         assert len(warnings) > 0
@@ -124,8 +138,12 @@ class TestWizardInspect:
 
         with patch.object(interactive_module._console, "render"):
             with patch.object(interactive_module, "_select", return_value="r1"):
-                with patch("aptdata.plugins.plugin_manager.list_readers", return_value=["r1"]):
-                    with patch("aptdata.plugins.plugin_manager.list_writers", return_value=[]):
+                with patch(
+                    "aptdata.plugins.plugin_manager.list_readers", return_value=["r1"]
+                ):
+                    with patch(
+                        "aptdata.plugins.plugin_manager.list_writers", return_value=[]
+                    ):
                         with patch(
                             "aptdata.plugins.plugin_manager.get_plugin_schema",
                             return_value=schema,
@@ -139,7 +157,9 @@ class TestWizardTelemetry:
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
         rendered = []
 
-        with patch.object(interactive_module._console, "render", side_effect=rendered.append):
+        with patch.object(
+            interactive_module._console, "render", side_effect=rendered.append
+        ):
             with patch.object(interactive_module, "_confirm", return_value=False):
                 interactive_module._wizard_telemetry()
 

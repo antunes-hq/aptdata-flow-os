@@ -28,7 +28,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from aptdata.plugins.base import BaseReader, BaseWriter, BaseTransformer
+from aptdata.plugins.base import BaseReader, BaseTransformer, BaseWriter
 from aptdata.plugins.manager import PluginDependencyError, PluginManager, plugin_manager
 
 if TYPE_CHECKING:
