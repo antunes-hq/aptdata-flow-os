@@ -1,4 +1,4 @@
-"""Tests for the MCP server integration (smart_data.mcp.server)."""
+"""Tests for the MCP server integration (aptdata.mcp.server)."""
 
 from __future__ import annotations
 
@@ -6,10 +6,10 @@ import json
 
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from smart_data.core.system import BaseSystem
-from smart_data.mcp.server import (
-    get_mcp_status,
+from aptdata.core.system import BaseSystem
+from aptdata.mcp.server import (
     get_dataset_schema,
+    get_mcp_status,
     get_plugin_schema,
     list_available_plugins,
     list_registered_systems,
@@ -17,8 +17,7 @@ from smart_data.mcp.server import (
     preview_dataset,
     run_flow,
 )
-from smart_data.plugins import registry
-
+from aptdata.plugins import registry
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -48,7 +47,7 @@ registry.register("mcp_test_pipeline", _MCPMockSystem)
 
 class TestFastMCPInstance:
     def test_mcp_instance_name(self) -> None:
-        assert mcp.name == "smart-data"
+        assert mcp.name == "aptdata"
 
     def test_mcp_has_registered_tools(self) -> None:
         tools = mcp._tool_manager.list_tools()
@@ -179,7 +178,7 @@ class TestMCPStartCommand:
     def test_help(self) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(app, ["mcp-start", "--help"])

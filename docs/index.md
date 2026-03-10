@@ -1,6 +1,6 @@
-# smart-data
+# aptdata
 
-**smart-data** is a declarative, extensible framework for building smart data
+**aptdata** is a declarative, extensible framework for building smart data
 pipelines in Python.  It provides a clean two-layer contract system built
 around three universal abstractions — **Component**, **Flow**, and **System**
 — so you can build, test and compose data pipelines with confidence.
@@ -25,7 +25,7 @@ around three universal abstractions — **Component**, **Flow**, and **System**
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import (
+from aptdata.core import (
     BaseDataset, IDataset,
     BaseComponent, ComponentMeta, ComponentKind,
     BaseFlow, BaseSystem, IFlow,

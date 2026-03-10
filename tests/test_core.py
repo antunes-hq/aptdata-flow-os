@@ -7,8 +7,7 @@ from typing import Any
 import pytest
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from smart_data.core.dataset import BaseDataset, IDataset
-
+from aptdata.core.dataset import BaseDataset, IDataset
 
 # ---------------------------------------------------------------------------
 # Minimal concrete implementation used only within tests
@@ -49,7 +48,9 @@ class TestIDataset:
         assert ds.schema_metadata == {}
 
     def test_schema_metadata_field(self):
-        ds = _SimpleDataset(uri="s3://bucket/file", schema_metadata={"format": "parquet"})
+        ds = _SimpleDataset(
+            uri="s3://bucket/file", schema_metadata={"format": "parquet"}
+        )
         assert ds.schema_metadata["format"] == "parquet"
 
     def test_read_write_roundtrip(self):
@@ -65,4 +66,3 @@ class TestIDataset:
         ds = _SimpleDataset(uri="memory://test")
         assert isinstance(ds, IDataset)
         assert isinstance(ds, BaseDataset)
-

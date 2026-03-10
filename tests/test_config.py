@@ -7,16 +7,16 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from smart_data.config.parser import (
+from aptdata.config.parser import (
     ConfigComponent,
     ConfigFlow,
     ConfigSystem,
     ParsedConfig,
     YamlConfigParser,
 )
-from smart_data.config.secrets import SecretManager
-from smart_data.config.schema import export_domain_schema, write_domain_schema
-from smart_data.core.system import ComponentKind
+from aptdata.config.schema import export_domain_schema, write_domain_schema
+from aptdata.config.secrets import SecretManager
+from aptdata.core.system import ComponentKind
 
 
 class TestYamlConfigParser:
@@ -79,7 +79,9 @@ system:
                 "flows": [
                     {
                         "flow_id": "f1",
-                        "components": [{"component_id": "c1", "metadata": {"kind": "invalid"}}],
+                        "components": [
+                            {"component_id": "c1", "metadata": {"kind": "invalid"}}
+                        ],
                     }
                 ],
             }
@@ -90,7 +92,10 @@ system:
 
     def test_parse_data_missing_component_id_raises_pydantic_error(self):
         payload = {
-            "system": {"system_id": "demo", "flows": [{"flow_id": "f1", "components": [{}]}]}
+            "system": {
+                "system_id": "demo",
+                "flows": [{"flow_id": "f1", "components": [{}]}],
+            }
         }
 
         with pytest.raises(ValidationError, match="component_id"):
@@ -112,7 +117,7 @@ class TestSchemaUtilities:
         assert "system" in schema["properties"]
 
     def test_write_domain_schema_writes_json(self, tmp_path):
-        output = tmp_path / "schemas" / "smart-data.json"
+        output = tmp_path / "schemas" / "aptdata.json"
         written = write_domain_schema(output)
         assert written == output
         schema = json.loads(output.read_text(encoding="utf-8"))

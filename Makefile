@@ -7,7 +7,7 @@ test:
 	poetry run pytest tests/ -v
 
 test-cov:
-	poetry run pytest tests/ -v --cov=smart_data --cov-report=term-missing --cov-fail-under=80
+	poetry run pytest tests/ -v --cov=aptdata --cov-report=term-missing --cov-fail-under=80
 
 test-unit:
 	poetry run pytest tests/ -v -m "not integration and not e2e"
@@ -19,7 +19,7 @@ test-e2e:
 	poetry run pytest tests/test_e2e.py -v -m e2e
 
 lint:
-	poetry run ruff check smart_data/ tests/
+	poetry run ruff check aptdata/ tests/
 
 lint-fix:
 	poetry run ruff check --fix smart_data/ tests/

@@ -1,4 +1,4 @@
-"""Shared fixtures and utilities for the smart-data test suite.
+"""Shared fixtures and utilities for the aptdata test suite.
 
 This conftest.py provides:
 - Reusable pytest fixtures (DataFrame factories, InMemoryDataset, CLI runner)
@@ -14,21 +14,24 @@ from typing import Any
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Pytest markers
 # ---------------------------------------------------------------------------
 
+
 def pytest_configure(config: pytest.Config) -> None:
     """Register custom markers so -m filters work without warnings."""
     config.addinivalue_line("markers", "unit: fast, isolated unit tests")
-    config.addinivalue_line("markers", "integration: tests that wire multiple components together")
+    config.addinivalue_line(
+        "markers", "integration: tests that wire multiple components together"
+    )
     config.addinivalue_line("markers", "e2e: end-to-end CLI / workflow tests")
 
 
 # ---------------------------------------------------------------------------
 # DataFrame helpers (require pandas)
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def make_df():
@@ -58,9 +61,11 @@ def simple_df(make_df):
 # InMemoryDataset helpers
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture()
 def make_dataset():
-    """Factory fixture that creates :class:`~smart_data.plugins.dataset.InMemoryDataset` instances.
+    """Factory fixture that creates
+    :class:`~aptdata.plugins.dataset.InMemoryDataset` instances.
 
     Usage::
 
@@ -68,9 +73,11 @@ def make_dataset():
             ds = make_dataset([{"id": 1}, {"id": 2}], uri="memory://test")
             ...
     """
-    from smart_data.plugins.dataset import InMemoryDataset  # noqa: PLC0415
+    from aptdata.plugins.dataset import InMemoryDataset  # noqa: PLC0415
 
-    def _make(records: list[dict], uri: str = "memory://test", schema: dict | None = None) -> InMemoryDataset:
+    def _make(
+        records: list[dict], uri: str = "memory://test", schema: dict | None = None
+    ) -> InMemoryDataset:
         ds = InMemoryDataset(uri=uri, schema_metadata=schema or {})
         ds.write(records)
         return ds
@@ -81,12 +88,15 @@ def make_dataset():
 @pytest.fixture()
 def sample_dataset(make_dataset):
     """A small InMemoryDataset with three records."""
-    return make_dataset([{"id": 1, "val": 10}, {"id": 2, "val": 20}, {"id": 3, "val": 30}])
+    return make_dataset(
+        [{"id": 1, "val": 10}, {"id": 2, "val": 20}, {"id": 3, "val": 30}]
+    )
 
 
 # ---------------------------------------------------------------------------
 # CLI runner helpers
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def cli_runner():
@@ -98,8 +108,8 @@ def cli_runner():
 
 @pytest.fixture()
 def cli_app():
-    """The main smart-data Typer application."""
-    from smart_data.cli.app import app  # noqa: PLC0415
+    """The main aptdata Typer application."""
+    from aptdata.cli.app import app  # noqa: PLC0415
 
     return app
 
@@ -150,13 +160,17 @@ def assert_json_event(output: str, event: str) -> dict:
     """
     payloads = parse_json_lines(output)
     matches = [p for p in payloads if p.get("event") == event]
-    assert matches, f"Event '{event}' not found in output. Got: {[p.get('event') for p in payloads]}"
+    assert matches, (
+        f"Event '{event}' not found in output."
+        f" Got: {[p.get('event') for p in payloads]}"
+    )
     return matches[0]
 
 
 # ---------------------------------------------------------------------------
 # Temporary project directory fixture
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def scaffolded_project(tmp_path: Path, cli_runner, cli_app):

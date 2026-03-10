@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import pytest
 from opentelemetry import trace
@@ -11,8 +12,8 @@ from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from smart_data.core.dataset import BaseDataset, IDataset
-from smart_data.core.system import (
+from aptdata.core.dataset import BaseDataset, IDataset
+from aptdata.core.system import (
     BaseComponent,
     BaseFlow,
     BaseSystem,
@@ -24,7 +25,6 @@ from smart_data.core.system import (
     IFlow,
     ISystem,
 )
-
 
 # ---------------------------------------------------------------------------
 # Minimal concrete helpers used only within tests
@@ -79,7 +79,9 @@ class _SimpleFlow(BaseFlow):
         target_id: str,
         condition: Callable[[list[IDataset]], bool] | None = None,
     ) -> None:
-        self._edges.append(FlowEdge(source_id=source_id, target_id=target_id, condition=condition))
+        self._edges.append(
+            FlowEdge(source_id=source_id, target_id=target_id, condition=condition)
+        )
 
     def compile(self) -> None:
         """Build a topological execution order (simple linear walk for tests)."""
@@ -410,5 +412,5 @@ class TestTelemetry:
         spans = exporter.get_finished_spans()
         assert len(spans) == 1
         assert spans[0].name == "c1"
-        assert spans[0].attributes["smart_data.kind"] == "transform"
-        assert tuple(spans[0].attributes["smart_data.tags"]) == ("unit",)
+        assert spans[0].attributes["aptdata.kind"] == "transform"
+        assert tuple(spans[0].attributes["aptdata.tags"]) == ("unit",)

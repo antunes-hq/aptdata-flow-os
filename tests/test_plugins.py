@@ -1,12 +1,12 @@
 """Tests for the plugin ecosystem.
 
 Covers:
-- smart_data.plugins.base (BaseReader / BaseWriter interfaces)
-- smart_data.plugins.manager (PluginManager, PluginDependencyError)
-- smart_data.plugins.dataset (InMemoryDataset)
-- smart_data.plugins.local_fs (CSV / JSON readers and writers)
-- smart_data.plugins.rest (APIReader — with httpx mock)
-- smart_data.plugins.postgres (friendly dependency error)
+- aptdata.plugins.base (BaseReader / BaseWriter interfaces)
+- aptdata.plugins.manager (PluginManager, PluginDependencyError)
+- aptdata.plugins.dataset (InMemoryDataset)
+- aptdata.plugins.local_fs (CSV / JSON readers and writers)
+- aptdata.plugins.rest (APIReader — with httpx mock)
+- aptdata.plugins.postgres (friendly dependency error)
 """
 
 from __future__ import annotations
@@ -18,9 +18,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from smart_data.plugins.base import BaseReader, BaseWriter
-from smart_data.plugins.dataset import InMemoryDataset
-from smart_data.plugins.local_fs import (
+from aptdata.plugins.base import BaseReader, BaseWriter
+from aptdata.plugins.dataset import InMemoryDataset
+from aptdata.plugins.local_fs import (
     CSVReader,
     CSVWriter,
     JSONReader,
@@ -28,9 +28,8 @@ from smart_data.plugins.local_fs import (
     ParquetReader,
     ParquetWriter,
 )
-from smart_data.plugins.manager import PluginDependencyError, PluginManager, plugin_manager
-from smart_data.plugins.rest import APIReader
-
+from aptdata.plugins.manager import PluginDependencyError, PluginManager, plugin_manager
+from aptdata.plugins.rest import APIReader
 
 # ---------------------------------------------------------------------------
 # Concrete stubs for abstract base classes
@@ -173,8 +172,12 @@ class TestPluginManager:
         schema = pm.get_plugin_schema("stub")
         assert schema["name"] == "stub"
         assert schema["type"] == "reader"
-        assert any(arg["name"] == "endpoint" and arg["required"] for arg in schema["arguments"])
-        token_argument = next(arg for arg in schema["arguments"] if arg["name"] == "token")
+        assert any(
+            arg["name"] == "endpoint" and arg["required"] for arg in schema["arguments"]
+        )
+        token_argument = next(
+            arg for arg in schema["arguments"] if arg["name"] == "token"
+        )
         assert token_argument["default"] == "x"
 
     def test_preview_dataset_returns_five_rows(self):
@@ -185,7 +188,7 @@ class TestPluginManager:
 
     def test_load_module_success(self):
         pm = PluginManager()
-        mod = pm.load_module("smart_data.plugins.base")
+        mod = pm.load_module("aptdata.plugins.base")
         assert hasattr(mod, "BaseReader")
 
     def test_load_module_failure(self):
@@ -335,7 +338,7 @@ class TestAPIReader:
         mock_client.__exit__ = MagicMock(return_value=False)
         mock_client.get.return_value = mock_response
 
-        with patch("smart_data.plugins.rest._require_httpx") as mock_httpx_fn:
+        with patch("aptdata.plugins.rest._require_httpx") as mock_httpx_fn:
             mock_httpx_mod = MagicMock()
             mock_httpx_mod.Client.return_value = mock_client
             mock_httpx_fn.return_value = mock_httpx_mod
@@ -357,7 +360,7 @@ class TestAPIReader:
         mock_client.__exit__ = MagicMock(return_value=False)
         mock_client.get.return_value = mock_response
 
-        with patch("smart_data.plugins.rest._require_httpx") as mock_httpx_fn:
+        with patch("aptdata.plugins.rest._require_httpx") as mock_httpx_fn:
             mock_httpx_mod = MagicMock()
             mock_httpx_mod.Client.return_value = mock_client
             mock_httpx_fn.return_value = mock_httpx_mod
@@ -388,7 +391,7 @@ class TestAPIReader:
         mock_client.__exit__ = MagicMock(return_value=False)
         mock_client.get.side_effect = [page1_response, page2_response]
 
-        with patch("smart_data.plugins.rest._require_httpx") as mock_httpx_fn:
+        with patch("aptdata.plugins.rest._require_httpx") as mock_httpx_fn:
             mock_httpx_mod = MagicMock()
             mock_httpx_mod.Client.return_value = mock_client
             mock_httpx_fn.return_value = mock_httpx_mod
@@ -413,7 +416,7 @@ class TestAPIReader:
         mock_client.__exit__ = MagicMock(return_value=False)
         mock_client.get.return_value = mock_response
 
-        with patch("smart_data.plugins.rest._require_httpx") as mock_httpx_fn:
+        with patch("aptdata.plugins.rest._require_httpx") as mock_httpx_fn:
             mock_httpx_mod = MagicMock()
             mock_httpx_mod.Client.return_value = mock_client
             mock_httpx_fn.return_value = mock_httpx_mod
@@ -442,7 +445,7 @@ class TestAPIReader:
 class TestPostgresPlugin:
     def test_reader_raises_without_sqlalchemy(self):
         with patch.dict("sys.modules", {"sqlalchemy": None}):
-            from smart_data.plugins.postgres import PostgresReader
+            from aptdata.plugins.postgres import PostgresReader
 
             reader = PostgresReader("postgresql://x", "SELECT 1")
             with pytest.raises(PluginDependencyError, match="sqlalchemy"):
@@ -450,7 +453,7 @@ class TestPostgresPlugin:
 
     def test_writer_raises_without_sqlalchemy(self):
         with patch.dict("sys.modules", {"sqlalchemy": None}):
-            from smart_data.plugins.postgres import PostgresWriter
+            from aptdata.plugins.postgres import PostgresWriter
 
             ds = InMemoryDataset(uri="pg://test")
             ds.write([{"a": "1"}])
@@ -466,19 +469,19 @@ class TestPostgresPlugin:
 
 class TestPluginInitReExports:
     def test_base_classes_accessible(self):
-        from smart_data.plugins import BaseReader, BaseWriter
+        from aptdata.plugins import BaseReader, BaseWriter
 
         assert BaseReader is not None
         assert BaseWriter is not None
 
     def test_manager_accessible(self):
-        from smart_data.plugins import PluginDependencyError, PluginManager, plugin_manager
+        from aptdata.plugins import PluginDependencyError, PluginManager, plugin_manager
 
         assert isinstance(plugin_manager, PluginManager)
         assert issubclass(PluginDependencyError, ImportError)
 
     def test_registry_still_works(self):
-        from smart_data.plugins import registry
+        from aptdata.plugins import registry
 
         assert hasattr(registry, "register")
         assert hasattr(registry, "list_systems")

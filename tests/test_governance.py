@@ -2,21 +2,19 @@
 
 from __future__ import annotations
 
-
-from smart_data.plugins.governance.catalog import DatasetCatalog, DatasetCatalogEntry
-from smart_data.plugins.governance.classification import (
+from aptdata.plugins.governance.catalog import DatasetCatalog, DatasetCatalogEntry
+from aptdata.plugins.governance.classification import (
     ColumnClassification,
     DataClassificationPolicy,
 )
-from smart_data.plugins.governance.lineage_store import LineageStore
-from smart_data.plugins.governance.rules import (
+from aptdata.plugins.governance.lineage_store import LineageStore
+from aptdata.plugins.governance.rules import (
     BusinessRule,
     RuleAuditEntry,
     RuleRegistry,
     RuleStatus,
 )
-from smart_data.plugins.quality.contract import SchemaContract
-
+from aptdata.plugins.quality.contract import SchemaContract
 
 # ---------------------------------------------------------------------------
 # BusinessRule & RuleRegistry
@@ -71,15 +69,21 @@ class TestRuleRegistry:
 
     def test_list_rules_filter_tag(self) -> None:
         registry = RuleRegistry()
-        registry.register(BusinessRule(rule_id="BR-001", name="R1", tags=["pii", "gdpr"]))
+        registry.register(
+            BusinessRule(rule_id="BR-001", name="R1", tags=["pii", "gdpr"])
+        )
         registry.register(BusinessRule(rule_id="BR-002", name="R2", tags=["finance"]))
         result = registry.list_rules(tag="pii")
         assert len(result) == 1
 
     def test_list_rules_filter_owner_and_tag(self) -> None:
         registry = RuleRegistry()
-        registry.register(BusinessRule(rule_id="BR-001", name="R1", owner="alice", tags=["pii"]))
-        registry.register(BusinessRule(rule_id="BR-002", name="R2", owner="alice", tags=["finance"]))
+        registry.register(
+            BusinessRule(rule_id="BR-001", name="R1", owner="alice", tags=["pii"])
+        )
+        registry.register(
+            BusinessRule(rule_id="BR-002", name="R2", owner="alice", tags=["finance"])
+        )
         result = registry.list_rules(owner="alice", tag="pii")
         assert len(result) == 1
 
@@ -112,7 +116,11 @@ class TestRuleRegistry:
         assert entry.rows_affected == 0
 
     def test_rule_status_values(self) -> None:
-        assert set(RuleStatus) == {RuleStatus.APPLIED, RuleStatus.SKIPPED, RuleStatus.FAILED}
+        assert set(RuleStatus) == {
+            RuleStatus.APPLIED,
+            RuleStatus.SKIPPED,
+            RuleStatus.FAILED,
+        }
 
 
 # ---------------------------------------------------------------------------
@@ -161,16 +169,20 @@ class TestDatasetCatalog:
 
     def test_search_by_classification(self) -> None:
         catalog = DatasetCatalog()
-        catalog.register(DatasetCatalogEntry(uri="s3://a", classification=ColumnClassification.PII))
-        catalog.register(DatasetCatalogEntry(uri="s3://b", classification=ColumnClassification.PUBLIC))
+        catalog.register(
+            DatasetCatalogEntry(uri="s3://a", classification=ColumnClassification.PII)
+        )
+        catalog.register(
+            DatasetCatalogEntry(
+                uri="s3://b", classification=ColumnClassification.PUBLIC
+            )
+        )
         results = catalog.search(classification=ColumnClassification.PII)
         assert len(results) == 1
 
     def test_search_combined_filters(self) -> None:
         catalog = DatasetCatalog()
-        catalog.register(
-            DatasetCatalogEntry(uri="s3://a", owner="alice", tags=["pii"])
-        )
+        catalog.register(DatasetCatalogEntry(uri="s3://a", owner="alice", tags=["pii"]))
         catalog.register(
             DatasetCatalogEntry(uri="s3://b", owner="alice", tags=["finance"])
         )
@@ -209,7 +221,7 @@ class TestDataClassificationPolicy:
         assert policy.encryption_required is True
 
     def test_column_classification_re_export(self) -> None:
-        from smart_data.plugins.governance.classification import ColumnClassification
+        from aptdata.plugins.governance.classification import ColumnClassification
 
         assert ColumnClassification.PII == "PII"
 
@@ -221,7 +233,7 @@ class TestDataClassificationPolicy:
 
 class TestLineageStore:
     def test_save_and_load(self) -> None:
-        from smart_data.core.lineage import LineageGraph
+        from aptdata.core.lineage import LineageGraph
 
         store = LineageStore()
         graph = LineageGraph(run_id="run-1", workflow_name="wf")
@@ -234,7 +246,7 @@ class TestLineageStore:
         assert store.load("nonexistent") is None
 
     def test_list_runs_sorted(self) -> None:
-        from smart_data.core.lineage import LineageGraph
+        from aptdata.core.lineage import LineageGraph
 
         store = LineageStore()
         store.save(LineageGraph(run_id="run-c", workflow_name="wf"))
@@ -243,14 +255,18 @@ class TestLineageStore:
         assert store.list_runs() == ["run-a", "run-b", "run-c"]
 
     def test_query_by_dataset(self) -> None:
-        from smart_data.core.lineage import LineageEventType, LineageGraph, LineageNode
+        from aptdata.core.lineage import LineageEventType, LineageGraph, LineageNode
 
         store = LineageStore()
         graph1 = LineageGraph(run_id="run-1", workflow_name="wf")
-        graph1.add_node(LineageNode(dataset_uri="s3://bucket/a", event_type=LineageEventType.READ))
+        graph1.add_node(
+            LineageNode(dataset_uri="s3://bucket/a", event_type=LineageEventType.READ)
+        )
 
         graph2 = LineageGraph(run_id="run-2", workflow_name="wf")
-        graph2.add_node(LineageNode(dataset_uri="s3://bucket/b", event_type=LineageEventType.READ))
+        graph2.add_node(
+            LineageNode(dataset_uri="s3://bucket/b", event_type=LineageEventType.READ)
+        )
 
         store.save(graph1)
         store.save(graph2)
@@ -264,7 +280,7 @@ class TestLineageStore:
         assert store.query_by_dataset("nonexistent") == []
 
     def test_save_overwrites_run(self) -> None:
-        from smart_data.core.lineage import LineageGraph
+        from aptdata.core.lineage import LineageGraph
 
         store = LineageStore()
         store.save(LineageGraph(run_id="run-1", workflow_name="old"))

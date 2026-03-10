@@ -1,8 +1,8 @@
-"""Tests for smart_data.config.secrets."""
+"""Tests for aptdata.config.secrets."""
 
 from __future__ import annotations
 
-from smart_data.config.secrets import SecretManager
+from aptdata.config.secrets import SecretManager
 
 
 class TestSecretManager:

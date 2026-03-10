@@ -1,4 +1,4 @@
-"""Tests for smart_data.cli.commands.plugin_cmd."""
+"""Tests for aptdata.cli.commands.plugin_cmd."""
 
 from __future__ import annotations
 
@@ -6,10 +6,10 @@ import json
 
 from typer.testing import CliRunner
 
-from smart_data.cli.app import app
-from smart_data.plugins import plugin_manager
-from smart_data.plugins.base import BaseReader, BaseWriter
-from smart_data.plugins.dataset import InMemoryDataset
+from aptdata.cli.app import app
+from aptdata.plugins import plugin_manager
+from aptdata.plugins.base import BaseReader, BaseWriter
+from aptdata.plugins.dataset import InMemoryDataset
 
 runner = CliRunner()
 

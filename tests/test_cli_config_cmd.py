@@ -1,10 +1,10 @@
-"""Tests for smart_data.cli.commands.config_cmd."""
+"""Tests for aptdata.cli.commands.config_cmd."""
 
 from __future__ import annotations
 
 from typer.testing import CliRunner
 
-from smart_data.cli.app import app
+from aptdata.cli.app import app
 
 runner = CliRunner()
 

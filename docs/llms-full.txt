@@ -1,4 +1,4 @@
-# smart-data – Full Documentation
+# aptdata – Full Documentation
 
 > Consolidated reference for AI agents and language models.
 
@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-smart-data is a declarative, extensible Python framework for building smart
+aptdata is a declarative, extensible Python framework for building smart
 data pipelines. It targets Python 3.10+ and relies on Pydantic for runtime
 validation and OpenTelemetry for automatic observability.
 
@@ -47,7 +47,7 @@ Every `BaseComponent` carries a `ComponentMeta` with:
 ### Plugin Registry
 
 ```python
-from smart_data.plugins import registry
+from aptdata.plugins import registry
 registry.register("my_system", MySystem)
 system_cls = registry.get("my_system")
 ```
@@ -60,14 +60,14 @@ system_cls = registry.get("my_system")
 
 ```bash
 git clone https://github.com/strondata/smart-data.git
-cd smart-data
+cd aptdata
 poetry install
 ```
 
 ### Verify
 
 ```bash
-smart-data --help
+aptdata --help
 ```
 
 ### Building a System
@@ -77,7 +77,7 @@ smart-data --help
 3. Create a `BaseFlow` subclass (implement `add_component()`, `connect()`, `compile()`, `run()`)
 4. Create a `BaseSystem` subclass (implement `register_flow()`, `run()`)
 5. Register the system: `registry.register("name", SystemClass)`
-6. Run: `smart-data run name`
+6. Run: `aptdata run name`
 
 ---
 
@@ -86,31 +86,31 @@ smart-data --help
 All static commands support `--json` for machine-readable JSON line output.
 Without `--json`, commands render Rich tables, panels, and highlighted output.
 
-### `smart-data run PIPELINE [--env ENV] [--dry-run]`
+### `aptdata run PIPELINE [--env ENV] [--dry-run]`
 
 Execute a registered system.
 
-### `smart-data monitor [--refresh SECONDS]`
+### `aptdata monitor [--refresh SECONDS]`
 
 Open the interactive TUI dashboard with three tabs:
 - DAG View: ASCII pipeline topology
 - Metrics: Resource usage and memory bar
 - Agent Trace: Real-time event log
 
-### `smart-data scaffold PROJECT_NAME [--output PATH] [--template TEMPLATE]`
+### `aptdata scaffold PROJECT_NAME [--output PATH] [--template TEMPLATE]`
 
 Generate a project from a scaffold template (hello-world, medallion,
 rag-ingestion, data-quality-test).
 
-### `smart-data schema export --output PATH`
+### `aptdata schema export --output PATH`
 
 Export JSON Schema for declarative YAML configs.
 
-### `smart-data mcp-start [--transport stdio|sse]`
+### `aptdata mcp-start [--transport stdio|sse]`
 
 Start the MCP (Model Context Protocol) server for AI agent integration.
 
-### `smart-data system list|info|validate`
+### `aptdata system list|info|validate`
 
 Inspect and validate registered systems in the plugin registry.
 
@@ -118,7 +118,7 @@ Inspect and validate registered systems in the plugin registry.
 - `system info NAME [--json]` – show system class, module, docstring
 - `system validate NAME` – instantiate system and compile flows
 
-### `smart-data plugin list|inspect|preview|load`
+### `aptdata plugin list|inspect|preview|load`
 
 Manage registered reader/writer plugins.
 
@@ -127,7 +127,7 @@ Manage registered reader/writer plugins.
 - `plugin preview READER [--limit N]` – preview first N records
 - `plugin load MODULE_PATH` – dynamically import a module
 
-### `smart-data config validate|init|show|run`
+### `aptdata config validate|init|show|run`
 
 Manage declarative YAML pipeline configurations.
 
@@ -136,14 +136,14 @@ Manage declarative YAML pipeline configurations.
 - `config show PATH` – pretty-print YAML with syntax highlighting
 - `config run PATH [--env ENV]` – parse, register, and execute
 
-### `smart-data telemetry status|export`
+### `aptdata telemetry status|export`
 
 Inspect OpenTelemetry configuration and export telemetry data.
 
 - `telemetry status [--json]` – show OTel provider status
 - `telemetry export [--format json]` – export collected telemetry
 
-### `smart-data interactive`
+### `aptdata interactive`
 
 Launch the guided menu-driven interactive wizard.  Uses questionary for
 prompts (falls back to typer.prompt if unavailable).
@@ -152,7 +152,7 @@ prompts (falls back to typer.prompt if unavailable).
 
 ## 5. MCP Integration (Model Context Protocol)
 
-smart-data includes a FastMCP server enabling AI agents (Claude Desktop,
+aptdata includes a FastMCP server enabling AI agents (Claude Desktop,
 Copilot, Devin, etc.) to discover and execute pipelines.
 
 ### MCP Tools
@@ -169,8 +169,8 @@ Copilot, Devin, etc.) to discover and execute pipelines.
 ### Starting the MCP Server
 
 ```bash
-smart-data mcp-start                  # stdio transport (default)
-smart-data mcp-start --transport sse  # SSE transport
+aptdata mcp-start                  # stdio transport (default)
+aptdata mcp-start --transport sse  # SSE transport
 ```
 
 ### Claude Desktop Integration
@@ -180,8 +180,8 @@ Add to your Claude Desktop `config.json`:
 ```json
 {
   "mcpServers": {
-    "smart-data": {
-      "command": "smart-data",
+    "aptdata": {
+      "command": "aptdata",
       "args": ["mcp-start"]
     }
   }
@@ -199,7 +199,7 @@ attributes (component_id, kind, tags, branch_on, description).
 Configure telemetry:
 
 ```python
-from smart_data.telemetry import configure_telemetry
+from aptdata.telemetry import configure_telemetry
 provider, meter = configure_telemetry(service_name="my-service")
 ```
 
@@ -210,18 +210,18 @@ provider, meter = configure_telemetry(service_name="my-service")
 Systems can be defined via YAML and parsed with `YamlConfigParser`:
 
 ```python
-from smart_data.config import YamlConfigParser
+from aptdata.config import YamlConfigParser
 parser = YamlConfigParser()
 config = parser.parse_file("pipeline.yaml")
 ```
 
-Export schema: `smart-data schema export --output schema.json`
+Export schema: `aptdata schema export --output schema.json`
 
 ---
 
 ## 8. Workflow Layer
 
-The `smart_data.core.workflow` module provides an alternative execution model:
+The `aptdata.core.workflow` module provides an alternative execution model:
 
 - `IWorkflow` / `BaseWorkflow` — workflow with context, lifecycle hooks
   (`before_run`, `after_run`), topological sort via Kahn's algorithm
@@ -239,21 +239,21 @@ The following dedicated documentation pages are available:
   backend integrations (Jaeger, OTLP).
 - **[MCP Server](mcp.md)** — Full Model Context Protocol integration guide,
   available tools, resources, and AI agent setup instructions.
-- **[Configuration](configuration.md)** — `smart-data.yaml` format, schema,
+- **[Configuration](configuration.md)** — `aptdata.yaml` format, schema,
   CLI commands (`config validate`, `config init`, `config show`, `config run`),
   and environment variable substitution.
 - **[Scaffold Templates](scaffold-templates.md)** — Project bootstrapping with
   `hello-world`, `medallion`, `rag-ingestion`, `data-quality-test`,
   `job-wheel`, and `docker-compose-app` templates.
 - **[API – CLI Interactive](api/cli-interactive.md)** — Interactive wizard
-  (`smart-data interactive`) powered by questionary.
+  (`aptdata interactive`) powered by questionary.
 
 ---
 
 ## 11. Project Structure
 
 ```
-smart_data/
+aptdata/
 ├── __init__.py          # version
 ├── core/                # IDataset, IComponent, IFlow, ISystem, workflow
 ├── cli/                 # Typer CLI (run, monitor, scaffold, schema, mcp)

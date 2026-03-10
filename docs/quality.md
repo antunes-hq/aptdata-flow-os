@@ -1,17 +1,17 @@
 # Data Quality
 
-smart-data provides a lightweight data quality layer that works with both
+aptdata provides a lightweight data quality layer that works with both
 pandas DataFrames and PySpark DataFrames.
 
 ---
 
 ## Schema Contracts
 
-A :class:`~smart_data.plugins.quality.contract.SchemaContract` declares the
+A :class:`~aptdata.plugins.quality.contract.SchemaContract` declares the
 expected shape, types, and sensitivity of a dataset.
 
 ```python
-from smart_data.plugins.quality import (
+from aptdata.plugins.quality import (
     ColumnClassification,
     ColumnContract,
     EnforcementMode,
@@ -54,8 +54,8 @@ pii_tagged = contract.get_columns_by_classification(ColumnClassification.PII)
 ## Expectations
 
 Expectations are individual checks that validate a single property of a
-column.  They all extend :class:`~smart_data.plugins.quality.expectations.BaseExpectation`
-and return a :class:`~smart_data.plugins.quality.report.CheckResult`.
+column.  They all extend :class:`~aptdata.plugins.quality.expectations.BaseExpectation`
+and return a :class:`~aptdata.plugins.quality.report.CheckResult`.
 
 Each expectation has both a `validate_pandas(df)` and a `validate_spark(df)`
 implementation.  Call `validate(df)` and the engine is detected automatically.
@@ -65,7 +65,7 @@ implementation.  Call `validate(df)` and the engine is detected automatically.
 #### `ExpectColumnToNotBeNull`
 
 ```python
-from smart_data.plugins.quality import ExpectColumnToNotBeNull
+from aptdata.plugins.quality import ExpectColumnToNotBeNull
 
 result = ExpectColumnToNotBeNull("age").validate(df)
 ```
@@ -73,7 +73,7 @@ result = ExpectColumnToNotBeNull("age").validate(df)
 #### `ExpectColumnValuesInRange`
 
 ```python
-from smart_data.plugins.quality import ExpectColumnValuesInRange
+from aptdata.plugins.quality import ExpectColumnValuesInRange
 
 result = ExpectColumnValuesInRange("score", min_val=0, max_val=100).validate(df)
 ```
@@ -81,7 +81,7 @@ result = ExpectColumnValuesInRange("score", min_val=0, max_val=100).validate(df)
 #### `ExpectColumnValuesToBeUnique`
 
 ```python
-from smart_data.plugins.quality import ExpectColumnValuesToBeUnique
+from aptdata.plugins.quality import ExpectColumnValuesToBeUnique
 
 result = ExpectColumnValuesToBeUnique("id").validate(df)
 ```
@@ -89,7 +89,7 @@ result = ExpectColumnValuesToBeUnique("id").validate(df)
 #### `ExpectColumnValuesToMatchRegex`
 
 ```python
-from smart_data.plugins.quality import ExpectColumnValuesToMatchRegex
+from aptdata.plugins.quality import ExpectColumnValuesToMatchRegex
 
 result = ExpectColumnValuesToMatchRegex("code", pattern=r"[A-Z]\d{3}").validate(df)
 ```
@@ -98,12 +98,12 @@ result = ExpectColumnValuesToMatchRegex("code", pattern=r"[A-Z]\d{3}").validate(
 
 ## Quality Validator
 
-:class:`~smart_data.plugins.quality.validator.QualityValidator` runs a suite of
+:class:`~aptdata.plugins.quality.validator.QualityValidator` runs a suite of
 expectations and enforces the result according to the configured
-:class:`~smart_data.plugins.quality.contract.EnforcementMode`.
+:class:`~aptdata.plugins.quality.contract.EnforcementMode`.
 
 ```python
-from smart_data.plugins.quality import (
+from aptdata.plugins.quality import (
     EnforcementMode,
     ExpectColumnToNotBeNull,
     ExpectColumnValuesToBeUnique,
@@ -121,7 +121,7 @@ validator = QualityValidator(
 )
 
 # Compatible with Workflow.add_step()
-from smart_data.core.workflow import Workflow
+from aptdata.core.workflow import Workflow
 
 wf = Workflow("quality_pipeline")
 wf.add_step(validator.validate)
@@ -140,12 +140,12 @@ clean_data = wf.execute(raw_data)
 
 ## Quality Report
 
-After validation a :class:`~smart_data.plugins.quality.report.QualityReport`
+After validation a :class:`~aptdata.plugins.quality.report.QualityReport`
 is built internally.  Its `passed` property returns `True` only when no check
 has a `FAILED` status, and `summary` returns counts per status.
 
 ```python
-from smart_data.plugins.quality.report import CheckStatus, QualityReport
+from aptdata.plugins.quality.report import CheckStatus, QualityReport
 
 report = QualityReport(dataset_uri="s3://bucket/data.parquet")
 # ... checks appended by validator ...
@@ -158,14 +158,14 @@ print(report.summary)   # {"PASSED": 3, "FAILED": 1, "WARNING": 0}
 
 ## OTel integration
 
-:class:`~smart_data.plugins.quality.validator.QualityValidator` emits an OTel
+:class:`~aptdata.plugins.quality.validator.QualityValidator` emits an OTel
 span with the following attributes:
 
 | Attribute                                | Description           |
 |------------------------------------------|-----------------------|
-| `smart_data.quality.validator_name`      | Validator name        |
-| `smart_data.quality.enforcement`         | Enforcement mode      |
-| `smart_data.quality.num_expectations`    | Number of expectations |
-| `smart_data.quality.passed`              | Overall result        |
-| `smart_data.quality.num_checks`          | Total checks run      |
-| `smart_data.quality.failed_checks`       | Number of failures    |
+| `aptdata.quality.validator_name`      | Validator name        |
+| `aptdata.quality.enforcement`         | Enforcement mode      |
+| `aptdata.quality.num_expectations`    | Number of expectations |
+| `aptdata.quality.passed`              | Overall result        |
+| `aptdata.quality.num_checks`          | Total checks run      |
+| `aptdata.quality.failed_checks`       | Number of failures    |

@@ -1,6 +1,6 @@
 # MCP Server
 
-smart-data ships a built-in [Model Context Protocol](https://modelcontextprotocol.io/)
+aptdata ships a built-in [Model Context Protocol](https://modelcontextprotocol.io/)
 (MCP) server so AI agents — Claude Desktop, GitHub Copilot, Devin, and others
 — can discover and execute your pipelines without consuming excessive context
 tokens.
@@ -16,7 +16,7 @@ as **resources**.
 ```mermaid
 graph LR
     A["AI Agent\n(Claude / Copilot / Devin)"]
-    S["smart-data mcp-start"]
+    S["aptdata mcp-start"]
     T["Tools\nrun_flow(flow_id)\nlist_registered_systems()"]
     R["Resources\nschema://datasets/{name}"]
 
@@ -34,7 +34,7 @@ graph LR
 Used by most desktop AI agents (Claude Desktop, Continue.dev, etc.):
 
 ```bash
-smart-data mcp-start
+aptdata mcp-start
 ```
 
 ### SSE transport
@@ -42,7 +42,7 @@ smart-data mcp-start
 For web-based or HTTP integrations:
 
 ```bash
-smart-data mcp-start --transport sse
+aptdata mcp-start --transport sse
 ```
 
 ---
@@ -77,8 +77,8 @@ Add the following to your Claude Desktop configuration file:
 ```json
 {
   "mcpServers": {
-    "smart-data": {
-      "command": "smart-data",
+    "aptdata": {
+      "command": "aptdata",
       "args": ["mcp-start"]
     }
   }
@@ -93,7 +93,7 @@ execute them.
 
 ## Integrating with other agents
 
-Any MCP-compatible client can connect to smart-data.  For agents that support
+Any MCP-compatible client can connect to aptdata.  For agents that support
 SSE, start the server with `--transport sse` and point the client at
 `http://localhost:8000/sse` (default port).
 

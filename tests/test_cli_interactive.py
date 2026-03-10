@@ -1,12 +1,12 @@
-"""Tests for smart_data.cli.interactive — wizard flows with mocked prompts."""
+"""Tests for aptdata.cli.interactive — wizard flows with mocked prompts."""
 
 from __future__ import annotations
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from typer.testing import CliRunner
 
-from smart_data.cli import interactive as interactive_module
+from aptdata.cli import interactive as interactive_module
 
 runner = CliRunner()
 
@@ -49,7 +49,7 @@ class TestWizardRun:
         """Wizard run warns when no systems are registered."""
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
 
-        with patch("smart_data.plugins.registry.list_systems", return_value=[]):
+        with patch("aptdata.plugins.registry.list_systems", return_value=[]):
             warning_called = []
             original_warning = interactive_module._console.warning
 
@@ -71,10 +71,14 @@ class TestWizardRun:
 
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
 
-        with patch("smart_data.plugins.registry.list_systems", return_value=["my_sys"]):
-            with patch("smart_data.plugins.registry.get", return_value=mock_sys_cls):
-                with patch.object(interactive_module, "_select", side_effect=["my_sys", "dev"]):
-                    with patch.object(interactive_module, "_confirm", return_value=False):
+        with patch("aptdata.plugins.registry.list_systems", return_value=["my_sys"]):
+            with patch("aptdata.plugins.registry.get", return_value=mock_sys_cls):
+                with patch.object(
+                    interactive_module, "_select", side_effect=["my_sys", "dev"]
+                ):
+                    with patch.object(
+                        interactive_module, "_confirm", return_value=False
+                    ):
                         interactive_module._wizard_run()
 
         mock_sys.run.assert_called_once()
@@ -86,9 +90,13 @@ class TestWizardList:
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
         rendered = []
 
-        with patch.object(interactive_module._console, "render", side_effect=rendered.append):
+        with patch.object(
+            interactive_module._console, "render", side_effect=rendered.append
+        ):
             with patch.object(interactive_module, "_select", return_value="Systems"):
-                with patch("smart_data.plugins.registry.list_systems", return_value=["a_sys"]):
+                with patch(
+                    "aptdata.plugins.registry.list_systems", return_value=["a_sys"]
+                ):
                     interactive_module._wizard_list()
 
     def test_wizard_list_plugins(self, monkeypatch):
@@ -96,9 +104,11 @@ class TestWizardList:
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
 
         with patch.object(interactive_module._console, "render"):
-            with patch.object(interactive_module, "_select", return_value="All plugins"):
+            with patch.object(
+                interactive_module, "_select", return_value="All plugins"
+            ):
                 with patch(
-                    "smart_data.plugins.plugin_manager.list_plugins",
+                    "aptdata.plugins.plugin_manager.list_plugins",
                     return_value={"readers": ["r1"], "writers": ["w1"]},
                 ):
                     interactive_module._wizard_list()
@@ -110,9 +120,13 @@ class TestWizardInspect:
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
         warnings = []
 
-        with patch.object(interactive_module._console, "warning", side_effect=warnings.append):
-            with patch("smart_data.plugins.plugin_manager.list_readers", return_value=[]):
-                with patch("smart_data.plugins.plugin_manager.list_writers", return_value=[]):
+        with patch.object(
+            interactive_module._console, "warning", side_effect=warnings.append
+        ):
+            with patch("aptdata.plugins.plugin_manager.list_readers", return_value=[]):
+                with patch(
+                    "aptdata.plugins.plugin_manager.list_writers", return_value=[]
+                ):
                     interactive_module._wizard_inspect()
 
         assert len(warnings) > 0
@@ -124,10 +138,14 @@ class TestWizardInspect:
 
         with patch.object(interactive_module._console, "render"):
             with patch.object(interactive_module, "_select", return_value="r1"):
-                with patch("smart_data.plugins.plugin_manager.list_readers", return_value=["r1"]):
-                    with patch("smart_data.plugins.plugin_manager.list_writers", return_value=[]):
+                with patch(
+                    "aptdata.plugins.plugin_manager.list_readers", return_value=["r1"]
+                ):
+                    with patch(
+                        "aptdata.plugins.plugin_manager.list_writers", return_value=[]
+                    ):
                         with patch(
-                            "smart_data.plugins.plugin_manager.get_plugin_schema",
+                            "aptdata.plugins.plugin_manager.get_plugin_schema",
                             return_value=schema,
                         ):
                             interactive_module._wizard_inspect()
@@ -139,7 +157,9 @@ class TestWizardTelemetry:
         monkeypatch.setattr(interactive_module, "_HAS_QUESTIONARY", False)
         rendered = []
 
-        with patch.object(interactive_module._console, "render", side_effect=rendered.append):
+        with patch.object(
+            interactive_module._console, "render", side_effect=rendered.append
+        ):
             with patch.object(interactive_module, "_confirm", return_value=False):
                 interactive_module._wizard_telemetry()
 

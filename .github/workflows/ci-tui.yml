@@ -4,13 +4,13 @@ on:
   push:
     branches: ["main", "copilot/**"]
     paths:
-      - "smart_data/tui/**"
+      - "aptdata/tui/**"
       - "tests/test_tui.py"
       - "tests/conftest.py"
   pull_request:
     branches: ["main"]
     paths:
-      - "smart_data/tui/**"
+      - "aptdata/tui/**"
       - "tests/test_tui.py"
       - "tests/conftest.py"
   workflow_dispatch:
@@ -44,7 +44,7 @@ jobs:
           python -m pytest \
             tests/test_tui.py \
             -v \
-            --cov=smart_data/tui \
+            --cov=aptdata/tui \
             --cov-report=term-missing \
             --cov-fail-under=80
 

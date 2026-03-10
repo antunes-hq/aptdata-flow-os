@@ -2,7 +2,7 @@
 
 The plugin registry lets external packages register concrete system
 implementations so the CLI can discover and instantiate them by name —
-without any changes to the `smart-data` core.
+without any changes to the `aptdata` core.
 
 ---
 
@@ -11,13 +11,13 @@ without any changes to the `smart-data` core.
 ```mermaid
 sequenceDiagram
     participant Pkg as Your adapter package
-    participant Reg as smart_data.plugins.registry
-    participant CLI as smart-data CLI
+    participant Reg as aptdata.plugins.registry
+    participant CLI as aptdata CLI
 
     Pkg->>Reg: registry.register("my_system", MySystem)
     CLI->>Reg: registry.get("my_system")
     Reg-->>CLI: MySystem class
-    CLI->>CLI: smart-data run my_system
+    CLI->>CLI: aptdata run my_system
 ```
 
 ---
@@ -27,8 +27,8 @@ sequenceDiagram
 ```python
 # my_package/systems.py
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BaseSystem, IFlow
-from smart_data.plugins import registry
+from aptdata.core import BaseSystem, IFlow
+from aptdata.plugins import registry
 
 
 @pydantic_dataclass
@@ -51,7 +51,7 @@ registry.register("sales_system", SalesSystem)
 Then run it:
 
 ```bash
-smart-data run sales_system --env prod
+aptdata run sales_system --env prod
 ```
 
 ---
@@ -59,10 +59,10 @@ smart-data run sales_system --env prod
 ## Auto-discovery with entry points
 
 You can auto-register systems when your package is installed by declaring a
-`smart_data.systems` entry-point group in your `pyproject.toml`:
+`aptdata.systems` entry-point group in your `pyproject.toml`:
 
 ```toml
-[tool.poetry.plugins."smart_data.systems"]
+[tool.poetry.plugins."aptdata.systems"]
 sales_system = "my_package.systems:SalesSystem"
 ```
 
@@ -74,10 +74,10 @@ sales_system = "my_package.systems:SalesSystem"
 
 ## `_SystemRegistry` API
 
-::: smart_data.plugins._SystemRegistry
+::: aptdata.plugins._SystemRegistry
 
 ---
 
 ## Global singleton
 
-::: smart_data.plugins.registry
+::: aptdata.plugins.registry

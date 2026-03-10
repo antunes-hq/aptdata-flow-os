@@ -1,4 +1,4 @@
-# smart-data
+# aptdata
 
 > **v0.0.2** · A declarative, extensible framework for building smart data pipelines in Python.
 
@@ -10,7 +10,7 @@
 
 ## Overview
 
-**smart-data** is built around three universal abstractions — **System**,
+**aptdata** is built around three universal abstractions — **System**,
 **Flow**, and **Component** — that cover every data-processing paradigm in a
 single, coherent model:
 
@@ -25,7 +25,7 @@ flowchart TD
 
 Datasets remain the fundamental data-exchange contract (`IDataset` /
 `BaseDataset`).  Every outcome from the CLI is emitted as a machine-readable
-JSON line, making smart-data a natural fit for AI orchestrators, CI/CD
+JSON line, making aptdata a natural fit for AI orchestrators, CI/CD
 pipelines and scripted workflows.
 
 ---
@@ -42,23 +42,23 @@ pipelines and scripted workflows.
 ### From PyPI
 
 ```bash
-pip install smart-data
+pip install aptdata
 ```
 
 ### Optional extras
 
 ```bash
-pip install smart-data[pandas]   # pandas support
-pip install smart-data[spark]    # PySpark support
-pip install smart-data[plugins]  # REST, PostgreSQL, Parquet I/O
-pip install smart-data[all]      # everything
+pip install aptdata[pandas]   # pandas support
+pip install aptdata[spark]    # PySpark support
+pip install aptdata[plugins]  # REST, PostgreSQL, Parquet I/O
+pip install aptdata[all]      # everything
 ```
 
 ### From source (development)
 
 ```bash
 git clone https://github.com/strondata/smart-data.git
-cd smart-data
+cd aptdata
 poetry install
 ```
 
@@ -68,7 +68,7 @@ poetry install
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import (
+from aptdata.core import (
     BaseDataset, IDataset,
     BaseComponent, ComponentMeta, ComponentKind,
     BaseFlow, IFlow,
@@ -110,12 +110,12 @@ class MySystem(BaseSystem):
             flow.run([])
 
 # Register and run via CLI
-from smart_data.plugins import registry
+from aptdata.plugins import registry
 registry.register("my_system", MySystem)
 ```
 
 ```bash
-smart-data run my_system
+aptdata run my_system
 # {"event": "pipeline.started", "pipeline": "my_system", "env": "dev", "dry_run": false, "trace_id": null}
 # {"event": "pipeline.completed", "pipeline": "my_system", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001, "trace_id": null}
 ```
@@ -125,28 +125,28 @@ smart-data run my_system
 ## CLI reference
 
 ```
-smart-data run SYSTEM_NAME [--env ENV] [--dry-run]
-smart-data monitor [--refresh SECONDS]
-smart-data scaffold PROJECT_NAME [--template TEMPLATE] [--output PATH]
-smart-data schema export --output schema.json
-smart-data system list [--json]
-smart-data system info NAME [--json]
-smart-data system validate NAME
-smart-data plugin list [--json]
-smart-data plugin inspect NAME [--json]
-smart-data plugin preview READER [--limit N]
-smart-data plugin load MODULE_PATH
-smart-data config validate PATH
-smart-data config init [--output PATH]
-smart-data config show PATH
-smart-data config run PATH [--env ENV]
-smart-data telemetry status [--json]
-smart-data telemetry export [--format json]
-smart-data mesh list [--dir DIR] [--json]
-smart-data mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
-smart-data mesh build COMPONENT [--dir DIR] [--json]
-smart-data mcp-start [--transport TRANSPORT]
-smart-data interactive
+aptdata run SYSTEM_NAME [--env ENV] [--dry-run]
+aptdata monitor [--refresh SECONDS]
+aptdata scaffold PROJECT_NAME [--template TEMPLATE] [--output PATH]
+aptdata schema export --output schema.json
+aptdata system list [--json]
+aptdata system info NAME [--json]
+aptdata system validate NAME
+aptdata plugin list [--json]
+aptdata plugin inspect NAME [--json]
+aptdata plugin preview READER [--limit N]
+aptdata plugin load MODULE_PATH
+aptdata config validate PATH
+aptdata config init [--output PATH]
+aptdata config show PATH
+aptdata config run PATH [--env ENV]
+aptdata telemetry status [--json]
+aptdata telemetry export [--format json]
+aptdata mesh list [--dir DIR] [--json]
+aptdata mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
+aptdata mesh build COMPONENT [--dir DIR] [--json]
+aptdata mcp-start [--transport TRANSPORT]
+aptdata interactive
 ```
 
 Every static command supports `--json` for machine-readable JSON line output
@@ -165,9 +165,9 @@ and syntax-highlighted output.
 | `docker-compose-app`  | Multi-service Docker Compose application             |
 
 ```bash
-smart-data scaffold my_lakehouse --template medallion
-smart-data scaffold my_job --template job-wheel
-smart-data scaffold my_service --template docker-compose-app
+aptdata scaffold my_lakehouse --template medallion
+aptdata scaffold my_job --template job-wheel
+aptdata scaffold my_service --template docker-compose-app
 ```
 
 ---
@@ -177,7 +177,7 @@ smart-data scaffold my_service --template docker-compose-app
 Engine-agnostic transformation wrappers for pandas and PySpark:
 
 ```python
-from smart_data.plugins.transform import PandasTransformer
+from aptdata.plugins.transform import PandasTransformer
 
 def clean(df):
     return df.dropna().drop_duplicates()
@@ -193,7 +193,7 @@ See [Transform Engines docs](docs/transform-engines.md) for PySpark usage.
 ## Data Quality & Contracts
 
 ```python
-from smart_data.plugins.quality import (
+from aptdata.plugins.quality import (
     EnforcementMode, ExpectColumnToNotBeNull,
     QualityValidator, SchemaContract,
 )
@@ -212,10 +212,10 @@ See [Quality docs](docs/quality.md) for all built-in expectations.
 ## Data Governance
 
 ```python
-from smart_data.plugins.governance import (
+from aptdata.plugins.governance import (
     BusinessRule, DatasetCatalog, DatasetCatalogEntry, LineageStore,
 )
-from smart_data.core.lineage import LineageGraph, LineageNode, LineageEventType
+from aptdata.core.lineage import LineageGraph, LineageNode, LineageEventType
 
 # Lineage tracking
 graph = LineageGraph(run_id="run-1", workflow_name="etl")
@@ -246,7 +246,7 @@ accordingly.
 The workflow will:
 1. Detect the merged PR and its labels.
 2. Run `bump-my-version bump <part>` to update `pyproject.toml` and
-   `smart_data/__init__.py`.
+   `aptdata/__init__.py`.
 3. Create a `chore(release): bump version to X.Y.Z` commit and a `vX.Y.Z` tag.
 4. Push the commit and tag to `main`.
 5. The tag push automatically triggers the **Publish to PyPI** workflow.

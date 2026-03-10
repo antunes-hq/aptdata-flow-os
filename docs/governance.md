@@ -1,6 +1,6 @@
 # Governance
 
-smart-data ships a first-class governance layer that covers:
+aptdata ships a first-class governance layer that covers:
 
 - **Data lineage** — provenance graph tracking every read, transform, and write
 - **Data quality & contracts** — schema contracts and expectation suites
@@ -28,9 +28,9 @@ graph LR
 
 ### Overview
 
-The lineage subsystem lives in `smart_data.core.lineage`.  Every workflow run
-produces a :class:`~smart_data.core.lineage.LineageGraph` that contains an
-ordered list of :class:`~smart_data.core.lineage.LineageNode` objects.
+The lineage subsystem lives in `aptdata.core.lineage`.  Every workflow run
+produces a :class:`~aptdata.core.lineage.LineageGraph` that contains an
+ordered list of :class:`~aptdata.core.lineage.LineageNode` objects.
 
 ```mermaid
 flowchart LR
@@ -42,7 +42,7 @@ flowchart LR
 ```
 
 ```python
-from smart_data.core.lineage import (
+from aptdata.core.lineage import (
     ColumnLineage,
     LineageEventType,
     LineageGraph,
@@ -87,11 +87,11 @@ d = graph.to_dict()  # plain dict, JSON-serialisable
 
 ### Lineage Store
 
-Use :class:`~smart_data.plugins.governance.lineage_store.LineageStore` to
+Use :class:`~aptdata.plugins.governance.lineage_store.LineageStore` to
 persist and query graphs in memory across a session.
 
 ```python
-from smart_data.plugins.governance import LineageStore
+from aptdata.plugins.governance import LineageStore
 
 store = LineageStore()
 store.save(graph)
@@ -106,7 +106,7 @@ graphs = store.query_by_dataset("s3://raw/orders.parquet")
 ## Business Rules Registry
 
 ```python
-from smart_data.plugins.governance import (
+from aptdata.plugins.governance import (
     BusinessRule,
     RuleAuditEntry,
     RuleRegistry,
@@ -148,8 +148,8 @@ log = registry.get_audit_log(rule_id="BR-001")
 ## Dataset Catalog
 
 ```python
-from smart_data.plugins.governance import DatasetCatalog, DatasetCatalogEntry
-from smart_data.plugins.governance.classification import ColumnClassification
+from aptdata.plugins.governance import DatasetCatalog, DatasetCatalogEntry
+from aptdata.plugins.governance.classification import ColumnClassification
 
 catalog = DatasetCatalog()
 
@@ -174,7 +174,7 @@ results = catalog.search(owner="data-engineering", tag="finance")
 ## Data Classification
 
 ```python
-from smart_data.plugins.governance.classification import (
+from aptdata.plugins.governance.classification import (
     ColumnClassification,
     DataClassificationPolicy,
 )
@@ -208,8 +208,8 @@ policy = DataClassificationPolicy(
 Schema contracts (see [Quality](quality.md)) integrate with the catalog:
 
 ```python
-from smart_data.plugins.quality import ColumnClassification, ColumnContract, SchemaContract
-from smart_data.plugins.governance import DatasetCatalog, DatasetCatalogEntry
+from aptdata.plugins.quality import ColumnClassification, ColumnContract, SchemaContract
+from aptdata.plugins.governance import DatasetCatalog, DatasetCatalogEntry
 
 contract = SchemaContract(
     name="orders_v1",

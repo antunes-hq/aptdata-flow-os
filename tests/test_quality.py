@@ -27,7 +27,7 @@ def _df(*args, **kwargs):
 
 class TestCheckResult:
     def test_defaults(self) -> None:
-        from smart_data.plugins.quality.report import CheckResult, CheckStatus
+        from aptdata.plugins.quality.report import CheckResult, CheckStatus
 
         r = CheckResult(expectation_name="MyExpectation")
         assert r.status == CheckStatus.PASSED
@@ -36,7 +36,7 @@ class TestCheckResult:
         assert r.column == ""
 
     def test_custom_values(self) -> None:
-        from smart_data.plugins.quality.report import CheckResult, CheckStatus
+        from aptdata.plugins.quality.report import CheckResult, CheckStatus
 
         r = CheckResult(
             expectation_name="ExpectColumnToNotBeNull",
@@ -51,7 +51,11 @@ class TestCheckResult:
 
 class TestQualityReport:
     def test_passed_all_pass(self) -> None:
-        from smart_data.plugins.quality.report import CheckResult, CheckStatus, QualityReport
+        from aptdata.plugins.quality.report import (
+            CheckResult,
+            CheckStatus,
+            QualityReport,
+        )
 
         report = QualityReport(dataset_uri="memory://test")
         report.checks.append(CheckResult("A", status=CheckStatus.PASSED))
@@ -59,29 +63,39 @@ class TestQualityReport:
         assert report.passed is True
 
     def test_passed_with_failure(self) -> None:
-        from smart_data.plugins.quality.report import CheckResult, CheckStatus, QualityReport
+        from aptdata.plugins.quality.report import (
+            CheckResult,
+            CheckStatus,
+            QualityReport,
+        )
 
         report = QualityReport(dataset_uri="memory://test")
         report.checks.append(CheckResult("A", status=CheckStatus.FAILED))
         assert report.passed is False
 
     def test_summary_counts(self) -> None:
-        from smart_data.plugins.quality.report import CheckResult, CheckStatus, QualityReport
+        from aptdata.plugins.quality.report import (
+            CheckResult,
+            CheckStatus,
+            QualityReport,
+        )
 
         report = QualityReport(dataset_uri="memory://test")
-        report.checks.extend([
-            CheckResult("A", status=CheckStatus.PASSED),
-            CheckResult("B", status=CheckStatus.PASSED),
-            CheckResult("C", status=CheckStatus.FAILED),
-            CheckResult("D", status=CheckStatus.WARNING),
-        ])
+        report.checks.extend(
+            [
+                CheckResult("A", status=CheckStatus.PASSED),
+                CheckResult("B", status=CheckStatus.PASSED),
+                CheckResult("C", status=CheckStatus.FAILED),
+                CheckResult("D", status=CheckStatus.WARNING),
+            ]
+        )
         summary = report.summary
         assert summary[CheckStatus.PASSED] == 2
         assert summary[CheckStatus.FAILED] == 1
         assert summary[CheckStatus.WARNING] == 1
 
     def test_summary_empty(self) -> None:
-        from smart_data.plugins.quality.report import CheckStatus, QualityReport
+        from aptdata.plugins.quality.report import CheckStatus, QualityReport
 
         report = QualityReport(dataset_uri="memory://test")
         s = report.summary
@@ -95,7 +109,7 @@ class TestQualityReport:
 
 class TestSchemaContract:
     def test_get_pii_columns_by_flag(self) -> None:
-        from smart_data.plugins.quality.contract import ColumnContract, SchemaContract
+        from aptdata.plugins.quality.contract import ColumnContract, SchemaContract
 
         contract = SchemaContract(
             name="test",
@@ -109,26 +123,38 @@ class TestSchemaContract:
         assert [c.name for c in pii] == ["email", "ssn"]
 
     def test_get_pii_columns_by_classification(self) -> None:
-        from smart_data.plugins.quality.contract import ColumnClassification, ColumnContract, SchemaContract
+        from aptdata.plugins.quality.contract import (
+            ColumnClassification,
+            ColumnContract,
+            SchemaContract,
+        )
 
         contract = SchemaContract(
             name="test",
             columns=[
                 ColumnContract(name="id", pii=False),
-                ColumnContract(name="name", classification=ColumnClassification.PII, pii=False),
+                ColumnContract(
+                    name="name", classification=ColumnClassification.PII, pii=False
+                ),
             ],
         )
         pii = contract.get_pii_columns()
         assert any(c.name == "name" for c in pii)
 
     def test_get_columns_by_classification(self) -> None:
-        from smart_data.plugins.quality.contract import ColumnClassification, ColumnContract, SchemaContract
+        from aptdata.plugins.quality.contract import (
+            ColumnClassification,
+            ColumnContract,
+            SchemaContract,
+        )
 
         contract = SchemaContract(
             name="test",
             columns=[
                 ColumnContract(name="a", classification=ColumnClassification.PUBLIC),
-                ColumnContract(name="b", classification=ColumnClassification.CONFIDENTIAL),
+                ColumnContract(
+                    name="b", classification=ColumnClassification.CONFIDENTIAL
+                ),
                 ColumnContract(name="c", classification=ColumnClassification.PUBLIC),
             ],
         )
@@ -136,7 +162,7 @@ class TestSchemaContract:
         assert [c.name for c in public] == ["a", "c"]
 
     def test_enforcement_mode_default(self) -> None:
-        from smart_data.plugins.quality.contract import EnforcementMode, SchemaContract
+        from aptdata.plugins.quality.contract import EnforcementMode, SchemaContract
 
         contract = SchemaContract(name="test")
         assert contract.enforcement == EnforcementMode.ABORT
@@ -149,8 +175,8 @@ class TestSchemaContract:
 
 class TestExpectColumnToNotBeNull:
     def test_passes_no_nulls(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"age": [1, 2, 3]})
         result = ExpectColumnToNotBeNull("age").validate_pandas(df)
@@ -159,8 +185,8 @@ class TestExpectColumnToNotBeNull:
 
     def test_fails_with_nulls(self) -> None:
 
-        from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"age": [1, None, 3]})
         result = ExpectColumnToNotBeNull("age").validate_pandas(df)
@@ -168,16 +194,16 @@ class TestExpectColumnToNotBeNull:
         assert result.rows_failed == 1
 
     def test_missing_column(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"other": [1, 2]})
         result = ExpectColumnToNotBeNull("age").validate_pandas(df)
         assert result.status == CheckStatus.FAILED
 
     def test_validate_dispatches_to_pandas(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"x": [1, 2]})
         result = ExpectColumnToNotBeNull("x").validate(df)
@@ -186,16 +212,16 @@ class TestExpectColumnToNotBeNull:
 
 class TestExpectColumnValuesInRange:
     def test_passes_all_in_range(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnValuesInRange
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnValuesInRange
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"score": [0, 50, 100]})
         result = ExpectColumnValuesInRange("score", 0, 100).validate_pandas(df)
         assert result.status == CheckStatus.PASSED
 
     def test_fails_out_of_range(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnValuesInRange
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnValuesInRange
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"score": [-1, 50, 101]})
         result = ExpectColumnValuesInRange("score", 0, 100).validate_pandas(df)
@@ -203,7 +229,7 @@ class TestExpectColumnValuesInRange:
         assert result.rows_failed == 2
 
     def test_metadata_contains_bounds(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnValuesInRange
+        from aptdata.plugins.quality.expectations import ExpectColumnValuesInRange
 
         df = _df({"score": [5]})
         result = ExpectColumnValuesInRange("score", 0, 10).validate_pandas(df)
@@ -213,16 +239,16 @@ class TestExpectColumnValuesInRange:
 
 class TestExpectColumnValuesToBeUnique:
     def test_passes_unique_values(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnValuesToBeUnique
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnValuesToBeUnique
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"id": [1, 2, 3]})
         result = ExpectColumnValuesToBeUnique("id").validate_pandas(df)
         assert result.status == CheckStatus.PASSED
 
     def test_fails_duplicate_values(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnValuesToBeUnique
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnValuesToBeUnique
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"id": [1, 1, 2]})
         result = ExpectColumnValuesToBeUnique("id").validate_pandas(df)
@@ -232,16 +258,16 @@ class TestExpectColumnValuesToBeUnique:
 
 class TestExpectColumnValuesToMatchRegex:
     def test_passes_all_match(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnValuesToMatchRegex
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnValuesToMatchRegex
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"code": ["A1", "B2", "C3"]})
         result = ExpectColumnValuesToMatchRegex("code", r"[A-Z]\d").validate_pandas(df)
         assert result.status == CheckStatus.PASSED
 
     def test_fails_non_matching(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnValuesToMatchRegex
-        from smart_data.plugins.quality.report import CheckStatus
+        from aptdata.plugins.quality.expectations import ExpectColumnValuesToMatchRegex
+        from aptdata.plugins.quality.report import CheckStatus
 
         df = _df({"code": ["A1", "bad!", "C3"]})
         result = ExpectColumnValuesToMatchRegex("code", r"[A-Z]\d").validate_pandas(df)
@@ -249,7 +275,7 @@ class TestExpectColumnValuesToMatchRegex:
         assert result.rows_failed == 1
 
     def test_metadata_contains_pattern(self) -> None:
-        from smart_data.plugins.quality.expectations import ExpectColumnValuesToMatchRegex
+        from aptdata.plugins.quality.expectations import ExpectColumnValuesToMatchRegex
 
         df = _df({"code": ["A1"]})
         result = ExpectColumnValuesToMatchRegex("code", r"[A-Z]\d").validate_pandas(df)
@@ -263,11 +289,11 @@ class TestExpectColumnValuesToMatchRegex:
 
 class TestQualityValidator:
     def test_abort_on_failure(self) -> None:
-        from smart_data.plugins.quality.contract import EnforcementMode
-        from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
-        from smart_data.plugins.quality.validator import QualityValidator
-
         import pandas as pd
+
+        from aptdata.plugins.quality.contract import EnforcementMode
+        from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
+        from aptdata.plugins.quality.validator import QualityValidator
 
         df = pd.DataFrame({"age": [1, None]})
         validator = QualityValidator(
@@ -278,11 +304,11 @@ class TestQualityValidator:
             validator.validate(df)
 
     def test_warn_on_failure(self) -> None:
-        from smart_data.plugins.quality.contract import EnforcementMode
-        from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
-        from smart_data.plugins.quality.validator import QualityValidator
-
         import pandas as pd
+
+        from aptdata.plugins.quality.contract import EnforcementMode
+        from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
+        from aptdata.plugins.quality.validator import QualityValidator
 
         df = pd.DataFrame({"age": [1, None]})
         validator = QualityValidator(
@@ -296,10 +322,10 @@ class TestQualityValidator:
         assert any("quality" in str(w.message).lower() for w in caught)
 
     def test_tag_on_failure(self) -> None:
-        from smart_data.plugins.dataset import InMemoryDataset
-        from smart_data.plugins.quality.contract import EnforcementMode
-        from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
-        from smart_data.plugins.quality.validator import QualityValidator
+        from aptdata.plugins.dataset import InMemoryDataset
+        from aptdata.plugins.quality.contract import EnforcementMode
+        from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
+        from aptdata.plugins.quality.validator import QualityValidator
 
         ds = InMemoryDataset(uri="memory://test", schema_metadata={})
         ds.write([{"age": None}, {"age": 5}])
@@ -313,11 +339,11 @@ class TestQualityValidator:
         assert result.schema_metadata["quality_report"]["passed"] is False
 
     def test_pass_through_on_success(self) -> None:
-        from smart_data.plugins.quality.contract import EnforcementMode
-        from smart_data.plugins.quality.expectations import ExpectColumnToNotBeNull
-        from smart_data.plugins.quality.validator import QualityValidator
-
         import pandas as pd
+
+        from aptdata.plugins.quality.contract import EnforcementMode
+        from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
+        from aptdata.plugins.quality.validator import QualityValidator
 
         df = pd.DataFrame({"age": [1, 2, 3]})
         validator = QualityValidator(
@@ -328,14 +354,14 @@ class TestQualityValidator:
         assert result is df
 
     def test_multiple_expectations(self) -> None:
-        from smart_data.plugins.quality.contract import EnforcementMode
-        from smart_data.plugins.quality.expectations import (
+        import pandas as pd
+
+        from aptdata.plugins.quality.contract import EnforcementMode
+        from aptdata.plugins.quality.expectations import (
             ExpectColumnToNotBeNull,
             ExpectColumnValuesToBeUnique,
         )
-        from smart_data.plugins.quality.validator import QualityValidator
-
-        import pandas as pd
+        from aptdata.plugins.quality.validator import QualityValidator
 
         df = pd.DataFrame({"id": [1, 2, 3], "name": ["a", "b", "c"]})
         validator = QualityValidator(
@@ -349,7 +375,7 @@ class TestQualityValidator:
         assert result is df
 
     def test_validator_name(self) -> None:
-        from smart_data.plugins.quality.validator import QualityValidator
+        from aptdata.plugins.quality.validator import QualityValidator
 
         v = QualityValidator(expectations=[], name="MyValidator")
         assert v.name == "MyValidator"

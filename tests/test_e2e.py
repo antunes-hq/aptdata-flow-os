@@ -13,16 +13,18 @@ import pytest
 
 from tests.conftest import assert_json_event, parse_json_lines
 
-
 # ---------------------------------------------------------------------------
 # Scaffold E2E
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.e2e
 class TestScaffoldE2E:
     """End-to-end scaffold command scenarios."""
 
-    def test_scaffold_hello_world_complete_flow(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_scaffold_hello_world_complete_flow(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """Scaffold hello-world; verify started + completed events and files."""
         result = cli_runner.invoke(
             cli_app,
@@ -40,7 +42,9 @@ class TestScaffoldE2E:
         assert (project_dir / "main.py").exists()
         assert (project_dir / "README.md").exists()
 
-    def test_scaffold_fails_on_invalid_name(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_scaffold_fails_on_invalid_name(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """Project names with invalid chars produce a scaffold.error event."""
         result = cli_runner.invoke(
             cli_app,
@@ -48,7 +52,9 @@ class TestScaffoldE2E:
         )
         assert result.exit_code != 0
 
-    def test_scaffold_fails_on_duplicate_directory(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_scaffold_fails_on_duplicate_directory(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """Re-scaffolding into an existing directory must fail."""
         cli_runner.invoke(cli_app, ["scaffold", "dup_proj", "--output", str(tmp_path)])
         result = cli_runner.invoke(
@@ -56,23 +62,43 @@ class TestScaffoldE2E:
         )
         assert result.exit_code != 0
 
-    def test_scaffold_all_templates_succeed(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_scaffold_all_templates_succeed(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """Every template should scaffold without errors."""
-        from smart_data.cli.scaffold import TEMPLATE_NAMES
+        from aptdata.cli.scaffold import TEMPLATE_NAMES
 
         for i, template in enumerate(TEMPLATE_NAMES):
             project = f"proj_{i}"
             result = cli_runner.invoke(
                 cli_app,
-                ["scaffold", project, "--output", str(tmp_path), "--template", template],
+                [
+                    "scaffold",
+                    project,
+                    "--output",
+                    str(tmp_path),
+                    "--template",
+                    template,
+                ],
             )
-            assert result.exit_code == 0, f"Template {template!r} failed: {result.output}"
+            assert result.exit_code == 0, (
+                f"Template {template!r} failed: {result.output}"
+            )
 
-    def test_scaffold_unknown_template_exits_nonzero(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_scaffold_unknown_template_exits_nonzero(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """An unknown template must exit with non-zero code."""
         result = cli_runner.invoke(
             cli_app,
-            ["scaffold", "some_proj", "--output", str(tmp_path), "--template", "does-not-exist"],
+            [
+                "scaffold",
+                "some_proj",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "does-not-exist",
+            ],
         )
         assert result.exit_code != 0
 
@@ -81,11 +107,14 @@ class TestScaffoldE2E:
 # Mesh CLI E2E
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.e2e
 class TestMeshE2E:
     """End-to-end mesh CLI scenarios."""
 
-    def test_mesh_list_empty_directory(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_mesh_list_empty_directory(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """mesh list on an empty dir returns count=0 in JSON mode."""
         result = cli_runner.invoke(
             cli_app, ["mesh", "list", "--dir", str(tmp_path), "--json"]
@@ -95,11 +124,20 @@ class TestMeshE2E:
         assert data["count"] == 0
         assert data["components"] == []
 
-    def test_mesh_list_after_scaffold_job_wheel(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_mesh_list_after_scaffold_job_wheel(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """mesh list finds job-wheel component after scaffolding."""
         cli_runner.invoke(
             cli_app,
-            ["scaffold", "e2e_job", "--output", str(tmp_path), "--template", "job-wheel"],
+            [
+                "scaffold",
+                "e2e_job",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
         )
         result = cli_runner.invoke(
             cli_app, ["mesh", "list", "--dir", str(tmp_path), "--json"]
@@ -111,11 +149,20 @@ class TestMeshE2E:
         assert comp["component"] == "e2e_job"
         assert comp["type"] == "job-wheel"
 
-    def test_mesh_list_after_scaffold_docker_compose(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_mesh_list_after_scaffold_docker_compose(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """mesh list finds docker-compose-app component after scaffolding."""
         cli_runner.invoke(
             cli_app,
-            ["scaffold", "e2e_app", "--output", str(tmp_path), "--template", "docker-compose-app"],
+            [
+                "scaffold",
+                "e2e_app",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "docker-compose-app",
+            ],
         )
         result = cli_runner.invoke(
             cli_app, ["mesh", "list", "--dir", str(tmp_path), "--json"]
@@ -126,15 +173,32 @@ class TestMeshE2E:
         comp = data["components"][0]
         assert comp["type"] == "docker-compose-app"
 
-    def test_mesh_run_dry_run_job_wheel_events(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_mesh_run_dry_run_job_wheel_events(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """mesh run --dry-run emits started and dry_run events in order."""
         cli_runner.invoke(
             cli_app,
-            ["scaffold", "e2e_runjob", "--output", str(tmp_path), "--template", "job-wheel"],
+            [
+                "scaffold",
+                "e2e_runjob",
+                "--output",
+                str(tmp_path),
+                "--template",
+                "job-wheel",
+            ],
         )
         result = cli_runner.invoke(
             cli_app,
-            ["mesh", "run", "e2e_runjob", "--dir", str(tmp_path), "--dry-run", "--json"],
+            [
+                "mesh",
+                "run",
+                "e2e_runjob",
+                "--dir",
+                str(tmp_path),
+                "--dry-run",
+                "--json",
+            ],
         )
         assert result.exit_code == 0
         events = parse_json_lines(result.output)
@@ -142,7 +206,9 @@ class TestMeshE2E:
         assert "mesh.run.started" in event_names
         assert "mesh.run.dry_run" in event_names
 
-    def test_mesh_run_nonexistent_component_fails(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_mesh_run_nonexistent_component_fails(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """mesh run on an unknown component returns non-zero exit."""
         result = cli_runner.invoke(
             cli_app,
@@ -150,7 +216,9 @@ class TestMeshE2E:
         )
         assert result.exit_code != 0
 
-    def test_mesh_build_nonexistent_component_fails(self, tmp_path: Path, cli_runner, cli_app) -> None:
+    def test_mesh_build_nonexistent_component_fails(
+        self, tmp_path: Path, cli_runner, cli_app
+    ) -> None:
         """mesh build on an unknown component returns non-zero exit."""
         result = cli_runner.invoke(
             cli_app,
@@ -162,6 +230,7 @@ class TestMeshE2E:
 # ---------------------------------------------------------------------------
 # System CLI E2E
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.e2e
 class TestSystemCLIE2E:
@@ -195,6 +264,7 @@ class TestSystemCLIE2E:
 # ---------------------------------------------------------------------------
 # Plugin CLI E2E
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.e2e
 class TestPluginCLIE2E:

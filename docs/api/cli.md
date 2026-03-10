@@ -1,17 +1,17 @@
 # CLI Reference
 
-The `smart-data` command-line interface emits **structured JSON** on every
+The `aptdata` command-line interface emits **structured JSON** on every
 outcome, making it suitable for use inside AI orchestrators, CI/CD pipelines
 and shell scripts.
 
 ---
 
-## `smart-data run`
+## `aptdata run`
 
 Run a registered pipeline by name.
 
 ```
-smart-data run PIPELINE [OPTIONS]
+aptdata run PIPELINE [OPTIONS]
 ```
 
 ### Arguments
@@ -77,26 +77,26 @@ command:
 
 ```bash
 # Run in the default dev environment
-smart-data run my_pipeline
+aptdata run my_pipeline
 
 # Run against production
-smart-data run my_pipeline --env prod
+aptdata run my_pipeline --env prod
 
 # Validate without executing
-smart-data run my_pipeline --dry-run
+aptdata run my_pipeline --dry-run
 
 # Capture and parse JSON output with jq
-smart-data run my_pipeline | jq '.elapsed_seconds'
+aptdata run my_pipeline | jq '.elapsed_seconds'
 ```
 
 ---
 
-## `smart-data monitor`
+## `aptdata monitor`
 
 Launch the interactive TUI monitoring dashboard.
 
 ```
-smart-data monitor [OPTIONS]
+aptdata monitor [OPTIONS]
 ```
 
 ### Options
@@ -117,158 +117,158 @@ smart-data monitor [OPTIONS]
 
 ```bash
 # Open with default 1-second refresh
-smart-data monitor
+aptdata monitor
 
 # Faster refresh for high-frequency pipelines
-smart-data monitor --refresh 0.25
+aptdata monitor --refresh 0.25
 ```
 
 ---
 
 ---
 
-## `smart-data system`
+## `aptdata system`
 
 Inspect and validate registered systems.
 
-### `smart-data system list [--json]`
+### `aptdata system list [--json]`
 
 List all systems in the plugin registry.
 
 ```bash
-smart-data system list
-smart-data system list --json
+aptdata system list
+aptdata system list --json
 ```
 
-### `smart-data system info NAME [--json]`
+### `aptdata system info NAME [--json]`
 
 Show detailed info about a registered system (class name, module, docstring).
 
 ```bash
-smart-data system info my_pipeline
-smart-data system info my_pipeline --json
+aptdata system info my_pipeline
+aptdata system info my_pipeline --json
 ```
 
-### `smart-data system validate NAME`
+### `aptdata system validate NAME`
 
 Instantiate the system and compile all its flows without executing.
 
 ```bash
-smart-data system validate my_pipeline
+aptdata system validate my_pipeline
 ```
 
 ---
 
-## `smart-data plugin`
+## `aptdata plugin`
 
 Manage and inspect registered reader / writer plugins.
 
-### `smart-data plugin list [--json]`
+### `aptdata plugin list [--json]`
 
 List all registered readers and writers.
 
 ```bash
-smart-data plugin list
-smart-data plugin list --json
+aptdata plugin list
+aptdata plugin list --json
 ```
 
-### `smart-data plugin inspect NAME [--json]`
+### `aptdata plugin inspect NAME [--json]`
 
 Show constructor argument schema for a plugin.
 
 ```bash
-smart-data plugin inspect csv_reader
-smart-data plugin inspect csv_reader --json
+aptdata plugin inspect csv_reader
+aptdata plugin inspect csv_reader --json
 ```
 
-### `smart-data plugin preview READER [--limit N]`
+### `aptdata plugin preview READER [--limit N]`
 
 Execute a reader and display the first N records (default: 5).
 
 ```bash
-smart-data plugin preview csv_reader --limit 10
+aptdata plugin preview csv_reader --limit 10
 ```
 
-### `smart-data plugin load MODULE_PATH`
+### `aptdata plugin load MODULE_PATH`
 
 Dynamically import a Python module (for plugin discovery).
 
 ```bash
-smart-data plugin load my_package.plugins
+aptdata plugin load my_package.plugins
 ```
 
 ---
 
-## `smart-data config`
+## `aptdata config`
 
 Manage declarative YAML pipeline configurations.
 
-### `smart-data config validate PATH`
+### `aptdata config validate PATH`
 
 Parse and validate a YAML config file.
 
 ```bash
-smart-data config validate pipeline.yaml
+aptdata config validate pipeline.yaml
 ```
 
-### `smart-data config init [--output PATH]`
+### `aptdata config init [--output PATH]`
 
 Generate a starter YAML configuration template.
 
 ```bash
-smart-data config init
-smart-data config init --output my_pipeline.yaml
+aptdata config init
+aptdata config init --output my_pipeline.yaml
 ```
 
-### `smart-data config show PATH`
+### `aptdata config show PATH`
 
 Pretty-print a YAML config file with syntax highlighting.
 
 ```bash
-smart-data config show pipeline.yaml
+aptdata config show pipeline.yaml
 ```
 
-### `smart-data config run PATH [--env ENV]`
+### `aptdata config run PATH [--env ENV]`
 
 Parse a YAML config, register the system, and execute it.
 
 ```bash
-smart-data config run pipeline.yaml
-smart-data config run pipeline.yaml --env prod
+aptdata config run pipeline.yaml
+aptdata config run pipeline.yaml --env prod
 ```
 
 ---
 
-## `smart-data telemetry`
+## `aptdata telemetry`
 
 Inspect OpenTelemetry telemetry configuration.
 
-### `smart-data telemetry status [--json]`
+### `aptdata telemetry status [--json]`
 
 Show whether OpenTelemetry is configured and the active tracer provider.
 
 ```bash
-smart-data telemetry status
-smart-data telemetry status --json
+aptdata telemetry status
+aptdata telemetry status --json
 ```
 
-### `smart-data telemetry export [--format json]`
+### `aptdata telemetry export [--format json]`
 
 Export collected telemetry spans/metrics as JSON.
 
 ```bash
-smart-data telemetry export
-smart-data telemetry export --format json
+aptdata telemetry export
+aptdata telemetry export --format json
 ```
 
 ---
 
-## `smart-data interactive`
+## `aptdata interactive`
 
 Launch the guided interactive wizard.
 
 ```bash
-smart-data interactive
+aptdata interactive
 ```
 
 See [CLI Interactive Wizard](cli-interactive.md) for full documentation.
@@ -277,7 +277,7 @@ See [CLI Interactive Wizard](cli-interactive.md) for full documentation.
 
 ## App module
 
-::: smart_data.cli.app
+::: aptdata.cli.app
     options:
       members:
         - run

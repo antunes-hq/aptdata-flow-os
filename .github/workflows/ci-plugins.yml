@@ -4,9 +4,9 @@ on:
   push:
     branches: ["main", "copilot/**"]
     paths:
-      - "smart_data/plugins/**"
-      - "smart_data/mcp/**"
-      - "smart_data/telemetry/**"
+      - "aptdata/plugins/**"
+      - "aptdata/mcp/**"
+      - "aptdata/telemetry/**"
       - "tests/test_plugins.py"
       - "tests/test_quality.py"
       - "tests/test_transform.py"
@@ -18,9 +18,9 @@ on:
   pull_request:
     branches: ["main"]
     paths:
-      - "smart_data/plugins/**"
-      - "smart_data/mcp/**"
-      - "smart_data/telemetry/**"
+      - "aptdata/plugins/**"
+      - "aptdata/mcp/**"
+      - "aptdata/telemetry/**"
       - "tests/test_plugins.py"
       - "tests/test_quality.py"
       - "tests/test_transform.py"
@@ -71,9 +71,9 @@ jobs:
             tests/test_rag_ingestion.py \
             tests/test_telemetry_instrumentation.py \
             -v \
-            --cov=smart_data/plugins \
-            --cov=smart_data/mcp \
-            --cov=smart_data/telemetry \
+            --cov=aptdata/plugins \
+            --cov=aptdata/mcp \
+            --cov=aptdata/telemetry \
             --cov-report=term-missing \
             --cov-fail-under=70
 

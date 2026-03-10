@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from smart_data.telemetry.instrumentation import mask_telemetry_value, register_secret
+from aptdata.telemetry.instrumentation import mask_telemetry_value, register_secret
 
 
 class TestTelemetryMasking:

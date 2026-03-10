@@ -1,6 +1,6 @@
 """Tests for execution context state container."""
 
-from smart_data.core.context import ExecutionContext
+from aptdata.core.context import ExecutionContext
 
 
 class TestExecutionContext:

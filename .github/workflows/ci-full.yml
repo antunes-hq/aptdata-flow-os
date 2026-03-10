@@ -27,7 +27,7 @@ jobs:
         run: pip install ruff
 
       - name: Run ruff check
-        run: ruff check smart_data/ tests/
+        run: ruff check aptdata/ tests/
 
   test-full:
     name: Full test suite + coverage (Python ${{ matrix.python-version }})
@@ -58,7 +58,7 @@ jobs:
         run: |
           python -m pytest tests/ \
             -v \
-            --cov=smart_data \
+            --cov=aptdata \
             --cov-report=term-missing \
             --cov-report=xml \
             --cov-fail-under=80

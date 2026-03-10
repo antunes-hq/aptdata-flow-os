@@ -1,6 +1,6 @@
 # Configuration
 
-smart-data supports declarative pipeline configuration via a `smart-data.yaml`
+aptdata supports declarative pipeline configuration via a `aptdata.yaml`
 file, allowing you to define, validate, and run pipelines without writing any
 Python bootstrap code.
 
@@ -49,19 +49,19 @@ systems:
 
 ### `config validate`
 
-Validate a `smart-data.yaml` file against the schema without running anything:
+Validate a `aptdata.yaml` file against the schema without running anything:
 
 ```bash
-smart-data config validate smart-data.yaml
+aptdata config validate aptdata.yaml
 ```
 
 ### `config init`
 
-Generate a starter `smart-data.yaml` in the current directory:
+Generate a starter `aptdata.yaml` in the current directory:
 
 ```bash
-smart-data config init
-smart-data config init --output /path/to/smart-data.yaml
+aptdata config init
+aptdata config init --output /path/to/aptdata.yaml
 ```
 
 ### `config show`
@@ -69,7 +69,7 @@ smart-data config init --output /path/to/smart-data.yaml
 Pretty-print the resolved configuration (after environment variable substitution):
 
 ```bash
-smart-data config show smart-data.yaml
+aptdata config show aptdata.yaml
 ```
 
 ### `config run`
@@ -77,8 +77,8 @@ smart-data config show smart-data.yaml
 Load the configuration file and execute all enabled systems:
 
 ```bash
-smart-data config run smart-data.yaml
-smart-data config run smart-data.yaml --env production
+aptdata config run aptdata.yaml
+aptdata config run aptdata.yaml --env production
 ```
 
 ---
@@ -97,12 +97,12 @@ telemetry:
 
 ## Scaffold templates
 
-The `scaffold` command generates a `smart-data.yaml` as part of the project
+The `scaffold` command generates a `aptdata.yaml` as part of the project
 skeleton.  For example:
 
 ```bash
-smart-data scaffold my_project --template medallion
-# creates my_project/smart-data.yaml with a pre-filled configuration
+aptdata scaffold my_project --template medallion
+# creates my_project/aptdata.yaml with a pre-filled configuration
 ```
 
 See [Scaffold Templates](scaffold-templates.md) for all available templates.
