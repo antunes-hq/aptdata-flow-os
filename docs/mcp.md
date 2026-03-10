@@ -56,6 +56,7 @@ aptdata mcp-start --transport sse
 | `list_available_plugins` | `list_available_plugins()` | List all installed plugins |
 | `get_plugin_schema` | `get_plugin_schema(plugin_name: str)` | Return the JSON schema for a plugin |
 | `preview_dataset` | `preview_dataset(reader: str, limit: int)` | Preview the first N rows from a dataset reader |
+| `get_pipeline_lineage` | `get_pipeline_lineage(flow_id: str)` | Return the dependency tree (DAG) and column traceability (Lineage) |
 
 ---
 
@@ -64,10 +65,18 @@ aptdata mcp-start --transport sse
 | URI pattern | Description |
 |-------------|-------------|
 | `schema://datasets/{name}` | JSON schema for the named dataset |
+| `quality://reports/{workflow_name}/latest` | Fetch the latest quality report for a given workflow |
+| `governance://rules` | List registered business rules |
 
 ---
 
 ## Integrating with Claude Desktop
+
+To make the MCP integration available, you can optionally install the `ai` extra:
+
+```bash
+pip install aptdata[ai]
+```
 
 Add the following to your Claude Desktop configuration file:
 
@@ -77,9 +86,9 @@ Add the following to your Claude Desktop configuration file:
 ```json
 {
   "mcpServers": {
-    "aptdata": {
+    "smart-data": {
       "command": "aptdata",
-      "args": ["mcp-start"]
+      "args": ["mcp-start", "--transport", "stdio"]
     }
   }
 }
