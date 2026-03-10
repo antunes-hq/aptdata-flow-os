@@ -28,6 +28,10 @@ theme:
     - toc.integrate
     - content.code.copy
     - content.code.annotate
+    - content.code.select
+    - content.tabs.link
+    - search.suggest
+    - search.highlight
 
   icon:
     repo: fontawesome/brands/github
@@ -52,6 +56,8 @@ plugins:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - DIYs & Snippets: diys.md
+  - CI & Execution Logs: ci-logs.md
   - Architecture: architecture.md
   - Engines: transform-engines.md
   - Quality: quality.md
