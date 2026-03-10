@@ -47,6 +47,25 @@ def _find_mesh_yaml(directory: Path) -> Path | None:  # noqa: UP007
     return candidate if candidate.exists() else None
 
 
+def _resolve_mesh_file(root: Path, component: str) -> Path | None:  # noqa: UP007
+    """Find mesh.yaml for the given component (by name or direct path)."""
+    component_path = root / component
+    if component_path.is_dir():
+        mesh_file = _find_mesh_yaml(component_path)
+        if mesh_file:
+            return mesh_file
+
+    for candidate in root.rglob(_MESH_FILE):
+        try:
+            data = _load_mesh(candidate)
+            if data.get("component") == component:
+                return candidate
+        except Exception:  # noqa: BLE001
+            continue
+
+    return None
+
+
 @mesh_app.command("list")
 def mesh_list(
     directory: Path = typer.Option(
@@ -152,20 +171,7 @@ def mesh_run(
     console = SmartConsole(json_mode=json_mode)
     root = directory.resolve()
 
-    # Find mesh.yaml for the given component (by name or direct path)
-    mesh_file: Path | None = None  # noqa: UP007
-    component_path = root / component
-    if component_path.is_dir():
-        mesh_file = _find_mesh_yaml(component_path)
-    if mesh_file is None:
-        for candidate in root.rglob(_MESH_FILE):
-            try:
-                data = _load_mesh(candidate)
-                if data.get("component") == component:
-                    mesh_file = candidate
-                    break
-            except Exception:  # noqa: BLE001
-                continue
+    mesh_file = _resolve_mesh_file(root, component)
 
     if mesh_file is None:
         msg = f"Component '{component}' not found. No mesh.yaml located under '{root}'."
@@ -271,19 +277,7 @@ def mesh_build(
     console = SmartConsole(json_mode=json_mode)
     root = directory.resolve()
 
-    mesh_file: Path | None = None  # noqa: UP007
-    component_path = root / component
-    if component_path.is_dir():
-        mesh_file = _find_mesh_yaml(component_path)
-    if mesh_file is None:
-        for candidate in root.rglob(_MESH_FILE):
-            try:
-                data = _load_mesh(candidate)
-                if data.get("component") == component:
-                    mesh_file = candidate
-                    break
-            except Exception:  # noqa: BLE001
-                continue
+    mesh_file = _resolve_mesh_file(root, component)
 
     if mesh_file is None:
         msg = f"Component '{component}' not found. No mesh.yaml located under '{root}'."
