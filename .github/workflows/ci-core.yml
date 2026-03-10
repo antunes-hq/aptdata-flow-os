@@ -4,8 +4,8 @@ on:
   push:
     branches: ["main", "copilot/**"]
     paths:
-      - "smart_data/core/**"
-      - "smart_data/config/**"
+      - "aptdata/core/**"
+      - "aptdata/config/**"
       - "tests/test_core.py"
       - "tests/test_config.py"
       - "tests/test_context.py"
@@ -17,8 +17,8 @@ on:
   pull_request:
     branches: ["main"]
     paths:
-      - "smart_data/core/**"
-      - "smart_data/config/**"
+      - "aptdata/core/**"
+      - "aptdata/config/**"
       - "tests/test_core.py"
       - "tests/test_config.py"
       - "tests/test_context.py"
@@ -64,8 +64,8 @@ jobs:
             tests/test_lineage.py \
             tests/test_secrets.py \
             -v \
-            --cov=smart_data/core \
-            --cov=smart_data/config \
+            --cov=aptdata/core \
+            --cov=aptdata/config \
             --cov-report=term-missing \
             --cov-fail-under=80
 

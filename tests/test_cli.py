@@ -1,4 +1,4 @@
-"""Tests for the CLI (smart_data.cli.app)."""
+"""Tests for the CLI (aptdata.cli.app)."""
 
 from __future__ import annotations
 
@@ -11,10 +11,10 @@ from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanE
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typer.testing import CliRunner
 
-from smart_data.cli.app import _emit, app
-from smart_data.plugins import registry
-from smart_data.core.system import BaseSystem
-from smart_data.core.dataset import BaseDataset
+from aptdata.cli.app import _emit, app
+from aptdata.plugins import registry
+from aptdata.core.system import BaseSystem
+from aptdata.core.dataset import BaseDataset
 
 
 runner = CliRunner()
@@ -51,7 +51,7 @@ registry.register("mock_pipeline", _MockSystem)
 
 
 # ---------------------------------------------------------------------------
-# `smart-data run` tests
+# `aptdata run` tests
 # ---------------------------------------------------------------------------
 
 
@@ -107,20 +107,20 @@ class TestRunCommand:
 
 class TestPluginRegistry:
     def test_register_and_get(self):
-        from smart_data.plugins import _SystemRegistry
+        from aptdata.plugins import _SystemRegistry
 
         reg = _SystemRegistry()
         reg.register("s1", _MockSystem)
         assert reg.get("s1") is _MockSystem
 
     def test_get_missing_returns_none(self):
-        from smart_data.plugins import _SystemRegistry
+        from aptdata.plugins import _SystemRegistry
 
         reg = _SystemRegistry()
         assert reg.get("missing") is None
 
     def test_list_systems(self):
-        from smart_data.plugins import _SystemRegistry
+        from aptdata.plugins import _SystemRegistry
 
         reg = _SystemRegistry()
         reg.register("b", _MockSystem)

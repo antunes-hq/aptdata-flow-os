@@ -1,6 +1,6 @@
-# Contributing to smart-data
+# Contributing to aptdata
 
-Thank you for your interest in contributing to **smart-data**!  This guide
+Thank you for your interest in contributing to **aptdata**!  This guide
 explains how to get the project running locally, the coding standards we
 follow, and the process for submitting changes.
 
@@ -31,7 +31,7 @@ By participating you agree to abide by its terms.
 
    ```bash
    git clone https://github.com/<your-username>/smart-data.git
-   cd smart-data
+   cd smart-data  # repository folder
    ```
 
 2. Install [Poetry](https://python-poetry.org/docs/#installation) (≥ 1.8).
@@ -140,6 +140,6 @@ Add **exactly one** of the following labels to your PR:
 | *(no label)*    | No release (silent skip) |
 
 After merging, the CI will:
-1. Bump the version in `pyproject.toml` and `smart_data/__init__.py`.
+1. Bump the version in `pyproject.toml` and `aptdata/__init__.py`.
 2. Commit the bump and create a `vX.Y.Z` tag.
 3. Trigger the **Publish to PyPI** workflow automatically.

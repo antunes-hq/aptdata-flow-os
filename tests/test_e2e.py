@@ -58,7 +58,7 @@ class TestScaffoldE2E:
 
     def test_scaffold_all_templates_succeed(self, tmp_path: Path, cli_runner, cli_app) -> None:
         """Every template should scaffold without errors."""
-        from smart_data.cli.scaffold import TEMPLATE_NAMES
+        from aptdata.cli.scaffold import TEMPLATE_NAMES
 
         for i, template in enumerate(TEMPLATE_NAMES):
             project = f"proj_{i}"

@@ -7,16 +7,16 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from smart_data.config.parser import (
+from aptdata.config.parser import (
     ConfigComponent,
     ConfigFlow,
     ConfigSystem,
     ParsedConfig,
     YamlConfigParser,
 )
-from smart_data.config.secrets import SecretManager
-from smart_data.config.schema import export_domain_schema, write_domain_schema
-from smart_data.core.system import ComponentKind
+from aptdata.config.secrets import SecretManager
+from aptdata.config.schema import export_domain_schema, write_domain_schema
+from aptdata.core.system import ComponentKind
 
 
 class TestYamlConfigParser:
@@ -112,7 +112,7 @@ class TestSchemaUtilities:
         assert "system" in schema["properties"]
 
     def test_write_domain_schema_writes_json(self, tmp_path):
-        output = tmp_path / "schemas" / "smart-data.json"
+        output = tmp_path / "schemas" / "aptdata.json"
         written = write_domain_schema(output)
         assert written == output
         schema = json.loads(output.read_text(encoding="utf-8"))

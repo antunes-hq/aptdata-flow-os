@@ -1,4 +1,4 @@
-"""Tests for the TUI monitor (smart_data.tui.monitor).
+"""Tests for the TUI monitor (aptdata.tui.monitor).
 
 These tests run the Textual MonitorApp in headless mode.
 """
@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import pytest
 
-from smart_data.tui.monitor import (
+from aptdata.tui.monitor import (
     MonitorApp,
     _MCPStatusPanel,
     _AgentTraceLog,
@@ -31,7 +31,7 @@ def monitor_app() -> MonitorApp:
 class TestMonitorAppInstantiation:
     def test_can_instantiate(self, monitor_app: MonitorApp) -> None:
         assert monitor_app is not None
-        assert monitor_app.TITLE == "smart-data monitor"
+        assert monitor_app.TITLE == "aptdata monitor"
 
     def test_custom_refresh_interval(self) -> None:
         app = MonitorApp(refresh_interval=0.5)
@@ -47,7 +47,7 @@ class TestMonitorAppHeadless:
     @pytest.mark.asyncio()
     async def test_app_runs_headless(self, monitor_app: MonitorApp) -> None:
         async with monitor_app.run_test():
-            assert monitor_app.title == "smart-data monitor"
+            assert monitor_app.title == "aptdata monitor"
 
     @pytest.mark.asyncio()
     async def test_tabbed_content_present(self, monitor_app: MonitorApp) -> None:

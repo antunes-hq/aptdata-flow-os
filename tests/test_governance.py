@@ -3,19 +3,19 @@
 from __future__ import annotations
 
 
-from smart_data.plugins.governance.catalog import DatasetCatalog, DatasetCatalogEntry
-from smart_data.plugins.governance.classification import (
+from aptdata.plugins.governance.catalog import DatasetCatalog, DatasetCatalogEntry
+from aptdata.plugins.governance.classification import (
     ColumnClassification,
     DataClassificationPolicy,
 )
-from smart_data.plugins.governance.lineage_store import LineageStore
-from smart_data.plugins.governance.rules import (
+from aptdata.plugins.governance.lineage_store import LineageStore
+from aptdata.plugins.governance.rules import (
     BusinessRule,
     RuleAuditEntry,
     RuleRegistry,
     RuleStatus,
 )
-from smart_data.plugins.quality.contract import SchemaContract
+from aptdata.plugins.quality.contract import SchemaContract
 
 
 # ---------------------------------------------------------------------------
@@ -209,7 +209,7 @@ class TestDataClassificationPolicy:
         assert policy.encryption_required is True
 
     def test_column_classification_re_export(self) -> None:
-        from smart_data.plugins.governance.classification import ColumnClassification
+        from aptdata.plugins.governance.classification import ColumnClassification
 
         assert ColumnClassification.PII == "PII"
 
@@ -221,7 +221,7 @@ class TestDataClassificationPolicy:
 
 class TestLineageStore:
     def test_save_and_load(self) -> None:
-        from smart_data.core.lineage import LineageGraph
+        from aptdata.core.lineage import LineageGraph
 
         store = LineageStore()
         graph = LineageGraph(run_id="run-1", workflow_name="wf")
@@ -234,7 +234,7 @@ class TestLineageStore:
         assert store.load("nonexistent") is None
 
     def test_list_runs_sorted(self) -> None:
-        from smart_data.core.lineage import LineageGraph
+        from aptdata.core.lineage import LineageGraph
 
         store = LineageStore()
         store.save(LineageGraph(run_id="run-c", workflow_name="wf"))
@@ -243,7 +243,7 @@ class TestLineageStore:
         assert store.list_runs() == ["run-a", "run-b", "run-c"]
 
     def test_query_by_dataset(self) -> None:
-        from smart_data.core.lineage import LineageEventType, LineageGraph, LineageNode
+        from aptdata.core.lineage import LineageEventType, LineageGraph, LineageNode
 
         store = LineageStore()
         graph1 = LineageGraph(run_id="run-1", workflow_name="wf")
@@ -264,7 +264,7 @@ class TestLineageStore:
         assert store.query_by_dataset("nonexistent") == []
 
     def test_save_overwrites_run(self) -> None:
-        from smart_data.core.lineage import LineageGraph
+        from aptdata.core.lineage import LineageGraph
 
         store = LineageStore()
         store.save(LineageGraph(run_id="run-1", workflow_name="old"))

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from smart_data.plugins.base import BaseTransformer
-from smart_data.plugins.manager import PluginDependencyError
+from aptdata.plugins.base import BaseTransformer
+from aptdata.plugins.manager import PluginDependencyError
 
 
 # ---------------------------------------------------------------------------
@@ -58,7 +58,7 @@ pandas = pytest.importorskip("pandas", reason="pandas not installed")
 
 class TestPandasTransformer:
     def test_name_property(self) -> None:
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.transform import PandasTransformer
 
         t = PandasTransformer("my_transformer", lambda df: df)
         assert t.name == "my_transformer"
@@ -66,7 +66,7 @@ class TestPandasTransformer:
     def test_transform_dataframe(self) -> None:
         import pandas as pd
 
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.transform import PandasTransformer
 
         def double(df: pd.DataFrame) -> pd.DataFrame:
             return df.assign(value=df["value"] * 2)
@@ -79,7 +79,7 @@ class TestPandasTransformer:
     def test_transform_list_of_dicts(self) -> None:
         import pandas as pd
 
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.transform import PandasTransformer
 
         def add_flag(df: pd.DataFrame) -> pd.DataFrame:
             return df.assign(flag=True)
@@ -92,8 +92,8 @@ class TestPandasTransformer:
 
     def test_transform_in_memory_dataset_returns_dataset(self) -> None:
 
-        from smart_data.plugins.dataset import InMemoryDataset
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.dataset import InMemoryDataset
+        from aptdata.plugins.transform import PandasTransformer
 
         def noop(df):
             return df
@@ -107,8 +107,8 @@ class TestPandasTransformer:
 
     def test_transform_preserves_uri(self) -> None:
 
-        from smart_data.plugins.dataset import InMemoryDataset
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.dataset import InMemoryDataset
+        from aptdata.plugins.transform import PandasTransformer
 
         t = PandasTransformer("noop", lambda df: df)
         ds = InMemoryDataset(uri="memory://my_uri", schema_metadata={})
@@ -120,7 +120,7 @@ class TestPandasTransformer:
     def test_rows_reduced(self) -> None:
         import pandas as pd
 
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.transform import PandasTransformer
 
         def filter_row(df: pd.DataFrame) -> pd.DataFrame:
             return df[df["value"] > 1]
@@ -131,7 +131,7 @@ class TestPandasTransformer:
         assert len(result) == 2
 
     def test_is_base_transformer(self) -> None:
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.transform import PandasTransformer
 
         t = PandasTransformer("x", lambda df: df)
         assert isinstance(t, BaseTransformer)
@@ -139,7 +139,7 @@ class TestPandasTransformer:
     def test_transform_empty_data(self) -> None:
         import pandas as pd
 
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.transform import PandasTransformer
 
         t = PandasTransformer("noop", lambda df: df)
         result = t.transform([])
@@ -155,10 +155,10 @@ class TestPandasTransformer:
 class TestPySparkTransformerInterface:
     def test_import_class(self) -> None:
         """PySparkTransformer class can always be imported without pyspark installed."""
-        from smart_data.plugins.transform import PySparkTransformer  # noqa: F401
+        from aptdata.plugins.transform import PySparkTransformer  # noqa: F401
 
     def test_is_base_transformer_subclass(self) -> None:
-        from smart_data.plugins.transform import PySparkTransformer
+        from aptdata.plugins.transform import PySparkTransformer
 
         assert issubclass(PySparkTransformer, BaseTransformer)
 
@@ -176,7 +176,7 @@ class TestPySparkTransformerInterface:
         monkeypatch.setattr(builtins, "__import__", _mock_import)
 
         # Import the class (this does NOT check for pyspark at import time).
-        from smart_data.plugins.transform.spark import PySparkTransformer
+        from aptdata.plugins.transform.spark import PySparkTransformer
 
         # Instantiation triggers the lazy import check.
         with pytest.raises((PluginDependencyError, ImportError)):

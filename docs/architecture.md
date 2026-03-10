@@ -1,6 +1,6 @@
 # Architecture
 
-smart-data is built around a **two-layer contract system** for each of its
+aptdata is built around a **two-layer contract system** for each of its
 three universal abstractions — **Component**, **Flow**, and **System** — plus
 the foundational **Dataset** type.
 
@@ -128,7 +128,7 @@ methods:
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BaseDataset, IDataset
+from aptdata.core import BaseDataset, IDataset
 
 @pydantic_dataclass
 class ParquetDataset(BaseDataset):
@@ -158,7 +158,7 @@ Every `BaseComponent` carries a `ComponentMeta` instance that describes its
 role, tags and branching behaviour:
 
 ```python
-from smart_data.core import ComponentMeta, ComponentKind
+from aptdata.core import ComponentMeta, ComponentKind
 
 meta = ComponentMeta(
     kind=ComponentKind.TRANSFORM,
@@ -180,7 +180,7 @@ meta = ComponentMeta(
 enable conditional / branching execution:
 
 ```python
-from smart_data.core import FlowEdge
+from aptdata.core import FlowEdge
 
 # Unconditional edge
 FlowEdge(source_id="extract", target_id="transform")
@@ -202,7 +202,7 @@ Concrete system implementations are registered by name in the global
 
 ```mermaid
 graph LR
-    R["smart_data.plugins.registry"]
+    R["aptdata.plugins.registry"]
     R --> E["\"etl_system\" → EtlSystem"]
     R --> M["\"ml_system\" → MlSystem"]
     R --> D["\"...\""]
@@ -249,7 +249,7 @@ When a `FlowEdge` has no condition, it is always traversed.
 
 ## Monitoring (TUI)
 
-The `smart-data monitor` command launches a
+The `aptdata monitor` command launches a
 [Textual](https://textual.textualize.io/)-based terminal dashboard that
 displays:
 

@@ -1,9 +1,9 @@
 # Scaffold Templates
 
-The `smart-data scaffold` command bootstraps a project from a pre-built template.
+The `aptdata scaffold` command bootstraps a project from a pre-built template.
 
 ```bash
-smart-data scaffold <project-name> [--template TEMPLATE] [--output DIR]
+aptdata scaffold <project-name> [--template TEMPLATE] [--output DIR]
 ```
 
 | Option          | Default        | Description                          |
@@ -22,7 +22,7 @@ A minimal pandas pipeline that ingests a JSON file, processes it, and saves
 CSV/JSON output.  Great for getting started.
 
 ```bash
-smart-data scaffold my_project
+aptdata scaffold my_project
 ```
 
 **Generated files:**
@@ -44,7 +44,7 @@ my_project/
 A three-layer Bronze → Silver → Gold data lakehouse pattern.
 
 ```bash
-smart-data scaffold my_lakehouse --template medallion
+aptdata scaffold my_lakehouse --template medallion
 ```
 
 ```mermaid
@@ -66,15 +66,15 @@ my_lakehouse/
 ├── bronze.py           # Raw ingestion (CSVReader)
 ├── silver.py           # Cleaning + PandasTransformer + QualityValidator
 ├── gold.py             # Aggregation + ParquetWriter
-├── smart-data.yaml     # Connector config
+├── aptdata.yaml     # Connector config
 ├── requirements.txt
 └── README.md
 ```
 
 The Silver layer demonstrates wiring a
-:class:`~smart_data.plugins.transform.pandas.PandasTransformer` with a
-:class:`~smart_data.plugins.quality.validator.QualityValidator` inside a
-:class:`~smart_data.core.workflow.Workflow`.
+:class:`~aptdata.plugins.transform.pandas.PandasTransformer` with a
+:class:`~aptdata.plugins.quality.validator.QualityValidator` inside a
+:class:`~aptdata.core.workflow.Workflow`.
 
 ---
 
@@ -84,7 +84,7 @@ An end-to-end Retrieval-Augmented Generation (RAG) ingestion pipeline:
 extract → chunk → embed → load.
 
 ```bash
-smart-data scaffold my_rag_app --template rag-ingestion
+aptdata scaffold my_rag_app --template rag-ingestion
 ```
 
 ```mermaid
@@ -104,7 +104,7 @@ flowchart LR
 my_rag_app/
 ├── data/
 ├── pipeline.py         # 4-step Workflow (extract/chunk/embed/load)
-├── smart-data.yaml
+├── aptdata.yaml
 ├── requirements.txt
 └── README.md
 ```
@@ -118,10 +118,10 @@ vector database client.
 ### `data-quality-test`
 
 A data quality enforcement pipeline using
-:class:`~smart_data.plugins.quality.contract.SchemaContract` and expectations.
+:class:`~aptdata.plugins.quality.contract.SchemaContract` and expectations.
 
 ```bash
-smart-data scaffold my_dq_suite --template data-quality-test
+aptdata scaffold my_dq_suite --template data-quality-test
 ```
 
 ```mermaid
@@ -141,7 +141,7 @@ flowchart LR
 my_dq_suite/
 ├── data/
 ├── quality_pipeline.py  # SchemaContract + QualityValidator + Workflow
-├── smart-data.yaml
+├── aptdata.yaml
 ├── requirements.txt
 └── README.md
 ```
@@ -159,7 +159,7 @@ python quality_pipeline.py
 A Python wheel executor template for packaging and running jobs portably.
 
 ```bash
-smart-data scaffold my_job --template job-wheel
+aptdata scaffold my_job --template job-wheel
 ```
 
 **Generated files:**
@@ -189,7 +189,7 @@ make install      # pip install dist/my_job-*.whl
 my_job-job
 
 # Or run directly
-smart-data mesh run my_job
+aptdata mesh run my_job
 ```
 
 ---
@@ -199,7 +199,7 @@ smart-data mesh run my_job
 A multi-service Docker Compose application template.
 
 ```bash
-smart-data scaffold my_service --template docker-compose-app
+aptdata scaffold my_service --template docker-compose-app
 ```
 
 **Generated files:**
@@ -221,25 +221,25 @@ Add more services (databases, caches, queues) to `docker-compose.yml` and run:
 docker compose up --build
 
 # Or via the mesh CLI
-smart-data mesh run my_service
+aptdata mesh run my_service
 ```
 
 ---
 
 ## Mesh CLI
 
-The `smart-data mesh` sub-command orchestrates components that include a
+The `aptdata mesh` sub-command orchestrates components that include a
 `mesh.yaml` descriptor.
 
 ```bash
 # List all mesh components under the current directory
-smart-data mesh list [--dir DIR] [--json]
+aptdata mesh list [--dir DIR] [--json]
 
 # Run a component (job-wheel or docker-compose-app)
-smart-data mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
+aptdata mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
 
 # Build a component (wheel or Docker image)
-smart-data mesh build COMPONENT [--dir DIR] [--json]
+aptdata mesh build COMPONENT [--dir DIR] [--json]
 ```
 
 ### Supported component types

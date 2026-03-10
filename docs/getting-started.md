@@ -12,23 +12,23 @@
 ### From PyPI
 
 ```bash
-pip install smart-data
+pip install aptdata
 ```
 
 ### Optional extras
 
 ```bash
-pip install smart-data[pandas]   # pandas support
-pip install smart-data[spark]    # PySpark support
-pip install smart-data[plugins]  # REST, PostgreSQL, Parquet I/O
-pip install smart-data[all]      # everything
+pip install aptdata[pandas]   # pandas support
+pip install aptdata[spark]    # PySpark support
+pip install aptdata[plugins]  # REST, PostgreSQL, Parquet I/O
+pip install aptdata[all]      # everything
 ```
 
 ### From source (development)
 
 ```bash
 git clone https://github.com/strondata/smart-data.git
-cd smart-data
+cd aptdata
 poetry install
 ```
 
@@ -40,13 +40,13 @@ poetry install
 ## Verifying the installation
 
 ```bash
-smart-data --help
+aptdata --help
 ```
 
 You should see output like:
 
 ```
-Usage: smart-data [OPTIONS] COMMAND [ARGS]...
+Usage: aptdata [OPTIONS] COMMAND [ARGS]...
 
   Smart Data – declarative data-pipeline framework.
 
@@ -56,7 +56,7 @@ Options:
 Commands:
   monitor   Open the interactive TUI monitoring dashboard.
   run       Run a registered data system.
-  scaffold  Scaffold a new smart-data project.
+  scaffold  Scaffold a new aptdata project.
 ```
 
 ---
@@ -70,7 +70,7 @@ flowchart LR
     FL["3️⃣ Flow\nBaseFlow\nadd_component / connect / compile / run"]
     SY["4️⃣ System\nBaseSystem\nregister_flow / run"]
     RG["5️⃣ Register\nregistry.register()"]
-    CLI["6️⃣ Run\nsmart-data run name"]
+    CLI["6️⃣ Run\naptdata run name"]
 
     DS --> CO --> FL --> SY --> RG --> CLI
 ```
@@ -83,7 +83,7 @@ data.  Inherit from [`BaseDataset`](api/core.md) and implement `read` /
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BaseDataset, IDataset
+from aptdata.core import BaseDataset, IDataset
 
 
 @pydantic_dataclass
@@ -109,7 +109,7 @@ Inherit from [`BaseComponent`](api/core.md) and implement `validate_inputs` /
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BaseComponent, ComponentMeta, ComponentKind, IDataset
+from aptdata.core import BaseComponent, ComponentMeta, ComponentKind, IDataset
 
 
 @pydantic_dataclass
@@ -143,7 +143,7 @@ and `run`:
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BaseFlow, IComponent, IDataset, FlowEdge, FlowNode
+from aptdata.core import BaseFlow, IComponent, IDataset, FlowEdge, FlowNode
 from typing import Callable
 
 
@@ -186,8 +186,8 @@ class SimpleFlow(BaseFlow):
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from smart_data.core import BaseSystem, IFlow
-from smart_data.plugins import registry
+from aptdata.core import BaseSystem, IFlow
+from aptdata.plugins import registry
 
 
 @pydantic_dataclass
@@ -213,7 +213,7 @@ registry.register("my_system", MySystem)
 ### 5. Run via the CLI
 
 ```bash
-smart-data run my_system
+aptdata run my_system
 ```
 
 Expected output:
@@ -227,7 +227,7 @@ Expected output:
 
 ## CLI options
 
-### `smart-data run`
+### `aptdata run`
 
 | Option | Default | Description |
 |---|---|---|
@@ -235,7 +235,7 @@ Expected output:
 | `--env`, `-e` | `dev` | Target execution environment label |
 | `--dry-run` | `false` | Instantiate without calling `run()` |
 
-### `smart-data monitor`
+### `aptdata monitor`
 
 | Option | Default | Description |
 |---|---|---|
@@ -255,7 +255,7 @@ poetry run pytest tests/ -v
 
 ## AI Agent Integration
 
-smart-data ships with a built-in [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
+aptdata ships with a built-in [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
 allowing AI agents such as **Claude Desktop**, **Copilot**, or **Devin** to
 discover and execute pipelines without consuming excessive context tokens.
 
@@ -263,10 +263,10 @@ discover and execute pipelines without consuming excessive context tokens.
 
 ```bash
 # Default (stdio transport – used by most desktop AI agents)
-smart-data mcp-start
+aptdata mcp-start
 
 # SSE transport (for web-based integrations)
-smart-data mcp-start --transport sse
+aptdata mcp-start --transport sse
 ```
 
 ### Connecting Claude Desktop
@@ -278,8 +278,8 @@ or `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
 ```json
 {
   "mcpServers": {
-    "smart-data": {
-      "command": "smart-data",
+    "aptdata": {
+      "command": "aptdata",
       "args": ["mcp-start"]
     }
   }

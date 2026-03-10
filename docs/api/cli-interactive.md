@@ -1,6 +1,6 @@
 # CLI Interactive Wizard
 
-The `smart-data interactive` command launches a guided menu-driven wizard that
+The `aptdata interactive` command launches a guided menu-driven wizard that
 exposes all framework capabilities without requiring knowledge of the full
 command tree.
 
@@ -9,7 +9,7 @@ command tree.
 ## Starting the wizard
 
 ```bash
-smart-data interactive
+aptdata interactive
 ```
 
 The wizard uses [questionary](https://github.com/tmbo/questionary) for

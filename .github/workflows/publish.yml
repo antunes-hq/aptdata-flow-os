@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/smart-data
+      url: https://pypi.org/p/aptdata
     permissions:
       id-token: write
       contents: read

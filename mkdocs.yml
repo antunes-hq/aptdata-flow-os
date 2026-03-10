@@ -1,8 +1,8 @@
-site_name: smart-data
+site_name: aptdata
 site_description: A declarative framework for building smart data pipelines
 site_url: https://strondata.github.io/smart-data
 repo_url: https://github.com/strondata/smart-data
-repo_name: strondata/smart-data
+repo_name: strondata/aptdata
 edit_uri: edit/main/docs/
 
 theme:

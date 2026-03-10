@@ -11,8 +11,8 @@ from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from smart_data.core.dataset import BaseDataset, IDataset
-from smart_data.core.system import (
+from aptdata.core.dataset import BaseDataset, IDataset
+from aptdata.core.system import (
     BaseComponent,
     BaseFlow,
     BaseSystem,
@@ -410,5 +410,5 @@ class TestTelemetry:
         spans = exporter.get_finished_spans()
         assert len(spans) == 1
         assert spans[0].name == "c1"
-        assert spans[0].attributes["smart_data.kind"] == "transform"
-        assert tuple(spans[0].attributes["smart_data.tags"]) == ("unit",)
+        assert spans[0].attributes["aptdata.kind"] == "transform"
+        assert tuple(spans[0].attributes["aptdata.tags"]) == ("unit",)

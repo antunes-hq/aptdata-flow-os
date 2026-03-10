@@ -1,4 +1,4 @@
-"""Tests for smart_data.cli.rendering — SmartConsole, tables, panels, logger."""
+"""Tests for aptdata.cli.rendering — SmartConsole, tables, panels, logger."""
 
 from __future__ import annotations
 
@@ -9,15 +9,15 @@ from rich.syntax import Syntax
 from rich.table import Table
 from rich.tree import Tree
 
-from smart_data.cli.rendering.console import SmartConsole
-from smart_data.cli.rendering.logger import setup_rich_logging
-from smart_data.cli.rendering.panels import (
+from aptdata.cli.rendering.console import SmartConsole
+from aptdata.cli.rendering.logger import setup_rich_logging
+from aptdata.cli.rendering.panels import (
     component_panel,
     flow_tree,
     system_detail_panel,
     yaml_preview,
 )
-from smart_data.cli.rendering.tables import (
+from aptdata.cli.rendering.tables import (
     config_summary_table,
     plugin_schema_table,
     plugins_table,
@@ -198,7 +198,7 @@ class TestPluginSchemaTable:
 
 class TestConfigSummaryTable:
     def test_returns_table(self):
-        from smart_data.config.parser import YamlConfigParser
+        from aptdata.config.parser import YamlConfigParser
 
         parsed = YamlConfigParser().parse_data(
             {
@@ -210,7 +210,7 @@ class TestConfigSummaryTable:
         assert isinstance(table, Table)
 
     def test_contains_system_id(self):
-        from smart_data.config.parser import YamlConfigParser
+        from aptdata.config.parser import YamlConfigParser
 
         parsed = YamlConfigParser().parse_data(
             {"metadata": {}, "system": {"system_id": "test_id"}}

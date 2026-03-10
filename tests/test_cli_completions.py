@@ -1,8 +1,8 @@
-"""Tests for smart_data.cli.completions — shell completion functions."""
+"""Tests for aptdata.cli.completions — shell completion functions."""
 
 from __future__ import annotations
 
-from smart_data.cli.completions import (
+from aptdata.cli.completions import (
     complete_env_names,
     complete_plugin_names,
     complete_reader_names,
@@ -10,9 +10,9 @@ from smart_data.cli.completions import (
     complete_template_names,
     complete_writer_names,
 )
-from smart_data.plugins import registry, plugin_manager
-from smart_data.plugins.base import BaseReader, BaseWriter
-from smart_data.plugins.dataset import InMemoryDataset
+from aptdata.plugins import registry, plugin_manager
+from aptdata.plugins.base import BaseReader, BaseWriter
+from aptdata.plugins.dataset import InMemoryDataset
 
 
 # ---------------------------------------------------------------------------
@@ -53,7 +53,7 @@ class TestCompleteSystemNames:
     def test_filters_by_prefix(self):
         # Register a system to ensure there's something to match
         from pydantic.dataclasses import dataclass as pydantic_dataclass
-        from smart_data.core.system import BaseSystem
+        from aptdata.core.system import BaseSystem
 
         @pydantic_dataclass
         class _PrefixSys(BaseSystem):

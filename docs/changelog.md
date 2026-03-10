@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to **smart-data** are documented here.
+All notable changes to **aptdata** are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -11,7 +11,7 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- **`smart_data.core.workflow`** — context-aware workflow module introducing:
+- **`aptdata.core.workflow`** — context-aware workflow module introducing:
   - `IWorkflow` / `BaseWorkflow` with `before_run` / `after_run` hooks.
   - `WorkflowNode` / `WorkflowEdge` graph primitives with optional conditional
     routing.
@@ -22,7 +22,7 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- `smart_data.core.__init__` now exports workflow abstractions.
+- `aptdata.core.__init__` now exports workflow abstractions.
 
 ---
 
@@ -46,18 +46,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- `smart_data.plugins`: `_PipelineRegistry` renamed to `_SystemRegistry`;
+- `aptdata.plugins`: `_PipelineRegistry` renamed to `_SystemRegistry`;
   `list_pipelines()` renamed to `list_systems()`.
-- `smart_data.cli.app`: CLI now instantiates systems with `system_id=<name>`.
-- `smart_data.core.__init__`: exports updated to the new architecture.
+- `aptdata.cli.app`: CLI now instantiates systems with `system_id=<name>`.
+- `aptdata.core.__init__`: exports updated to the new architecture.
 - `tests/test_core.py`: stripped to dataset-only tests.
 - `tests/test_cli.py`: mock updated from `_MockPipeline` to `_MockSystem`.
 - All documentation updated to reflect the new System/Component/Flow model.
 
 ### Removed
 
-- `smart_data/core/pipeline.py` (`IPipeline`, `BasePipeline`).
-- `smart_data/core/step.py` (`IStep`, `BaseStep`).
+- `aptdata/core/pipeline.py` (`IPipeline`, `BasePipeline`).
+- `aptdata/core/step.py` (`IStep`, `BaseStep`).
 
 ---
 
@@ -68,11 +68,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Two-layer contract system** – pure `@dataclass + ABC` interfaces
   (`IDataset`, `IStep`, `IPipeline`) and Pydantic-validated base classes
   (`BaseDataset`, `BaseStep`, `BasePipeline`).
-- **Plugin registry** – `smart_data.plugins.registry` singleton for
+- **Plugin registry** – `aptdata.plugins.registry` singleton for
   registering and discovering concrete pipeline implementations by name.
-- **CLI** – `smart-data run` command: runs a registered pipeline and emits
+- **CLI** – `aptdata run` command: runs a registered pipeline and emits
   structured JSON events to stdout/stderr.
-- **CLI** – `smart-data monitor` command: launches the interactive Textual TUI
+- **CLI** – `aptdata monitor` command: launches the interactive Textual TUI
   monitoring dashboard.
 - **TUI** – `MonitorApp` with DAG panel, per-step status table and
   memory-usage bar; auto-refreshes at a configurable interval.

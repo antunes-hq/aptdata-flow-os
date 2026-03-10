@@ -1,11 +1,11 @@
 # Transform Engines
 
-smart-data provides **engine-agnostic transformation wrappers** that integrate
-with the :class:`~smart_data.core.workflow.Workflow` pipeline, emit OpenTelemetry
+aptdata provides **engine-agnostic transformation wrappers** that integrate
+with the :class:`~aptdata.core.workflow.Workflow` pipeline, emit OpenTelemetry
 spans, and work transparently with
-:class:`~smart_data.plugins.dataset.InMemoryDataset`.
+:class:`~aptdata.plugins.dataset.InMemoryDataset`.
 
-Both transformers are in `smart_data.plugins.transform` and require an optional
+Both transformers are in `aptdata.plugins.transform` and require an optional
 dependency group:
 
 ```bash
@@ -20,7 +20,7 @@ pip install pyspark
 
 ## PandasTransformer
 
-:class:`~smart_data.plugins.transform.pandas.PandasTransformer` wraps any
+:class:`~aptdata.plugins.transform.pandas.PandasTransformer` wraps any
 callable `(pd.DataFrame) → pd.DataFrame` and handles input/output conversion
 automatically.
 
@@ -43,19 +43,19 @@ automatically.
 
 | Attribute                                | Description               |
 |------------------------------------------|---------------------------|
-| `smart_data.transformer.name`            | Transformer name          |
-| `smart_data.transformer.engine`          | `"pandas"`                |
-| `smart_data.transformer.rows_in`         | Input row count           |
-| `smart_data.transformer.rows_out`        | Output row count          |
-| `smart_data.transformer.columns_out`     | Output column names       |
-| `smart_data.transformer.compute_time_ms` | Wall-clock time (ms)      |
+| `aptdata.transformer.name`            | Transformer name          |
+| `aptdata.transformer.engine`          | `"pandas"`                |
+| `aptdata.transformer.rows_in`         | Input row count           |
+| `aptdata.transformer.rows_out`        | Output row count          |
+| `aptdata.transformer.columns_out`     | Output column names       |
+| `aptdata.transformer.compute_time_ms` | Wall-clock time (ms)      |
 
 ### Example
 
 ```python
 import pandas as pd
-from smart_data.plugins.transform import PandasTransformer
-from smart_data.core.workflow import Workflow
+from aptdata.plugins.transform import PandasTransformer
+from aptdata.core.workflow import Workflow
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     return df.dropna().drop_duplicates()
@@ -71,7 +71,7 @@ result = wf.execute(my_dataset)
 
 ## PySparkTransformer
 
-:class:`~smart_data.plugins.transform.spark.PySparkTransformer` wraps a
+:class:`~aptdata.plugins.transform.spark.PySparkTransformer` wraps a
 callable `(SparkSession, DataFrame) → DataFrame`.
 
 ### Constructor
@@ -88,15 +88,15 @@ All attributes from `PandasTransformer` plus:
 
 | Attribute                    | Description              |
 |------------------------------|--------------------------|
-| `smart_data.spark.app_name`  | Spark application name   |
-| `smart_data.spark.ui_url`    | Spark UI URL (if available) |
+| `aptdata.spark.app_name`  | Spark application name   |
+| `aptdata.spark.ui_url`    | Spark UI URL (if available) |
 
 ### Example
 
 ```python
 from pyspark.sql import functions as F
-from smart_data.plugins.transform import PySparkTransformer
-from smart_data.core.workflow import Workflow
+from aptdata.plugins.transform import PySparkTransformer
+from aptdata.core.workflow import Workflow
 
 def compute_revenue(spark, df):
     return df.withColumn("revenue", F.col("price") * F.col("quantity"))
@@ -112,8 +112,8 @@ result = wf.execute(spark_df)
 
 ## Workflow integration
 
-Both transformers implement :class:`~smart_data.plugins.base.BaseTransformer`
-and are compatible with :meth:`~smart_data.core.workflow.Workflow.add_step`:
+Both transformers implement :class:`~aptdata.plugins.base.BaseTransformer`
+and are compatible with :meth:`~aptdata.core.workflow.Workflow.add_step`:
 
 ```mermaid
 flowchart LR
@@ -137,10 +137,10 @@ result = wf.execute(dataset)
 ## Lazy imports
 
 Neither pandas nor pyspark is required at import time.  A
-:class:`~smart_data.plugins.manager.PluginDependencyError` is raised only at
+:class:`~aptdata.plugins.manager.PluginDependencyError` is raised only at
 instantiation time if the required library is missing.
 
 ```python
 # This import always succeeds, even without pandas/pyspark installed:
-from smart_data.plugins.transform import PandasTransformer, PySparkTransformer
+from aptdata.plugins.transform import PandasTransformer, PySparkTransformer
 ```

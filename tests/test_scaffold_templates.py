@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from smart_data.cli.scaffold import _scaffold_data_quality_test  # noqa: PLC2701
-from smart_data.cli.scaffold import _scaffold_hello_world  # noqa: PLC2701
-from smart_data.cli.scaffold import _scaffold_medallion  # noqa: PLC2701
-from smart_data.cli.scaffold import _scaffold_rag_ingestion  # noqa: PLC2701
-from smart_data.cli.scaffold import _scaffold_job_wheel  # noqa: PLC2701
-from smart_data.cli.scaffold import _scaffold_docker_compose_app  # noqa: PLC2701
-from smart_data.cli.scaffold import TEMPLATE_NAMES
+from aptdata.cli.scaffold import _scaffold_data_quality_test  # noqa: PLC2701
+from aptdata.cli.scaffold import _scaffold_hello_world  # noqa: PLC2701
+from aptdata.cli.scaffold import _scaffold_medallion  # noqa: PLC2701
+from aptdata.cli.scaffold import _scaffold_rag_ingestion  # noqa: PLC2701
+from aptdata.cli.scaffold import _scaffold_job_wheel  # noqa: PLC2701
+from aptdata.cli.scaffold import _scaffold_docker_compose_app  # noqa: PLC2701
+from aptdata.cli.scaffold import TEMPLATE_NAMES
 
 
 # ---------------------------------------------------------------------------
@@ -84,7 +84,7 @@ class TestMedallionScaffold:
         assert (project_dir / "bronze.py").exists()
         assert (project_dir / "silver.py").exists()
         assert (project_dir / "gold.py").exists()
-        assert (project_dir / "smart-data.yaml").exists()
+        assert (project_dir / "aptdata.yaml").exists()
         assert (project_dir / "requirements.txt").exists()
         assert (project_dir / "README.md").exists()
         assert (project_dir / "data").is_dir()
@@ -94,7 +94,7 @@ class TestMedallionScaffold:
         project_dir = tmp_path / "proj"
         project_dir.mkdir()
         _scaffold_medallion("proj", project_dir)
-        content = (project_dir / "smart-data.yaml").read_text()
+        content = (project_dir / "aptdata.yaml").read_text()
         assert "proj" in content
         assert "medallion" in content
 
@@ -132,7 +132,7 @@ class TestRagIngestionScaffold:
         _scaffold_rag_ingestion("rag_proj", project_dir)
 
         assert (project_dir / "pipeline.py").exists()
-        assert (project_dir / "smart-data.yaml").exists()
+        assert (project_dir / "aptdata.yaml").exists()
         assert (project_dir / "requirements.txt").exists()
         assert (project_dir / "README.md").exists()
         assert (project_dir / "data").is_dir()
@@ -158,7 +158,7 @@ class TestRagIngestionScaffold:
         project_dir = tmp_path / "proj"
         project_dir.mkdir()
         _scaffold_rag_ingestion("proj", project_dir)
-        content = (project_dir / "smart-data.yaml").read_text()
+        content = (project_dir / "aptdata.yaml").read_text()
         assert "proj" in content
         assert "rag-ingestion" in content
 
@@ -175,7 +175,7 @@ class TestDataQualityTestScaffold:
         _scaffold_data_quality_test("dq_proj", project_dir)
 
         assert (project_dir / "quality_pipeline.py").exists()
-        assert (project_dir / "smart-data.yaml").exists()
+        assert (project_dir / "aptdata.yaml").exists()
         assert (project_dir / "requirements.txt").exists()
         assert (project_dir / "README.md").exists()
         assert (project_dir / "data").is_dir()
@@ -198,7 +198,7 @@ class TestDataQualityTestScaffold:
         project_dir = tmp_path / "proj"
         project_dir.mkdir()
         _scaffold_data_quality_test("proj", project_dir)
-        content = (project_dir / "smart-data.yaml").read_text()
+        content = (project_dir / "aptdata.yaml").read_text()
         assert "proj" in content
         assert "data-quality-test" in content
 
@@ -220,7 +220,7 @@ class TestScaffoldCLITemplate:
     def test_hello_world_default(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(app, ["scaffold", "myproject", "--output", str(tmp_path)])
@@ -230,7 +230,7 @@ class TestScaffoldCLITemplate:
     def test_medallion_template(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -245,7 +245,7 @@ class TestScaffoldCLITemplate:
     def test_rag_ingestion_template(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -258,7 +258,7 @@ class TestScaffoldCLITemplate:
     def test_data_quality_template(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -271,7 +271,7 @@ class TestScaffoldCLITemplate:
     def test_unknown_template_exits_with_error(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -283,7 +283,7 @@ class TestScaffoldCLITemplate:
     def test_job_wheel_template(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -296,7 +296,7 @@ class TestScaffoldCLITemplate:
     def test_docker_compose_template(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -415,7 +415,7 @@ class TestMeshCLI:
     def test_mesh_list_no_components(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path), "--json"])
@@ -427,7 +427,7 @@ class TestMeshCLI:
     def test_mesh_list_finds_job_wheel_component(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         # Create a job-wheel project
         runner = CliRunner()
@@ -443,7 +443,7 @@ class TestMeshCLI:
     def test_mesh_list_finds_docker_compose_component(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         runner.invoke(app, ["scaffold", "myapp", "--output", str(tmp_path), "--template", "docker-compose-app"])
@@ -458,7 +458,7 @@ class TestMeshCLI:
     def test_mesh_run_dry_run_job_wheel(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         runner.invoke(app, ["scaffold", "myjob", "--output", str(tmp_path), "--template", "job-wheel"])
@@ -477,7 +477,7 @@ class TestMeshCLI:
     def test_mesh_run_dry_run_docker_compose(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         runner.invoke(app, ["scaffold", "myapp", "--output", str(tmp_path), "--template", "docker-compose-app"])
@@ -496,7 +496,7 @@ class TestMeshCLI:
     def test_mesh_run_unknown_component_exits_with_error(self, tmp_path: Path) -> None:
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -509,7 +509,7 @@ class TestMeshCLI:
         """mesh list without --json emits a warning when no components found."""
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(app, ["mesh", "list", "--dir", str(tmp_path)])
@@ -519,7 +519,7 @@ class TestMeshCLI:
         """mesh list without --json renders a Rich table when components exist."""
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         runner.invoke(app, ["scaffold", "richjob", "--output", str(tmp_path), "--template", "job-wheel"])
@@ -530,7 +530,7 @@ class TestMeshCLI:
         """mesh run --dry-run without --json prints a plain-text description."""
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         runner.invoke(app, ["scaffold", "richjob2", "--output", str(tmp_path), "--template", "job-wheel"])
@@ -544,7 +544,7 @@ class TestMeshCLI:
         """mesh run on unknown component without --json exits non-zero."""
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -557,7 +557,7 @@ class TestMeshCLI:
         """mesh build on unknown component without --json exits non-zero."""
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -570,7 +570,7 @@ class TestMeshCLI:
         """mesh build on unknown component with --json emits mesh.error event."""
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         result = runner.invoke(
@@ -589,7 +589,7 @@ class TestMeshCLI:
         from unittest.mock import patch, MagicMock
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         runner.invoke(app, ["scaffold", "buildme", "--output", str(tmp_path), "--template", "job-wheel"])
@@ -597,7 +597,7 @@ class TestMeshCLI:
         mock_proc = MagicMock()
         mock_proc.returncode = 0
 
-        with patch("smart_data.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+        with patch("aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
             result = runner.invoke(
                 app,
                 ["mesh", "build", "buildme", "--dir", str(tmp_path), "--json"],
@@ -615,7 +615,7 @@ class TestMeshCLI:
         from unittest.mock import patch, MagicMock
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         runner.invoke(app, ["scaffold", "buildme2", "--output", str(tmp_path), "--template", "job-wheel"])
@@ -623,7 +623,7 @@ class TestMeshCLI:
         mock_proc = MagicMock()
         mock_proc.returncode = 0
 
-        with patch("smart_data.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+        with patch("aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
             result = runner.invoke(
                 app,
                 ["mesh", "build", "buildme2", "--dir", str(tmp_path)],
@@ -635,7 +635,7 @@ class TestMeshCLI:
         from unittest.mock import patch, MagicMock
         from typer.testing import CliRunner
 
-        from smart_data.cli.app import app
+        from aptdata.cli.app import app
 
         runner = CliRunner()
         runner.invoke(app, ["scaffold", "runjob", "--output", str(tmp_path), "--template", "job-wheel"])
@@ -643,7 +643,7 @@ class TestMeshCLI:
         mock_proc = MagicMock()
         mock_proc.returncode = 0
 
-        with patch("smart_data.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
+        with patch("aptdata.cli.commands.mesh_cmd.subprocess.run", return_value=mock_proc):
             result = runner.invoke(
                 app,
                 ["mesh", "run", "runjob", "--dir", str(tmp_path), "--json"],

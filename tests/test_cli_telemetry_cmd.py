@@ -1,4 +1,4 @@
-"""Tests for smart_data.cli.commands.telemetry_cmd."""
+"""Tests for aptdata.cli.commands.telemetry_cmd."""
 
 from __future__ import annotations
 
@@ -6,8 +6,8 @@ import json
 
 from typer.testing import CliRunner
 
-from smart_data.cli.app import app
-from smart_data.cli.commands.telemetry_cmd import _get_telemetry_status
+from aptdata.cli.app import app
+from aptdata.cli.commands.telemetry_cmd import _get_telemetry_status
 
 runner = CliRunner()
 

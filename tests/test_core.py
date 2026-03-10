@@ -7,7 +7,7 @@ from typing import Any
 import pytest
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from smart_data.core.dataset import BaseDataset, IDataset
+from aptdata.core.dataset import BaseDataset, IDataset
 
 
 # ---------------------------------------------------------------------------

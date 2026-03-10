@@ -7,10 +7,10 @@ from typing import Any
 import pytest
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from smart_data.core.context import ExecutionContext
-from smart_data.core.dataset import BaseDataset, IDataset
-from smart_data.core.system import BaseComponent
-from smart_data.core.workflow import BaseWorkflow, IWorkflow, WorkflowEdge, WorkflowNode
+from aptdata.core.context import ExecutionContext
+from aptdata.core.dataset import BaseDataset, IDataset
+from aptdata.core.system import BaseComponent
+from aptdata.core.workflow import BaseWorkflow, IWorkflow, WorkflowEdge, WorkflowNode
 
 
 @pydantic_dataclass

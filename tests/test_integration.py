@@ -1,4 +1,4 @@
-"""Integration tests — wire multiple smart-data components together.
+"""Integration tests — wire multiple aptdata components together.
 
 These tests exercise real component interactions without mocking internals.
 Each test is marked ``@pytest.mark.integration``.
@@ -104,7 +104,7 @@ class TestQualityValidatorIntegration:
 
     def test_abort_on_null(self, make_df) -> None:
         """ABORT enforcement raises ValueError on null data."""
-        from smart_data.plugins.quality import (
+        from aptdata.plugins.quality import (
             EnforcementMode,
             ExpectColumnToNotBeNull,
             QualityValidator,
@@ -122,7 +122,7 @@ class TestQualityValidatorIntegration:
         """WARN enforcement returns data even with null values."""
         import warnings
 
-        from smart_data.plugins.quality import (
+        from aptdata.plugins.quality import (
             EnforcementMode,
             ExpectColumnToNotBeNull,
             QualityValidator,
@@ -141,7 +141,7 @@ class TestQualityValidatorIntegration:
 
     def test_tag_mode_annotates_metadata(self, make_dataset) -> None:
         """TAG enforcement attaches quality_report to dataset metadata."""
-        from smart_data.plugins.quality import (
+        from aptdata.plugins.quality import (
             EnforcementMode,
             ExpectColumnToNotBeNull,
             QualityValidator,
@@ -158,7 +158,7 @@ class TestQualityValidatorIntegration:
 
     def test_all_pass_returns_data_unchanged(self, make_df) -> None:
         """Validator returns same data object when all expectations pass."""
-        from smart_data.plugins.quality import (
+        from aptdata.plugins.quality import (
             EnforcementMode,
             ExpectColumnToNotBeNull,
             QualityValidator,
@@ -174,7 +174,7 @@ class TestQualityValidatorIntegration:
 
     def test_multi_expectation_validation(self, make_df) -> None:
         """Multiple expectations are all evaluated before raising."""
-        from smart_data.plugins.quality import (
+        from aptdata.plugins.quality import (
             EnforcementMode,
             ExpectColumnToNotBeNull,
             ExpectColumnValuesToBeUnique,
@@ -211,12 +211,12 @@ class TestTransformQualityPipelineIntegration:
 
     def test_clean_and_validate(self, make_df) -> None:
         """Transformer output passes through quality validation."""
-        from smart_data.plugins.quality import (
+        from aptdata.plugins.quality import (
             EnforcementMode,
             ExpectColumnToNotBeNull,
             QualityValidator,
         )
-        from smart_data.plugins.transform import PandasTransformer
+        from aptdata.plugins.transform import PandasTransformer
 
         def clean(df):
             return df.dropna()
@@ -251,14 +251,14 @@ class TestScaffoldFileIntegration:
         compile(source, str(main_py), "exec")
 
     def test_medallion_yaml_is_valid(self, tmp_path: Path, cli_runner, cli_app) -> None:
-        """The medallion smart-data.yaml contains required keys."""
+        """The medallion aptdata.yaml contains required keys."""
         import yaml  # type: ignore[import]
 
         cli_runner.invoke(
             cli_app,
             ["scaffold", "lh", "--output", str(tmp_path), "--template", "medallion"],
         )
-        yaml_file = tmp_path / "lh" / "smart-data.yaml"
+        yaml_file = tmp_path / "lh" / "aptdata.yaml"
         assert yaml_file.exists()
         config = yaml.safe_load(yaml_file.read_text())
         assert config["project"] == "lh"

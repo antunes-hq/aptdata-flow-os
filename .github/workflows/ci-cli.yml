@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main", "copilot/**"]
     paths:
-      - "smart_data/cli/**"
+      - "aptdata/cli/**"
       - "tests/test_cli.py"
       - "tests/test_cli_*.py"
       - "tests/test_scaffold_templates.py"
@@ -13,7 +13,7 @@ on:
   pull_request:
     branches: ["main"]
     paths:
-      - "smart_data/cli/**"
+      - "aptdata/cli/**"
       - "tests/test_cli.py"
       - "tests/test_cli_*.py"
       - "tests/test_scaffold_templates.py"
@@ -59,7 +59,7 @@ jobs:
             tests/test_scaffold_templates.py \
             tests/test_docs.py \
             -v \
-            --cov=smart_data/cli \
+            --cov=aptdata/cli \
             --cov-report=term-missing \
             --cov-fail-under=75
 

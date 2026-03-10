@@ -14,7 +14,7 @@ A clear and concise description of what the bug is.
 
 Steps to reproduce the behavior:
 
-1. Install smart-data with `pip install smart-data` (version: <!-- e.g. 0.0.2 -->)
+1. Install aptdata with `pip install aptdata` (version: <!-- e.g. 0.0.2 -->)
 2. Run the following code / command:
 
 ```python
@@ -40,7 +40,7 @@ Traceback (most recent call last):
 
 | Field | Value |
 |-------|-------|
-| smart-data version | <!-- e.g. 0.0.2 --> |
+| aptdata version | <!-- e.g. 0.0.2 --> |
 | Python version | <!-- e.g. 3.11.4 --> |
 | OS | <!-- e.g. macOS 14.4, Ubuntu 22.04, Windows 11 --> |
 | Install method | <!-- pip / poetry / source --> |

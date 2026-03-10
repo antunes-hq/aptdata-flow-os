@@ -1,6 +1,6 @@
 # Telemetry
 
-smart-data integrates [OpenTelemetry](https://opentelemetry.io/) to give you
+aptdata integrates [OpenTelemetry](https://opentelemetry.io/) to give you
 automatic, zero-configuration observability for every pipeline execution.
 
 ---
@@ -15,13 +15,13 @@ components are needed.
 ```mermaid
 graph TD
     E["BaseComponent.execute()"]
-    S["span: smart_data.component"]
+    S["span: aptdata.component"]
     ID["component.id = <component_id>"]
     K["component.kind = TRANSFORM | FILTER | AGGREGATE | …"]
     T["component.tags = ['tag1', 'tag2']"]
     ST["component.status = success | error"]
-    Q["child span: smart_data.quality.validate"]
-    G["child span: smart_data.governance.lineage"]
+    Q["child span: aptdata.quality.validate"]
+    G["child span: aptdata.governance.lineage"]
 
     E --> S
     S --> ID
@@ -44,8 +44,8 @@ get end-to-end trace visibility across the entire pipeline.
 Display the current OpenTelemetry configuration:
 
 ```bash
-smart-data telemetry status
-smart-data telemetry status --json
+aptdata telemetry status
+aptdata telemetry status --json
 ```
 
 **Example output (Rich):**
@@ -55,7 +55,7 @@ smart-data telemetry status --json
 │ Telemetry Status                     │
 ├─────────────────────┬────────────────┤
 │ Exporter            │ console        │
-│ Service name        │ smart-data     │
+│ Service name        │ aptdata     │
 │ SDK version         │ 1.x.x          │
 │ Status              │ active         │
 └─────────────────────┴────────────────┘
@@ -66,8 +66,8 @@ smart-data telemetry status --json
 Flush and export collected spans:
 
 ```bash
-smart-data telemetry export
-smart-data telemetry export --format json
+aptdata telemetry export
+aptdata telemetry export --format json
 ```
 
 ---
@@ -76,10 +76,10 @@ smart-data telemetry export --format json
 
 | Span name | Emitted by | Key attributes |
 |-----------|-----------|----------------|
-| `smart_data.component` | `BaseComponent.execute()` | `component.id`, `component.kind`, `component.tags` |
-| `smart_data.quality.validate` | `QualityValidator.validate()` | `quality.rule_count`, `quality.enforcement` |
-| `smart_data.governance.lineage` | `LineageStore.save()` | `lineage.run_id`, `lineage.workflow` |
-| `smart_data.transform` | `PandasTransformer` / `PySparkTransformer` | `transform.engine`, `transform.rows_in`, `transform.rows_out` |
+| `aptdata.component` | `BaseComponent.execute()` | `component.id`, `component.kind`, `component.tags` |
+| `aptdata.quality.validate` | `QualityValidator.validate()` | `quality.rule_count`, `quality.enforcement` |
+| `aptdata.governance.lineage` | `LineageStore.save()` | `lineage.run_id`, `lineage.workflow` |
+| `aptdata.transform` | `PandasTransformer` / `PySparkTransformer` | `transform.engine`, `transform.rows_in`, `transform.rows_out` |
 
 ---
 
@@ -96,12 +96,12 @@ docker run -d --name jaeger \
   jaegertracing/all-in-one:latest
 ```
 
-Configure smart-data via environment variables:
+Configure aptdata via environment variables:
 
 ```bash
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-export OTEL_SERVICE_NAME=smart-data
-smart-data run my_system
+export OTEL_SERVICE_NAME=aptdata
+aptdata run my_system
 ```
 
 Open `http://localhost:16686` to explore traces.
@@ -114,8 +114,8 @@ Datadog, etc.):
 ```bash
 export OTEL_EXPORTER_OTLP_ENDPOINT=https://api.honeycomb.io
 export OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=<API_KEY>"
-export OTEL_SERVICE_NAME=smart-data
-smart-data run my_system
+export OTEL_SERVICE_NAME=aptdata
+aptdata run my_system
 ```
 
 ---
@@ -126,7 +126,7 @@ Set the standard OpenTelemetry SDK variable to suppress all spans:
 
 ```bash
 export OTEL_SDK_DISABLED=true
-smart-data run my_system
+aptdata run my_system
 ```
 
 ---

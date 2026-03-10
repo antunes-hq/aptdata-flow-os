@@ -1,4 +1,4 @@
-"""Shared fixtures and utilities for the smart-data test suite.
+"""Shared fixtures and utilities for the aptdata test suite.
 
 This conftest.py provides:
 - Reusable pytest fixtures (DataFrame factories, InMemoryDataset, CLI runner)
@@ -60,7 +60,7 @@ def simple_df(make_df):
 
 @pytest.fixture()
 def make_dataset():
-    """Factory fixture that creates :class:`~smart_data.plugins.dataset.InMemoryDataset` instances.
+    """Factory fixture that creates :class:`~aptdata.plugins.dataset.InMemoryDataset` instances.
 
     Usage::
 
@@ -68,7 +68,7 @@ def make_dataset():
             ds = make_dataset([{"id": 1}, {"id": 2}], uri="memory://test")
             ...
     """
-    from smart_data.plugins.dataset import InMemoryDataset  # noqa: PLC0415
+    from aptdata.plugins.dataset import InMemoryDataset  # noqa: PLC0415
 
     def _make(records: list[dict], uri: str = "memory://test", schema: dict | None = None) -> InMemoryDataset:
         ds = InMemoryDataset(uri=uri, schema_metadata=schema or {})
@@ -98,8 +98,8 @@ def cli_runner():
 
 @pytest.fixture()
 def cli_app():
-    """The main smart-data Typer application."""
-    from smart_data.cli.app import app  # noqa: PLC0415
+    """The main aptdata Typer application."""
+    from aptdata.cli.app import app  # noqa: PLC0415
 
     return app
 

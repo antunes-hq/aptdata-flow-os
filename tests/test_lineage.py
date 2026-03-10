@@ -1,9 +1,9 @@
-"""Tests for smart_data.core.lineage — LineageNode, ColumnLineage, LineageGraph."""
+"""Tests for aptdata.core.lineage — LineageNode, ColumnLineage, LineageGraph."""
 
 from __future__ import annotations
 
 
-from smart_data.core.lineage import (
+from aptdata.core.lineage import (
     ColumnLineage,
     LineageEventType,
     LineageGraph,

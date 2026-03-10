@@ -1,1 +1,1 @@
-"""Tests for smart-data."""
+"""Tests for aptdata."""

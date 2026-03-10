@@ -1,4 +1,4 @@
-"""Tests for smart_data.cli.commands.system_cmd."""
+"""Tests for aptdata.cli.commands.system_cmd."""
 
 from __future__ import annotations
 
@@ -7,9 +7,9 @@ import json
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typer.testing import CliRunner
 
-from smart_data.cli.app import app
-from smart_data.core.system import BaseSystem
-from smart_data.plugins import registry
+from aptdata.cli.app import app
+from aptdata.core.system import BaseSystem
+from aptdata.plugins import registry
 
 runner = CliRunner()
 

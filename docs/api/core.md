@@ -1,6 +1,6 @@
 # Core API
 
-The `smart_data.core` package exposes the two-layer contract system for all
+The `aptdata.core` package exposes the two-layer contract system for all
 four foundational types.
 
 ---
@@ -9,13 +9,13 @@ four foundational types.
 
 ### `IDataset`
 
-::: smart_data.core.dataset.IDataset
+::: aptdata.core.dataset.IDataset
 
 ---
 
 ### `BaseDataset`
 
-::: smart_data.core.dataset.BaseDataset
+::: aptdata.core.dataset.BaseDataset
 
 ---
 
@@ -23,25 +23,25 @@ four foundational types.
 
 ### `ComponentKind`
 
-::: smart_data.core.system.ComponentKind
+::: aptdata.core.system.ComponentKind
 
 ---
 
 ### `ComponentMeta`
 
-::: smart_data.core.system.ComponentMeta
+::: aptdata.core.system.ComponentMeta
 
 ---
 
 ### `IComponent`
 
-::: smart_data.core.system.IComponent
+::: aptdata.core.system.IComponent
 
 ---
 
 ### `BaseComponent`
 
-::: smart_data.core.system.BaseComponent
+::: aptdata.core.system.BaseComponent
 
 ---
 
@@ -49,25 +49,25 @@ four foundational types.
 
 ### `FlowEdge`
 
-::: smart_data.core.system.FlowEdge
+::: aptdata.core.system.FlowEdge
 
 ---
 
 ### `FlowNode`
 
-::: smart_data.core.system.FlowNode
+::: aptdata.core.system.FlowNode
 
 ---
 
 ### `IFlow`
 
-::: smart_data.core.system.IFlow
+::: aptdata.core.system.IFlow
 
 ---
 
 ### `BaseFlow`
 
-::: smart_data.core.system.BaseFlow
+::: aptdata.core.system.BaseFlow
 
 ---
 
@@ -75,22 +75,22 @@ four foundational types.
 
 ### `ISystem`
 
-::: smart_data.core.system.ISystem
+::: aptdata.core.system.ISystem
 
 ---
 
 ### `BaseSystem`
 
-::: smart_data.core.system.BaseSystem
+::: aptdata.core.system.BaseSystem
 
 ---
 
 ## Quick-import
 
-All names are re-exported from the top-level `smart_data.core` package:
+All names are re-exported from the top-level `aptdata.core` package:
 
 ```python
-from smart_data.core import (
+from aptdata.core import (
     IDataset, BaseDataset,
     ComponentKind, ComponentMeta,
     IComponent,   BaseComponent,

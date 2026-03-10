@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main", "copilot/**"]
     paths:
-      - "smart_data/**"
+      - "aptdata/**"
       - "tests/test_integration.py"
       - "tests/test_e2e.py"
       - "tests/conftest.py"
