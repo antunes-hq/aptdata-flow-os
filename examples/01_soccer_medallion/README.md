@@ -1,16 +1,25 @@
-# Soccer Medallion Scaffold
+# 01 Soccer Medallion Pipeline
 
-Um projeto de scaffold demonstrando o poder de separação de responsabilidades (IoC), Pydantic Fail-Fast Data Contracts e injeção de dependência na engine do *aptdata*.
+This is an example scaffold implementing a Medallion Architecture data pipeline using the `aptdata` framework.
 
-## Princípios
-- **Bronze (Ingestion)**: Onde ocorre o I/O. Não há validação rígida de schema.
-- **Silver (Clean & Standardise)**: Componentes Pandas recebem DataFrames e devolvem DataFrames. O wrapper de injeção de dependência nativo do *aptdata* garante validação em tempo de execução via `PydanticDataset` no *output_contract*.
-- **Gold (Aggregated)**: Outra camada estrita baseada em contratos para modelos de apresentação e Analytics.
+The example demonstrates two approaches for creating pipelines:
 
-## Execução
+1. **Object-Oriented Architecture (`system_oo.py`)**: Demonstrates the core, robust approach using classes inheriting from `BaseSystem`, `BaseFlow`, and `BaseComponent`. Enforces data contracts via Pydantic and relies heavily on Dependency Injection and strict boundaries.
 
-O framework já resolve as dependências e o *build* declarativo dos *Flows*. Execute o sistema com:
+2. **Declarative YAML & Functional Architecture (`run_yaml.py`, `pipeline.yaml`, `components_func.py`)**: Demonstrates a cleaner, functional Developer Experience (DX). Data Engineers can define simple logic wrapped in `@component` decorators and orchestrate the flow dynamically via a `pipeline.yaml` configuration file.
+
+## Running the Examples
+
+Ensure you have installed the project via `poetry install --with dev`.
+
+### Running Object-Oriented Way
 
 ```bash
-python examples/01_soccer_medallion/system.py
+poetry run python examples/01_soccer_medallion/system_oo.py
+```
+
+### Running Declarative YAML Way
+
+```bash
+poetry run python examples/01_soccer_medallion/run_yaml.py
 ```
