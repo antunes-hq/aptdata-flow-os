@@ -11,7 +11,11 @@ import time
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
+from aptdata.core.context import ExecutionContext, IContext
+from aptdata.core.dataset import IDataset, PydanticDataset
+from aptdata.core.system import BaseComponent
 from aptdata.plugins.base import BaseTransformer
+from aptdata.plugins.dataset import InMemoryDataset
 from aptdata.plugins.manager import PluginDependencyError
 from aptdata.telemetry.instrumentation import get_tracer
 
@@ -126,4 +130,51 @@ class PandasTransformer(BaseTransformer):
         return result_df
 
 
-__all__ = ["PandasTransformer"]
+class PandasTransformComponent(BaseComponent):
+    """Component for executing pandas transformations in a Flow.
+
+    Subclasses should implement the `transform` method.
+    """
+
+    def validate_inputs(self, inputs: list[IDataset]) -> bool:
+        return True
+
+    def transform(self, df: "pd.DataFrame", context: IContext) -> "pd.DataFrame":
+        """Apply business logic to the dataframe."""
+        raise NotImplementedError
+
+    def execute(self, inputs: list[IDataset]) -> list[IDataset]:
+        try:
+            import pandas as pd
+        except ImportError as exc:
+            raise PluginDependencyError("PandasTransformComponent", "pandas") from exc
+
+        # Read datasets into a single dataframe, or handle them appropriately.
+        # For simplicity in linear flow, we merge or take the first.
+        if not inputs:
+            df = pd.DataFrame()
+        else:
+            dfs = []
+            for ds in inputs:
+                data = ds.read()
+                if isinstance(data, pd.DataFrame):
+                    dfs.append(data)
+                elif isinstance(data, list):
+                    dfs.append(pd.DataFrame(data))
+                else:
+                    dfs.append(pd.DataFrame([data] if data is not None else []))
+            df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
+
+        # Execute business logic
+        context = ExecutionContext()
+        result_df = self.transform(df, context)
+
+        # Encapsulate back into an IDataset
+        # Usually BaseFlow wraps this in a PydanticDataset if output_contract is provided.
+        # Otherwise, fallback to an InMemoryDataset
+        out_ds = InMemoryDataset(uri=f"memory://{self.component_id}_output")
+        out_ds.write(result_df.to_dict(orient="records"))
+
+        return [out_ds]
+
+__all__ = ["PandasTransformer", "PandasTransformComponent"]
