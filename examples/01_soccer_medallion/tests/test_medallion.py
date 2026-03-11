@@ -8,9 +8,9 @@ from aptdata.plugins.dataset import InMemoryDataset
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from components.soccer_components import CleanMatchDataComponent
-from flows.soccer_flows import SilverFlow
-from system_oo import SoccerMedallionSystem
+from components.soccer_components import CleanMatchDataComponent  # noqa: E402
+from flows.soccer_flows import SilverFlow  # noqa: E402
+from system_oo import SoccerMedallionSystem  # noqa: E402
 
 
 def test_system_dependency_injection():
@@ -57,8 +57,8 @@ def test_full_pipeline_with_mocked_io(monkeypatch):
     def mocked_execute(self, inputs):
         # Even though we refactored clean logic to drop null match_ids, it handles normal cases too
         df = [
-            {"match_id": "1", "home_team": "A", "away_team": "B", "home_goals": 2, "away_goals": 1, "date": "2023-01-01"},
-            {"match_id": "2", "home_team": "C", "away_team": "A", "home_goals": 0, "away_goals": 3, "date": "2023-01-02"},
+            {"match_id": "1", "home_team": "A", "away_team": "B", "home_goals": 2, "away_goals": 1, "date": "2023-01-01"},  # noqa: E501
+            {"match_id": "2", "home_team": "C", "away_team": "A", "home_goals": 0, "away_goals": 3, "date": "2023-01-02"},  # noqa: E501
         ]
         ds = InMemoryDataset(uri="memory://test")
         ds.write(df)

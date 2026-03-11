@@ -6,7 +6,7 @@ import sys
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
-from aptdata.core.yaml_builder import YamlSystemBuilder
+from aptdata.core.yaml_builder import YamlSystemBuilder  # noqa: E402
 
 
 def main():
