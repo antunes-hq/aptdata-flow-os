@@ -20,21 +20,20 @@ class SoccerMedallionSystem(BaseSystem):
         # Configuração de telemetria e observabilidade nativa do aptdata
         self.telemetry = TelemetryProvider.get_instance()
 
+        # Observabilidade via Event Bus nativo
+        def log_event(event):
+            print(f"[{event.timestamp.isoformat()}] [{event.event_type}] {event.component_id} -> {event.status}")
+
+        self._context.event_bus.subscribe("on_success", log_event)
+        self._context.event_bus.subscribe("on_failure", log_event)
+
         # Registro de flows
         self.register_flow(BronzeFlow(flow_id="soccer_bronze_flow"))
         self.register_flow(SilverFlow(flow_id="soccer_silver_flow"))
         self.register_flow(GoldFlow(flow_id="soccer_gold_flow"))
 
     def on_complete(self, context: IContext):
-        # Emissão da linhagem e métricas de execução
-        # Here we mock lineage to simulate graph generation as per standard scaffold practice,
-        # but in a real system we would retrieve it from `self.get_lineage_graph()`.
-        lineage_mock = {
-            "nodes": ["bronze", "silver", "gold"],
-            "edges": [{"from": "bronze", "to": "silver"}, {"from": "silver", "to": "gold"}]
-        }
-
-        context.logger.info("Linhagem exportada", extra={"lineage": lineage_mock})
+        context.logger.info("Execução do sistema finalizada.")
 
 if __name__ == "__main__":
     import logging

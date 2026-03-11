@@ -9,6 +9,7 @@ from typing import Any
 
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
+from aptdata.core.events import EventBus, IEventBus
 from aptdata.telemetry import TelemetryProvider
 
 
@@ -24,6 +25,11 @@ class IContext(ABC):
     @abstractmethod
     def telemetry(self) -> TelemetryProvider:
         """Telemetry provider for this context."""
+
+    @property
+    @abstractmethod
+    def event_bus(self) -> IEventBus:
+        """Event bus for decoupled communication and observability."""
 
     @abstractmethod
     def get(self, key: str, default: Any = None) -> Any:
@@ -52,6 +58,7 @@ class ExecutionContext(IContext):
     memory: dict[str, Any] = field(default_factory=dict)
     _logger: logging.Logger | None = field(default=None, init=False, repr=False)
     _telemetry: TelemetryProvider | None = field(default=None, init=False, repr=False)
+    _event_bus: IEventBus | None = field(default=None, init=False, repr=False)
 
     @property
     def logger(self) -> logging.Logger:
@@ -64,6 +71,16 @@ class ExecutionContext(IContext):
         if self._telemetry is None:
             self._telemetry = TelemetryProvider.get_instance()
         return self._telemetry
+
+    @property
+    def event_bus(self) -> IEventBus:
+        if self._event_bus is None:
+            self._event_bus = EventBus()
+        return self._event_bus
+
+    @event_bus.setter
+    def event_bus(self, bus: IEventBus) -> None:
+        self._event_bus = bus
 
     def get(self, key: str, default: Any = None) -> Any:
         return self.memory.get(key, default)
