@@ -245,11 +245,15 @@ Expected output:
 
 ## Running the test suite
 
+To run tests locally:
+
 ```bash
 make test
 # or
 poetry run pytest tests/ -v
 ```
+
+> **Note:** Tests for optional dependencies (like `pandas` and `pyyaml`) use `pytest.importorskip()`. If you haven't installed the extra dependencies (e.g. via `poetry install --all-extras`), those specific tests will be gracefully skipped without failing the test suite.
 
 ---
 

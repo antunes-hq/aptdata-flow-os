@@ -6,8 +6,6 @@ from aptdata.core.registry import ComponentRegistry
 from aptdata.core.system import BaseComponent
 from aptdata.plugins.dataset import InMemoryDataset
 
-pd = pytest.importorskip("pandas")
-
 
 @pytest.fixture(autouse=True)
 def clear_registry():
@@ -53,6 +51,8 @@ def test_component_decorator_function():
 
 
 def test_pandas_component_decorator():
+    pd = pytest.importorskip("pandas")
+
     @pandas_component("test_pandas")
     def my_pandas_func(df, context):
         assert isinstance(df, pd.DataFrame)
@@ -80,6 +80,8 @@ def test_pandas_component_decorator():
 
 
 def test_yaml_builder(tmp_path):
+    pytest.importorskip("yaml")
+
     import yaml
 
     from aptdata.core.yaml_builder import YamlSystemBuilder
