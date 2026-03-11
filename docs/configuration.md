@@ -1,116 +1,102 @@
-# Configuration
+# Configuração YAML (Configuration)
 
-aptdata supports declarative pipeline configuration via a `aptdata.yaml`
-file, allowing you to define, validate, and run pipelines without writing any
-Python bootstrap code.
+O `aptdata` suporta a configuração declarativa de pipelines via arquivo `aptdata.yaml`, permitindo que você defina, valide e orquestre a execução de sistemas sem precisar escrever código de inicialização (*bootstrap*) em Python.
 
 ---
 
-## File format
+## Formato do Arquivo
 
-The configuration file follows this top-level schema:
+O *schema* principal utiliza a seguinte estrutura:
 
 ```yaml
-version: "1"           # config schema version (required)
-env: dev               # target environment (default: dev)
+version: "1"           # Versão do schema de configuração (obrigatório)
+env: dev               # Ambiente de destino (default: dev)
 
 systems:
-  - name: my_system    # matches the name used in registry.register()
-    enabled: true      # set to false to skip during config run
+  - name: my_system    # Nome registrado no Plugin Registry (registry.register)
+    enabled: true      # Defina como 'false' para pular a execução
 
 plugins:
-  - module: my_package.systems  # Python module to import before resolving systems
+  - module: my_package.systems  # Módulo Python injetado antes da resolução dos sistemas
 
 telemetry:
   enabled: true
   exporter: console    # console | otlp
-  endpoint: ""         # OTLP endpoint (when exporter: otlp)
+  endpoint: ""         # Endpoint OTLP (usado quando exporter: otlp)
 ```
 
-### Minimal example
+!!! note "Exemplo Mínimo"
+    ```yaml
+    version: "1"
+    env: production
 
-```yaml
-version: "1"
-env: production
+    plugins:
+      - module: my_project.systems
 
-plugins:
-  - module: my_project.systems
-
-systems:
-  - name: etl_pipeline
-    enabled: true
-  - name: quality_checks
-    enabled: true
-```
+    systems:
+      - name: etl_pipeline
+        enabled: true
+      - name: quality_checks
+        enabled: true
+    ```
 
 ---
 
-## CLI commands
+## Comandos da CLI (`config`)
 
-### `config validate`
+<div class="grid cards" markdown>
 
-Validate a `aptdata.yaml` file against the schema without running anything:
+-   :material-check-decagram: **`config validate`**
 
-```bash
-aptdata config validate aptdata.yaml
-```
+    Valida a sintaxe de um `aptdata.yaml` contra o schema Pydantic sem rodar os pipelines.
+    ```bash
+    aptdata config validate aptdata.yaml
+    ```
 
-### `config init`
+-   :material-file-document-plus: **`config init`**
 
-Generate a starter `aptdata.yaml` in the current directory:
+    Gera um `aptdata.yaml` inicial no diretório atual ou especificado.
+    ```bash
+    aptdata config init [--output /path/]
+    ```
 
-```bash
-aptdata config init
-aptdata config init --output /path/to/aptdata.yaml
-```
+-   :material-eye-outline: **`config show`**
 
-### `config show`
+    Exibe a configuração carregada e parseada (com as substituições de variáveis de ambiente aplicadas).
+    ```bash
+    aptdata config show aptdata.yaml
+    ```
 
-Pretty-print the resolved configuration (after environment variable substitution):
+-   :material-play-network: **`config run`**
 
-```bash
-aptdata config show aptdata.yaml
-```
+    Carrega o arquivo e dispara todos os sistemas listados onde `enabled: true`.
+    ```bash
+    aptdata config run aptdata.yaml [--env production]
+    ```
 
-### `config run`
-
-Load the configuration file and execute all enabled systems:
-
-```bash
-aptdata config run aptdata.yaml
-aptdata config run aptdata.yaml --env production
-```
+</div>
 
 ---
 
-## Environment variable substitution
+## Substituição de Variáveis de Ambiente (Secret Manager)
 
-Values in the YAML file can reference environment variables using the
-`${VAR_NAME}` syntax:
+Valores no arquivo YAML podem referenciar dinamicamente variáveis de ambiente injetadas em tempo de execução utilizando a sintaxe `${VAR_NAME}`. A resolução recursiva é garantida pela classe `SecretManager`.
 
 ```yaml
 telemetry:
   endpoint: "${OTEL_EXPORTER_OTLP_ENDPOINT}"
 ```
 
+!!! tip "Resolução Opcional de `.env`"
+    Se o pacote `python-dotenv` estiver instalado no seu ambiente, o framework carregará automaticamente as variáveis de um arquivo `.env` localizado na raiz da execução.
+
 ---
 
-## Scaffold templates
+## Integração com Templates
 
-The `scaffold` command generates a `aptdata.yaml` as part of the project
-skeleton.  For example:
+O comando de scaffolding gera automaticamente o arquivo `aptdata.yaml` como parte da estrutura padrão do projeto.
 
 ```bash
 aptdata scaffold my_project --template medallion
-# creates my_project/aptdata.yaml with a pre-filled configuration
+# Cria my_project/aptdata.yaml já pré-configurado
 ```
-
-See [Scaffold Templates](scaffold-templates.md) for all available templates.
-
----
-
-## Further reading
-
-- [Getting Started](getting-started.md) — run your first system
-- [API Reference – CLI](api/cli.md) — full CLI reference
-- [Scaffold Templates](scaffold-templates.md) — project bootstrapping

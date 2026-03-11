@@ -1,30 +1,28 @@
-# Architecture
+# Arquitetura (Architecture)
 
-!!! info "Architecture Decision Records"
-    For historical context and reasoning behind architectural choices, please refer to the ADRs:
+!!! info "Architecture Decision Records (ADRs)"
+    Para contexto histórico e razões pelas quais essas escolhas de design foram feitas, consulte as ADRs:
 
     * [ADR 001: Revisão Arquitetural do Core e Simplificação de Fluxos (DX)](ADR-001-Revisao-Arquitetural-Core.md)
 
-aptdata is built around a **two-layer contract system** for each of its
-three universal abstractions — **Component**, **Flow**, and **System** — plus
-the foundational **Dataset** type.
+O **aptdata** foi projetado com base em um sistema de contrato de duas camadas para cada uma de suas três abstrações fundamentais — **Component**, **Flow**, e **System** — e para o seu tipo fundamental **Dataset**.
 
 ---
 
-## The three-abstraction model
+## O Modelo de Três Abstrações
 
 ```mermaid
 graph LR
-    C["🔧 Component\nReusable unit of work\n(ETL step, filter, …)"]
-    F["🔀 Flow\nDirected graph of Components"]
-    S["🏛 System\nTop-level orchestrator\nthat owns one or more Flows"]
+    C["🔧 Component\nUnidade Reutilizável de Trabalho\n(Filtro, Junção, Transformação)"]
+    F["🔀 Flow\nGrafo Direcionado de Componentes"]
+    S["🏛 System\nOrquestrador de Nível Superior\nPossui um ou mais Fluxos"]
 
     C --> F --> S
 ```
 
 ---
 
-## The two layers
+## O Sistema de Duas Camadas
 
 ```mermaid
 classDiagram
@@ -67,23 +65,22 @@ classDiagram
         +system_id: str
     }
 
-    IDataset <|-- BaseDataset : implements
-    IComponent <|-- BaseComponent : implements
-    IFlow <|-- BaseFlow : implements
-    ISystem <|-- BaseSystem : implements
+    IDataset <|-- BaseDataset : implementa
+    IComponent <|-- BaseComponent : implementa
+    IFlow <|-- BaseFlow : implementa
+    ISystem <|-- BaseSystem : implementa
 
-    BaseDataset <|-- YourDataset : extends
-    BaseComponent <|-- YourComponent : extends
-    BaseFlow <|-- YourFlow : extends
-    BaseSystem <|-- YourSystem : extends
+    BaseDataset <|-- SeuDataset : herda
+    BaseComponent <|-- SeuComponente : herda
+    BaseFlow <|-- SeuFluxo : herda
+    BaseSystem <|-- SeuSistema : herda
 ```
 
 ---
 
-## Layer 1 – `I*` interfaces
+## Camada 1 – Interfaces `I*`
 
-Each `I*` class is a plain Python `@dataclass` that also inherits from `ABC`.
-It declares **only abstract methods** — no fields, no implementation.
+Cada classe `I*` é um `@dataclass` puramente Python que herda de `ABC` (Abstract Base Class). Ela declara **apenas os métodos abstratos**, sem conter campos de dados ou lógica de implementação. Qualquer método decorado com `@abstractmethod` no framework dispara um `NotImplementedError` se for invocado diretamente, forçando a aderência rigorosa ao contrato.
 
 ```python
 from abc import ABC, abstractmethod
@@ -93,25 +90,24 @@ from typing import Any
 @dataclass
 class IDataset(ABC):
     @abstractmethod
-    def read(self) -> Any: ...
+    def read(self) -> Any:
+        raise NotImplementedError
 
     @abstractmethod
-    def write(self, data: Any) -> None: ...
+    def write(self, data: Any) -> None:
+        raise NotImplementedError
 ```
 
-**Why dataclasses?**
-
-- Standard-library, zero external dependencies for the interface layer.
-- ABCMeta enforcement: instantiating an `I*` class directly raises `TypeError`.
-- IDE-friendly: tools understand `@dataclass` semantics.
+!!! success "Por que Dataclasses na Interface?"
+    - Zero dependências externas no core da biblioteca.
+    - Cumprimento de Metaclasse via `ABCMeta`. A instanciação de uma interface `I*` gera `TypeError`.
+    - Totalmente compatível com ferramentas IDE (Type Hinting, Autocompletes).
 
 ---
 
-## Layer 2 – `Base*` classes
+## Camada 2 – Classes Base (`Base*`)
 
-Each `Base*` class uses Pydantic's `@pydantic_dataclass` decorator and
-inherits from the corresponding `I*` interface.  It adds **validated fields**
-but still does not implement the abstract methods.
+As classes base (ex: `BaseDataset`, `BaseComponent`) integram Pydantic (via `@pydantic_dataclass`) e herdam da correspondente interface `I*`. Elas injetam **campos validados rigorosamente em tempo de execução**, poupando o usuário de escrever *boilerplate* defensivo em construtores.
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -124,97 +120,61 @@ class BaseDataset(IDataset):
     schema_metadata: dict[str, Any] = field(default_factory=dict)
 ```
 
----
-
-## Concrete implementations
-
-Users inherit from the `Base*` classes and implement the remaining abstract
-methods:
-
-```python
-from pydantic.dataclasses import dataclass as pydantic_dataclass
-from aptdata.core import BaseDataset, IDataset
-
-@pydantic_dataclass
-class ParquetDataset(BaseDataset):
-    def __post_init__(self) -> None:
-        self._df = None
-
-    def read(self):
-        import pandas as pd
-        self._df = pd.read_parquet(self.uri)
-        return self._df
-
-    def write(self, data) -> None:
-        data.to_parquet(self.uri, index=False)
-        self._df = data
-```
-
-!!! tip "Private state"
-    Use `__post_init__` to initialise private attributes.  Pydantic validates
-    only the declared dataclass fields; everything assigned in `__post_init__`
-    is treated as a plain Python attribute.
+!!! tip "Dica: Estado Privado"
+    Utilize o método especial `__post_init__` para inicializar atributos privados de infraestrutura. O Pydantic valida e mapeia os argumentos na inicialização da classe base, mas os campos configurados no `__post_init__` funcionam como atributos regulares em Python (não sendo checados via schema de input).
 
 ---
 
-## ComponentMeta & ComponentKind
+## ComponentMeta e ComponentKind
 
-Every `BaseComponent` carries a `ComponentMeta` instance that describes its
-role, tags and branching behaviour:
+Todos os componentes encapsulam os seus atributos não-funcionais num objeto imutável `ComponentMeta`.
 
-```python
-from aptdata.core import ComponentMeta, ComponentKind
+=== "Declaração Explicita"
 
-meta = ComponentMeta(
-    kind=ComponentKind.TRANSFORM,
-    tags=["etl", "prod"],
-    branch_on="status",          # field name used for conditional routing
-    description="Doubles values",
-    extra={"owner": "team-a"},
-)
-```
+    ```python
+    from aptdata.core import ComponentMeta, ComponentKind
 
-`ComponentKind` values: `TRANSFORM`, `FILTER`, `AGGREGATE`, `EXTRACT`,
-`LOAD`, `CUSTOM`.
+    meta = ComponentMeta(
+        kind=ComponentKind.TRANSFORM,
+        tags=["etl", "prod"],
+        branch_on="status",          # Campo utilizado como chave de roteamento condicional
+        description="Duplica valores das colunas numéricas",
+        extra={"owner": "team-data-eng"},
+    )
+    ```
+
+=== "Declaração via API Funcional"
+    Os *decorators* (`@component`, `@pandas_component`) injetam os metadados de forma opaca em objetos anônimos `FunctionWrapperComponent` sem poluir as funções limpas do usuário.
+
+Valores permitidos para `ComponentKind`: `TRANSFORM`, `FILTER`, `AGGREGATE`, `EXTRACT`, `LOAD`, `CUSTOM`.
 
 ---
 
-## Flow graph primitives
+## Primitivas de Roteamento de Fluxo
 
-`FlowEdge` connects two components and can carry an optional predicate to
-enable conditional / branching execution:
+As execuções condicionais e as ramificações de pipeline não são resolvidas via "If/Else" nas transformações do código de negócios. Elas são formalizadas pela estrutura `FlowEdge` (Grafo Aresta).
 
 ```python
 from aptdata.core import FlowEdge
 
-# Unconditional edge
+# Aresta Incondicional: sempre será trafegada
 FlowEdge(source_id="extract", target_id="transform")
 
-# Conditional edge – only traversed when the predicate returns True
-FlowEdge(source_id="transform", target_id="load",
-         condition=lambda outputs: len(outputs) > 0)
+# Aresta Condicional: Somente trafegada quando o predicato é avaliado em True
+FlowEdge(
+    source_id="transform",
+    target_id="load",
+    condition=lambda outputs: len(outputs) > 0
+)
 ```
-
-`FlowNode` wraps a component inside a flow and keeps a back-reference to the
-owning `IFlow`.
 
 ---
 
-## Plugin registry
+## Registry de Plugins (Inversão de Controle da CLI)
 
-Concrete system implementations are registered by name in the global
-`registry` singleton:
+Componentes, Flows ou Sistemas não são diretamente invocados pela linha de comando. Para garantir o desacoplamento arquitetural, instâncias concretas são injetadas em um `registry` global nomeado (`ComponentRegistry`).
 
-```mermaid
-graph LR
-    R["aptdata.plugins.registry"]
-    R --> E["\"etl_system\" → EtlSystem"]
-    R --> M["\"ml_system\" → MlSystem"]
-    R --> D["\"...\""]
-```
-
-The CLI calls `registry.get(name)` to resolve a name to a class, instantiates
-it with `system_id=name`, and calls `run()`.
+A CLI resolve internamente os nomes em tempo de execução chamando `registry.get(name)`.
 
 ```mermaid
 sequenceDiagram
@@ -223,67 +183,22 @@ sequenceDiagram
     participant System as EtlSystem
 
     CLI->>Registry: get("etl_system")
-    Registry-->>CLI: EtlSystem class
-    CLI->>System: EtlSystem(system_id="etl_system")
-    CLI->>System: run()
+    Registry-->>CLI: Classe concreta EtlSystem
+    CLI->>System: Instanciação: EtlSystem(system_id="etl_system")
+    CLI->>System: call run()
 ```
 
 ---
 
-## Event Bus and Observability
+## Event Bus e Observabilidade
 
-To enable real-time observability and decoupled governance (such as lineage extraction and data quality reporting) without polluting business logic, aptdata provides a built-in **Event Bus** attached to the `IContext`.
+Para viabilizar monitoramento em tempo real, auditoria e *data lineage* sem misturar métricas de infraestrutura à lógica do domínio (ETL puro), o `aptdata` possui um mecanismo assíncrono **Event Bus**. Esse barramento reside no objeto injetado `IContext` de qualquer fluxo de operação.
 
-Every `BaseComponent` automatically emits the following lifecycle events to the bus during `execute()`:
+Os seguintes hooks de ciclo de vida são emitidos compulsoriamente via `BaseComponent`:
 
 * `pre_execute`
 * `on_success`
 * `on_failure`
 * `post_execute`
 
-Users can easily tap into these events. The events are Pydantic models (`ComponentExecutionEvent`) designed to be serialized as JSON Lines to be consumed by external tools, like the TUI monitor or an MCP Server.
-
-```python
-from aptdata.core.events import ComponentExecutionEvent
-
-def my_listener(event: ComponentExecutionEvent):
-    print(event.model_dump_json())
-
-# Assuming `system` is a `BaseSystem` instance
-system._context.event_bus.subscribe("on_success", my_listener)
-```
-
----
-
-## Data-flow through a system
-
-```mermaid
-flowchart TD
-    A["Initial Dataset(s)"]
-    B["Flow.compile()\nvalidate graph structure"]
-    C["Component 1\nvalidate_inputs() → execute()"]
-    D{{"FlowEdge condition\n(optional predicate)"}}
-    E["Component 2\nvalidate_inputs() → execute()"]
-    F["Final Dataset(s)"]
-
-    A --> B --> C --> D
-    D -->|"predicate returns True\nor no condition set"| E --> F
-    D -->|"predicate returns False\n(edge skipped)"| F
-```
-
-Each component validates its own inputs, executes its transformation, and
-returns a **list** of datasets (enabling multi-output / branching flows).
-When a `FlowEdge` has no condition, it is always traversed.
-
----
-
-## Monitoring (TUI)
-
-The `aptdata monitor` command launches a
-[Textual](https://textual.textualize.io/)-based terminal dashboard that
-displays:
-
-- An ASCII representation of the flow graph.
-- A per-component status table (pending / running / done).
-- A memory-usage bar (uses `psutil` when available, falls back to
-  `/proc/meminfo`).
+Os *payloads* são modelos Pydantic da estrutura `ComponentExecutionEvent`, garantindo serialização segura (`.model_dump_json()`) para agentes MCP ou TUI dashboards. Listeners observadores não podem travar a execução síncrona dos pipelines.

@@ -1,94 +1,86 @@
-# Getting Started
+# Primeiros Passos (Getting Started)
 
-## Requirements
-
+## Requisitos
 - Python ≥ 3.10
-- [Poetry](https://python-poetry.org/) (recommended) **or** pip
+- [Poetry](https://python-poetry.org/) (recomendado) **ou** `pip`
 
 ---
 
-## Installation
+## Instalação
 
-### From PyPI
+=== "Poetry"
+    ```bash
+    poetry add aptdata
+    # Para plugins opcionais:
+    poetry add "aptdata[pandas]"
+    ```
 
-```bash
-pip install aptdata
-```
+=== "Pip"
+    ```bash
+    pip install aptdata
+    # Para plugins opcionais:
+    pip install "aptdata[pandas]"
+    ```
 
-### Optional extras
-
-```bash
-pip install aptdata[pandas]   # pandas support
-pip install aptdata[spark]    # PySpark support
-pip install aptdata[plugins]  # REST, PostgreSQL, Parquet I/O
-pip install aptdata[all]      # everything
-```
-
-### From source (development)
-
-```bash
-git clone https://github.com/strondata/smart-data.git
-cd aptdata
-poetry install
-```
-
-> **For maintainers:** See the [Release process](https://github.com/strondata/smart-data#release-process)
-> section in the README for details on publishing new releases to PyPI.
+### Dependências Opcionais
+- `pandas`: Suporte ao Pandas e `PandasTransformComponent`
+- `spark`: Suporte ao PySpark
+- `plugins`: Adaptadores REST, PostgreSQL, Parquet I/O
+- `ai`: Servidor Model Context Protocol (MCP) para IA
+- `all`: Instala tudo
 
 ---
 
-## Verifying the installation
+## Verificando a Instalação
 
+Rode no terminal:
 ```bash
 aptdata --help
 ```
 
-You should see output like:
-
-```
+Saída esperada:
+```text
 Usage: aptdata [OPTIONS] COMMAND [ARGS]...
 
-  Smart Data – declarative data-pipeline framework.
+  Smart Data – framework declarativo de pipelines.
 
 Options:
-  --help  Show this message and exit.
+  --help  Exibe esta mensagem e encerra.
 
 Commands:
-  monitor   Open the interactive TUI monitoring dashboard.
-  run       Run a registered data system.
-  scaffold  Scaffold a new aptdata project.
+  monitor   Abre o dashboard TUI de monitoramento.
+  run       Executa um sistema registrado.
+  scaffold  Inicializa um novo projeto aptdata.
+  mesh      Orquestra componentes via mesh.yaml.
 ```
 
 ---
 
-## Building your first system
+## Construindo seu Primeiro Sistema
+
+O fluxo lógico de orquestração do framework segue cinco etapas principais:
 
 ```mermaid
 flowchart LR
-    DS["1️⃣ Dataset\nBaseDataset\nread / write"]
-    CO["2️⃣ Component\nBaseComponent\nvalidate_inputs / execute"]
-    FL["3️⃣ Flow\nBaseFlow\nadd_component / connect / compile / run"]
-    SY["4️⃣ System\nBaseSystem\nregister_flow / run"]
-    RG["5️⃣ Register\nregistry.register()"]
-    CLI["6️⃣ Run\naptdata run name"]
+    DS["1️⃣ Dataset\nLeitura / Escrita (IDataset)"]
+    CO["2️⃣ Component\nTransformação (IComponent)"]
+    FL["3️⃣ Flow\nConexões Condicionais (IFlow)"]
+    SY["4️⃣ System\nOrquestrador Base (ISystem)"]
+    RG["5️⃣ Execução\nCLI ou Plugin Registry"]
 
-    DS --> CO --> FL --> SY --> RG --> CLI
+    DS --> CO --> FL --> SY --> RG
 ```
 
-### 1. Create a dataset
-
-A dataset is a Pydantic-validated dataclass that knows how to read and write
-data.  Inherit from [`BaseDataset`](api/core.md) and implement `read` /
-`write`:
+### 1. Criar um Dataset
+Um Dataset implementa as operações de leitura e escrita através do contrato `IDataset`. Herdando de `BaseDataset`, você recebe injeção de estado e validação via Pydantic.
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from aptdata.core import BaseDataset, IDataset
-
+from aptdata.core import BaseDataset
 
 @pydantic_dataclass
 class MemoryDataset(BaseDataset):
-    """In-memory dataset for testing."""
+    """Dataset em memória para propósitos de teste."""
 
     def __post_init__(self) -> None:
         self._data = None
@@ -100,21 +92,16 @@ class MemoryDataset(BaseDataset):
         self._data = data
 ```
 
-### 2. Create a component
-
-A component receives a list of `IDataset` objects, validates them and returns
-a **list** of `IDataset` outputs (supporting multi-output / branching flows).
-Inherit from [`BaseComponent`](api/core.md) and implement `validate_inputs` /
-`execute`:
+### 2. Criar um Componente
+Um Componente (implementa `IComponent`) recebe uma lista de *inputs* validados, os processa, e retorna uma lista de *outputs* (permitindo múltiplas saídas ou fluxos paralelos).
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from aptdata.core import BaseComponent, ComponentMeta, ComponentKind, IDataset
 
-
 @pydantic_dataclass
 class DoubleComponent(BaseComponent):
-    """Double every numeric value in the input list."""
+    """Duplica todos os valores numéricos da lista."""
 
     def validate_inputs(self, inputs: list[IDataset]) -> bool:
         return len(inputs) == 1
@@ -124,28 +111,23 @@ class DoubleComponent(BaseComponent):
         out = MemoryDataset(uri="memory://output")
         out.write([x * 2 for x in data])
         return [out]
-```
 
-Use `ComponentMeta` to annotate the component's role:
-
-```python
 comp = DoubleComponent(
     component_id="double",
     metadata=ComponentMeta(kind=ComponentKind.TRANSFORM, tags=["math"]),
 )
 ```
 
-### 3. Create a flow
+!!! tip "Dica de DX"
+    Com a API Declarativa (decorators como `@pandas_component`), a instanciação manual do `InMemoryDataset` é feita pelo framework "por debaixo dos panos". Você codifica apenas a função recebendo e devolvendo DataFrames.
 
-A flow wires components together in a directed graph.  Inherit from
-[`BaseFlow`](api/core.md) and implement `add_component`, `connect`, `compile`
-and `run`:
+### 3. Criar um Fluxo (Flow)
+Um Fluxo liga componentes em um Grafo Direcionado. Herdando de `BaseFlow`, as arestas suportam condicionais nativas (`FlowEdge`).
 
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from aptdata.core import BaseFlow, IComponent, IDataset, FlowEdge, FlowNode
 from typing import Callable
-
 
 @pydantic_dataclass
 class SimpleFlow(BaseFlow):
@@ -157,10 +139,8 @@ class SimpleFlow(BaseFlow):
     def add_component(self, c: IComponent) -> None:
         self._nodes[c.component_id] = FlowNode(component=c, flow=self)
 
-    def connect(self, src: str, tgt: str,
-                condition: Callable | None = None) -> None:
-        self._edges.append(FlowEdge(source_id=src, target_id=tgt,
-                                    condition=condition))
+    def connect(self, src: str, tgt: str, condition: Callable | None = None) -> None:
+        self._edges.append(FlowEdge(source_id=src, target_id=tgt, condition=condition))
 
     def compile(self) -> None:
         targets = {e.target_id for e in self._edges}
@@ -182,13 +162,11 @@ class SimpleFlow(BaseFlow):
         return outputs
 ```
 
-### 4. Create a system and register it
-
+### 4. Criar e Registrar um Sistema
 ```python
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from aptdata.core import BaseSystem, IFlow
 from aptdata.plugins import registry
-
 
 @pydantic_dataclass
 class MySystem(BaseSystem):
@@ -205,19 +183,20 @@ class MySystem(BaseSystem):
         for flow in self._flows:
             inputs = flow.run(inputs)
 
-
-# my_systems.py
+# Registre no Plugin Registry global
 registry.register("my_system", MySystem)
 ```
 
-### 5. Run via the CLI
+### 5. Executar via CLI
+Com o seu componente registrado no entrypoint do módulo, execute:
 
 ```bash
 aptdata run my_system
 ```
 
-Expected output:
+Eventos de ciclo de vida automáticos (`pre_execute`, `on_success`) são emitidos internamente pelo EventBus.
 
+Saída esperada em formato JSON Lines:
 ```json
 {"event": "pipeline.started", "pipeline": "my_system", "env": "dev", "dry_run": false}
 {"event": "pipeline.completed", "pipeline": "my_system", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001}
@@ -225,60 +204,29 @@ Expected output:
 
 ---
 
-## CLI options
+## Opções Úteis da CLI
 
-### `aptdata run`
+=== "Execução (Run)"
 
-| Option | Default | Description |
-|---|---|---|
-| `name` | *(required)* | System name registered in the plugin registry |
-| `--env`, `-e` | `dev` | Target execution environment label |
-| `--dry-run` | `false` | Instantiate without calling `run()` |
+    | Opção | Default | Descrição |
+    |---|---|---|
+    | `name` | *(obrigatório)* | Nome do sistema registrado (`registry.register`) |
+    | `--env`, `-e` | `dev` | Variável de ambiente alvo da execução |
+    | `--dry-run` | `false` | Instancia componentes mas **não** dispara o `run()` |
 
-### `aptdata monitor`
+=== "Monitoramento (TUI)"
 
-| Option | Default | Description |
-|---|---|---|
-| `--refresh`, `-r` | `1.0` | Dashboard auto-refresh interval (seconds) |
-
----
-
-## Running the test suite
-
-To run tests locally:
-
-```bash
-make test
-# or
-poetry run pytest tests/ -v
-```
-
-> **Note:** Tests for optional dependencies (like `pandas` and `pyyaml`) use `pytest.importorskip()`. If you haven't installed the extra dependencies (e.g. via `poetry install --all-extras`), those specific tests will be gracefully skipped without failing the test suite.
+    | Opção | Default | Descrição |
+    |---|---|---|
+    | `--refresh`, `-r` | `1.0` | Intervalo em segundos de auto-atualização do terminal |
 
 ---
 
-## AI Agent Integration
+## Integração MCP com Agentes de IA
 
-aptdata ships with a built-in [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
-allowing AI agents such as **Claude Desktop**, **Copilot**, or **Devin** to
-discover and execute pipelines without consuming excessive context tokens.
+O framework inclui um servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) (`aptdata mcp-start`) que permite a agentes de IA (Claude, Copilot, Devin) descobrirem e interagirem com seus pipelines.
 
-### Starting the MCP server
-
-```bash
-# Default (stdio transport – used by most desktop AI agents)
-aptdata mcp-start
-
-# SSE transport (for web-based integrations)
-aptdata mcp-start --transport sse
-```
-
-### Connecting Claude Desktop
-
-Add the following to your Claude Desktop `config.json` (typically
-`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS
-or `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
-
+Adicione ao `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
@@ -290,19 +238,4 @@ or `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
 }
 ```
 
-Once connected, the agent can:
-
-| MCP Tool | Description |
-|---|---|
-| `run_flow(flow_id)` | Execute a registered system and get status |
-| `list_registered_systems()` | Discover available pipelines |
-
-The agent can also read dataset metadata via the `schema://datasets/{name}`
-resource URI.
-
-### AI-friendly documentation
-
-For AI tools that support the `llms.txt` standard, we provide:
-
-- [`docs/llms.txt`](llms.txt) — high-level framework overview
-- [`docs/llms-full.txt`](llms-full.txt) — consolidated full documentation
+Agentes podem consultar metadados com as URIs `schema://datasets/{name}` e chamar tools como `run_flow` sem alucinações de schema.

@@ -55,30 +55,35 @@ plugins:
 
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
-  - DIYs & Snippets: diys.md
-  - CI & Execution Logs: ci-logs.md
-  - Architecture: architecture.md
-  - ADR 001 - Revisão Core: ADR-001-Revisao-Arquitetural-Core.md
-  - Engines: transform-engines.md
-  - Quality: quality.md
-  - Governance: governance.md
-  - Scaffold Templates: scaffold-templates.md
-  - Telemetry: telemetry.md
-  - MCP Server: mcp.md
-  - Configuration: configuration.md
-  - API Reference:
-      - Core: api/core.md
+  - Getting Started:
+      - Overview: getting-started.md
+      - Scaffold Templates: scaffold-templates.md
+      - Configuration: configuration.md
+      - DIYs & Snippets: diys.md
+  - Core:
+      - Architecture: architecture.md
+      - ADR 001 - Revisão Core: ADR-001-Revisao-Arquitetural-Core.md
+      - Quality: quality.md
+      - Governance: governance.md
+      - Telemetry: telemetry.md
+      - CI & Execution Logs: ci-logs.md
+  - Plugins:
+      - Engines: transform-engines.md
+      - MCP Server: mcp.md
+  - API:
+      - Core Reference: api/core.md
       - CLI: api/cli.md
       - CLI Interactive: api/cli-interactive.md
-      - Plugins: api/plugins.md
+      - Plugins Reference: api/plugins.md
   - Changelog: changelog.md
   - AI Docs:
       - llms.txt: llms.txt
       - llms-full.txt: llms-full.txt
+      - Docs Agent Prompts: prompts/docs-agent.md
 
 markdown_extensions:
   - admonition
+  - md_in_html
   - pymdownx.details
   - pymdownx.superfences:
       custom_fences:

@@ -1,69 +1,97 @@
 # aptdata
 
-**aptdata** is a declarative, extensible framework for building smart data
-pipelines in Python.  It provides a clean two-layer contract system built
-around three universal abstractions — **Component**, **Flow**, and **System**
-— so you can build, test and compose data pipelines with confidence.
+O **aptdata** é um framework declarativo e extensível para construção de pipelines de dados inteligentes em Python. Ele fornece um sistema de contratos robusto baseado em três abstrações universais — **Component**, **Flow**, e **System** — garantindo que você construa, teste e componha pipelines com total confiança.
 
 ---
 
-## Key features
+## Principais Funcionalidades
 
-| Feature | Description |
-|---|---|
-| **Contract-first design** | Pure-Python `@dataclass + ABC` interfaces (`IDataset`, `IComponent`, `IFlow`, `ISystem`) make the expected behaviour explicit before any concrete code is written. |
-| **Pydantic-validated base classes** | `BaseDataset`, `BaseComponent`, `BaseFlow` and `BaseSystem` extend the interfaces and add Pydantic-validated fields, giving you runtime type safety for free. |
-| **Metadata-driven components** | `ComponentMeta` carries kind, tags, branching key and arbitrary extras — no need to inspect component internals. |
-| **Conditional flows** | `FlowEdge` supports optional predicates so flows can branch based on runtime output. |
-| **Plugin registry** | Third-party adapters register concrete `ISystem` implementations by name, so the CLI can discover and launch them without any code changes. |
-| **Structured CLI** | Every outcome is emitted as a machine-readable JSON line — perfect for AI orchestrators and CI/CD pipelines. |
-| **Interactive TUI** | A Textual-based terminal dashboard lets you monitor flow progress and memory usage in real time. |
+<div class="grid cards" markdown>
 
----
+-   :material-file-document-check-outline: __Design Contract-First__
 
-## Quick look
+    Interfaces puras em Python (`@dataclass + ABC`) como `IDataset`, `IComponent`, `IFlow` e `ISystem` tornam o comportamento esperado explícito antes de qualquer código concreto ser escrito.
 
-```python
-from pydantic.dataclasses import dataclass as pydantic_dataclass
-from aptdata.core import (
-    BaseDataset, IDataset,
-    BaseComponent, ComponentMeta, ComponentKind,
-    BaseFlow, BaseSystem, IFlow,
-)
+-   :material-shield-check: __Base Classes Validadas por Pydantic__
 
-@pydantic_dataclass
-class MemoryDataset(BaseDataset):
-    def __post_init__(self): self._data = None
-    def read(self): return self._data
-    def write(self, data): self._data = data
+    `BaseDataset`, `BaseComponent`, `BaseFlow` e `BaseSystem` estendem as interfaces adicionando campos validados pelo Pydantic, oferecendo type safety em tempo de execução sem custo adicional.
 
+-   :material-tag-multiple: __Componentes Direcionados por Metadados__
 
-@pydantic_dataclass
-class FilterComponent(BaseComponent):
-    """Keep only rows where 'active' is truthy."""
+    A classe `ComponentMeta` carrega o tipo (*kind*), *tags*, chave de roteamento condicional e atributos extras — eliminando a necessidade de inspecionar os componentes internamente.
 
-    def validate_inputs(self, inputs: list[IDataset]) -> bool:
-        return len(inputs) == 1
+-   :material-source-branch: __Fluxos Condicionais__
 
-    def execute(self, inputs: list[IDataset]) -> list[IDataset]:
-        rows = inputs[0].read()
-        out = MemoryDataset(uri="memory://filtered")
-        out.write([r for r in rows if r.get("active")])
-        return [out]
-```
+    A estrutura `FlowEdge` suporta predicados opcionais, permitindo que os fluxos ramifiquem dinamicamente com base nas saídas em tempo de execução.
+
+-   :material-puzzle: __Registro de Plugins (Registry)__
+
+    Adapters de terceiros registram implementações concretas de `ISystem` pelo nome. Assim, a CLI consegue descobrir e executá-las sem alterar o código principal.
+
+-   :material-console: __CLI Estruturada e JSON Lines__
+
+    Cada resultado e evento de ciclo de vida é emitido em formato JSON Lines (`.model_dump_json()`), ideal para orquestradores, integração com IA e pipelines de CI/CD.
+
+-   :material-monitor-dashboard: __Dashboard Interativo (TUI)__
+
+    Um dashboard no terminal construído com Textual que permite monitorar o progresso dos fluxos e o consumo de memória em tempo real.
+
+</div>
 
 ---
 
-## Navigation
+## Visão Rápida (Quick Look)
 
-- 🚀 [Getting Started](getting-started.md) — install and run your first system
-- 🏛 [Architecture](architecture.md) — understand the `I*` → `Base*` design
-- ⚙️ [Transform Engines](transform-engines.md) — pandas & PySpark wrappers
-- ✅ [Data Quality](quality.md) — schema contracts & expectations
-- 🏗 [Governance](governance.md) — lineage, catalog & classification
-- 🧩 [Scaffold Templates](scaffold-templates.md) — project bootstrapping
-- 📡 [Telemetry](telemetry.md) — OpenTelemetry integration
-- 🤖 [MCP Server](mcp.md) — AI agent integration
-- ⚙️ [Configuration](configuration.md) — YAML config files
-- 📖 [API Reference](api/core.md) — full class and method documentation
-- 📋 [Changelog](changelog.md) — version history
+=== "Object-Oriented (Core)"
+
+    ```python
+    from pydantic.dataclasses import dataclass as pydantic_dataclass
+    from aptdata.core import BaseDataset, IDataset, BaseComponent
+
+    @pydantic_dataclass
+    class MemoryDataset(BaseDataset):
+        def __post_init__(self): self._data = None
+        def read(self): return self._data
+        def write(self, data): self._data = data
+
+    @pydantic_dataclass
+    class FilterComponent(BaseComponent):
+        """Mantém apenas registros onde 'active' é verdadeiro."""
+
+        def validate_inputs(self, inputs: list[IDataset]) -> bool:
+            return len(inputs) == 1
+
+        def execute(self, inputs: list[IDataset]) -> list[IDataset]:
+            rows = inputs[0].read()
+            out = MemoryDataset(uri="memory://filtered")
+            out.write([r for r in rows if r.get("active")])
+            return [out]
+    ```
+
+=== "Declarative (Decorators)"
+
+    ```python
+    from aptdata.core.decorators import pandas_component
+    import pandas as pd
+
+    @pandas_component("filter_active_users")
+    def filter_active_users(df: pd.DataFrame) -> pd.DataFrame:
+        """Mantém apenas usuários ativos usando a API simplificada."""
+        return df[df['active'] == True]
+    ```
+
+---
+
+## Navegação
+
+- 🚀 [Getting Started](getting-started.md) — Instalação e criação do seu primeiro sistema
+- 🏛 [Architecture](architecture.md) — Entenda o design `I*` → `Base*`
+- ⚙️ [Transform Engines](transform-engines.md) — Wrappers para Pandas & PySpark
+- ✅ [Data Quality](quality.md) — Contratos de schema e expectations
+- 🏗 [Governance](governance.md) — Linhagem, catálogo e classificação
+- 🧩 [Scaffold Templates](scaffold-templates.md) — Bootstrapping rápido de projetos
+- 📡 [Telemetry](telemetry.md) — Integração com OpenTelemetry
+- 🤖 [MCP Server](mcp.md) — Integração nativa com Agentes de IA
+- ⚙️ [Configuration](configuration.md) — Arquivos de configuração YAML
+- 📖 [API Reference](api/core.md) — Documentação completa das classes
+- 📋 [Changelog](changelog.md) — Histórico de versões

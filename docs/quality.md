@@ -1,14 +1,12 @@
-# Data Quality
+# Qualidade de Dados (Data Quality)
 
-aptdata provides a lightweight data quality layer that works with both
-pandas DataFrames and PySpark DataFrames.
+O `aptdata` oferece uma camada nativa de qualidade de dados compatível tanto com **Pandas** quanto com **PySpark** DataFrames, abstraindo a diferença de engines.
 
 ---
 
-## Schema Contracts
+## Contratos de Schema (`SchemaContract`)
 
-A :class:`~aptdata.plugins.quality.contract.SchemaContract` declares the
-expected shape, types, and sensitivity of a dataset.
+Um `SchemaContract` declara rigorosamente o formato esperado, a tipagem estática e o nível de sensibilidade dos dados antes da ingestão.
 
 ```python
 from aptdata.plugins.quality import (
@@ -32,75 +30,66 @@ contract = SchemaContract(
     ],
 )
 
-# Helpers
+# Métodos utilitários
 pii_cols   = contract.get_pii_columns()
 pii_tagged = contract.get_columns_by_classification(ColumnClassification.PII)
 ```
 
-### ColumnClassification
+### Classificação de Colunas (`ColumnClassification`)
 
-| Value          | Description                        |
-|----------------|------------------------------------|
-| `PUBLIC`       | No restrictions                    |
-| `INTERNAL`     | Internal use only                  |
-| `CONFIDENTIAL` | Need-to-know basis                 |
-| `PII`          | Personally identifiable information |
-| `PHI`          | Protected health information       |
-| `FINANCIAL`    | Financial data                     |
-| `SENSITIVE`    | Generic sensitive data             |
-
----
-
-## Expectations
-
-Expectations are individual checks that validate a single property of a
-column.  They all extend :class:`~aptdata.plugins.quality.expectations.BaseExpectation`
-and return a :class:`~aptdata.plugins.quality.report.CheckResult`.
-
-Each expectation has both a `validate_pandas(df)` and a `validate_spark(df)`
-implementation.  Call `validate(df)` and the engine is detected automatically.
-
-### Built-in expectations
-
-#### `ExpectColumnToNotBeNull`
-
-```python
-from aptdata.plugins.quality import ExpectColumnToNotBeNull
-
-result = ExpectColumnToNotBeNull("age").validate(df)
-```
-
-#### `ExpectColumnValuesInRange`
-
-```python
-from aptdata.plugins.quality import ExpectColumnValuesInRange
-
-result = ExpectColumnValuesInRange("score", min_val=0, max_val=100).validate(df)
-```
-
-#### `ExpectColumnValuesToBeUnique`
-
-```python
-from aptdata.plugins.quality import ExpectColumnValuesToBeUnique
-
-result = ExpectColumnValuesToBeUnique("id").validate(df)
-```
-
-#### `ExpectColumnValuesToMatchRegex`
-
-```python
-from aptdata.plugins.quality import ExpectColumnValuesToMatchRegex
-
-result = ExpectColumnValuesToMatchRegex("code", pattern=r"[A-Z]\d{3}").validate(df)
-```
+| Valor (`Enum`) | Descrição e Nível de Acesso |
+|---|---|
+| `PUBLIC` | Sem restrições de visibilidade. |
+| `INTERNAL` | Uso exclusivamente interno da corporação. |
+| `CONFIDENTIAL`| Acesso estritamente baseado em necessidade (Need-to-know). |
+| `PII` | Dados Pessoais Identificáveis (Lei Geral de Proteção de Dados - LGPD). |
+| `PHI` | Dados de Saúde Protegidos (HIPAA). |
+| `FINANCIAL` | Transações Financeiras (PCI DSS). |
+| `SENSITIVE` | Dados sensíveis genéricos. |
 
 ---
 
-## Quality Validator
+## Verificações (`Expectations`)
 
-:class:`~aptdata.plugins.quality.validator.QualityValidator` runs a suite of
-expectations and enforces the result according to the configured
-:class:`~aptdata.plugins.quality.contract.EnforcementMode`.
+As `Expectations` são checagens unitárias focadas em uma única propriedade de uma coluna. Elas implementam `BaseExpectation` e retornam um `CheckResult`. Cada expectativa possui internamente implementações isoladas para `validate_pandas(df)` e `validate_spark(df)`. Ao chamar `.validate(df)`, a *engine* é detectada automaticamente via introspecção.
+
+<div class="grid cards" markdown>
+
+-   :material-null: **`ExpectColumnToNotBeNull`**
+
+    Verifica se não existem valores nulos ou vazios na coluna.
+    ```python
+    ExpectColumnToNotBeNull("age").validate(df)
+    ```
+
+-   :material-arrow-left-right: **`ExpectColumnValuesInRange`**
+
+    Verifica se todos os valores estão contidos entre `min_val` e `max_val` (inclusivo).
+    ```python
+    ExpectColumnValuesInRange("score", min_val=0, max_val=100).validate(df)
+    ```
+
+-   :material-fingerprint: **`ExpectColumnValuesToBeUnique`**
+
+    Garante unicidade total (Chave Primária).
+    ```python
+    ExpectColumnValuesToBeUnique("id").validate(df)
+    ```
+
+-   :material-regex: **`ExpectColumnValuesToMatchRegex`**
+
+    Assegura que a string está aderente a um padrão Regex estrito.
+    ```python
+    ExpectColumnValuesToMatchRegex("code", pattern=r"[A-Z]\d{3}").validate(df)
+    ```
+
+</div>
+
+---
+
+## Validador Orquestrado (`QualityValidator`)
+
+O `QualityValidator` executa um *suite* inteiro de expectativas e aplica a política definida em `EnforcementMode`.
 
 ```python
 from aptdata.plugins.quality import (
@@ -120,7 +109,7 @@ validator = QualityValidator(
     name="order_validator",
 )
 
-# Compatible with Workflow.add_step()
+# Integração nativa como um step no pipeline
 from aptdata.core.workflow import Workflow
 
 wf = Workflow("quality_pipeline")
@@ -128,27 +117,27 @@ wf.add_step(validator.validate)
 clean_data = wf.execute(raw_data)
 ```
 
-### Enforcement Modes
+### Modos de Punição (`Enforcement Modes`)
 
-| Mode   | Behaviour                                                   |
-|--------|-------------------------------------------------------------|
-| `ABORT` | Raises `ValueError` immediately on first failed expectation |
-| `WARN`  | Emits a `warnings.warn` and logs, then continues           |
-| `TAG`   | Annotates `schema_metadata["quality_report"]` and continues |
+| Modo | Comportamento no Pipeline |
+|---|---|
+| `ABORT` | Bloqueia o fluxo. Levanta um `ValueError` imediatamente na primeira *Expectation* que falhar. |
+| `WARN` | Não bloqueia. Emite um log de alerta via `warnings.warn` e prossegue o fluxo. |
+| `TAG` | Invisível. Apenas anota a estrutura `schema_metadata["quality_report"]` no dataset para consulta posterior. |
 
 ---
 
-## Quality Report
+## Relatório de Qualidade (`QualityReport`)
 
-After validation a :class:`~aptdata.plugins.quality.report.QualityReport`
-is built internally.  Its `passed` property returns `True` only when no check
-has a `FAILED` status, and `summary` returns counts per status.
+Após o fim da avaliação, o framework constrói internamente um objeto imutável `QualityReport`.
+
+A propriedade `passed` retorna `True` exclusivamente quando nenhuma das checagens recebeu o status `FAILED`.
 
 ```python
-from aptdata.plugins.quality.report import CheckStatus, QualityReport
+from aptdata.plugins.quality.report import QualityReport
 
 report = QualityReport(dataset_uri="s3://bucket/data.parquet")
-# ... checks appended by validator ...
+# (Checks são apendados dinamicamente pelo QualityValidator...)
 
 print(report.passed)    # True / False
 print(report.summary)   # {"PASSED": 3, "FAILED": 1, "WARNING": 0}
@@ -156,16 +145,15 @@ print(report.summary)   # {"PASSED": 3, "FAILED": 1, "WARNING": 0}
 
 ---
 
-## OTel integration
+## Integração OTel
 
-:class:`~aptdata.plugins.quality.validator.QualityValidator` emits an OTel
-span with the following attributes:
+Para governança e observabilidade em painéis externos (como Grafana ou Datadog), o `QualityValidator` emite um *span* do tipo OTel com os seguintes *tags*:
 
-| Attribute                                | Description           |
-|------------------------------------------|-----------------------|
-| `aptdata.quality.validator_name`      | Validator name        |
-| `aptdata.quality.enforcement`         | Enforcement mode      |
-| `aptdata.quality.num_expectations`    | Number of expectations |
-| `aptdata.quality.passed`              | Overall result        |
-| `aptdata.quality.num_checks`          | Total checks run      |
-| `aptdata.quality.failed_checks`       | Number of failures    |
+| Atributo OTel | Descrição |
+|---|---|
+| `aptdata.quality.validator_name` | Identificador único do Validador |
+| `aptdata.quality.enforcement` | Estratégia de falha (ABORT, WARN) |
+| `aptdata.quality.num_expectations` | Total de regras configuradas |
+| `aptdata.quality.passed` | Sucesso global Booleano |
+| `aptdata.quality.num_checks` | Quantidade absoluta de verificações feitas |
+| `aptdata.quality.failed_checks` | Quantidade absoluta de falhas detectadas |

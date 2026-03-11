@@ -1,12 +1,12 @@
 # DIYs & Snippets
 
-Welcome to the **DIY (Do It Yourself)** section! Here you will find copy-pasteable snippets and mini-tutorials for solving common data engineering problems using **aptdata**.
+Bem-vindo à seção **DIY (Do It Yourself)**! Aqui você encontra snippets e mini-tutoriais pragmáticos para resolver problemas reais de Engenharia de Dados utilizando o **aptdata**.
 
 ---
 
-## 1. Minimal Data Transformer with Pandas
+## 1. Transformador Minimalista com Pandas
 
-Often you just want to take an existing `pandas.DataFrame`, clean it up, and return it. Using `PandasTransformer`, you can wrap simple functions directly into an `aptdata` component.
+Use o `PandasTransformer` para encapsular funções puras e reaproveitar código legado.
 
 ```python title="clean_data.py"
 import pandas as pd
@@ -16,8 +16,9 @@ from aptdata.plugins.transform import PandasTransformer
 
 @dataclass
 class DataFrameDataset(BaseDataset):
-    """A simple dataset holding a pandas DataFrame."""
-    _data: pd.DataFrame = None
+    """Um dataset simples armazenando um DataFrame Pandas."""
+    def __post_init__(self):
+        self._data = None
 
     def read(self) -> pd.DataFrame:
         return self._data
@@ -25,28 +26,28 @@ class DataFrameDataset(BaseDataset):
     def write(self, data: pd.DataFrame):
         self._data = data
 
-# 1. Define your standard pandas logic
+# 1. Defina sua lógica padrão do Pandas
 def drop_nulls_and_dedup(df: pd.DataFrame) -> pd.DataFrame:
     return df.dropna().drop_duplicates()
 
-# 2. Wrap it with PandasTransformer
+# 2. Encapsule a função
 transformer = PandasTransformer("clean_data", drop_nulls_and_dedup)
 
-# 3. Use it!
+# 3. Uso direto
 raw_df = pd.DataFrame({"id": [1, 2, 2, None], "value": ["A", "B", "B", "C"]})
 dataset = DataFrameDataset(uri="memory://raw")
 dataset.write(raw_df)
 
-# Output dataset
+# Saída do pipeline
 result = transformer.transform(dataset)
 print(result.read())
 ```
 
 ---
 
-## 2. Enforcing Schema Contracts
+## 2. Aplicando Contratos de Schema (Fail-Fast)
 
-This snippet shows how to enforce that a dataset contains no nulls on a primary key column before proceeding to the next step. If it fails, execution aborts.
+Como abortar a execução imediatamente (`EnforcementMode.ABORT`) se a chave primária de um DataFrame estiver nula.
 
 ```python title="quality_check.py"
 import pandas as pd
@@ -54,10 +55,11 @@ from aptdata.plugins.quality import (
     EnforcementMode, ExpectColumnToNotBeNull, QualityValidator
 )
 
-# Set up validation rules
+# Configura o validador com comportamento de falha estrita
 validator = QualityValidator(
     expectations=[ExpectColumnToNotBeNull("id")],
-    enforcement=EnforcementMode.ABORT, # Fail fast!
+    enforcement=EnforcementMode.ABORT, # Fail-Fast!
+    name="pk_validator"
 )
 
 raw_df = pd.DataFrame({"id": [1, 2, None], "value": ["A", "B", "C"]})
@@ -65,39 +67,36 @@ raw_df = pd.DataFrame({"id": [1, 2, None], "value": ["A", "B", "C"]})
 try:
     clean_data = validator.validate(raw_df)
 except ValueError as e:
-    print(f"Validation failed: {e}")
+    print(f"Validação falhou: {e}")
 ```
 
 ---
 
-## 3. Emitting Lineage Data
+## 3. Extração Manual de Linhagem (Lineage)
 
-Tracking where data comes from and where it goes is crucial for governance. Here is how you can use `LineageGraph` to emit basic lineage data.
+Garantindo a rastreabilidade da origem (`READ`) e do destino (`WRITE`) dos dados.
 
 ```python title="lineage.py"
 from aptdata.core.lineage import LineageGraph, LineageNode, LineageEventType
 from aptdata.plugins.governance import LineageStore
 
-# 1. Initialize a Graph for a specific run
+# 1. Inicializa um Grafo para uma execução específica
 graph = LineageGraph(run_id="run-1024", workflow_name="daily_etl")
 
-# 2. Record read and write events
+# 2. Registra eventos I/O
 graph.add_node(LineageNode(dataset_uri="s3://bronze/sales", event_type=LineageEventType.READ))
 graph.add_node(LineageNode(dataset_uri="s3://silver/sales_clean", event_type=LineageEventType.WRITE))
 
-# 3. Save it to your store (defaults to logging/memory)
+# 3. Salva no repositório de governança (memória/logs por padrão)
 store = LineageStore()
 store.save(graph)
 
-print("Lineage recorded successfully.")
+print("Linhagem gravada com sucesso.")
 ```
 
 ---
 
-## Run from your Browser
+!!! tip "Execute no seu Navegador (Google Colab)"
+    Quer testar o `aptdata` sem instalar nada localmente? Rode nosso ambiente *sandbox* interativo.
 
-Want to try `aptdata` without installing anything? You can run a sandbox environment directly in your browser using Google Colab!
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/strondata/smart-data/blob/main/docs/notebooks/aptdata_quickstart.ipynb)
-
-> **Note:** The Colab notebook will automatically install `aptdata` using `pip install aptdata` inside the environment so you can run the code snippets above immediately.
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/strondata/smart-data/blob/main/docs/notebooks/aptdata_quickstart.ipynb)

@@ -1,10 +1,10 @@
-# CI & Execution Logs
+# Logs de Execução e CI/CD
 
-**aptdata** is designed to integrate seamlessly into CI/CD pipelines. Because every execution log and command output can be formatted as structured JSON lines (`--json`), it becomes incredibly easy to capture, parse, and analyze the results of your data pipelines within automated workflows.
+O **aptdata** foi arquitetado com automação em mente. A emissão de logs pode ser formatada em objetos JSON estruturados e lineares (`--json`), viabilizando a captura, *parsing* e ingestão direta em *Data Lakes* de observabilidade (ex: Datadog, ELK) ou esteiras de CI/CD.
 
-## GitHub Actions Example
+## Integração com GitHub Actions
 
-Here is a complete example of how you can run an `aptdata` system inside a GitHub Actions workflow. This workflow sets up Python, installs the project dependencies, and runs the data pipeline.
+O exemplo abaixo demonstra a orquestração de um pipeline de dados do `aptdata` sendo disparado por cron-jobs através de uma Action do GitHub. O output estruturado é arquivado no final da esteira.
 
 ```yaml title=".github/workflows/data-pipeline.yml"
 name: Run Data Pipeline
@@ -13,7 +13,7 @@ on:
   push:
     branches: [ "main" ]
   schedule:
-    # Run daily at midnight
+    # Execução diária à meia-noite
     - cron: '0 0 * * *'
 
 jobs:
@@ -23,33 +23,31 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Python 3.10
+    - name: Configurar Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: Instalar dependências
       run: |
         python -m pip install --upgrade pip
         pip install aptdata
 
-    - name: Run aptdata system
+    - name: Executar Sistema aptdata
       run: |
-        # Run the system named "my_system" and output structured JSON logs
+        # Dispara o sistema "my_system" e coleta logs em NDJSON
         aptdata run my_system --json > pipeline_run.json
 
-    - name: Archive execution logs
+    - name: Arquivar Logs de Execução
       uses: actions/upload-artifact@v3
       with:
         name: aptdata-execution-logs
         path: pipeline_run.json
 ```
 
-## Realistic Execution Logs
+## Logs Realísticos (NDJSON)
 
-When you run `aptdata` with the `--json` flag, it emits structured NDJSON (Newline Delimited JSON) logs. This is perfect for machine readability.
-
-Here is an example of what the execution logs might look like when running a system:
+Ao usar a *flag* `--json`, o formato textual enriquecido via `Rich` é desligado e o terminal emite puramente NDJSON (Newline Delimited JSON).
 
 ```json title="pipeline_run.json"
 {"event": "system.started", "system_name": "my_system", "env": "prod", "dry_run": false, "timestamp": "2023-10-27T10:00:00.000000Z"}
@@ -66,9 +64,9 @@ Here is an example of what the execution logs might look like when running a sys
 {"event": "system.completed", "system_name": "my_system", "env": "prod", "dry_run": false, "elapsed_seconds": 8.77, "timestamp": "2023-10-27T10:00:08.770000Z"}
 ```
 
-## Standard CLI Output
+## Saída Padrão (Human-Readable)
 
-If you run the CLI without the `--json` flag, you get rich, interactive console output powered by `Rich`, complete with progress bars and syntax highlighting.
+Por padrão (sem `--json`), o terminal é renderizado via `Rich`, provendo barras de progresso, status visual de cada componente e realce de sintaxe (*syntax highlighting*) facilitando o *debugging* humano.
 
 ```bash
 $ aptdata run my_system

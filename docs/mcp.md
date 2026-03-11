@@ -1,88 +1,78 @@
-# MCP Server
+# Servidor MCP (Integração IA)
 
-aptdata includes a built-in [Model Context Protocol](https://modelcontextprotocol.io/)
-(MCP) server, transforming AI agents (Claude, Copilot, Devin) into autonomous
-Data Engineers. Instead of merely generating code, the AI can discover, audit,
-and execute pipelines directly against your data infrastructure without consuming
-excessive context tokens.
+O `aptdata` inclui um servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) embutido. Ele transforma agentes de IA (como Claude Desktop, Copilot, Devin) em Engenheiros de Dados autônomos. Em vez de apenas gerar código estático, a IA consegue descobrir conexões, auditar contratos de schema e executar pipelines diretamente contra sua infraestrutura, sem estourar o limite de *tokens* de contexto.
 
 ---
 
-## Overview
+## Visão Geral
 
-Powered by [FastMCP](https://github.com/jlowin/fastmcp), the server exposes your
-infrastructure through **tools** (actions) and **resources** (read-only state).
-
-Through MCP, the AI gains access to **Data Quality** reports, **Lineage** tracking,
-and **Governance** rules, allowing it to autonomously debug failures or design
-compliant pipelines.
+Baseado no [FastMCP](https://github.com/jlowin/fastmcp), o servidor expõe a infraestrutura do framework através de **Ferramentas (Tools)** (ações que modificam estado ou extraem dados ativamente) e **Recursos (Resources)** (estado de leitura, como esquemas e relatórios).
 
 ```mermaid
 graph LR
-    A["AI Agent\n(Claude / Copilot / Devin)"]
+    A["🤖 Agente IA\n(Claude / Copilot)"]
     S["aptdata mcp-start"]
-    T["Tools\nrun_flow(flow_id)\nget_pipeline_lineage(flow_id)"]
-    R["Resources\nquality://reports/.../latest\ngovernance://rules"]
+    T["🛠 Tools\nrun_flow(flow_id)\nget_pipeline_lineage(...)"]
+    R["📄 Resources\nquality://reports/.../latest\ngovernance://rules"]
 
-    A -- "MCP protocol" --> S
+    A -- "Protocolo MCP" --> S
     S --> T
     S --> R
 ```
 
 ---
 
-## Starting the server
+## Iniciando o Servidor
 
-### stdio transport (default)
-
-Used by most desktop AI agents (Claude Desktop, Continue.dev, etc.):
-
+Para habilitar a integração MCP, instale o grupo opcional `ai`:
 ```bash
-aptdata mcp-start
+pip install "aptdata[ai]"
 ```
 
-### SSE transport
+=== "Transporte Stdio (Default)"
+    Utilizado pela maioria dos clientes de desktop (Claude Desktop, Cline, Continue.dev). A comunicação ocorre via *standard input/output*.
+    ```bash
+    aptdata mcp-start
+    ```
 
-For web-based or HTTP integrations:
-
-```bash
-aptdata mcp-start --transport sse
-```
+=== "Transporte SSE"
+    Ideal para integrações baseadas na web (HTTP Server-Sent Events). O servidor inicia localmente na porta `8000`.
+    ```bash
+    aptdata mcp-start --transport sse
+    ```
 
 ---
 
-## Available tools
+## Ferramentas (Tools) Expostas
 
-| Tool | Signature | Description |
-|------|-----------|-------------|
-| `run_flow` | `run_flow(flow_id: str)` | Execute a registered system by name and return its status |
-| `list_registered_systems` | `list_registered_systems()` | Return a list of all systems registered in the plugin registry |
-| `list_available_plugins` | `list_available_plugins()` | List all installed plugins |
-| `get_plugin_schema` | `get_plugin_schema(plugin_name: str)` | Return the JSON schema for a plugin |
-| `preview_dataset` | `preview_dataset(reader: str, limit: int)` | Preview the first N rows from a dataset reader |
-| `get_pipeline_lineage` | `get_pipeline_lineage(flow_id: str)` | Return the dependency tree (DAG) and column traceability (Lineage) |
+A IA possui acesso nativo aos seguintes comandos:
 
----
-
-## Available resources
-
-| URI pattern | Description |
-|-------------|-------------|
-| `schema://datasets/{name}` | JSON schema for the named dataset |
-| `quality://reports/{workflow_name}/latest` | Fetch the latest quality report for a given workflow |
-| `governance://rules` | List registered business rules |
+| Ferramenta (Tool) | Assinatura | Descrição |
+|---|---|---|
+| `run_flow` | `(flow_id: str)` | Executa um sistema registrado no *Registry* e retorna o status. |
+| `list_registered_systems` | `()` | Lista todos os sistemas orquestráveis disponíveis. |
+| `list_available_plugins` | `()` | Lista adaptadores e conectores de infraestrutura instalados. |
+| `get_plugin_schema` | `(plugin_name: str)` | Retorna o schema Pydantic exato exigido por um componente. Elimina alucinações da IA na hora de gerar código. |
+| `preview_dataset` | `(reader: str, limit: int)`| Retorna as primeiras *N* linhas reais para a IA inspecionar os dados. |
+| `get_pipeline_lineage` | `(flow_id: str)` | Retorna a árvore de dependência (DAG) e a linhagem de colunas. |
 
 ---
 
-## Integrating with Claude Desktop
+## Recursos (Resources) Expostos
 
-To make the MCP integration available, you can optionally install the `ai` extra:
+Recursos funcionam como URIs internas para o agente consumir contexto sob demanda.
 
-```bash
-pip install aptdata[ai]
-```
+| Padrão URI | Retorno para a IA |
+|---|---|
+| `schema://datasets/{name}` | JSON Schema (Tipagem) para o dataset informado. |
+| `quality://reports/{workflow}/latest`| Último relatório de qualidade (QualityReport) com contagem de erros e regras falhas. |
+| `governance://rules` | Lista de Regras de Negócios registradas no catálogo. |
 
-Add the following to your Claude Desktop configuration file:
+---
+
+## Configurando no Claude Desktop
+
+Adicione o servidor `aptdata` ao arquivo de configuração do Claude Desktop:
 
 - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
@@ -90,7 +80,7 @@ Add the following to your Claude Desktop configuration file:
 ```json
 {
   "mcpServers": {
-    "smart-data": {
+    "aptdata": {
       "command": "aptdata",
       "args": ["mcp-start", "--transport", "stdio"]
     }
@@ -98,22 +88,4 @@ Add the following to your Claude Desktop configuration file:
 }
 ```
 
-Restart Claude Desktop.  The agent will now be able to call
-`list_registered_systems()` to discover your pipelines and `run_flow()`  to
-execute them.
-
----
-
-## Integrating with other agents
-
-Any MCP-compatible client can connect to aptdata.  For agents that support
-SSE, start the server with `--transport sse` and point the client at
-`http://localhost:8000/sse` (default port).
-
----
-
-## Further reading
-
-- [Getting Started](getting-started.md) — register your first system
-- [API Reference – Core](api/core.md) — `BaseSystem` and the plugin registry
-- [Model Context Protocol specification](https://modelcontextprotocol.io/docs)
+Após reiniciar o aplicativo, o agente será capaz de entender seu banco de dados e rodar seus fluxos de forma autônoma.
