@@ -8,33 +8,33 @@ O **aptdata** é um framework declarativo e extensível para construção de pip
 
 <div class="grid cards" markdown>
 
--   :material-file-document-check-outline: __Design Contract-First__
+-   :material-file-document-check-outline: **Design Contract-First**
 
-    Interfaces puras em Python (`@dataclass + ABC`) como `IDataset`, `IComponent`, `IFlow` e `ISystem` tornam o comportamento esperado explícito antes de qualquer código concreto ser escrito.
+    Interfaces puras em Python (`@dataclass + ABC`) para comportamento explícito.
 
--   :material-shield-check: __Base Classes Validadas por Pydantic__
+-   :material-shield-check: **Validação Pydantic**
 
-    `BaseDataset`, `BaseComponent`, `BaseFlow` e `BaseSystem` estendem as interfaces adicionando campos validados pelo Pydantic, oferecendo type safety em tempo de execução sem custo adicional.
+    Type safety em tempo de execução sem custo adicional.
 
--   :material-tag-multiple: __Componentes Direcionados por Metadados__
+-   :material-source-branch: **Fluxos Condicionais**
 
-    A classe `ComponentMeta` carrega o tipo (*kind*), *tags*, chave de roteamento condicional e atributos extras — eliminando a necessidade de inspecionar os componentes internamente.
+    Estrutura `FlowEdge` com predicados opcionais para ramificações dinâmicas.
 
--   :material-source-branch: __Fluxos Condicionais__
+-   :material-tag-multiple: **Componentes Direcionados por Metadados**
 
-    A estrutura `FlowEdge` suporta predicados opcionais, permitindo que os fluxos ramifiquem dinamicamente com base nas saídas em tempo de execução.
+    A classe `ComponentMeta` carrega o tipo (*kind*), *tags*, chave de roteamento condicional e atributos extras.
 
--   :material-puzzle: __Registro de Plugins (Registry)__
+-   :material-puzzle: **Registro de Plugins (Registry)**
 
-    Adapters de terceiros registram implementações concretas de `ISystem` pelo nome. Assim, a CLI consegue descobrir e executá-las sem alterar o código principal.
+    Adapters de terceiros registram implementações concretas de `ISystem` pelo nome.
 
--   :material-console: __CLI Estruturada e JSON Lines__
+-   :material-console: **CLI Estruturada e JSON Lines**
 
-    Cada resultado e evento de ciclo de vida é emitido em formato JSON Lines (`.model_dump_json()`), ideal para orquestradores, integração com IA e pipelines de CI/CD.
+    Resultados emitidos em JSON Lines (`.model_dump_json()`), ideal para orquestradores.
 
--   :material-monitor-dashboard: __Dashboard Interativo (TUI)__
+-   :material-monitor-dashboard: **Dashboard Interativo (TUI)**
 
-    Um dashboard no terminal construído com Textual que permite monitorar o progresso dos fluxos e o consumo de memória em tempo real.
+    Um dashboard no terminal construído com Textual para monitoramento em tempo real.
 
 </div>
 
