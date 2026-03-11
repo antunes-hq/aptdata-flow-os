@@ -59,6 +59,7 @@ nav:
   - DIYs & Snippets: diys.md
   - CI & Execution Logs: ci-logs.md
   - Architecture: architecture.md
+  - ADR 001 - Revisão Core: ADR-001-Revisao-Arquitetural-Core.md
   - Engines: transform-engines.md
   - Quality: quality.md
   - Governance: governance.md

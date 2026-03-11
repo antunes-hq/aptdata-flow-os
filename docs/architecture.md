@@ -1,5 +1,10 @@
 # Architecture
 
+!!! info "Architecture Decision Records"
+    For historical context and reasoning behind architectural choices, please refer to the ADRs:
+
+    * [ADR 001: Revisão Arquitetural do Core e Simplificação de Fluxos (DX)](ADR-001-Revisao-Arquitetural-Core.md)
+
 aptdata is built around a **two-layer contract system** for each of its
 three universal abstractions — **Component**, **Flow**, and **System** — plus
 the foundational **Dataset** type.
