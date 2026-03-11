@@ -24,7 +24,8 @@ class YamlSystemBuilder:
             self.manifest = yaml.safe_load(f)
 
     def load_component_modules(self, module_paths: list[str]) -> None:
-        """Dynamically load python modules so their decorators execute and register components."""
+        """Dynamically load python modules so their decorators execute and register
+        components."""
         yaml_dir = os.path.dirname(self.yaml_path)
 
         for idx, mod_path in enumerate(module_paths):
@@ -103,7 +104,8 @@ class YamlSystemBuilder:
                         params = comp_config.get("params", {})
                         comp_instance = component_class(component_id=name, **params)
 
-                        # Add to flow (No output contract handling here for simplicity, but could load via import string)
+                        # Add to flow (No output contract handling here for simplicity,
+                        # but could load via import string)
                         self.add_component(comp_instance)
 
                     # Parse connections

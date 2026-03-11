@@ -265,7 +265,8 @@ class TestIFlow:
             IFlow()  # type: ignore[abstract]
 
     def test_cannot_instantiate_base(self):
-        # BaseFlow provides default implementations for all abstract methods so it is instantiable
+        # BaseFlow provides default implementations for all abstract methods so it
+        # is instantiable
         pass
 
     def test_flow_id_field(self):
@@ -357,7 +358,8 @@ class TestISystem:
             ISystem()  # type: ignore[abstract]
 
     def test_cannot_instantiate_base(self):
-        # BaseSystem provides default implementations for all abstract methods so it is instantiable
+        # BaseSystem provides default implementations for all abstract methods so it
+        # is instantiable
         pass
 
     def test_system_id_field(self):

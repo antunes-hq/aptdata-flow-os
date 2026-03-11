@@ -42,7 +42,7 @@ class IContext(ABC):
         """Remove all state."""
 
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict  # noqa: E402
 
 
 @pydantic_dataclass(config=ConfigDict(arbitrary_types_allowed=True))

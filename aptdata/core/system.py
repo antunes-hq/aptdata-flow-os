@@ -140,7 +140,8 @@ class BaseComponent(IComponent):
     component_id: str
     metadata: ComponentMeta = field(default_factory=ComponentMeta)
 
-    # Use generic Any because pydantic doesn't know IContext unless arbitrary types are allowed
+    # Use generic Any because pydantic doesn't know IContext unless
+    # arbitrary types are allowed
     _context: Any = Field(default=None, init=False, repr=False, exclude=True)
 
     @property
@@ -269,9 +270,14 @@ class IFlow(ABC):
         pass
 
     @abstractmethod
-    def add_component(self, component: type[IComponent] | IComponent, output_contract: type[BaseModel] | None = None) -> None:
+    def add_component(
+        self,
+        component: type[IComponent] | IComponent,
+        output_contract: type[BaseModel] | None = None,
+    ) -> None:
         """Add *component* as a node in this flow. Can be a class or instance.
-        If a class is provided, the flow handles instantiation and validates outputs against *output_contract*."""
+        If a class is provided, the flow handles instantiation and validates outputs
+        against *output_contract*."""
 
     @abstractmethod
     def connect(
@@ -327,7 +333,8 @@ class BaseFlow(IFlow):
     _nodes: dict[str, FlowNode] = field(default_factory=dict, init=False, repr=False)
     _edges: list[FlowEdge] = field(default_factory=list, init=False, repr=False)
 
-    # Use generic Any because pydantic doesn't know IContext unless arbitrary types are allowed
+    # Use generic Any because pydantic doesn't know IContext unless
+    # arbitrary types are allowed
     _context: Any = Field(default=None, init=False, repr=False, exclude=True)
 
     @property
@@ -341,11 +348,15 @@ class BaseFlow(IFlow):
     def build(self) -> None:
         pass
 
-    def add_component(self, component: type[IComponent] | IComponent, output_contract: type[BaseModel] | None = None) -> None:
+    def add_component(
+        self,
+        component: type[IComponent] | IComponent,
+        output_contract: type[BaseModel] | None = None,
+    ) -> None:
         if isinstance(component, type):
             # Instantiate component with DI. (For this scaffold, default init)
             # A real DI container could be used here.
-            comp_instance = component(component_id=component.__name__) # type: ignore
+            comp_instance = component(component_id=component.__name__)  # type: ignore
         else:
             comp_instance = component
 
@@ -353,8 +364,10 @@ class BaseFlow(IFlow):
             comp_instance.context = self._context
 
         # Optional: Wrap execution to enforce output_contract if needed,
-        # though usually components themselves should use PydanticDataset directly if they want.
-        # However, the prompt says "aplicar um wrapper de interceptação para validar o contrato na saída."
+        # though usually components themselves should use PydanticDataset directly
+        # if they want.
+        # However, the prompt says "aplicar um wrapper de interceptação para validar
+        # o contrato na saída."
         if output_contract is not None:
             original_execute = comp_instance.execute
 
@@ -364,14 +377,19 @@ class BaseFlow(IFlow):
                 for res in results:
                     # Enforce the contract by wrapping the result in a PydanticDataset
                     data = res.read()
-                    ds = PydanticDataset(uri=res.uri if hasattr(res, "uri") else "memory://contract", contract=output_contract)
+                    ds = PydanticDataset(
+                        uri=res.uri if hasattr(res, "uri") else "memory://contract",
+                        contract=output_contract,
+                    )
                     ds.write(data)
                     validated_results.append(ds)
                 return validated_results
 
-            comp_instance.execute = _wrapped_execute # type: ignore[method-assign]
+            comp_instance.execute = _wrapped_execute  # type: ignore[method-assign]
 
-        self._nodes[comp_instance.component_id] = FlowNode(component=comp_instance, flow=self)
+        self._nodes[comp_instance.component_id] = FlowNode(
+            component=comp_instance, flow=self
+        )
 
     def connect(
         self,
@@ -379,7 +397,9 @@ class BaseFlow(IFlow):
         target_id: str,
         condition: Callable[[list[IDataset]], bool] | None = None,
     ) -> None:
-        self._edges.append(FlowEdge(source_id=source_id, target_id=target_id, condition=condition))
+        self._edges.append(
+            FlowEdge(source_id=source_id, target_id=target_id, condition=condition)
+        )
 
     def compile(self) -> None:
         self.build()
@@ -391,7 +411,8 @@ class BaseFlow(IFlow):
     def run(self, initial_inputs: list[IDataset]) -> list[IDataset]:
         self.compile()
         # A simple linear execution for now if no edges are defined
-        # This is a naive runner for the scaffold. In a real system, a DAG runner is used.
+        # This is a naive runner for the scaffold. In a real system,
+        # a DAG runner is used.
         if not self._edges:
             current_inputs = initial_inputs
             for node in self._nodes.values():
@@ -448,8 +469,11 @@ class BaseSystem(ISystem):
     system_id: str
 
     _flows: list[IFlow] = field(default_factory=list, init=False, repr=False)
-    # We use Field(..., exclude=True) so it is not exported in Pydantic schema generation
-    _context: Any = Field(default_factory=ExecutionContext, init=False, repr=False, exclude=True)
+    # We use Field(..., exclude=True) so it is not exported in Pydantic schema
+    # generation
+    _context: Any = Field(
+        default_factory=ExecutionContext, init=False, repr=False, exclude=True
+    )
 
     def setup(self) -> None:
         pass

@@ -166,7 +166,11 @@ class PandasTransformComponent(BaseComponent):
             df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
 
         # Execute business logic using injected context if available
-        context = self.context if getattr(self, "context", None) is not None else ExecutionContext()
+        context = (
+            self.context
+            if getattr(self, "context", None) is not None
+            else ExecutionContext()
+        )
         result_df = self.transform(df, context)
 
         # Encapsulate back into an IDataset
@@ -176,5 +180,6 @@ class PandasTransformComponent(BaseComponent):
         out_ds.write(result_df)
 
         return [out_ds]
+
 
 __all__ = ["PandasTransformer", "PandasTransformComponent"]

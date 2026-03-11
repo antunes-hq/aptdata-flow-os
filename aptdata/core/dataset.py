@@ -9,7 +9,8 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 
 class DataContractError(Exception):
-    """Exception raised when dataset data does not conform to the expected Pydantic contract."""
+    """Exception raised when dataset data does not conform to the expected Pydantic
+    contract."""
 
     pass
 
@@ -48,13 +49,15 @@ class BaseDataset(IDataset):
 
 T = TypeVar("T", bound=BaseModel)
 
+
 @pydantic_dataclass
 class PydanticDataset(BaseDataset, Generic[T]):
     """A dataset implementation that enforces a Pydantic model contract.
 
     Data validation is performed when data is written to or read from the dataset.
     This implementation optimized for Pandas dataframes by converting the Pydantic
-    schema into pandas dtypes, ensuring fail-fast execution without row-by-row iteration.
+    schema into pandas dtypes, ensuring fail-fast execution without row-by-row
+    iteration.
     """
 
     contract: type[T] | None = field(default=None)
@@ -89,24 +92,27 @@ class PydanticDataset(BaseDataset, Generic[T]):
         if isinstance(data, pd.DataFrame):
             # Optimised pandas validation
             schema_fields = self.contract.model_fields
-            expected_columns = set(schema_fields.keys())
             actual_columns = set(data.columns)
 
             # Check for missing columns
             required_columns = {k for k, v in schema_fields.items() if v.is_required()}
             missing_required = required_columns - actual_columns
             if missing_required:
-                raise DataContractError(f"DataFrame is missing required columns: {missing_required}")
+                raise DataContractError(
+                    f"DataFrame is missing required columns: {missing_required}"
+                )
 
             # Optionally check types (fail-fast type checking without row-by-row)
             # This is a basic conversion check
             for col, field_info in schema_fields.items():
                 if col in data.columns:
-                    # In a real-world scenario, we would map pydantic types to numpy/pandas dtypes
-                    # and ensure the types match perfectly. For now we rely on missing columns
-                    # and basic null checks.
+                    # In a real-world scenario, we would map pydantic types to
+                    # numpy/pandas dtypes and ensure the types match perfectly.
+                    # For now we rely on missing columns and basic null checks.
                     if field_info.is_required() and data[col].isnull().any():
-                        raise DataContractError(f"Column '{col}' contains null values but is required.")
+                        raise DataContractError(
+                            f"Column '{col}' contains null values but is required."
+                        )
         elif isinstance(data, list):
             for row in data:
                 try:

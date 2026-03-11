@@ -1,4 +1,3 @@
-import pandas as pd
 import pytest
 
 from aptdata.core.context import ExecutionContext, IContext
@@ -6,6 +5,8 @@ from aptdata.core.decorators import component, pandas_component
 from aptdata.core.registry import ComponentRegistry
 from aptdata.core.system import BaseComponent
 from aptdata.plugins.dataset import InMemoryDataset
+
+pd = pytest.importorskip("pandas")
 
 
 @pytest.fixture(autouse=True)
@@ -56,7 +57,7 @@ def test_pandas_component_decorator():
     def my_pandas_func(df, context):
         assert isinstance(df, pd.DataFrame)
         assert isinstance(context, IContext)
-        df['new_col'] = 1
+        df["new_col"] = 1
         return df
 
     comp_class = ComponentRegistry.get("test_pandas")
@@ -78,12 +79,11 @@ def test_pandas_component_decorator():
     assert out_df["new_col"].tolist() == [1, 1]
 
 
-import yaml
-
-from aptdata.core.yaml_builder import YamlSystemBuilder
-
-
 def test_yaml_builder(tmp_path):
+    import yaml
+
+    from aptdata.core.yaml_builder import YamlSystemBuilder
+
     # Create dummy component module
     comp_mod = tmp_path / "my_comps.py"
     comp_mod.write_text("""
@@ -99,17 +99,12 @@ def dummy_func(inputs):
         "system": {
             "id": "test_sys",
             "flows": [
-                {
-                    "id": "flow1",
-                    "components": [
-                        {"name": "my_dummy", "ref": "dummy"}
-                    ]
-                }
-            ]
+                {"id": "flow1", "components": [{"name": "my_dummy", "ref": "dummy"}]}
+            ],
         },
-        "imports": [str(comp_mod.name)]
+        "imports": [str(comp_mod.name)],
     }
-    with open(manifest_path, 'w') as f:
+    with open(manifest_path, "w") as f:
         yaml.dump(manifest_data, f)
 
     builder = YamlSystemBuilder(str(manifest_path))
@@ -120,7 +115,9 @@ def dummy_func(inputs):
     flow = system._flows[0]
     assert flow.flow_id == "flow1"
 
-    # Run the system, it builds the flow graph inside flow.run() -> flow.compile() -> flow.build()
-    # Or we can just call build directly since DynamicFlow overrides it to add components
+    # Run the system, it builds the flow graph inside
+    # flow.run() -> flow.compile() -> flow.build()
+    # Or we can just call build directly
+    # since DynamicFlow overrides it to add components
     flow.build()
     assert "my_dummy" in flow._nodes

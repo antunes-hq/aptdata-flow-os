@@ -10,10 +10,11 @@ from aptdata.core.system import BaseComponent
 
 class FunctionComponentAdapter(BaseComponent):
     """Adapter to make a simple python function behave like a BaseComponent."""
+
     def __init__(self, func: Callable, name: str, **kwargs: Any):
         # Determine component_id. User might have passed it in kwargs via yaml builder.
         # Otherwise fallback to the decorator's name
-        comp_id = kwargs.pop('component_id', name)
+        comp_id = kwargs.pop("component_id", name)
         super().__init__(component_id=comp_id, **kwargs)
         self._func = func
 
@@ -41,7 +42,8 @@ class FunctionComponentAdapter(BaseComponent):
             elif param_name == "inputs":
                 kwargs[param_name] = inputs
 
-        # If the parameter isn't explicitly named "inputs", we'll just pass inputs as the first arg if it takes positional args
+        # If the parameter isn't explicitly named "inputs", we'll just pass inputs
+        # as the first arg if it takes positional args
         if "inputs" not in kwargs and len(sig.parameters) > 0:
             first_param = list(sig.parameters.keys())[0]
             if first_param != "context" or not has_context_param:
@@ -51,11 +53,15 @@ class FunctionComponentAdapter(BaseComponent):
 
 
 def component(name: str | None = None) -> Callable:
-    """Decorator to register a component class or a function in the global ComponentRegistry.
+    """Decorator to register a component class or a function in the global
+    ComponentRegistry.
 
     If used on a function, it wraps it in an adapter that implements BaseComponent.
     """
-    def decorator(target: type[BaseComponent] | Callable) -> type[BaseComponent] | Callable:
+
+    def decorator(
+        target: type[BaseComponent] | Callable,
+    ) -> type[BaseComponent] | Callable:
         # Determine registry name
         registry_name = name or target.__name__
 
@@ -65,7 +71,8 @@ def component(name: str | None = None) -> Callable:
             return target
         else:
             # Target is a function
-            # We must create a dynamically generated subclass to easily instantiate later.
+            # We must create a dynamically generated subclass to
+            # easily instantiate later.
             class DynamicFunctionComponent(FunctionComponentAdapter):
                 def __init__(self, **kwargs):
                     super().__init__(func=target, name=registry_name, **kwargs)
@@ -77,12 +84,15 @@ def component(name: str | None = None) -> Callable:
 
     return decorator
 
+
 def pandas_component(name: str | None = None) -> Callable:
-    """Decorator to register a pandas-specific function in the global ComponentRegistry.
+    """Decorator to register a pandas-specific function in the global
+    ComponentRegistry.
 
     The decorated function should take a pd.DataFrame and optionally an IContext,
     and return a pd.DataFrame. The adapter will handle unwrapping/wrapping IDataset.
     """
+
     def decorator(target: Callable) -> Callable:
         registry_name = name or target.__name__
 
@@ -94,7 +104,10 @@ def pandas_component(name: str | None = None) -> Callable:
                 from aptdata.plugins.dataset import InMemoryDataset
 
                 if not inputs:
-                    raise ValueError(f"Pandas component '{self.component_id}' requires at least one input dataset.")
+                    raise ValueError(
+                        f"Pandas component '{self.component_id}' "
+                        "requires at least one input dataset."
+                    )
 
                 # Unwrap the first input dataset to a pandas DataFrame
                 df = inputs[0].read()
