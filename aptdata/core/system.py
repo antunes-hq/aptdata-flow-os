@@ -23,9 +23,9 @@ Design goals
 
 from __future__ import annotations
 
+import time
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-import time
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import wraps

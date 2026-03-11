@@ -1,13 +1,12 @@
 """Tests for the Event Bus and lifecycle hooks."""
 
-from typing import Any
 import pytest
-from pydantic import BaseModel
 
-from aptdata.core.events import EventBus, ComponentExecutionEvent, EventPayload
-from aptdata.core.system import BaseComponent, BaseFlow, BaseSystem
 from aptdata.core.dataset import IDataset
+from aptdata.core.events import ComponentExecutionEvent, EventBus, EventPayload
+from aptdata.core.system import BaseComponent
 from aptdata.plugins.dataset import InMemoryDataset
+
 
 class _DummyComponent(BaseComponent):
     def validate_inputs(self, inputs: list[IDataset]) -> bool:
@@ -83,7 +82,7 @@ def test_event_bus_dispatch_failure_chronology():
 
 
 def test_event_bus_fault_tolerance(caplog):
-    """Ensure exceptions in listeners do not break the dispatch or the flow execution."""
+    """Ensure exceptions in listeners do not break dispatch or execution."""
     bus = EventBus()
 
     def bad_listener(event: EventPayload):

@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import logging
+import queue
+import threading
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from datetime import datetime, timezone
-from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -40,18 +41,17 @@ class IEventBus(ABC):
     """Interface for an Event Bus."""
 
     @abstractmethod
-    def subscribe(self, event_type: str, listener: Callable[[EventPayload], None]) -> None:
+    def subscribe(
+        self, event_type: str, listener: Callable[[EventPayload], None]
+    ) -> None:
         """Register a listener for a specific event type."""
         pass
 
     @abstractmethod
     def dispatch(self, event: EventPayload) -> None:
-        """Dispatch an event to all registered listeners asynchronously or non-blocking."""
+        """Dispatch an event asynchronously or non-blocking."""
         pass
 
-
-import threading
-import queue
 
 class EventBus(IEventBus):
     """An asynchronous, non-blocking event bus for the core system.
@@ -66,7 +66,9 @@ class EventBus(IEventBus):
         self._worker_thread = threading.Thread(target=self._worker, daemon=True)
         self._worker_thread.start()
 
-    def subscribe(self, event_type: str, listener: Callable[[EventPayload], None]) -> None:
+    def subscribe(
+        self, event_type: str, listener: Callable[[EventPayload], None]
+    ) -> None:
         if event_type not in self._listeners:
             self._listeners[event_type] = []
         self._listeners[event_type].append(listener)
