@@ -9,6 +9,20 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+---
+
+## [0.0.3] – 2026-03-11
+
+### Added
+
+- **`docs/prompts/docs-agent.md`** — Authored the DevPortal Docs Agent prompt, establishing strict guidelines for Brazilian Portuguese language, anti-prolixity, MkDocs Material features, and documentation architecture.
+
+### Changed
+
+- **DevPortal Rewrite** — Overhauled all core documentation (`index`, `getting-started`, `architecture`, `scaffold-templates`, `configuration`, `telemetry`, `quality`, `governance`, `transform-engines`, `diys`, `ci-logs`, `mcp`) translating content to Brazilian Portuguese.
+- **UI/UX Evolution** — Implemented MkDocs Material admonitions, content tabs, and grids across documentation files to improve Developer Experience (DX).
+- **Navigation Audit** — Re-structured the `mkdocs.yml` navigation tree into `Getting Started -> Core -> Plugins -> API`. Enabled the `md_in_html` extension for layout support.
+
 ### Added
 
 - **`aptdata.core.workflow`** — context-aware workflow module introducing:
