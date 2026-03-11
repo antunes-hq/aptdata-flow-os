@@ -230,6 +230,31 @@ sequenceDiagram
 
 ---
 
+## Event Bus and Observability
+
+To enable real-time observability and decoupled governance (such as lineage extraction and data quality reporting) without polluting business logic, aptdata provides a built-in **Event Bus** attached to the `IContext`.
+
+Every `BaseComponent` automatically emits the following lifecycle events to the bus during `execute()`:
+
+* `pre_execute`
+* `on_success`
+* `on_failure`
+* `post_execute`
+
+Users can easily tap into these events. The events are Pydantic models (`ComponentExecutionEvent`) designed to be serialized as JSON Lines to be consumed by external tools, like the TUI monitor or an MCP Server.
+
+```python
+from aptdata.core.events import ComponentExecutionEvent
+
+def my_listener(event: ComponentExecutionEvent):
+    print(event.model_dump_json())
+
+# Assuming `system` is a `BaseSystem` instance
+system._context.event_bus.subscribe("on_success", my_listener)
+```
+
+---
+
 ## Data-flow through a system
 
 ```mermaid

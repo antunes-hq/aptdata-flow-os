@@ -25,6 +25,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
+import time
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import wraps
@@ -35,6 +36,7 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from aptdata.core.context import ExecutionContext, IContext
 from aptdata.core.dataset import IDataset, PydanticDataset
+from aptdata.core.events import ComponentExecutionEvent, EventBus
 from aptdata.telemetry.instrumentation import get_tracer, mask_telemetry_value
 
 # ---------------------------------------------------------------------------
@@ -123,11 +125,14 @@ class IComponent(ABC):
 
 @pydantic_dataclass
 class BaseComponent(IComponent):
-    """Base component with Pydantic-validated identity and metadata.
+    """Base component with Pydantic-validated identity, metadata, and event hooks.
 
     Concrete component implementations must inherit from this class and
     implement the :meth:`validate_inputs` and :meth:`execute` abstract
     methods inherited from :class:`IComponent`.
+
+    Automatically emits `pre_execute`, `on_success`, `on_failure`, and
+    `post_execute` events to the `IContext` event bus during `execute`.
 
     Parameters
     ----------
@@ -169,19 +174,69 @@ class BaseComponent(IComponent):
                 kind.value if isinstance(kind, ComponentKind) else str(kind or "")
             )
             tags = sorted(self.meta.tags) if self.meta.tags else []
-            with get_tracer().start_as_current_span(span_name) as span:
-                span.set_attribute("aptdata.component_id", self.component_id)
-                span.set_attribute("aptdata.kind", kind_value)
-                span.set_attribute("aptdata.tags", tags)
-                span.set_attribute(
-                    "aptdata.branch_on",
-                    mask_telemetry_value(self.meta.branch_on, key="branch_on"),
+
+            event_bus = self.context.event_bus if self.context else None
+            if event_bus:
+                event_bus.dispatch(
+                    ComponentExecutionEvent(
+                        event_type="pre_execute",
+                        component_id=self.component_id,
+                        status="pending"
+                    )
                 )
-                span.set_attribute(
-                    "aptdata.description",
-                    mask_telemetry_value(self.meta.description, key="description"),
-                )
-                return execute_fn(self, inputs)
+
+            start_time = time.time()
+            try:
+                with get_tracer().start_as_current_span(span_name) as span:
+                    span.set_attribute("aptdata.component_id", self.component_id)
+                    span.set_attribute("aptdata.kind", kind_value)
+                    span.set_attribute("aptdata.tags", tags)
+                    span.set_attribute(
+                        "aptdata.branch_on",
+                        mask_telemetry_value(self.meta.branch_on, key="branch_on"),
+                    )
+                    span.set_attribute(
+                        "aptdata.description",
+                        mask_telemetry_value(self.meta.description, key="description"),
+                    )
+                    outputs = execute_fn(self, inputs)
+
+                exec_time = time.time() - start_time
+                if event_bus:
+                    io_uris = [ds.uri for ds in outputs if hasattr(ds, "uri")]
+                    event_bus.dispatch(
+                        ComponentExecutionEvent(
+                            event_type="on_success",
+                            component_id=self.component_id,
+                            status="success",
+                            execution_time=exec_time,
+                            io_uris=io_uris
+                        )
+                    )
+                return outputs
+
+            except Exception as e:
+                exec_time = time.time() - start_time
+                if event_bus:
+                    event_bus.dispatch(
+                        ComponentExecutionEvent(
+                            event_type="on_failure",
+                            component_id=self.component_id,
+                            status="failed",
+                            execution_time=exec_time,
+                            error_message=str(e)
+                        )
+                    )
+                raise
+            finally:
+                if event_bus:
+                    event_bus.dispatch(
+                        ComponentExecutionEvent(
+                            event_type="post_execute",
+                            component_id=self.component_id,
+                            status="completed"
+                        )
+                    )
 
         _instrumented_execute.__isabstractmethod__ = getattr(
             execute_fn, "__isabstractmethod__", False
@@ -454,11 +509,14 @@ class ISystem(ABC):
 
 @pydantic_dataclass(config=ConfigDict(arbitrary_types_allowed=True))
 class BaseSystem(ISystem):
-    """Base system with Pydantic-validated identity.
+    """Base system with Pydantic-validated identity and Event Bus manager.
 
     Concrete system implementations must inherit from this class and implement
     the :meth:`register_flow` and :meth:`run` abstract methods inherited from
     :class:`ISystem`.
+
+    Instantiates a global `EventBus` on `__post_init__` and manages the lifecycle
+    for decoupled observability and governance logic.
 
     Parameters
     ----------
@@ -474,6 +532,12 @@ class BaseSystem(ISystem):
     _context: Any = Field(
         default_factory=ExecutionContext, init=False, repr=False, exclude=True
     )
+
+    def __post_init__(self) -> None:
+        """Initialize the event bus in the context for this system."""
+        if not hasattr(self, "_context") or self._context is None:
+            self._context = ExecutionContext()
+        self._context.event_bus = EventBus()
 
     def setup(self) -> None:
         pass
@@ -494,6 +558,11 @@ class BaseSystem(ISystem):
             current_inputs = flow.run(current_inputs)
 
         self.on_complete(self._context)
+
+        # Ensure all async events are fully flushed to avoid zombie threads
+        # or missing logs on CLI exit.
+        if hasattr(self._context.event_bus, "shutdown"):
+            self._context.event_bus.shutdown()
 
     def on_complete(self, context: IContext) -> None:
         pass
