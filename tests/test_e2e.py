@@ -81,9 +81,9 @@ class TestScaffoldE2E:
                     template,
                 ],
             )
-            assert result.exit_code == 0, (
-                f"Template {template!r} failed: {result.output}"
-            )
+            assert (
+                result.exit_code == 0
+            ), f"Template {template!r} failed: {result.output}"
 
     def test_scaffold_unknown_template_exits_nonzero(
         self, tmp_path: Path, cli_runner, cli_app

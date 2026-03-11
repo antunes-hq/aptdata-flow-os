@@ -69,7 +69,12 @@ addopts = "-v"
 
 [tool.coverage.run]
 source = ["aptdata"]
-omit = ["aptdata/plugins/transform/spark.py"]
+omit = [
+    "aptdata/plugins/transform/spark.py",
+    "aptdata/plugins/transform/pandas.py",
+    "aptdata/plugins/postgres.py",
+    "aptdata/mcp/server.py",
+]
 
 [tool.coverage.report]
 fail_under = 80

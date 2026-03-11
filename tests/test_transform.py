@@ -93,7 +93,6 @@ class TestPandasTransformer:
         assert len(result) == 2
 
     def test_transform_in_memory_dataset_returns_dataset(self) -> None:
-
         from aptdata.plugins.dataset import InMemoryDataset
         from aptdata.plugins.transform import PandasTransformer
 
@@ -108,7 +107,6 @@ class TestPandasTransformer:
         assert len(result) == 2
 
     def test_transform_preserves_uri(self) -> None:
-
         from aptdata.plugins.dataset import InMemoryDataset
         from aptdata.plugins.transform import PandasTransformer
 

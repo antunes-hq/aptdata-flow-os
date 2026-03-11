@@ -1,0 +1,23 @@
+system:
+  id: soccer_medallion_pipeline_yaml
+  telemetry: true
+  export_lineage: true
+
+imports:
+  - "components_func.py"
+
+flows:
+  - id: bronze_flow
+    components:
+      - name: ingest_match_data
+        ref: ingest_match_data
+
+  - id: silver_flow
+    components:
+      - name: clean_match_data
+        ref: clean_match_data
+
+  - id: gold_flow
+    components:
+      - name: aggregate_player_stats
+        ref: aggregate_player_stats

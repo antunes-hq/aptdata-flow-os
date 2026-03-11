@@ -32,8 +32,10 @@ class InMemoryDataset(BaseDataset):
 
     # -- IDataset interface -------------------------------------------------
 
-    def read(self) -> list[dict[str, Any]]:
-        """Return the in-memory records."""
+    def read(self) -> Any:
+        """Return the in-memory records or DataFrame."""
+        if type(self._records).__name__ == "DataFrame":
+            return self._records
         return list(self._records)
 
     def write(self, data: Any) -> None:
@@ -42,10 +44,14 @@ class InMemoryDataset(BaseDataset):
         Parameters
         ----------
         data:
-            A list of dictionaries (records).
+            A list of dictionaries (records) or a DataFrame.
         """
+        if type(data).__name__ == "DataFrame":
+            self._records = data
+            return
+
         if not isinstance(data, list):
-            raise TypeError("InMemoryDataset expects a list of dicts.")
+            raise TypeError("InMemoryDataset expects a list of dicts or a DataFrame.")
         self._records = data
 
     # -- convenience --------------------------------------------------------

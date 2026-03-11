@@ -1,0 +1,7 @@
+match_id,home_team,away_team,home_goals,away_goals,date,referee,stadium
+550e8400-e29b-41d4-a716-446655440000,Manchester United,Arsenal,2,1,2023-10-01,Michael Oliver,Old Trafford
+550e8400-e29b-41d4-a716-446655440001,Liverpool,Chelsea,1,1,2023-10-02,Anthony Taylor,Anfield
+550e8400-e29b-41d4-a716-446655440002,Manchester City,Tottenham,3,0,2023-10-03,Simon Hooper,Etihad Stadium
+550e8400-e29b-41d4-a716-446655440003,Newcastle,Aston Villa,0,0,2023-10-04,,St James Park
+550e8400-e29b-41d4-a716-446655440004,Brighton,West Ham,null,null,2023-10-05,Paul Tierney,Amex Stadium
+,Everton,Fulham,1,0,2023-10-06,Stuart Attwell,Goodison Park

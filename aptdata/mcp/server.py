@@ -12,6 +12,7 @@ from typing import Any
 
 try:
     from mcp.server.fastmcp import FastMCP
+
     _MCP_AVAILABLE = True
 except ImportError:
     FastMCP = None
@@ -27,11 +28,13 @@ class _MockMCP:
     def tool(self, *args: Any, **kwargs: Any) -> Any:
         def decorator(func: Any) -> Any:
             return func
+
         return decorator
 
     def resource(self, *args: Any, **kwargs: Any) -> Any:
         def decorator(func: Any) -> Any:
             return func
+
         return decorator
 
     def run(self, *args: Any, **kwargs: Any) -> None:
@@ -237,6 +240,7 @@ def get_dataset_schema(dataset_name: str) -> str:
         }
     )
 
+
 @mcp.resource("quality://reports/{workflow_name}/latest")
 def get_latest_quality_report(workflow_name: str) -> str:
     """Allow the AI to audit quality failures in the latest run."""
@@ -251,14 +255,16 @@ def get_latest_quality_report(workflow_name: str) -> str:
             CheckResult(
                 expectation_name="MockExpectation",
                 status=CheckStatus.PASSED,
-                message="This is a mock quality report."
+                message="This is a mock quality report.",
             )
-        ]
+        ],
     )
     # Using json.dumps on the summary for now, or building a dictionary.
     # QualityReport is a dataclass without a direct model_dump_json method.
     from dataclasses import asdict
+
     return json.dumps(asdict(report))
+
 
 @mcp.resource("governance://rules")
 def list_business_rules() -> str:
@@ -272,7 +278,7 @@ def list_business_rules() -> str:
         BusinessRule(
             rule_id="BR-MOCK-001",
             name="Mock Rule",
-            description="A mock business rule for AI context."
+            description="A mock business rule for AI context.",
         )
     )
 
@@ -281,11 +287,12 @@ def list_business_rules() -> str:
             "rule_id": r.rule_id,
             "name": r.name,
             "description": r.description,
-            "expression": r.expression
+            "expression": r.expression,
         }
         for r in registry.list_rules()
     ]
     return json.dumps({"rules": rules})
+
 
 @mcp.tool()
 def get_pipeline_lineage(flow_id: str) -> dict[str, Any]:
@@ -298,7 +305,7 @@ def get_pipeline_lineage(flow_id: str) -> dict[str, Any]:
     node = LineageNode(
         dataset_uri="mock://dataset",
         event_type=LineageEventType.READ,
-        workflow_name=flow_id
+        workflow_name=flow_id,
     )
     graph.add_node(node)
 

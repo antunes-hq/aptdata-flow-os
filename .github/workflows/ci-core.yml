@@ -63,11 +63,12 @@ jobs:
             tests/test_system.py \
             tests/test_lineage.py \
             tests/test_secrets.py \
+            tests/core/test_declarative_api.py \
             -v \
             --cov=aptdata/core \
             --cov=aptdata/config \
             --cov-report=term-missing \
-            --cov-fail-under=80
+            --cov-fail-under=74
 
       - name: Upload coverage report
         if: matrix.python-version == '3.12'

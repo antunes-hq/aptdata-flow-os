@@ -1,7 +1,12 @@
 """Core interfaces and base classes for aptdata."""
 
-from aptdata.core.context import ExecutionContext
-from aptdata.core.dataset import BaseDataset, IDataset
+from aptdata.core.context import ExecutionContext, IContext
+from aptdata.core.dataset import (
+    BaseDataset,
+    DataContractError,
+    IDataset,
+    PydanticDataset,
+)
 from aptdata.core.state import StateBackend
 from aptdata.core.system import (
     BaseComponent,
@@ -26,7 +31,10 @@ from aptdata.core.workflow import (
 __all__ = [
     "IDataset",
     "BaseDataset",
+    "PydanticDataset",
+    "DataContractError",
     "ExecutionContext",
+    "IContext",
     "ComponentKind",
     "ComponentMeta",
     "IComponent",

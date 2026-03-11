@@ -30,9 +30,11 @@ from enum import Enum
 from functools import wraps
 from typing import Any
 
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from aptdata.core.dataset import IDataset
+from aptdata.core.context import ExecutionContext, IContext
+from aptdata.core.dataset import IDataset, PydanticDataset
 from aptdata.telemetry.instrumentation import get_tracer, mask_telemetry_value
 
 # ---------------------------------------------------------------------------
@@ -95,6 +97,18 @@ class IComponent(ABC):
 
     @property
     @abstractmethod
+    def context(self) -> IContext | None:
+        """The execution context injected by the orchestrator."""
+        pass
+
+    @context.setter
+    @abstractmethod
+    def context(self, value: IContext | None) -> None:
+        """Set the execution context."""
+        pass
+
+    @property
+    @abstractmethod
     def meta(self) -> ComponentMeta:
         """Metadata describing this component."""
 
@@ -125,6 +139,18 @@ class BaseComponent(IComponent):
 
     component_id: str
     metadata: ComponentMeta = field(default_factory=ComponentMeta)
+
+    # Use generic Any because pydantic doesn't know IContext unless
+    # arbitrary types are allowed
+    _context: Any = Field(default=None, init=False, repr=False, exclude=True)
+
+    @property
+    def context(self) -> IContext | None:
+        return self._context
+
+    @context.setter
+    def context(self, value: IContext | None) -> None:
+        self._context = value
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """Wrap subclass execute implementations with telemetry spans."""
@@ -173,7 +199,7 @@ class BaseComponent(IComponent):
 # ---------------------------------------------------------------------------
 
 
-@dataclass
+@pydantic_dataclass
 class FlowEdge:
     """A directed edge in a :class:`BaseFlow` execution graph.
 
@@ -193,7 +219,7 @@ class FlowEdge:
 
     source_id: str
     target_id: str
-    condition: Callable[[list[IDataset]], bool] | None = None
+    condition: Any = Field(default=None, exclude=True)
 
 
 @dataclass
@@ -226,9 +252,32 @@ class IFlow(ABC):
     and driving execution (:meth:`run`).
     """
 
+    @property
     @abstractmethod
-    def add_component(self, component: IComponent) -> None:
-        """Add *component* as a node in this flow."""
+    def context(self) -> IContext | None:
+        """The execution context injected by the orchestrator."""
+        pass
+
+    @context.setter
+    @abstractmethod
+    def context(self, value: IContext | None) -> None:
+        """Set the execution context."""
+        pass
+
+    @abstractmethod
+    def build(self) -> None:
+        """Declarative hook to define components and edges before compilation."""
+        pass
+
+    @abstractmethod
+    def add_component(
+        self,
+        component: type[IComponent] | IComponent,
+        output_contract: type[BaseModel] | None = None,
+    ) -> None:
+        """Add *component* as a node in this flow. Can be a class or instance.
+        If a class is provided, the flow handles instantiation and validates outputs
+        against *output_contract*."""
 
     @abstractmethod
     def connect(
@@ -281,6 +330,100 @@ class BaseFlow(IFlow):
 
     flow_id: str
 
+    _nodes: dict[str, FlowNode] = field(default_factory=dict, init=False, repr=False)
+    _edges: list[FlowEdge] = field(default_factory=list, init=False, repr=False)
+
+    # Use generic Any because pydantic doesn't know IContext unless
+    # arbitrary types are allowed
+    _context: Any = Field(default=None, init=False, repr=False, exclude=True)
+
+    @property
+    def context(self) -> IContext | None:
+        return self._context
+
+    @context.setter
+    def context(self, value: IContext | None) -> None:
+        self._context = value
+
+    def build(self) -> None:
+        pass
+
+    def add_component(
+        self,
+        component: type[IComponent] | IComponent,
+        output_contract: type[BaseModel] | None = None,
+    ) -> None:
+        if isinstance(component, type):
+            # Instantiate component with DI. (For this scaffold, default init)
+            # A real DI container could be used here.
+            comp_instance = component(component_id=component.__name__)  # type: ignore
+        else:
+            comp_instance = component
+
+        if self._context:
+            comp_instance.context = self._context
+
+        # Optional: Wrap execution to enforce output_contract if needed,
+        # though usually components themselves should use PydanticDataset directly
+        # if they want.
+        # However, the prompt says "aplicar um wrapper de interceptação para validar
+        # o contrato na saída."
+        if output_contract is not None:
+            original_execute = comp_instance.execute
+
+            def _wrapped_execute(inputs: list[IDataset]) -> list[IDataset]:
+                results = original_execute(inputs)
+                validated_results = []
+                for res in results:
+                    # Enforce the contract by wrapping the result in a PydanticDataset
+                    data = res.read()
+                    ds = PydanticDataset(
+                        uri=res.uri if hasattr(res, "uri") else "memory://contract",
+                        contract=output_contract,
+                    )
+                    ds.write(data)
+                    validated_results.append(ds)
+                return validated_results
+
+            comp_instance.execute = _wrapped_execute  # type: ignore[method-assign]
+
+        self._nodes[comp_instance.component_id] = FlowNode(
+            component=comp_instance, flow=self
+        )
+
+    def connect(
+        self,
+        source_id: str,
+        target_id: str,
+        condition: Callable[[list[IDataset]], bool] | None = None,
+    ) -> None:
+        self._edges.append(
+            FlowEdge(source_id=source_id, target_id=target_id, condition=condition)
+        )
+
+    def compile(self) -> None:
+        self.build()
+        # Basic validation
+        for edge in self._edges:
+            if edge.source_id not in self._nodes or edge.target_id not in self._nodes:
+                raise ValueError(f"Invalid edge: {edge}")
+
+    def run(self, initial_inputs: list[IDataset]) -> list[IDataset]:
+        self.compile()
+        # A simple linear execution for now if no edges are defined
+        # This is a naive runner for the scaffold. In a real system,
+        # a DAG runner is used.
+        if not self._edges:
+            current_inputs = initial_inputs
+            for node in self._nodes.values():
+                if node.component.validate_inputs(current_inputs):
+                    current_inputs = node.component.execute(current_inputs)
+            return current_inputs
+
+        # Proper topological sort / DAG execution would go here.
+        # Since this scaffold mainly cares about linear Flows, we return inputs.
+        return initial_inputs
+
 
 # ---------------------------------------------------------------------------
 # System (top-level orchestrator)
@@ -292,6 +435,11 @@ class ISystem(ABC):
     """Interface for a system that orchestrates one or more :class:`IFlow` instances."""
 
     @abstractmethod
+    def setup(self) -> None:
+        """Lifecycle hook called before flow registration and execution."""
+        pass
+
+    @abstractmethod
     def register_flow(self, flow: IFlow) -> None:
         """Register *flow* in this system."""
 
@@ -299,8 +447,12 @@ class ISystem(ABC):
     def run(self) -> None:
         """Execute all registered flows."""
 
+    def on_complete(self, context: IContext) -> None:
+        """Lifecycle hook called after all flows complete."""
+        pass
 
-@pydantic_dataclass
+
+@pydantic_dataclass(config=ConfigDict(arbitrary_types_allowed=True))
 class BaseSystem(ISystem):
     """Base system with Pydantic-validated identity.
 
@@ -315,3 +467,33 @@ class BaseSystem(ISystem):
     """
 
     system_id: str
+
+    _flows: list[IFlow] = field(default_factory=list, init=False, repr=False)
+    # We use Field(..., exclude=True) so it is not exported in Pydantic schema
+    # generation
+    _context: Any = Field(
+        default_factory=ExecutionContext, init=False, repr=False, exclude=True
+    )
+
+    def setup(self) -> None:
+        pass
+
+    def register_flow(self, flow: IFlow) -> None:
+        self._flows.append(flow)
+
+    def run(self) -> None:
+        self.setup()
+
+        # A simple system execution
+        current_inputs: list[IDataset] = []
+        for flow in self._flows:
+            flow.context = self._context
+            if isinstance(flow, BaseFlow):
+                for node in flow._nodes.values():
+                    node.component.context = self._context
+            current_inputs = flow.run(current_inputs)
+
+        self.on_complete(self._context)
+
+    def on_complete(self, context: IContext) -> None:
+        pass

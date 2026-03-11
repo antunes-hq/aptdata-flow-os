@@ -184,7 +184,6 @@ class TestExpectColumnToNotBeNull:
         assert result.rows_failed == 0
 
     def test_fails_with_nulls(self) -> None:
-
         from aptdata.plugins.quality.expectations import ExpectColumnToNotBeNull
         from aptdata.plugins.quality.report import CheckStatus
 
