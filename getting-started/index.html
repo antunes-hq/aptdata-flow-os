@@ -1735,10 +1735,14 @@ and <code>run</code>:</p>
 </table>
 <hr />
 <h2 id="running-the-test-suite">Running the test suite<a class="headerlink" href="#running-the-test-suite" title="Permanent link">&para;</a></h2>
+<p>To run tests locally:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>make<span class="w"> </span><span class="nb">test</span>
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># or</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>poetry<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-v
 </code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> Tests for optional dependencies (like <code>pandas</code> and <code>pyyaml</code>) use <code>pytest.importorskip()</code>. If you haven't installed the extra dependencies (e.g. via <code>poetry install --all-extras</code>), those specific tests will be gracefully skipped without failing the test suite.</p>
+</blockquote>
 <hr />
 <h2 id="ai-agent-integration">AI Agent Integration<a class="headerlink" href="#ai-agent-integration" title="Permanent link">&para;</a></h2>
 <p>aptdata ships with a built-in <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (MCP) server,
