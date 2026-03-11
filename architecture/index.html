@@ -16,7 +16,7 @@
         <link rel="prev" href="../ci-logs/">
       
       
-        <link rel="next" href="../transform-engines/">
+        <link rel="next" href="../ADR-001-Revisao-Arquitetural-Core/">
       
       
         
@@ -312,6 +312,25 @@
     
   
   Architecture
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ADR-001-Revisao-Arquitetural-Core/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  ADR 001 - Revisão Core
 
       </a>
     </li>
@@ -820,6 +839,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#event-bus-and-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event Bus and Observability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#data-flow-through-a-system" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -845,6 +875,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ADR-001-Revisao-Arquitetural-Core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 001 - Revisão Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1060,10 +1117,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_13" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_14" >
         
           
-          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
             
   
   
@@ -1081,8 +1138,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_13">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1260,10 +1317,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_15" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_16" >
         
           
-          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
             
   
   
@@ -1281,8 +1338,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_15">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1376,6 +1433,13 @@
 
 
 <h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
+<div class="admonition info">
+<p class="admonition-title">Architecture Decision Records</p>
+<p>For historical context and reasoning behind architectural choices, please refer to the ADRs:</p>
+<ul>
+<li><a href="../ADR-001-Revisao-Arquitetural-Core/">ADR 001: Revisão Arquitetural do Core e Simplificação de Fluxos (DX)</a></li>
+</ul>
+</div>
 <p>aptdata is built around a <strong>two-layer contract system</strong> for each of its
 three universal abstractions — <strong>Component</strong>, <strong>Flow</strong>, and <strong>System</strong> — plus
 the foundational <strong>Dataset</strong> type.</p>
@@ -1552,6 +1616,25 @@ it with <code>system_id=name</code>, and calls <code>run()</code>.</p>
     Registry--&gt;&gt;CLI: EtlSystem class
     CLI-&gt;&gt;System: EtlSystem(system_id="etl_system")
     CLI-&gt;&gt;System: run()</code></pre>
+<hr />
+<h2 id="event-bus-and-observability">Event Bus and Observability<a class="headerlink" href="#event-bus-and-observability" title="Permanent link">&para;</a></h2>
+<p>To enable real-time observability and decoupled governance (such as lineage extraction and data quality reporting) without polluting business logic, aptdata provides a built-in <strong>Event Bus</strong> attached to the <code>IContext</code>.</p>
+<p>Every <code>BaseComponent</code> automatically emits the following lifecycle events to the bus during <code>execute()</code>:</p>
+<ul>
+<li><code>pre_execute</code></li>
+<li><code>on_success</code></li>
+<li><code>on_failure</code></li>
+<li><code>post_execute</code></li>
+</ul>
+<p>Users can easily tap into these events. The events are Pydantic models (<code>ComponentExecutionEvent</code>) designed to be serialized as JSON Lines to be consumed by external tools, like the TUI monitor or an MCP Server.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.core.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComponentExecutionEvent</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">my_listener</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">ComponentExecutionEvent</span><span class="p">):</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">())</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># Assuming `system` is a `BaseSystem` instance</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">system</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">event_bus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s2">&quot;on_success&quot;</span><span class="p">,</span> <span class="n">my_listener</span><span class="p">)</span>
+</code></pre></div>
 <hr />
 <h2 id="data-flow-through-a-system">Data-flow through a system<a class="headerlink" href="#data-flow-through-a-system" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart TD

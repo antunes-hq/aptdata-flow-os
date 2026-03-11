@@ -10,25 +10,31 @@
       
       
       
+        <link rel="canonical" href="https://strondata.github.io/smart-data/ADR-001-Revisao-Arquitetural-Core/">
       
+      
+        <link rel="prev" href="../architecture/">
+      
+      
+        <link rel="next" href="../transform-engines/">
       
       
         
       
       
-      <link rel="icon" href="/smart-data/assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
-        <title>aptdata</title>
+        <title>ADR 001 - Revisão Core - aptdata</title>
       
     
     
-      <link rel="stylesheet" href="/smart-data/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="/smart-data/assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -47,9 +53,9 @@
       
     
     
-      <link rel="stylesheet" href="/smart-data/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/smart-data/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -73,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#adr-001-revisao-arquitetural-do-core-e-simplificacao-de-fluxos-dx" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -83,7 +94,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/smart-data/." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -103,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              ADR 001 - Revisão Core
             
           </span>
         </div>
@@ -216,7 +227,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -235,7 +246,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/getting-started/" class="md-tabs__link">
+      <a href="../getting-started/" class="md-tabs__link">
         
   
   
@@ -254,7 +265,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/diys/" class="md-tabs__link">
+      <a href="../diys/" class="md-tabs__link">
         
   
   
@@ -273,7 +284,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/ci-logs/" class="md-tabs__link">
+      <a href="../ci-logs/" class="md-tabs__link">
         
   
   
@@ -292,7 +303,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/architecture/" class="md-tabs__link">
+      <a href="../architecture/" class="md-tabs__link">
         
   
   
@@ -309,9 +320,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="/smart-data/ADR-001-Revisao-Arquitetural-Core/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -330,7 +343,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/transform-engines/" class="md-tabs__link">
+      <a href="../transform-engines/" class="md-tabs__link">
         
   
   
@@ -349,7 +362,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/quality/" class="md-tabs__link">
+      <a href="../quality/" class="md-tabs__link">
         
   
   
@@ -368,7 +381,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/governance/" class="md-tabs__link">
+      <a href="../governance/" class="md-tabs__link">
         
   
   
@@ -387,7 +400,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/scaffold-templates/" class="md-tabs__link">
+      <a href="../scaffold-templates/" class="md-tabs__link">
         
   
   
@@ -406,7 +419,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/telemetry/" class="md-tabs__link">
+      <a href="../telemetry/" class="md-tabs__link">
         
   
   
@@ -425,7 +438,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/mcp/" class="md-tabs__link">
+      <a href="../mcp/" class="md-tabs__link">
         
   
   
@@ -444,7 +457,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/configuration/" class="md-tabs__link">
+      <a href="../configuration/" class="md-tabs__link">
         
   
   
@@ -465,7 +478,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/smart-data/api/core/" class="md-tabs__link">
+        <a href="../api/core/" class="md-tabs__link">
           
   
   
@@ -483,7 +496,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/smart-data/changelog/" class="md-tabs__link">
+      <a href="../changelog/" class="md-tabs__link">
         
   
   
@@ -504,7 +517,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/smart-data/llms.txt" class="md-tabs__link">
+        <a href="../llms.txt" class="md-tabs__link">
           
   
   
@@ -540,7 +553,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/smart-data/." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
+    <a href=".." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -570,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -597,7 +610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/getting-started/" class="md-nav__link">
+      <a href="../getting-started/" class="md-nav__link">
         
   
   
@@ -624,7 +637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/diys/" class="md-nav__link">
+      <a href="../diys/" class="md-nav__link">
         
   
   
@@ -651,7 +664,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/ci-logs/" class="md-nav__link">
+      <a href="../ci-logs/" class="md-nav__link">
         
   
   
@@ -678,7 +691,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/architecture/" class="md-nav__link">
+      <a href="../architecture/" class="md-nav__link">
         
   
   
@@ -702,10 +715,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/smart-data/ADR-001-Revisao-Arquitetural-Core/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 001 - Revisão Core
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -721,6 +761,120 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-contexto-e-problema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Contexto e Problema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-decisoes-arquiteturais-propostas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Decisões Arquiteturais Propostas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Decisões Arquiteturais Propostas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-refatoracao-das-abstracoes-base-factories-e-decorators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Refatoração das Abstrações Base (Factories e Decorators)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-automacao-de-transacao-de-dados-contract-first-nativo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Automação de Transação de Dados (Contract-First nativo)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-governanca-invisivel-via-event-bus-hooks-callbacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Governança Invisível via Event Bus (Hooks / Callbacks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-avaliacao-core-vs-plugins-isolamento-de-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4. Avaliação Core vs. Plugins (Isolamento de Engine)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-trade-offs-e-consequencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Trade-offs e Consequências
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-proximos-passos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Próximos Passos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -732,7 +886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/transform-engines/" class="md-nav__link">
+      <a href="../transform-engines/" class="md-nav__link">
         
   
   
@@ -759,7 +913,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/quality/" class="md-nav__link">
+      <a href="../quality/" class="md-nav__link">
         
   
   
@@ -786,7 +940,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/governance/" class="md-nav__link">
+      <a href="../governance/" class="md-nav__link">
         
   
   
@@ -813,7 +967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/scaffold-templates/" class="md-nav__link">
+      <a href="../scaffold-templates/" class="md-nav__link">
         
   
   
@@ -840,7 +994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/telemetry/" class="md-nav__link">
+      <a href="../telemetry/" class="md-nav__link">
         
   
   
@@ -867,7 +1021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/mcp/" class="md-nav__link">
+      <a href="../mcp/" class="md-nav__link">
         
   
   
@@ -894,7 +1048,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/configuration/" class="md-nav__link">
+      <a href="../configuration/" class="md-nav__link">
         
   
   
@@ -975,7 +1129,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/api/core/" class="md-nav__link">
+      <a href="../api/core/" class="md-nav__link">
         
   
   
@@ -1003,7 +1157,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/api/cli/" class="md-nav__link">
+      <a href="../api/cli/" class="md-nav__link">
         
   
   
@@ -1031,7 +1185,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/api/cli-interactive/" class="md-nav__link">
+      <a href="../api/cli-interactive/" class="md-nav__link">
         
   
   
@@ -1059,7 +1213,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/api/plugins/" class="md-nav__link">
+      <a href="../api/plugins/" class="md-nav__link">
         
   
   
@@ -1094,7 +1248,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/changelog/" class="md-nav__link">
+      <a href="../changelog/" class="md-nav__link">
         
   
   
@@ -1175,7 +1329,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/llms.txt" class="md-nav__link">
+      <a href="../llms.txt" class="md-nav__link">
         
   
   
@@ -1203,7 +1357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/smart-data/llms-full.txt" class="md-nav__link">
+      <a href="../llms-full.txt" class="md-nav__link">
         
   
   
@@ -1244,8 +1398,83 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+  
+  
+
+
+<h1 id="adr-001-revisao-arquitetural-do-core-e-simplificacao-de-fluxos-dx">ADR 001: Revisão Arquitetural do Core e Simplificação de Fluxos (DX)<a class="headerlink" href="#adr-001-revisao-arquitetural-do-core-e-simplificacao-de-fluxos-dx" title="Permanent link">&para;</a></h1>
+<p><strong>Status:</strong> Proposed
+<strong>Data:</strong> 2024-05-20 (Atual)
+<strong>Contexto:</strong> Spike Técnico - Developer Experience (DX) &amp; Automação de Core</p>
+<h2 id="1-contexto-e-problema">1. Contexto e Problema<a class="headerlink" href="#1-contexto-e-problema" title="Permanent link">&para;</a></h2>
+<p>O <code>aptdata</code> foi desenhado com base em três abstrações universais (<code>ISystem</code>, <code>IFlow</code>, <code>IComponent</code>) guiadas pelo princípio de design Contract-First via Pydantic (<code>IDataset</code>). Contudo, ao analisar os fluxos implementados na pasta <code>examples/</code> (especificamente <code>01_soccer_medallion</code>), notou-se que a Developer Experience (DX) está prejudicada por excesso de boilerplate e vazamento de responsabilidades transversais para o código do usuário.</p>
+<p>Os principais gargalos mapeados são:</p>
+<ul>
+<li><strong>Boilerplate de Dataset:</strong> Componentes (<code>BaseComponent</code>) precisam instanciar manualmente objetos <code>InMemoryDataset</code>, manipular listas de entrada de forma verbosa (e.g. <code>for ds in inputs: data = ds.read()</code>) e repacotar os resultados (e.g. <code>out_ds.write(cleaned_records)</code>).</li>
+<li><strong>Governança Manual (Lineage &amp; Quality):</strong> O rastreamento de linhagem e a emissão de métricas (<code>LineageGraph</code>, <code>QualityValidator</code>) estão sendo invocados de forma manual e mockada nos métodos <code>on_complete</code> do <code>BaseSystem</code> ou espalhados dentro do <code>execute</code> dos componentes.</li>
+<li><strong>Vazamento de Engine (Acoplamento):</strong> Apesar de existir o <code>PandasTransformComponent</code>, a fronteira entre processamento nativo (Pandas/Spark) e a orquestração core do framework apresenta atrito, forçando o usuário a se preocupar com I/O de infraestrutura ao invés de focar na lógica de transformação de dados.</li>
+<li><strong>Inicialização Verbosa:</strong> A instanciação de <code>BaseSystem</code> e <code>BaseFlow</code> exige muita configuração imperativa explícita, quando poderia ser inferida de metadados ou abstraída em <em>factories</em>.</li>
+</ul>
+<p>O objetivo desta revisão é garantir que o framework permaneça agnóstico a engines, mantendo contratos estritos com Pydantic, porém simplificando radicalmente o uso diário através da inversão de controle para requisitos transversais.</p>
+<h2 id="2-decisoes-arquiteturais-propostas">2. Decisões Arquiteturais Propostas<a class="headerlink" href="#2-decisoes-arquiteturais-propostas" title="Permanent link">&para;</a></h2>
+<p>Para mitigar a dívida técnica de DX sem quebrar a filosofia SOLID, propomos as seguintes mudanças arquiteturais:</p>
+<h3 id="21-refatoracao-das-abstracoes-base-factories-e-decorators">2.1. Refatoração das Abstrações Base (Factories e Decorators)<a class="headerlink" href="#21-refatoracao-das-abstracoes-base-factories-e-decorators" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Decorators Inteligentes (<code>@component</code> / <code>@pandas_component</code>):</strong> Expandir a funcionalidade dos decorators funcionais atuais para encapsular totalmente a lógica de <code>InMemoryDataset</code>. O decorator deve realizar o <code>.read()</code> nas entradas e o <code>.write()</code> nas saídas, entregando e recebendo tipos primitivos (listas de dicts, dataframes) do usuário.</li>
+<li><strong>Injeção de Dependência Automática:</strong> O <code>IContext</code> deve ser injetado de forma opcional por introspecção de assinatura, evitando que o usuário precise declará-lo se não for utilizá-lo (ex: logging).</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Como deve ser (Declarativo e Limpo)</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nd">@pandas_component</span><span class="p">(</span><span class="s2">&quot;aggregate_player_stats&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">aggregate_player_stats</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="c1"># Foco 100% no negócio</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="k">return</span> <span class="n">aggregate_player_stats_logic</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="22-automacao-de-transacao-de-dados-contract-first-nativo">2.2. Automação de Transação de Dados (Contract-First nativo)<a class="headerlink" href="#22-automacao-de-transacao-de-dados-contract-first-nativo" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Validação Transparente via Pydantic:</strong> Se um componente ou fluxo definir um <code>output_contract</code> (modelo Pydantic), a camada base (<code>BaseComponent</code> ou o decorator) deve interceptar o output bruto (lista de dicionários) e rodar o <code>Model.model_validate()</code> automaticamente.</li>
+<li>Isso garante que a validação de esquema não suje o método <code>execute()</code> do componente. Se os dados não respeitarem o contrato, o framework lança a exceção antes mesmo de criar o <code>IDataset</code> de saída.</li>
+</ul>
+<h3 id="23-governanca-invisivel-via-event-bus-hooks-callbacks">2.3. Governança Invisível via Event Bus (Hooks / Callbacks)<a class="headerlink" href="#23-governanca-invisivel-via-event-bus-hooks-callbacks" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Hooks de Ciclo de Vida:</strong> Introduzir hooks padrão (e.g., <code>pre_execute</code>, <code>post_execute</code>, <code>on_success</code>, <code>on_failure</code>) na classe <code>BaseComponent</code> e gerenciados por um Event Bus no <code>BaseSystem</code>.</li>
+<li><strong>Lineage Automático:</strong> Ao invés do usuário preencher a linhagem no <code>on_complete</code> do sistema, o framework capturará as arestas do fluxo durante a compilação do <code>IFlow</code> e registrará os nós <code>LineageNode</code> via <code>post_execute</code> interceptando a URI dos <code>IDataset</code> gerados.</li>
+<li><strong>Captura de Qualidade:</strong> Qualquer <code>QualityValidator</code> atrelado a um componente deve rodar em um hook de validação pré/pós-execução, isolando a regra de negócio da verificação de integridade da infraestrutura.</li>
+</ul>
+<h3 id="24-avaliacao-core-vs-plugins-isolamento-de-engine">2.4. Avaliação Core vs. Plugins (Isolamento de Engine)<a class="headerlink" href="#24-avaliacao-core-vs-plugins-isolamento-de-engine" title="Permanent link">&para;</a></h3>
+<ul>
+<li>O <strong>Core</strong> (<code>aptdata.core</code>) passará a ser estritamente focado em orquestração, I/O abstrato (<code>IDataset</code>), contratos Pydantic e Injeção de Dependências.</li>
+<li>Qualquer dependência de Pandas, PySpark ou banco de dados relacional deve residir exclusivamente nos pacotes <code>aptdata.plugins.*</code>.</li>
+<li>Em ambientes onde a engine não está instalada, as classes de plugin correspondentes devem levantar <code>ImportError</code> de forma amigável no momento da instanciação, e nunca quebrar a importação global do core.</li>
+</ul>
+<h2 id="3-trade-offs-e-consequencias">3. Trade-offs e Consequências<a class="headerlink" href="#3-trade-offs-e-consequencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Positivo:</strong> Redução massiva de código boilerplate nos projetos dos usuários (examples provam a economia de dezenas de linhas de I/O em troca de decorators puros).</li>
+<li><strong>Positivo:</strong> Governança (Lineage, Data Quality) será padronizada, consistente e independente de esquecimentos do engenheiro de dados, pois ocorrerá "por debaixo dos panos".</li>
+<li><strong>Negativo/Atenção:</strong> A mágica gerada por decorators e hooks pode dificultar o debugging caso ocorram erros de <em>type hinting</em> ou contratos divergentes. Será necessário um tratamento de exceções robusto e detalhado, reportando exatamente onde a validação Pydantic ou introspecção falhou.</li>
+<li><strong>Atenção (Performance):</strong> A automação de <code>InMemoryDataset</code> e validação Pydantic em <em>loops tight</em> pode adicionar pequeno overhead. Como mitigação, utilizaremos operações otimizadas (ex: desempacotamento de dicionários e validação em batch do Pydantic) ao invés de instanciar objetos individuais para cada linha quando tratamos <code>DataFrames</code> ou coleções massivas.</li>
+</ul>
+<h2 id="4-proximos-passos">4. Próximos Passos<a class="headerlink" href="#4-proximos-passos" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Atualizar as classes de suporte (<code>aptdata.core.decorators</code>) para implementar a injeção oculta de <code>IDataset</code>.</li>
+<li>Incluir lógica de Event Bus no <code>BaseFlow</code> para emissão automática de linhagem.</li>
+<li>Refatorar os examples (<code>01_soccer_medallion</code>) para utilizar a nova API reduzida e atestar a melhoria em DX.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1290,10 +1519,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/smart-data/", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "toc.integrate", "content.code.copy", "content.code.annotate", "content.code.select", "content.tabs.link", "search.suggest", "search.highlight"], "search": "/smart-data/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "toc.integrate", "content.code.copy", "content.code.annotate", "content.code.select", "content.tabs.link", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/smart-data/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="https://unpkg.com/mermaid@11/dist/mermaid.min.js"></script>
       
