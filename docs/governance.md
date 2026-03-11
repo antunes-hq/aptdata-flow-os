@@ -1,12 +1,28 @@
-# Governance
+# Governança (Governance)
 
-aptdata ships a first-class governance layer that covers:
+O `aptdata` possui uma camada nativa (*first-class*) de governança de dados que atua de forma transversal sobre a execução dos seus pipelines, garantindo rastreabilidade e conformidade.
 
-- **Data lineage** — provenance graph tracking every read, transform, and write
-- **Data quality & contracts** — schema contracts and expectation suites
-- **Business rules registry** — versioned rule catalogue with audit logging
-- **Dataset catalog** — searchable metadata store for every dataset
-- **Data classification** — sensitivity policies (PII, PHI, CONFIDENTIAL, …)
+A governança é dividida em quatro pilares principais:
+
+<div class="grid cards" markdown>
+
+-   :material-source-branch: **Data Lineage**
+
+    Grafo de proveniência rastreando cada leitura, transformação e escrita (`LineageGraph`).
+
+-   :material-shield-check: **Data Quality & Contracts**
+
+    Contratos estáticos de schema e *suite* de expectativas (`SchemaContract`).
+
+-   :material-book-open-outline: **Business Rules Registry**
+
+    Catálogo versionado de regras de negócio com trilha de auditoria (`RuleRegistry`).
+
+-   :material-archive-search: **Dataset Catalog**
+
+    Repositório pesquisável de metadados e classificação de dados sensíveis (`DatasetCatalog`).
+
+</div>
 
 ```mermaid
 graph LR
@@ -24,19 +40,17 @@ graph LR
 
 ---
 
-## Data Lineage
+## Data Lineage (Linhagem de Dados)
 
-### Overview
+### Visão Geral
 
-The lineage subsystem lives in `aptdata.core.lineage`.  Every workflow run
-produces a :class:`~aptdata.core.lineage.LineageGraph` that contains an
-ordered list of :class:`~aptdata.core.lineage.LineageNode` objects.
+O subsistema de linhagem reside em `aptdata.core.lineage`. Toda execução de *workflow* produz um `LineageGraph` contendo uma lista ordenada e imutável de objetos `LineageNode`.
 
 ```mermaid
 flowchart LR
-    R["READ\ns3://raw/orders.parquet\n50,000 rows out"]
-    T["TRANSFORM\ns3://clean/orders.parquet\n48,500 rows out\nrevenue = price × quantity"]
-    W["WRITE\ns3://final/orders.parquet"]
+    R["📥 READ\ns3://raw/orders.parquet\n50.000 rows"]
+    T["⚙️ TRANSFORM\ns3://clean/orders.parquet\n48.500 rows\nrevenue = price × quantity"]
+    W["📤 WRITE\ns3://final/orders.parquet"]
 
     R --> T --> W
 ```
@@ -49,7 +63,7 @@ from aptdata.core.lineage import (
     LineageNode,
 )
 
-# Build a graph for a workflow run
+# Inicializa o grafo para uma execução específica
 graph = LineageGraph(run_id="run-20240101", workflow_name="etl_pipeline")
 
 read_node = LineageNode(
@@ -77,18 +91,17 @@ transform_node = LineageNode(
 )
 graph.add_node(transform_node)
 
-# Navigate the graph
-upstream = graph.get_upstream(transform_node.node_id)   # → [read_node]
-downstream = graph.get_downstream(read_node.node_id)    # → [transform_node]
+# Navegação no grafo
+upstream = graph.get_upstream(transform_node.node_id)   # Retorna [read_node]
+downstream = graph.get_downstream(read_node.node_id)    # Retorna [transform_node]
 
-# Serialise
-d = graph.to_dict()  # plain dict, JSON-serialisable
+# Serialização limpa (pronta para JSON Lines)
+d = graph.to_dict()
 ```
 
 ### Lineage Store
 
-Use :class:`~aptdata.plugins.governance.lineage_store.LineageStore` to
-persist and query graphs in memory across a session.
+A classe `LineageStore` (em `aptdata.plugins.governance`) é utilizada para persistir e consultar grafos em memória ou enviar para um banco de metadados.
 
 ```python
 from aptdata.plugins.governance import LineageStore
@@ -101,9 +114,14 @@ runs   = store.list_runs()
 graphs = store.query_by_dataset("s3://raw/orders.parquet")
 ```
 
+!!! tip "Emissão Automática via Event Bus"
+    Como definido na [ADR 001](ADR-001-Revisao-Arquitetural-Core.md), a linhagem é preferencialmente extraída de forma automática via *hooks* do `EventBus` durante a compilação e execução do `BaseFlow`, poupando o desenvolvedor de instanciar os nós manualmente.
+
 ---
 
-## Business Rules Registry
+## Registro de Regras de Negócio (Business Rules Registry)
+
+Gerencia e audita políticas aplicadas sobre os dados.
 
 ```python
 from aptdata.plugins.governance import (
@@ -115,7 +133,7 @@ from aptdata.plugins.governance import (
 
 registry = RuleRegistry()
 
-# Register a rule
+# 1. Registro da Regra
 registry.register(BusinessRule(
     rule_id="BR-001",
     name="Revenue must be positive",
@@ -124,14 +142,11 @@ registry.register(BusinessRule(
     tags=["finance", "revenue"],
 ))
 
-# Retrieve
+# 2. Consultas
 rule = registry.get("BR-001")
-
-# List with filters
 finance_rules = registry.list_rules(tag="finance")
-owned_rules   = registry.list_rules(owner="finance-team")
 
-# Audit logging
+# 3. Trilha de Auditoria (Logs)
 registry.record_audit(RuleAuditEntry(
     rule_id="BR-001",
     status=RuleStatus.APPLIED,
@@ -145,7 +160,9 @@ log = registry.get_audit_log(rule_id="BR-001")
 
 ---
 
-## Dataset Catalog
+## Catálogo de Datasets (Dataset Catalog)
+
+Repositório central para busca e descoberta de dados.
 
 ```python
 from aptdata.plugins.governance import DatasetCatalog, DatasetCatalogEntry
@@ -156,22 +173,22 @@ catalog = DatasetCatalog()
 catalog.register(DatasetCatalogEntry(
     uri="s3://datalake/orders.parquet",
     name="Orders",
-    description="Customer order records from the OLTP system.",
+    description="Registros de pedidos do sistema OLTP principal.",
     owner="data-engineering",
     tags=["orders", "finance"],
     classification=ColumnClassification.CONFIDENTIAL,
 ))
 
-# Retrieve
+# Recuperação e Busca
 entry = catalog.get("s3://datalake/orders.parquet")
-
-# Search
 results = catalog.search(owner="data-engineering", tag="finance")
 ```
 
 ---
 
-## Data Classification
+## Políticas de Classificação de Dados
+
+Definições formais sobre tempo de retenção, necessidade de criptografia e perfis de acesso baseados na sensibilidade da informação.
 
 ```python
 from aptdata.plugins.governance.classification import (
@@ -180,8 +197,8 @@ from aptdata.plugins.governance.classification import (
 )
 
 policy = DataClassificationPolicy(
-    name="GDPR PII Policy",
-    description="Controls for columns containing personal data.",
+    name="LGPD PII Policy",
+    description="Controles rígidos para colunas contendo dados pessoais identificáveis.",
     pii_columns=["email", "phone", "full_name"],
     retention_days=365,
     encryption_required=True,
@@ -189,23 +206,9 @@ policy = DataClassificationPolicy(
 )
 ```
 
-### Classification Levels
+### Integração com Quality Contracts
 
-| Level          | Description                        |
-|----------------|------------------------------------|
-| `PUBLIC`       | Freely shareable                   |
-| `INTERNAL`     | Internal use only                  |
-| `CONFIDENTIAL` | Restricted; need-to-know basis     |
-| `PII`          | Personally identifiable information |
-| `PHI`          | Protected health information       |
-| `FINANCIAL`    | Financial / payment data           |
-| `SENSITIVE`    | Catch-all for sensitive data       |
-
----
-
-## Schema Contracts
-
-Schema contracts (see [Quality](quality.md)) integrate with the catalog:
+O catálogo de metadados acopla-se diretamente aos Contratos de Schema (ver [Quality](quality.md)):
 
 ```python
 from aptdata.plugins.quality import ColumnClassification, ColumnContract, SchemaContract
@@ -229,6 +232,6 @@ catalog.register(DatasetCatalogEntry(
     schema_contract=contract,
 ))
 
-# Retrieve PII columns from the contract
+# Extrai metadados sensíveis diretamente do contrato
 pii_cols = contract.get_pii_columns()
 ```

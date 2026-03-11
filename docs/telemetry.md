@@ -1,16 +1,12 @@
-# Telemetry
+# Telemetria e Observabilidade (Telemetry)
 
-aptdata integrates [OpenTelemetry](https://opentelemetry.io/) to give you
-automatic, zero-configuration observability for every pipeline execution.
+O **aptdata** integra-se nativamente com o [OpenTelemetry](https://opentelemetry.io/), provendo observabilidade *zero-config* e instrumentação automática para todas as execuções de pipeline.
 
 ---
 
-## Overview
+## Visão Geral
 
-Every `BaseComponent` subclass is **auto-instrumented** via `__init_subclass__`.
-Whenever `execute()` is called, the framework wraps the call in an
-OpenTelemetry span carrying rich component metadata.  No code changes to your
-components are needed.
+Através do método `__init_subclass__`, toda classe que herda de `BaseComponent` é **auto-instrumentada**. Ao invocar o `execute()`, o framework encapsula a chamada em um *Span* (Rastro) do OpenTelemetry carregando os metadados ricos daquele componente. Nenhuma alteração no código de negócio é necessária.
 
 ```mermaid
 graph TD
@@ -32,107 +28,85 @@ graph TD
     S --> G
 ```
 
-Data-quality validators and governance hooks emit their own child spans so you
-get end-to-end trace visibility across the entire pipeline.
+Validadores de Qualidade de Dados e *hooks* de Governança emitem *child spans* (rastros filhos), garantindo visibilidade end-to-end e tempo de execução granulado ao longo do pipeline.
 
 ---
 
-## CLI commands
+## Comandos da CLI (`telemetry`)
 
-### `telemetry status`
+<div class="grid cards" markdown>
 
-Display the current OpenTelemetry configuration:
+-   :material-signal-cellular-outline: **`telemetry status`**
 
-```bash
-aptdata telemetry status
-aptdata telemetry status --json
-```
+    Exibe a configuração atual e o status da integração OpenTelemetry no ambiente.
+    ```bash
+    aptdata telemetry status [--json]
+    ```
 
-**Example output (Rich):**
+-   :material-upload-network: **`telemetry export`**
 
-```
-┌──────────────────────────────────────┐
-│ Telemetry Status                     │
-├─────────────────────┬────────────────┤
-│ Exporter            │ console        │
-│ Service name        │ aptdata     │
-│ SDK version         │ 1.x.x          │
-│ Status              │ active         │
-└─────────────────────┴────────────────┘
-```
+    Esvazia o *buffer* de spans locais e os força para o *exporter* configurado (Console ou OTLP).
+    ```bash
+    aptdata telemetry export [--format json]
+    ```
 
-### `telemetry export`
-
-Flush and export collected spans:
-
-```bash
-aptdata telemetry export
-aptdata telemetry export --format json
-```
+</div>
 
 ---
 
-## Auto-instrumented spans
+## Spans Auto-Instrumentados
 
-| Span name | Emitted by | Key attributes |
-|-----------|-----------|----------------|
+| Nome do Span | Emitido Por | Principais Atributos (`attributes`) |
+|---|---|---|
 | `aptdata.component` | `BaseComponent.execute()` | `component.id`, `component.kind`, `component.tags` |
 | `aptdata.quality.validate` | `QualityValidator.validate()` | `quality.rule_count`, `quality.enforcement` |
-| `aptdata.governance.lineage` | `LineageStore.save()` | `lineage.run_id`, `lineage.workflow` |
-| `aptdata.transform` | `PandasTransformer` / `PySparkTransformer` | `transform.engine`, `transform.rows_in`, `transform.rows_out` |
+| `aptdata.governance.lineage`| `LineageStore.save()` | `lineage.run_id`, `lineage.workflow` |
+| `aptdata.transform` | `PandasTransformer` / `PySparkTransformer`| `transform.engine`, `transform.rows_in`, `transform.rows_out` |
+
+!!! warning "Mascaramento Automático"
+    O módulo de telemetria inspeciona *payloads* em busca de chaves sensíveis (ex: `password`, `token`, `secret`, `key`) e mascara seus valores com `***` antes de exportar o evento para o OTLP.
 
 ---
 
-## Integrating with a backend
+## Integração de Backends
 
-### Jaeger (local development)
+=== "Jaeger (Desenvolvimento Local)"
 
-Start Jaeger via Docker:
+    Inicie o serviço do Jaeger via Docker:
+    ```bash
+    docker run -d --name jaeger \
+      -p 16686:16686 \
+      -p 4317:4317 \
+      jaegertracing/all-in-one:latest
+    ```
 
-```bash
-docker run -d --name jaeger \
-  -p 16686:16686 \
-  -p 4317:4317 \
-  jaegertracing/all-in-one:latest
-```
+    Aponte as variáveis de ambiente e rode seu sistema:
+    ```bash
+    export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
+    export OTEL_SERVICE_NAME="aptdata"
 
-Configure aptdata via environment variables:
+    aptdata run my_system
+    ```
+    Abra `http://localhost:16686` para visualizar a árvore de *traces*.
 
-```bash
-export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-export OTEL_SERVICE_NAME=aptdata
-aptdata run my_system
-```
+=== "OTLP (Produção)"
 
-Open `http://localhost:16686` to explore traces.
+    Utilize a integração genérica para enviar eventos para qualquer *collector* OTLP compatível (Datadog, Grafana Tempo, Honeycomb):
+    ```bash
+    export OTEL_EXPORTER_OTLP_ENDPOINT="https://api.honeycomb.io"
+    export OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=<API_KEY>"
+    export OTEL_SERVICE_NAME="aptdata"
 
-### OTLP (production)
-
-Point the exporter at any OTLP-compatible collector (Grafana Tempo, Honeycomb,
-Datadog, etc.):
-
-```bash
-export OTEL_EXPORTER_OTLP_ENDPOINT=https://api.honeycomb.io
-export OTEL_EXPORTER_OTLP_HEADERS="x-honeycomb-team=<API_KEY>"
-export OTEL_SERVICE_NAME=aptdata
-aptdata run my_system
-```
+    aptdata run my_system
+    ```
 
 ---
 
-## Disabling telemetry
+## Desabilitando a Telemetria
 
-Set the standard OpenTelemetry SDK variable to suppress all spans:
+Caso precise desligar a telemetria completamente para otimizar performance em testes locais, utilize a variável de ambiente padrão do SDK do OpenTelemetry:
 
 ```bash
-export OTEL_SDK_DISABLED=true
+export OTEL_SDK_DISABLED="true"
 aptdata run my_system
 ```
-
----
-
-## Further reading
-
-- [OpenTelemetry Python SDK](https://opentelemetry-python.readthedocs.io/)
-- [Transform Engines](transform-engines.md) — span attributes for transformers
-- [Data Quality](quality.md) — span attributes for quality validators

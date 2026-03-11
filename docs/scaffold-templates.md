@@ -1,267 +1,122 @@
 # Scaffold Templates
 
-The `aptdata scaffold` command bootstraps a project from a pre-built template.
+A CLI `aptdata scaffold` gera um esqueleto de projeto a partir de templates pré-configurados (Architectural Patterns), acelerando o desenvolvimento e garantindo padronização.
 
 ```bash
 aptdata scaffold <project-name> [--template TEMPLATE] [--output DIR]
 ```
 
-| Option          | Default        | Description                          |
-|-----------------|----------------|--------------------------------------|
-| `project-name`  | *required*     | Must match `[A-Za-z][A-Za-z0-9_]*`  |
-| `--template`/`-t` | `hello-world`  | Template to generate                 |
-| `--output`/`-o`   | `.`            | Parent directory for the new project |
+| Opção | Default | Descrição |
+|---|---|---|
+| `project-name` | *(obrigatório)* | Nome do projeto (apenas letras, números e underscores) |
+| `--template`, `-t` | `hello-world` | Nome do template a ser gerado |
+| `--output`, `-o` | `.` | Diretório de destino |
 
 ---
 
-## Available Templates
+## Templates Disponíveis
 
-### `hello-world` (default)
+=== "hello-world (Default)"
 
-A minimal pandas pipeline that ingests a JSON file, processes it, and saves
-CSV/JSON output.  Great for getting started.
+    Pipeline minimalista em Pandas. Lê um JSON, aplica uma transformação simples e salva um CSV. Ideal para testes iniciais.
 
-```bash
-aptdata scaffold my_project
-```
+    ```bash
+    aptdata scaffold meu_projeto
+    ```
 
-**Generated files:**
+    **Arquivos Gerados:**
+    ```text
+    meu_projeto/
+    ├── data/
+    │   └── selecao_brasileira.json
+    ├── main.py
+    └── requirements.txt
+    ```
 
-```
-my_project/
-├── data/
-│   └── selecao_brasileira.json
-├── output/
-├── main.py
-├── requirements.txt
-└── README.md
-```
+=== "medallion"
 
----
+    Padrão de arquitetura Data Lakehouse em três camadas: **Bronze** (Raw) → **Silver** (Clean) → **Gold** (Agregado).
 
-### `medallion`
+    ```bash
+    aptdata scaffold meu_lakehouse --template medallion
+    ```
 
-A three-layer Bronze → Silver → Gold data lakehouse pattern.
+    ```mermaid
+    flowchart LR
+        Bronze["🥉 Bronze\nIngestão Raw"]
+        Silver["🥈 Silver\nLimpeza + Qualidade"]
+        Gold["🥇 Gold\nAgregação + Parquet"]
 
-```bash
-aptdata scaffold my_lakehouse --template medallion
-```
+        Bronze --> Silver --> Gold
+    ```
 
-```mermaid
-flowchart LR
-    Raw["Raw Source\n(CSV / JSON)"]
-    Bronze["🥉 Bronze Layer\nbronze.py\nRaw ingestion"]
-    Silver["🥈 Silver Layer\nsilver.py\nCleaning + Quality"]
-    Gold["🥇 Gold Layer\ngold.py\nAggregation + Parquet"]
+=== "rag-ingestion"
 
-    Raw --> Bronze --> Silver --> Gold
-```
+    Pipeline de ingestão ponta-a-ponta para Retrieval-Augmented Generation (RAG).
 
-**Generated files:**
+    ```bash
+    aptdata scaffold rag_app --template rag-ingestion
+    ```
 
-```
-my_lakehouse/
-├── data/
-├── output/
-├── bronze.py           # Raw ingestion (CSVReader)
-├── silver.py           # Cleaning + PandasTransformer + QualityValidator
-├── gold.py             # Aggregation + ParquetWriter
-├── aptdata.yaml     # Connector config
-├── requirements.txt
-└── README.md
-```
+    ```mermaid
+    flowchart LR
+        Extract["1️⃣ Extract\n(Docs Brutos)"]
+        Chunk["2️⃣ Chunk\n(Divisão)"]
+        Embed["3️⃣ Embed\n(Vetorização)"]
+        Load["4️⃣ Load\n(Vector Store)"]
 
-The Silver layer demonstrates wiring a
-:class:`~aptdata.plugins.transform.pandas.PandasTransformer` with a
-:class:`~aptdata.plugins.quality.validator.QualityValidator` inside a
-:class:`~aptdata.core.workflow.Workflow`.
+        Extract --> Chunk --> Embed --> Load
+    ```
 
----
+=== "data-quality-test"
 
-### `rag-ingestion`
+    Pipeline focado em governança, utilizando `SchemaContract` e *Expectations* rigorosas para barrar dados sujos (`QualityValidator`).
 
-An end-to-end Retrieval-Augmented Generation (RAG) ingestion pipeline:
-extract → chunk → embed → load.
+    ```bash
+    aptdata scaffold dq_suite --template data-quality-test
+    ```
 
-```bash
-aptdata scaffold my_rag_app --template rag-ingestion
-```
+=== "job-wheel"
 
-```mermaid
-flowchart LR
-    Src["📄 Source\n(documents)"]
-    Extract["1️⃣ Extract\nload raw docs"]
-    Chunk["2️⃣ Chunk\nsplit into pieces"]
-    Embed["3️⃣ Embed\nvectorise chunks"]
-    Load["4️⃣ Load\nvector store"]
+    Template focado em portabilidade. Cria um projeto empacotável como um Python Wheel (`.whl`), com metadados `pyproject.toml` configurados para entry-points de CLI.
 
-    Src --> Extract --> Chunk --> Embed --> Load
-```
+    ```bash
+    aptdata scaffold my_job --template job-wheel
+    ```
 
-**Generated files:**
+=== "docker-compose-app"
 
-```
-my_rag_app/
-├── data/
-├── pipeline.py         # 4-step Workflow (extract/chunk/embed/load)
-├── aptdata.yaml
-├── requirements.txt
-└── README.md
-```
+    Serviço conteinerizado pronto para orquestração. Inclui `Dockerfile` otimizado para Python e `docker-compose.yml` para infraestrutura anexada.
 
-Replace the `embed` step with your chosen embedding provider (OpenAI,
-Sentence-Transformers, etc.) and the `load_to_vector_store` step with your
-vector database client.
+    ```bash
+    aptdata scaffold my_service --template docker-compose-app
+    ```
 
 ---
 
-### `data-quality-test`
+## Mesh CLI (Orquestração de Artefatos)
 
-A data quality enforcement pipeline using
-:class:`~aptdata.plugins.quality.contract.SchemaContract` and expectations.
-
-```bash
-aptdata scaffold my_dq_suite --template data-quality-test
-```
-
-```mermaid
-flowchart LR
-    Raw["Raw Dataset"]
-    SC["SchemaContract\ncolumn types + PII flags"]
-    Exp["Expectations\nNotNull / Unique / Range"]
-    QV["QualityValidator\nenforce mode: ABORT | WARN | TAG"]
-    Out["Clean Dataset\nor raise ValueError"]
-
-    Raw --> SC --> Exp --> QV --> Out
-```
-
-**Generated files:**
-
-```
-my_dq_suite/
-├── data/
-├── quality_pipeline.py  # SchemaContract + QualityValidator + Workflow
-├── aptdata.yaml
-├── requirements.txt
-└── README.md
-```
-
-Modify the contract columns and expectations to match your dataset, then run:
+O subcomando `aptdata mesh` orquestra infraestrutura local descrita em arquivos `mesh.yaml` encontrados dentro do projeto.
 
 ```bash
-python quality_pipeline.py
-```
-
----
-
-### `job-wheel`
-
-A Python wheel executor template for packaging and running jobs portably.
-
-```bash
-aptdata scaffold my_job --template job-wheel
-```
-
-**Generated files:**
-
-```
-my_job/
-├── src/
-│   └── my_job/
-│       ├── __init__.py
-│       └── job.py          # Job logic + CLI entry-point
-├── dist/                   # Built wheel artifacts
-├── pyproject.toml          # Packaging metadata (setuptools + wheel)
-├── mesh.yaml               # Component descriptor (type: job-wheel)
-├── Makefile
-└── README.md
-```
-
-The generated `job.py` exposes a `run(config)` function and a `main()` CLI
-entry-point wired via `pyproject.toml [project.scripts]`.  Build and run with:
-
-```bash
-# Build the wheel
-make build        # or: pip wheel . -w dist/ --no-deps
-
-# Install and execute
-make install      # pip install dist/my_job-*.whl
-my_job-job
-
-# Or run directly
-aptdata mesh run my_job
-```
-
----
-
-### `docker-compose-app`
-
-A multi-service Docker Compose application template.
-
-```bash
-aptdata scaffold my_service --template docker-compose-app
-```
-
-**Generated files:**
-
-```
-my_service/
-├── data/                   # Mounted data directory
-├── app.py                  # Application service entry-point
-├── Dockerfile              # Container image definition
-├── docker-compose.yml      # Service orchestration
-├── mesh.yaml               # Component descriptor (type: docker-compose-app)
-├── requirements.txt
-└── README.md
-```
-
-Add more services (databases, caches, queues) to `docker-compose.yml` and run:
-
-```bash
-docker compose up --build
-
-# Or via the mesh CLI
-aptdata mesh run my_service
-```
-
----
-
-## Mesh CLI
-
-The `aptdata mesh` sub-command orchestrates components that include a
-`mesh.yaml` descriptor.
-
-```bash
-# List all mesh components under the current directory
+# Lista todos os componentes mesh
 aptdata mesh list [--dir DIR] [--json]
 
-# Run a component (job-wheel or docker-compose-app)
-aptdata mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
+# Constrói o componente (Wheel ou Docker Image)
+aptdata mesh build COMPONENT
 
-# Build a component (wheel or Docker image)
-aptdata mesh build COMPONENT [--dir DIR] [--json]
+# Executa o artefato final
+aptdata mesh run COMPONENT [--dry-run]
 ```
 
-### Supported component types
+### Tipos de Componentes Suportados
 
-| Type                | Run command                 | Build command             |
-|---------------------|-----------------------------|---------------------------|
-| `job-wheel`         | Invokes the wheel entrypoint | `pip wheel .`            |
-| `docker-compose-app`| `docker compose up`         | `docker compose build`   |
+| Tipo (`type` no mesh.yaml) | Ação `build` | Ação `run` |
+|---|---|---|
+| `job-wheel` | `pip wheel .` | Invoca o *entrypoint* do wheel gerado |
+| `docker-compose-app` | `docker compose build` | `docker compose up` |
 
 ---
 
-## Machine-readable output
-
-All scaffold events are emitted as JSON lines:
-
-```json
-{"event": "scaffold.started", "project": "my_project", "template": "medallion", "output": "/..."}
-{"event": "scaffold.completed", "project": "my_project", "template": "medallion", "path": "/..."}
-```
-
-Error events are written to stderr with `exit code 1`:
-
-```json
-{"event": "scaffold.error", "project": "...", "error": "Directory already exists: ..."}
-```
+!!! tip "Saídas Machine-Readable"
+    Todas as ações de scaffolding e mesh emitem JSON Lines estruturados (`.model_dump_json()`), facilitando a automação de logs CI/CD ou integração com o [Servidor MCP](mcp.md). Falhas críticas saem em `stderr` com *exit code* `1`.
