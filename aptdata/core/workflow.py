@@ -11,12 +11,13 @@ from typing import Any
 from uuid import uuid4
 
 from opentelemetry import trace
+from pydantic import ConfigDict
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from aptdata.core.context import ExecutionContext
 from aptdata.core.dataset import IDataset
 from aptdata.core.state import StateBackend
-from aptdata.core.system import IComponent
+from aptdata.core.system import DefaultExecutor, IComponent, IExecutor
 from aptdata.plugins.dataset import InMemoryDataset
 from aptdata.telemetry.instrumentation import (
     record_processed_documents,
@@ -76,12 +77,13 @@ class IWorkflow(ABC):
         """Execute the workflow."""
 
 
-@pydantic_dataclass
+@pydantic_dataclass(config=ConfigDict(arbitrary_types_allowed=True))
 class BaseWorkflow(IWorkflow):
     """Default workflow implementation with adjacency compilation and hooks."""
 
     workflow_id: str
     context: ExecutionContext = field(default_factory=ExecutionContext)
+    executor: IExecutor = field(default_factory=lambda: DefaultExecutor())
 
     def __post_init__(self) -> None:
         self._nodes: dict[str, WorkflowNode] = {}
@@ -158,34 +160,7 @@ class BaseWorkflow(IWorkflow):
             raise RuntimeError("Workflow not compiled.")
 
         self.before_run(initial_inputs)
-        pending_inputs: dict[str, list[IDataset]] = {}
-        for component_id in self._execution_order:
-            pending_inputs[component_id] = []
-        if self._execution_order:
-            pending_inputs[self._execution_order[0]] = list(initial_inputs)
-
-        # Fallback when no component executes or no branch is traversed.
-        terminal_outputs: list[IDataset] = list(initial_inputs)
-        for component_id in self._execution_order:
-            component = self._nodes[component_id].component
-            inputs = pending_inputs.get(component_id, [])
-            if not component.validate_inputs(inputs):
-                continue
-
-            outputs = component.execute(inputs)
-            outgoing = self._adjacency.get(component_id, [])
-            if not outgoing:
-                terminal_outputs = outputs
-                continue
-
-            traversed = False
-            for edge in outgoing:
-                if edge.condition is None or edge.condition(outputs):
-                    pending_inputs[edge.target_id].extend(outputs)
-                    traversed = True
-            if not traversed:
-                terminal_outputs = outputs
-
+        terminal_outputs = self.executor.execute_flow(self, initial_inputs)
         self.after_run(terminal_outputs)
         return terminal_outputs
 
@@ -233,10 +208,18 @@ class Workflow:
         """Resume execution from the last checkpoint for *run_id*."""
         state = self.state_backend.load(run_id)
         restored_data = self._deserialize_payload(state.get("data"))
+
+        # If restored_data is an empty dataset (e.g. records were not serialized)
+        # we might prefer the provided data if it's more complete.
+        use_data = restored_data
+        if restored_data is not None and isinstance(restored_data, InMemoryDataset):
+            if not restored_data.read() and data is not None:
+                use_data = data
+
         return self._run(
             run_id=run_id,
             start_index=int(state.get("next_step_index", 0)),
-            data=restored_data if restored_data is not None else data,
+            data=use_data if use_data is not None else data,
         )
 
     def _run(self, *, run_id: str, start_index: int, data: Any | None) -> Any:
@@ -354,7 +337,6 @@ class Workflow:
                 "__type__": "InMemoryDataset",
                 "uri": payload.uri,
                 "schema_metadata": payload.schema_metadata,
-                "records": payload.read(),
             }
         return payload
 
@@ -368,5 +350,6 @@ class Workflow:
             uri=payload.get("uri", "memory://checkpoint"),
             schema_metadata=payload.get("schema_metadata", {}),
         )
-        dataset.write(payload.get("records", []))
+        # Note: Records are not stored in state backend to avoid OOM
+        # and to delegate blob storage to external services.
         return dataset

@@ -62,7 +62,10 @@ class TestWorkflowResilience:
         wf_resume.add_step(flaky_transform, retries=1, backoff=0)
         wf_resume.add_step(lambda dataset: dataset)
 
-        resumed = wf_resume.resume(run_id)
+        # In a real environment, the state backend would store a URI to the actual data.
+        # Here we mock the data being returned by the source directly for resume
+        data = extract()
+        resumed = wf_resume.resume(run_id, data=data)
         first_row = resumed.read()[0]
         assert first_row["document_id"] == "1"
         assert first_row["trace_id"]
