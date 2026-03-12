@@ -1,0 +1,17 @@
+/* docs/stylesheets/custom.css */
+:root {
+  /* Azul Escuro Tecnológico para as barras e cabeçalhos */
+  --md-primary-fg-color: #0b132b;
+  --md-primary-fg-color--light: #1c2541;
+  --md-primary-fg-color--dark: #050a1f;
+
+  /* Laranja Vibrante para o Accent (botões, links, etc) */
+  --md-accent-fg-color: #ff6a00;
+  --md-accent-fg-color--transparent: rgba(255, 106, 0, 0.1);
+}
+
+/* Opcional: Arredondar mais os botões para ficar mais moderno */
+.md-button {
+  border-radius: 8px;
+  font-weight: bold;
+}

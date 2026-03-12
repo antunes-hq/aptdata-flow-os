@@ -8,20 +8,20 @@ edit_uri: edit/main/docs/
 theme:
   name: material
   palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: deep purple
-      accent: teal
-      toggle:
-        icon: material/weather-night
-        name: Mudar para modo escuro
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: deep purple
-      accent: teal
+      primary: custom
+      accent: orange
       toggle:
-        icon: material/weather-sunny
+        icon: material/brightness-4
         name: Mudar para modo claro
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: orange
+      toggle:
+        icon: material/brightness-7
+        name: Mudar para modo escuro
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -49,6 +49,7 @@ extra_javascript:
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/custom.css
 
 plugins:
   - search
@@ -95,6 +96,12 @@ nav:
 markdown_extensions:
   - admonition
   - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      options:
+        custom_icons:
+          - overrides/.icons
   - pymdownx.details
   - pymdownx.superfences:
       custom_fences:
