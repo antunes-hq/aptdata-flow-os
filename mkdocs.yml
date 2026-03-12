@@ -10,15 +10,15 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: blue
+      primary: deep purple
+      accent: teal
       toggle:
         icon: material/weather-night
         name: Mudar para modo escuro
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: blue
+      primary: deep purple
+      accent: teal
       toggle:
         icon: material/weather-sunny
         name: Mudar para modo claro
@@ -46,6 +46,9 @@ theme:
 
 extra_javascript:
   - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+
+extra_css:
+  - stylesheets/extra.css
 
 plugins:
   - search

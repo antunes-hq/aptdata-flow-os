@@ -5,7 +5,7 @@ hide:
 ---
 
 <div class="tx-hero" style="text-align: center; margin-top: 3rem; margin-bottom: 3rem;">
-  <h1 style="font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem;">aptdata</h1>
+  <h1 class="text-gradient" style="font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem;">aptdata</h1>
   <p style="font-size: 1.25rem; color: var(--md-default-fg-color--light); max-width: 700px; margin: 0 auto;">
     O framework declarativo e extensível para construção de pipelines de dados inteligentes. Validação estrita, roteamento dinâmico e integração nativa com IA.
   </p>
