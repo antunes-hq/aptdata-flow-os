@@ -10,8 +10,65 @@
   --md-accent-fg-color--transparent: rgba(255, 106, 0, 0.1);
 }
 
-/* Opcional: Arredondar mais os botões para ficar mais moderno */
-.md-button {
-  border-radius: 8px;
-  font-weight: bold;
+/* ---------------------------------------------------
+   Padrão Google UI/UX: Superfícies, Linhas e Painéis
+--------------------------------------------------- */
+
+/* 1. Cartões da Página Inicial (Grid Cards) */
+.md-typeset .grid.cards > :is(ul,ol) > li {
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Contorno em linha fina */
+    border-radius: 16px; /* Cantos arredondados mais suaves */
+    background-color: var(--md-default-bg-color); /* Fundo limpo, flat */
+    box-shadow: none; /* Remove a sombra pesada padrão */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Efeito de hover elegante nos cartões */
+.md-typeset .grid.cards > :is(ul,ol) > li:hover {
+    border-color: var(--md-accent-fg-color); /* A linha fina acende no seu Laranja */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Sombra flutuante suave */
+    transform: translateY(-4px); /* Elevação sutil do cartão */
+}
+
+/* 2. Painéis Customizados (Admonitions / Dicas / Alertas) */
+.md-typeset .admonition,
+.md-typeset details {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.12); /* Linha fina ao redor do painel */
+    border-radius: 12px;
+    box-shadow: none;
+    background-color: rgba(255, 255, 255, 0.02); /* Fundo levemente destacado */
+}
+
+/* Título dos painéis mais limpo */
+.md-typeset .admonition-title,
+.md-typeset summary {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Divisória fina interna */
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+/* Opcional: Afinar a barra lateral colorida dos painéis para ficar mais elegante */
+.md-typeset .admonition {
+    border-left-width: 3px;
+}
+
+/* 3. Botões no estilo Google (Arredondados) */
+.md-typeset .md-button {
+    border-radius: 24px; /* Formato 'pílula' tecnológico */
+    border: 1px solid var(--md-accent-fg-color);
+    box-shadow: none;
+    font-weight: 600;
+    text-transform: none; /* Evita tudo maiúsculo, fica mais moderno */
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.md-typeset .md-button--primary {
+    background-color: var(--md-accent-fg-color);
+    color: #ffffff;
+    border: none;
 }
