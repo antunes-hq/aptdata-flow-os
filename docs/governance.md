@@ -26,6 +26,9 @@ A governança é dividida em quatro pilares principais:
 
 ```mermaid
 graph LR
+    %% Estilos Customizados (Design Premium)
+    classDef default fill:#0b132b,stroke:#ff6a00,stroke-width:1px,color:#fff,rx:8px,ry:8px;
+
     L["📈 Data Lineage\nLineageGraph + LineageStore"]
     Q["✅ Schema Contracts\nSchemaContract + Expectations"]
     R["📋 Business Rules\nRuleRegistry + AuditLog"]
@@ -48,6 +51,9 @@ O subsistema de linhagem reside em `aptdata.core.lineage`. Toda execução de *w
 
 ```mermaid
 flowchart LR
+    %% Estilos Customizados (Design Premium)
+    classDef default fill:#0b132b,stroke:#ff6a00,stroke-width:1px,color:#fff,rx:8px,ry:8px;
+
     R["📥 READ\ns3://raw/orders.parquet\n50.000 rows"]
     T["⚙️ TRANSFORM\ns3://clean/orders.parquet\n48.500 rows\nrevenue = price × quantity"]
     W["📤 WRITE\ns3://final/orders.parquet"]
