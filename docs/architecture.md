@@ -13,6 +13,9 @@ O **aptdata** foi projetado com base em um sistema de contrato de duas camadas p
 
 ```mermaid
 graph LR
+    %% Estilos Customizados (Design Premium)
+    classDef default fill:#0b132b,stroke:#ff6a00,stroke-width:1px,color:#fff,rx:8px,ry:8px;
+
     C["🔧 Component\nUnidade Reutilizável de Trabalho\n(Filtro, Junção, Transformação)"]
     F["🔀 Flow\nGrafo Direcionado de Componentes"]
     S["🏛 System\nOrquestrador de Nível Superior\nPossui um ou mais Fluxos"]

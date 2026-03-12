@@ -65,6 +65,9 @@ O fluxo lógico de orquestração do framework segue cinco etapas principais:
 
 ```mermaid
 flowchart LR
+    %% Estilos Customizados (Design Premium)
+    classDef default fill:#0b132b,stroke:#ff6a00,stroke-width:1px,color:#fff,rx:8px,ry:8px;
+
     DS["1️⃣ Dataset\nLeitura / Escrita (IDataset)"]
     CO["2️⃣ Component\nTransformação (IComponent)"]
     FL["3️⃣ Flow\nConexões Condicionais (IFlow)"]
