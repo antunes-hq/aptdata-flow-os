@@ -1,0 +1,13 @@
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #0F172A; /* Um azul super escuro (Tailwind Slate 900) */
+  --md-default-fg-color: #CBD5E1; /* Texto mais suave para leitura prolongada */
+  --md-code-bg-color: #1E293B; /* Fundo dos blocos de código com leve destaque */
+}
+
+/* Adicione esta classe ao seu <h1> na página inicial */
+.text-gradient {
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}

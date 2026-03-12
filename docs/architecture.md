@@ -202,3 +202,28 @@ Os seguintes hooks de ciclo de vida são emitidos compulsoriamente via `BaseComp
 * `post_execute`
 
 Os *payloads* são modelos Pydantic da estrutura `ComponentExecutionEvent`, garantindo serialização segura (`.model_dump_json()`) para agentes MCP ou TUI dashboards. Listeners observadores não podem travar a execução síncrona dos pipelines.
+
+```mermaid
+sequenceDiagram
+    participant C as BaseComponent
+    participant E as EventBus
+    participant L as Listener (TUI / MCP)
+
+    C->>E: emit("pre_execute", payload)
+    E--)L: async dispatch
+
+    rect rgb(30, 41, 59)
+    Note over C: Component.execute(inputs)
+    end
+
+    alt Execução com Sucesso
+        C->>E: emit("on_success", payload)
+        E--)L: async dispatch
+    else Execução com Falha
+        C->>E: emit("on_failure", error_payload)
+        E--)L: async dispatch
+    end
+
+    C->>E: emit("post_execute", payload)
+    E--)L: async dispatch
+```

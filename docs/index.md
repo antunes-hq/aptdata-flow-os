@@ -1,63 +1,76 @@
-# aptdata
+---
+hide:
+  - navigation
+  - toc
+---
 
-O **aptdata** é um framework declarativo e extensível para construção de pipelines de dados inteligentes em Python. Ele fornece um sistema de contratos robusto baseado em três abstrações universais — **Component**, **Flow**, e **System** — garantindo que você construa, teste e componha pipelines com total confiança.
+<div class="tx-hero" style="text-align: center; margin-top: 3rem; margin-bottom: 3rem;">
+  <h1 class="text-gradient" style="font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem;">aptdata</h1>
+  <p style="font-size: 1.25rem; color: var(--md-default-fg-color--light); max-width: 700px; margin: 0 auto;">
+    O framework declarativo e extensível para construção de pipelines de dados inteligentes. Validação estrita, roteamento dinâmico e integração nativa com IA.
+  </p>
+  <div style="margin-top: 2rem;">
+    <a href="getting-started/" class="md-button md-button--primary">🚀 Comece Agora</a>
+    <a href="https://github.com/strondata/smart-data" class="md-button">🐙 GitHub</a>
+  </div>
+</div>
 
 ---
 
-## Principais Funcionalidades
+## Por que escolher o aptdata?
 
 <div class="grid cards" markdown>
 
--   :material-file-document-check-outline: **Design Contract-First**
+-   :material-shield-check: **Type Safety & Contratos**
 
-    Interfaces puras em Python (`@dataclass + ABC`) para comportamento explícito.
+    Interfaces (`IDataset`, `IComponent`) combinadas com a validação em tempo de execução do **Pydantic**. Saiba exatamente o que entra e sai do seu pipeline antes de ir para produção.
 
--   :material-shield-check: **Validação Pydantic**
+-   :material-puzzle: **Agnóstico a Engines**
 
-    Type safety em tempo de execução sem custo adicional.
+    Construa fluxos desacoplados da ferramenta de processamento. Use wrappers para Pandas ou escale nativamente para clusters PySpark sem alterar a arquitetura do fluxo.
 
--   :material-source-branch: **Fluxos Condicionais**
+-   :material-robot-outline: **Pronto para Agentes (AI Ready)**
 
-    Estrutura `FlowEdge` com predicados opcionais para ramificações dinâmicas.
+    Integração nativa com MCP Server e emissão de telemetria em JSON Lines. Perfeito para ser orquestrado por frameworks como LangChain e agentes autônomos.
 
--   :material-tag-multiple: **Componentes Direcionados por Metadados**
+-   :material-source-branch: **Roteamento Dinâmico**
 
-    A classe `ComponentMeta` carrega o tipo (*kind*), *tags*, chave de roteamento condicional e atributos extras.
-
--   :material-puzzle: **Registro de Plugins (Registry)**
-
-    Adapters de terceiros registram implementações concretas de `ISystem` pelo nome.
-
--   :material-console: **CLI Estruturada e JSON Lines**
-
-    Resultados emitidos em JSON Lines (`.model_dump_json()`), ideal para orquestradores.
-
--   :material-monitor-dashboard: **Dashboard Interativo (TUI)**
-
-    Um dashboard no terminal construído com Textual para monitoramento em tempo real.
+    Crie `FlowEdges` condicionais que ramificam a execução baseada em predicados de metadados das saídas anteriores.
 
 </div>
 
 ---
 
-## Visão Rápida (Quick Look)
+## Instalação Rápida
 
-=== "Object-Oriented (Core)"
+```bash
+pip install aptdata
+```
+
+### Flexibilidade: Escolha seu Paradigma
+
+Desenvolva da forma que melhor se adapta ao seu time: usando Orientação a Objetos para sistemas complexos ou Decorators para agilidade.
+
+=== "Declarativo (Decorators)"
+
+    ```python
+    from aptdata.core.decorators import pandas_component
+    import pandas as pd
+
+    @pandas_component("filter_active_users")
+    def filter_active_users(df: pd.DataFrame) -> pd.DataFrame:
+        """Filtra usuários ativos com sintaxe limpa e direta."""
+        return df[df['active'] == True]
+    ```
+
+=== "Orientado a Objetos (Core)"
 
     ```python
     from pydantic.dataclasses import dataclass as pydantic_dataclass
     from aptdata.core import BaseDataset, IDataset, BaseComponent
 
     @pydantic_dataclass
-    class MemoryDataset(BaseDataset):
-        def __post_init__(self): self._data = None
-        def read(self): return self._data
-        def write(self, data): self._data = data
-
-    @pydantic_dataclass
     class FilterComponent(BaseComponent):
-        """Mantém apenas registros onde 'active' é verdadeiro."""
-
         def validate_inputs(self, inputs: list[IDataset]) -> bool:
             return len(inputs) == 1
 
@@ -67,31 +80,3 @@ O **aptdata** é um framework declarativo e extensível para construção de pip
             out.write([r for r in rows if r.get("active")])
             return [out]
     ```
-
-=== "Declarative (Decorators)"
-
-    ```python
-    from aptdata.core.decorators import pandas_component
-    import pandas as pd
-
-    @pandas_component("filter_active_users")
-    def filter_active_users(df: pd.DataFrame) -> pd.DataFrame:
-        """Mantém apenas usuários ativos usando a API simplificada."""
-        return df[df['active'] == True]
-    ```
-
----
-
-## Navegação
-
-- 🚀 [Getting Started](getting-started.md) — Instalação e criação do seu primeiro sistema
-- 🏛 [Architecture](architecture.md) — Entenda o design `I*` → `Base*`
-- ⚙️ [Transform Engines](transform-engines.md) — Wrappers para Pandas & PySpark
-- ✅ [Data Quality](quality.md) — Contratos de schema e expectations
-- 🏗 [Governance](governance.md) — Linhagem, catálogo e classificação
-- 🧩 [Scaffold Templates](scaffold-templates.md) — Bootstrapping rápido de projetos
-- 📡 [Telemetry](telemetry.md) — Integração com OpenTelemetry
-- 🤖 [MCP Server](mcp.md) — Integração nativa com Agentes de IA
-- ⚙️ [Configuration](configuration.md) — Arquivos de configuração YAML
-- 📖 [API Reference](api/core.md) — Documentação completa das classes
-- 📋 [Changelog](changelog.md) — Histórico de versões
