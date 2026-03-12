@@ -1499,6 +1499,9 @@
 </ul>
 </div>
 <pre class="mermaid"><code>graph LR
+    %% Estilos Customizados (Design Premium)
+    classDef default fill:#0b132b,stroke:#ff6a00,stroke-width:1px,color:#fff,rx:8px,ry:8px;
+
     L["📈 Data Lineage\nLineageGraph + LineageStore"]
     Q["✅ Schema Contracts\nSchemaContract + Expectations"]
     R["📋 Business Rules\nRuleRegistry + AuditLog"]
@@ -1514,6 +1517,9 @@
 <h3 id="visao-geral">Visão Geral<a class="headerlink" href="#visao-geral" title="Permanent link">&para;</a></h3>
 <p>O subsistema de linhagem reside em <code>aptdata.core.lineage</code>. Toda execução de <em>workflow</em> produz um <code>LineageGraph</code> contendo uma lista ordenada e imutável de objetos <code>LineageNode</code>.</p>
 <pre class="mermaid"><code>flowchart LR
+    %% Estilos Customizados (Design Premium)
+    classDef default fill:#0b132b,stroke:#ff6a00,stroke-width:1px,color:#fff,rx:8px,ry:8px;
+
     R["📥 READ\ns3://raw/orders.parquet\n50.000 rows"]
     T["⚙️ TRANSFORM\ns3://clean/orders.parquet\n48.500 rows\nrevenue = price × quantity"]
     W["📤 WRITE\ns3://final/orders.parquet"]

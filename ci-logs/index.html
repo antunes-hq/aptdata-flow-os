@@ -889,21 +889,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#logs-realisticos-ndjson" class="md-nav__link">
+  <a href="#formatos-de-saida" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Logs Realísticos (NDJSON)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#saida-padrao-human-readable" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Saída Padrão (Human-Readable)
+        Formatos de Saída
       
     </span>
   </a>
@@ -1409,9 +1398,14 @@
 
 
 <h1 id="logs-de-execucao-e-cicd">Logs de Execução e CI/CD<a class="headerlink" href="#logs-de-execucao-e-cicd" title="Permanent link">&para;</a></h1>
-<p>O <strong>aptdata</strong> foi arquitetado com automação em mente. A emissão de logs pode ser formatada em objetos JSON estruturados e lineares (<code>--json</code>), viabilizando a captura, <em>parsing</em> e ingestão direta em <em>Data Lakes</em> de observabilidade (ex: Datadog, ELK) ou esteiras de CI/CD.</p>
+<p>O <strong>aptdata</strong> foi arquitetado com automação e integração em mente.</p>
+<ul>
+<li><strong>Logs Estruturados:</strong> Emissão em NDJSON (<code>--json</code>).</li>
+<li><strong>Observabilidade:</strong> Facilita a captura, <em>parsing</em> e ingestão direta em Data Lakes e ferramentas de monitoramento (ex: Datadog, ELK).</li>
+<li><strong>Automação:</strong> Ideal para esteiras de CI/CD.</li>
+</ul>
 <h2 id="integracao-com-github-actions">Integração com GitHub Actions<a class="headerlink" href="#integracao-com-github-actions" title="Permanent link">&para;</a></h2>
-<p>O exemplo abaixo demonstra a orquestração de um pipeline de dados do <code>aptdata</code> sendo disparado por cron-jobs através de uma Action do GitHub. O output estruturado é arquivado no final da esteira.</p>
+<p>O exemplo abaixo demonstra um workflow automatizado usando cron-jobs, onde o log em formato JSON é arquivado no final da execução.</p>
 <div class="language-yaml highlight"><span class="filename">.github/workflows/data-pipeline.yml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Data Pipeline</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">on</span><span class="p">:</span>
@@ -1449,8 +1443,11 @@
 </span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aptdata-execution-logs</span>
 </span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pipeline_run.json</span>
 </span></code></pre></div>
-<h2 id="logs-realisticos-ndjson">Logs Realísticos (NDJSON)<a class="headerlink" href="#logs-realisticos-ndjson" title="Permanent link">&para;</a></h2>
-<p>Ao usar a <em>flag</em> <code>--json</code>, o formato textual enriquecido via <code>Rich</code> é desligado e o terminal emite puramente NDJSON (Newline Delimited JSON).</p>
+<h2 id="formatos-de-saida">Formatos de Saída<a class="headerlink" href="#formatos-de-saida" title="Permanent link">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">NDJSON (Machine-Readable)</label><label for="__tabbed_1_2">Padrão (Human-Readable)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Ao usar a flag <code>--json</code>, a saída é renderizada em NDJSON puro, ideal para parseadores automáticos e sistemas de logging.</p>
 <div class="language-json highlight"><span class="filename">pipeline_run.json</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;system.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;system_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_system&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prod&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;dry_run&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:00.000000Z&quot;</span><span class="p">}</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;flow_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extract_flow&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:00.050000Z&quot;</span><span class="p">}</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;component.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;component_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres_extractor&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:00.100000Z&quot;</span><span class="p">}</span>
@@ -1464,8 +1461,9 @@
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;flow_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;transform_flow&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;elapsed_seconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.22</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:08.720000Z&quot;</span><span class="p">}</span>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;system.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;system_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_system&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prod&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;dry_run&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;elapsed_seconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.77</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-10-27T10:00:08.770000Z&quot;</span><span class="p">}</span>
 </span></code></pre></div>
-<h2 id="saida-padrao-human-readable">Saída Padrão (Human-Readable)<a class="headerlink" href="#saida-padrao-human-readable" title="Permanent link">&para;</a></h2>
-<p>Por padrão (sem <code>--json</code>), o terminal é renderizado via <code>Rich</code>, provendo barras de progresso, status visual de cada componente e realce de sintaxe (<em>syntax highlighting</em>) facilitando o <em>debugging</em> humano.</p>
+</div>
+<div class="tabbed-block">
+<p>Por padrão (sem <code>--json</code>), o terminal utiliza o <code>Rich</code> para prover barras de progresso, realce de sintaxe e status visuais facilitando o <em>debugging</em>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>$<span class="w"> </span>aptdata<span class="w"> </span>run<span class="w"> </span>my_system
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="o">[</span><span class="m">10</span>:00:00<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>System<span class="w"> </span><span class="s1">&#39;my_system&#39;</span><span class="w"> </span>started<span class="w"> </span><span class="k">in</span><span class="w"> </span>env<span class="w"> </span><span class="s1">&#39;prod&#39;</span>.
@@ -1481,6 +1479,9 @@
 </span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="o">[</span><span class="m">10</span>:00:08<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>Flow<span class="w"> </span><span class="s1">&#39;transform_flow&#39;</span><span class="w"> </span>completed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">5</span>.22s.
 </span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="o">[</span><span class="m">10</span>:00:08<span class="o">]</span><span class="w"> </span>INFO<span class="w">     </span>System<span class="w"> </span><span class="s1">&#39;my_system&#39;</span><span class="w"> </span>completed<span class="w"> </span>successfully<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">8</span>.77s.
 </span></code></pre></div>
+</div>
+</div>
+</div>
 
 
 
