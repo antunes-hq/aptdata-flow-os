@@ -49,6 +49,7 @@ theme:
 
 extra_javascript:
   - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+  - assets/termynal.js
 
 copyright: Copyright &copy; 2024 Strondata - Mantido pela comunidade open source.
 
@@ -67,6 +68,7 @@ extra:
 extra_css:
   - stylesheets/extra.css
   - stylesheets/custom.css
+  - stylesheets/termynal.css
 
 plugins:
   - search
