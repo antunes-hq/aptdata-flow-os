@@ -7,6 +7,8 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
   palette:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
@@ -36,6 +38,7 @@ theme:
     - content.tabs.link
     - search.suggest
     - search.highlight
+    - navigation.footer
 
   font:
     text: Inter
@@ -46,10 +49,26 @@ theme:
 
 extra_javascript:
   - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+  - assets/termynal.js
+
+copyright: Copyright &copy; 2024 Strondata - Mantido pela comunidade open source.
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/strondata/smart-data
+      name: Repositório Oficial do aptdata
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/strondata/
+      name: Acompanhe a Strondata no LinkedIn
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/strondata
+      name: Junte-se à Comunidade no Discord
 
 extra_css:
   - stylesheets/extra.css
   - stylesheets/custom.css
+  - stylesheets/termynal.css
 
 plugins:
   - search
