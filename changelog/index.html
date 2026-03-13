@@ -1533,12 +1533,17 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>docs/prompts/docs-agent.md</code></strong> — Authored the DevPortal Docs Agent prompt, establishing strict guidelines for Brazilian Portuguese language, anti-prolixity, MkDocs Material features, and documentation architecture.</li>
+<li><strong><code>IExecutor</code> and <code>DefaultExecutor</code></strong> — Added graph execution decoupling from <code>BaseWorkflow</code>.</li>
+<li><strong><code>IAsyncComponent</code></strong> — Added native async/await support for I/O bound pipelines and LLMs.</li>
+<li><strong><code>IIterableDataset</code></strong> — Added generator-based datasets to support lazy evaluation and streaming contracts.</li>
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>DevPortal Rewrite</strong> — Overhauled all core documentation (<code>index</code>, <code>getting-started</code>, <code>architecture</code>, <code>scaffold-templates</code>, <code>configuration</code>, <code>telemetry</code>, <code>quality</code>, <code>governance</code>, <code>transform-engines</code>, <code>diys</code>, <code>ci-logs</code>, <code>mcp</code>) translating content to Brazilian Portuguese.</li>
 <li><strong>UI/UX Evolution</strong> — Implemented MkDocs Material admonitions, content tabs, and grids across documentation files to improve Developer Experience (DX).</li>
 <li><strong>Navigation Audit</strong> — Re-structured the <code>mkdocs.yml</code> navigation tree into <code>Getting Started -&gt; Core -&gt; Plugins -&gt; API</code>. Enabled the <code>md_in_html</code> extension for layout support.</li>
+<li><strong><code>IDataset</code> Generics</strong> — Refactored <code>IDataset</code> to inherit from <code>Generic[T]</code>, enforcing strict typing contracts.</li>
+<li><strong>StateBackend Optimization</strong> — Removed raw record materialization from workflow checkpoints, persisting only metadata to prevent OOM errors in Big Data flows.</li>
 </ul>
 <h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>
