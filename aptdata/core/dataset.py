@@ -1,6 +1,7 @@
 """Dataset interface and base class."""
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from typing import Any, Generic, TypeVar
 
@@ -15,8 +16,10 @@ class DataContractError(Exception):
     pass
 
 
+T = TypeVar("T")
+
 @dataclass
-class IDataset(ABC):
+class IDataset(ABC, Generic[T]):
     """Dataclass interface for dataset types.
 
     All dataset contracts must implement :meth:`read` and :meth:`write`.
@@ -25,16 +28,18 @@ class IDataset(ABC):
     """
 
     @abstractmethod
-    def read(self) -> Any:
+    def read(self) -> T:
         """Read and return data from the dataset."""
+        raise NotImplementedError
 
     @abstractmethod
-    def write(self, data: Any) -> None:
+    def write(self, data: T) -> None:
         """Write data to the dataset."""
+        raise NotImplementedError
 
 
 @pydantic_dataclass
-class BaseDataset(IDataset):
+class BaseDataset(IDataset[Any]):
     """Base dataset with Pydantic-validated fields.
 
     Provides the canonical ``uri`` and ``schema_metadata`` fields.
@@ -47,11 +52,26 @@ class BaseDataset(IDataset):
     schema_metadata: dict[str, Any] = field(default_factory=dict)
 
 
-T = TypeVar("T", bound=BaseModel)
+@dataclass
+class IIterableDataset(IDataset[Iterator[T]]):
+    """Dataset interface that returns Python generators (Yield)."""
+
+    @abstractmethod
+    def read(self) -> Iterator[T]:
+        """Yield and return data chunks or records from the dataset."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def write(self, data: Iterator[T]) -> None:
+        """Write yielded data to the dataset."""
+        raise NotImplementedError
+
+
+M = TypeVar("M", bound=BaseModel)
 
 
 @pydantic_dataclass
-class PydanticDataset(BaseDataset, Generic[T]):
+class PydanticDataset(BaseDataset, Generic[M]):
     """A dataset implementation that enforces a Pydantic model contract.
 
     Data validation is performed when data is written to or read from the dataset.
@@ -60,7 +80,7 @@ class PydanticDataset(BaseDataset, Generic[T]):
     iteration.
     """
 
-    contract: type[T] | None = field(default=None)
+    contract: type[M] | None = field(default=None)
     _data: Any = field(default=None, init=False, repr=False)
 
     def read(self) -> Any:

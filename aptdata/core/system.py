@@ -29,7 +29,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import wraps
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.dataclasses import dataclass as pydantic_dataclass
@@ -38,6 +38,84 @@ from aptdata.core.context import ExecutionContext, IContext
 from aptdata.core.dataset import IDataset, PydanticDataset
 from aptdata.core.events import ComponentExecutionEvent, EventBus
 from aptdata.telemetry.instrumentation import get_tracer, mask_telemetry_value
+
+if TYPE_CHECKING:
+    from aptdata.core.workflow import IWorkflow
+
+# ---------------------------------------------------------------------------
+# Executor (replaces direct DAG traversal in Flow/Workflow)
+# ---------------------------------------------------------------------------
+
+
+class IExecutor(ABC):
+    """Interface for graph execution."""
+
+    @abstractmethod
+    def execute_flow(
+        self, flow: IWorkflow, initial_inputs: list[IDataset]
+    ) -> list[IDataset]:
+        """Execute the workflow given initial inputs."""
+        pass
+
+
+class DefaultExecutor(IExecutor):
+    """Default sequential execution strategy."""
+
+    def execute_flow(
+        self, flow: IWorkflow, initial_inputs: list[IDataset]
+    ) -> list[IDataset]:
+        import asyncio
+
+        from aptdata.core.workflow import BaseWorkflow
+
+        if not isinstance(flow, BaseWorkflow):
+            raise TypeError("DefaultExecutor only supports BaseWorkflow")
+
+        pending_inputs: dict[str, list[IDataset]] = {}
+        for component_id in flow._execution_order:
+            pending_inputs[component_id] = []
+        if flow._execution_order:
+            pending_inputs[flow._execution_order[0]] = list(initial_inputs)
+
+        terminal_outputs: list[IDataset] = list(initial_inputs)
+        for component_id in flow._execution_order:
+            component = flow._nodes[component_id].component
+            inputs = pending_inputs.get(component_id, [])
+            if not component.validate_inputs(inputs):
+                continue
+
+            if isinstance(component, IAsyncComponent):
+                try:
+                    loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    outputs = loop.run_until_complete(component.execute_async(inputs))
+                else:
+                    try:
+                        import nest_asyncio
+                        nest_asyncio.apply()
+                    except ImportError:
+                        pass
+                    outputs = loop.run_until_complete(component.execute_async(inputs))
+            else:
+                outputs = component.execute(inputs)
+
+            outgoing = flow._adjacency.get(component_id, [])
+            if not outgoing:
+                terminal_outputs = outputs
+                continue
+
+            traversed = False
+            for edge in outgoing:
+                if edge.condition is None or edge.condition(outputs):
+                    pending_inputs[edge.target_id].extend(outputs)
+                    traversed = True
+            if not traversed:
+                terminal_outputs = outputs
+
+        return terminal_outputs
+
 
 # ---------------------------------------------------------------------------
 # Component metadata
@@ -121,6 +199,15 @@ class IComponent(ABC):
     @abstractmethod
     def execute(self, inputs: list[IDataset]) -> list[IDataset]:
         """Execute the component logic and return its output datasets."""
+
+
+@dataclass
+class IAsyncComponent(IComponent):
+    """Interface for a reusable asynchronous unit of work."""
+
+    @abstractmethod
+    async def execute_async(self, inputs: list[IDataset]) -> list[IDataset]:
+        """Execute the component logic asynchronously and return its output datasets."""
 
 
 @pydantic_dataclass

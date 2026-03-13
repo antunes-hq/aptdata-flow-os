@@ -31,8 +31,8 @@ graph LR
 classDiagram
     class IDataset {
         <<interface>>
-        +read() Any
-        +write(data) None
+        +read() T
+        +write(data: T) None
     }
     class IComponent {
         <<interface>>
@@ -88,16 +88,18 @@ Cada classe `I*` é um `@dataclass` puramente Python que herda de `ABC` (Abstrac
 ```python
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Generic, TypeVar
+
+T = TypeVar("T")
 
 @dataclass
-class IDataset(ABC):
+class IDataset(ABC, Generic[T]):
     @abstractmethod
-    def read(self) -> Any:
+    def read(self) -> T:
         raise NotImplementedError
 
     @abstractmethod
-    def write(self, data: Any) -> None:
+    def write(self, data: T) -> None:
         raise NotImplementedError
 ```
 
@@ -118,7 +120,7 @@ from dataclasses import field
 from typing import Any
 
 @pydantic_dataclass
-class BaseDataset(IDataset):
+class BaseDataset(IDataset[Any]):
     uri: str
     schema_metadata: dict[str, Any] = field(default_factory=dict)
 ```
