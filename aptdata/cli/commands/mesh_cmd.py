@@ -247,6 +247,51 @@ def mesh_run(
         console.success(f"Component [bold cyan]{component}[/] finished successfully.")
 
 
+@mesh_app.command("lint")
+def mesh_lint(
+    deep: bool = typer.Option(
+        False, "--deep", help="Run deep code review (complexity, anti-patterns)."
+    ),
+    json_mode: bool = typer.Option(False, "--json", help="Emit JSON lines."),
+) -> None:
+    """Run autonomous QA and DX checks on the codebase.
+
+    Examples
+    --------
+    aptdata mesh lint
+    aptdata mesh lint --deep
+    """
+    from aptdata.plugins.qa.agent import QAAgent
+
+    console = SmartConsole(json_mode=json_mode)
+
+    if not json_mode:
+        console.info("Running QA and DX checks...")
+
+    agent = QAAgent()
+    report = agent.run_checks(deep=deep)
+
+    if json_mode:
+        print(json.dumps(report, default=str), flush=True)
+    else:
+        status = report["summary"]["status"]
+        if status == "passed":
+            console.success("All checks passed!")
+        else:
+            console.error(f"Checks finished with status: {status}")
+
+        console.warning(
+            f"Warnings: {report['summary']['warnings']}, "
+            f"Errors: {report['summary']['errors']}"
+        )
+
+        import rich
+        rich.print(report["checks"])
+
+    if report["summary"]["errors"] > 0:
+        raise typer.Exit(1)
+
+
 @mesh_app.command("build")
 def mesh_build(
     component: str = typer.Argument(

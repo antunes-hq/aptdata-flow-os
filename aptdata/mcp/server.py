@@ -310,3 +310,29 @@ def get_pipeline_lineage(flow_id: str) -> dict[str, Any]:
     graph.add_node(node)
 
     return graph.to_dict()
+
+
+@mcp.tool()
+def run_code_hygiene(deep: bool = False) -> dict[str, Any]:
+    """Run autonomous QA and DX checks on the codebase.
+
+    Parameters
+    ----------
+    deep:
+        Whether to run deep code review checks (cyclomatic complexity,
+        missing tests, and anti-patterns).
+
+    Returns
+    -------
+    dict
+        A JSON dictionary containing the quality report, with a summary
+        and specific warnings/errors.
+    """
+    _mark_request()
+
+    from aptdata.plugins.qa.agent import QAAgent
+
+    agent = QAAgent()
+    report = agent.run_checks(deep=deep)
+
+    return report
