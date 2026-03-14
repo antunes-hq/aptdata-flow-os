@@ -217,7 +217,7 @@ class QAAgent:
                 for line in result.stdout.splitlines():
                     if "error:" in line:
                         report["checks"]["deep_review"]["mypy_type_errors"].append(line)
-        except Exception as e:
+        except Exception:
             pass # Ignore if mypy is not installed or fails entirely
 
         # 3. Contract-First Anti-pattern (AST Heuristic - since ruff doesn't catch this specifically)
