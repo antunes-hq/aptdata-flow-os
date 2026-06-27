@@ -1,10 +1,10 @@
 # aptdata
 
-> **v0.0.2** · A declarative, extensible framework for building smart data pipelines in Python.
+> **v0.0.3** · A declarative, extensible framework for building smart data pipelines in Python.
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.0.2-orange)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.0.3-orange)](CHANGELOG.md)
 
 ---
 

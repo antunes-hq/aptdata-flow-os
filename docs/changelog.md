@@ -9,6 +9,22 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- **Google Calendar OAuth2** — New `aptdata.integrations` module with OAuth2 client for Google Calendar API.
+- **Analytics Engine** — Migrated analytics and gamification engine from mindflow (`aptdata.analytics.indicators`, stats, clusters, dedup, TF-IDF).
+- **Gamificação** — XP, streak e levels portados do mindflow para `aptdata.gamification`.
+- **Guardrails** — `.gitignore` for secrets and `.env.example` template.
+
+### Fixed
+
+- **Observabilidade** — Added `timed_create` to `__init__.py` exports.
+- **CI** — Lint errors and test dependency failures resolved across multiple PRs.
+
+### Changed
+
+- **Quick start example** — Updated to reflect current API with `IExecutor`/`DefaultExecutor`.
+
 ---
 
 ## [0.0.3] – 2026-03-11
