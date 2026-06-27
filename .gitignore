@@ -37,3 +37,7 @@ site/
 .vscode/
 *.swp
 *.swo
+*.key
+*.pem
+.env
+credentials.json
