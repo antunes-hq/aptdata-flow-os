@@ -12,7 +12,7 @@ from typing import Any
 # Modelo primário do app: deepseek-v4-flash ($0.15 / $0.25)
 _PRICING: dict[str, dict[str, float]] = {
     "deepseek-chat": {"input": 0.28, "output": 0.42},
-    "deepseek-v4-flash": {"input": 0.30, "output": 0.50},
+    "deepseek-v4-pro": {"input": 0.30, "output": 0.50},
     "deepseek-v4-flash": {"input": 0.15, "output": 0.25},
     "deepseek-reasoner": {"input": 0.55, "output": 2.19},
 }
