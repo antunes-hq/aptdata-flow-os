@@ -1208,18 +1208,7 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#003-2026-03-11" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        [0.0.3] – 2026-03-11
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="[0.0.3] – 2026-03-11">
+    <nav class="md-nav" aria-label="[Unreleased]">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1227,6 +1216,17 @@
     <span class="md-ellipsis">
       
         Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed
       
     </span>
   </a>
@@ -1244,6 +1244,23 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#003-2026-03-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [0.0.3] – 2026-03-11
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[0.0.3] – 2026-03-11">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#added_1" class="md-nav__link">
     <span class="md-ellipsis">
@@ -1257,6 +1274,28 @@
         
           <li class="md-nav__item">
   <a href="#changed_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#added_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_2" class="md-nav__link">
     <span class="md-ellipsis">
       
         Changed
@@ -1284,7 +1323,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#added_2" class="md-nav__link">
+  <a href="#added_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         Added
@@ -1295,7 +1334,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#changed_2" class="md-nav__link">
+  <a href="#changed_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         Changed
@@ -1334,7 +1373,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#added_3" class="md-nav__link">
+  <a href="#added_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         Added
@@ -1528,16 +1567,32 @@
 this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <hr />
 <h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Google Calendar OAuth2</strong> — New <code>aptdata.integrations</code> module with OAuth2 client for Google Calendar API.</li>
+<li><strong>Analytics Engine</strong> — Migrated analytics and gamification engine from mindflow (<code>aptdata.analytics.indicators</code>, stats, clusters, dedup, TF-IDF).</li>
+<li><strong>Gamificação</strong> — XP, streak e levels portados do mindflow para <code>aptdata.gamification</code>.</li>
+<li><strong>Guardrails</strong> — <code>.gitignore</code> for secrets and <code>.env.example</code> template.</li>
+</ul>
+<h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Observabilidade</strong> — Added <code>timed_create</code> to <code>__init__.py</code> exports.</li>
+<li><strong>CI</strong> — Lint errors and test dependency failures resolved across multiple PRs.</li>
+</ul>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Quick start example</strong> — Updated to reflect current API with <code>IExecutor</code>/<code>DefaultExecutor</code>.</li>
+</ul>
 <hr />
 <h2 id="003-2026-03-11">[0.0.3] – 2026-03-11<a class="headerlink" href="#003-2026-03-11" title="Permanent link">&para;</a></h2>
-<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>docs/prompts/docs-agent.md</code></strong> — Authored the DevPortal Docs Agent prompt, establishing strict guidelines for Brazilian Portuguese language, anti-prolixity, MkDocs Material features, and documentation architecture.</li>
 <li><strong><code>IExecutor</code> and <code>DefaultExecutor</code></strong> — Added graph execution decoupling from <code>BaseWorkflow</code>.</li>
 <li><strong><code>IAsyncComponent</code></strong> — Added native async/await support for I/O bound pipelines and LLMs.</li>
 <li><strong><code>IIterableDataset</code></strong> — Added generator-based datasets to support lazy evaluation and streaming contracts.</li>
 </ul>
-<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>DevPortal Rewrite</strong> — Overhauled all core documentation (<code>index</code>, <code>getting-started</code>, <code>architecture</code>, <code>scaffold-templates</code>, <code>configuration</code>, <code>telemetry</code>, <code>quality</code>, <code>governance</code>, <code>transform-engines</code>, <code>diys</code>, <code>ci-logs</code>, <code>mcp</code>) translating content to Brazilian Portuguese.</li>
 <li><strong>UI/UX Evolution</strong> — Implemented MkDocs Material admonitions, content tabs, and grids across documentation files to improve Developer Experience (DX).</li>
@@ -1545,7 +1600,7 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
 <li><strong><code>IDataset</code> Generics</strong> — Refactored <code>IDataset</code> to inherit from <code>Generic[T]</code>, enforcing strict typing contracts.</li>
 <li><strong>StateBackend Optimization</strong> — Removed raw record materialization from workflow checkpoints, persisting only metadata to prevent OOM errors in Big Data flows.</li>
 </ul>
-<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
+<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>aptdata.core.workflow</code></strong> — context-aware workflow module introducing:</li>
 <li><code>IWorkflow</code> / <code>BaseWorkflow</code> with <code>before_run</code> / <code>after_run</code> hooks.</li>
@@ -1556,13 +1611,13 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
 <li><strong><code>tests/test_workflow.py</code></strong> — tests covering workflow primitives, lifecycle,
   compile validation, and conditional execution behavior.</li>
 </ul>
-<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
+<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>aptdata.core.__init__</code> now exports workflow abstractions.</li>
 </ul>
 <hr />
 <h2 id="002-2026-03-08">[0.0.2] – 2026-03-08<a class="headerlink" href="#002-2026-03-08" title="Permanent link">&para;</a></h2>
-<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">&para;</a></h3>
+<h3 id="added_3">Added<a class="headerlink" href="#added_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong><code>system.py</code></strong> — universal architecture module introducing:</li>
 <li><code>ComponentKind</code> enum (TRANSFORM, FILTER, AGGREGATE, EXTRACT, LOAD, CUSTOM).</li>
@@ -1578,7 +1633,7 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
     and <code>run()</code>.</li>
 <li><strong><code>tests/test_system.py</code></strong> — 34 tests covering all new abstractions.</li>
 </ul>
-<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
+<h3 id="changed_3">Changed<a class="headerlink" href="#changed_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>aptdata.plugins</code>: <code>_PipelineRegistry</code> renamed to <code>_SystemRegistry</code>;
   <code>list_pipelines()</code> renamed to <code>list_systems()</code>.</li>
@@ -1595,7 +1650,7 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
 </ul>
 <hr />
 <h2 id="001-2026-03-06">[0.0.1] – 2026-03-06<a class="headerlink" href="#001-2026-03-06" title="Permanent link">&para;</a></h2>
-<h3 id="added_3">Added<a class="headerlink" href="#added_3" title="Permanent link">&para;</a></h3>
+<h3 id="added_4">Added<a class="headerlink" href="#added_4" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Two-layer contract system</strong> – pure <code>@dataclass + ABC</code> interfaces
   (<code>IDataset</code>, <code>IStep</code>, <code>IPipeline</code>) and Pydantic-validated base classes
