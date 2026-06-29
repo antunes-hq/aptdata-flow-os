@@ -39,6 +39,12 @@ def _load(file: str | None):
     return AgentRegistry.from_yaml(_resolve_file(file))
 
 
+def _load_router(file: str | None):
+    from aptdata.agents import Router  # noqa: PLC0415
+
+    return Router.from_yaml(_resolve_file(file))
+
+
 @agents_app.command("list")
 def agents_list(
     file: str = typer.Option(None, "--file", "-f", help="Path to agents.yaml."),
@@ -97,6 +103,53 @@ def agents_send(
         print(result.text)
     else:
         console.error(result.error or "send failed")
+    if not result.ok:
+        raise typer.Exit(1)
+
+
+@agents_app.command("route")
+def agents_route(
+    text: str = typer.Argument(..., help="Prompt to route (not sent)."),
+    file: str = typer.Option(None, "--file", "-f", help="Path to agents.yaml."),
+    json_mode: bool = typer.Option(False, "--json", help="Emit JSON lines."),
+) -> None:
+    """Show which agent would handle a prompt and why (prefix/skill/default)."""
+    router = _load_router(file)
+    decision = router.route(text)
+    if json_mode:
+        print(json.dumps(decision.to_dict()), flush=True)
+    else:
+        target = decision.agent_id or "(nenhum)"
+        detail = f" via {decision.skill}" if decision.skill else ""
+        print(f"{target}  [{decision.mode}{detail}, conf={decision.confidence:.2f}]")
+
+
+@agents_app.command("dispatch")
+def agents_dispatch(
+    text: str = typer.Argument(..., help="Prompt to route AND send."),
+    file: str = typer.Option(None, "--file", "-f", help="Path to agents.yaml."),
+    json_mode: bool = typer.Option(False, "--json", help="Emit JSON lines."),
+) -> None:
+    """Route a prompt to the best agent and send it (route + send in one)."""
+    console = SmartConsole(json_mode=json_mode)
+    router = _load_router(file)
+    decision = router.route(text)
+    if decision.agent_id is None:
+        console.error("No agent available to handle this prompt.")
+        raise typer.Exit(1)
+
+    agent = router.registry.get(decision.agent_id)
+    result = agent.send(decision.text)
+    if json_mode:
+        print(
+            json.dumps({"routed_to": decision.agent_id, "mode": decision.mode,
+                        **result.to_dict()}),
+            flush=True,
+        )
+    elif result.ok:
+        print(f"[{decision.agent_id}] {result.text}")
+    else:
+        console.error(f"[{decision.agent_id}] {result.error}")
     if not result.ok:
         raise typer.Exit(1)
 
