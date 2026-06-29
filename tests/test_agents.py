@@ -41,10 +41,10 @@ SAMPLE_YAML = textwrap.dedent(
         capabilities: [backend, frontend]
         weight: 5
         enabled: true
-      darwin:
-        name: Darwin
-        type: opencode
-        capabilities: [codigo]
+      boleiro:
+        name: Boleiro
+        type: docker_compose
+        capabilities: [copa]
         enabled: true
       lacra:
         name: Lacra
@@ -102,11 +102,11 @@ class TestAgentRegistry:
         assert isinstance(agent, OpenClawAgent)
 
     def test_unknown_type_falls_back_to_placeholder(self, registry: AgentRegistry):
-        agent = registry.get("darwin")
+        agent = registry.get("boleiro")
         assert isinstance(agent, _PlaceholderAgent)
         result = agent.send("oi")
         assert result.ok is False
-        assert "opencode" in (result.error or "")
+        assert "docker_compose" in (result.error or "")
 
     def test_get_missing_raises(self, registry: AgentRegistry):
         with pytest.raises(KeyError):

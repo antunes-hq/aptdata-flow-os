@@ -14,6 +14,7 @@ from aptdata.agents.base import (
     BaseAgent,
     IAgent,
 )
+from aptdata.agents.cli_agents import ClaudeCodeAgent, CLIAgent, OpenCodeAgent
 from aptdata.agents.openclaw import OpenClawAgent
 from aptdata.agents.project import (
     Project,
@@ -32,8 +33,11 @@ __all__ = [
     "AgentResponse",
     "AgentSpec",
     "BaseAgent",
+    "CLIAgent",
+    "ClaudeCodeAgent",
     "IAgent",
     "OpenClawAgent",
+    "OpenCodeAgent",
     "Project",
     "ProjectRunner",
     "RouteDecision",

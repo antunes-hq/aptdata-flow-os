@@ -15,14 +15,17 @@ from typing import Any
 import yaml
 
 from aptdata.agents.base import AgentResponse, AgentSpec, BaseAgent, IAgent
+from aptdata.agents.cli_agents import ClaudeCodeAgent, OpenCodeAgent
 from aptdata.agents.openclaw import OpenClawAgent
 
 logger = logging.getLogger(__name__)
 
-#: adapter kind -> implementing class. Extended in later phases (opencode,
-#: claude_code, http). Unknown kinds fall back to :class:`_PlaceholderAgent`.
+#: adapter kind -> implementing class. Unknown kinds (e.g. docker_compose) fall
+#: back to :class:`_PlaceholderAgent`.
 ADAPTERS: dict[str, type[BaseAgent]] = {
     "openclaw": OpenClawAgent,
+    "claude_code": ClaudeCodeAgent,
+    "opencode": OpenCodeAgent,
 }
 
 
