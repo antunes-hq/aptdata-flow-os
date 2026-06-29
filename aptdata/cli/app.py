@@ -189,6 +189,7 @@ app.command()(scaffold)
 app.add_typer(schema_app, name="schema")
 
 from aptdata.cli.commands import (  # noqa: E402
+    agents_app,
     config_app,
     mesh_app,
     plugin_app,
@@ -202,6 +203,7 @@ app.add_typer(plugin_app, name="plugin")
 app.add_typer(config_app, name="config")
 app.add_typer(telemetry_app, name="telemetry")
 app.add_typer(mesh_app, name="mesh")
+app.add_typer(agents_app, name="agents")
 
 
 @app.command("interactive")
