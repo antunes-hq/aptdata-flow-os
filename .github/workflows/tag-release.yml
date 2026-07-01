@@ -1,0 +1,51 @@
+name: Tag release
+
+# On every push to main, checks whether the current version already has a
+# matching `vX.Y.Z` tag. If not (i.e. a version bump just landed), it creates
+# and pushes the tag — which triggers `publisher.yml` to publish to PyPI.
+#
+# This decouples tagging from the bump: `release.yml` lands the bump via PR
+# (the `main` ruleset forbids direct branch pushes), and this workflow tags the
+# real main commit afterwards. Tag pushes are allowed by the ruleset.
+#
+# Idempotent: normal feature merges (version unchanged, tag already exists) are
+# a no-op; only a new version produces a new tag.
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  tag:
+    name: Tag current version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # create + push the tag
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create tag if the version is new
+        run: |
+          VER=$(grep -m1 '^current_version' .bumpversion.toml | cut -d'"' -f2)
+          TAG="v$VER"
+
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "$TAG already exists — nothing to do."
+            exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "chore(release): $TAG"
+          git push origin "$TAG"
+          echo "Created and pushed $TAG → PyPI publish will run off the tag."
