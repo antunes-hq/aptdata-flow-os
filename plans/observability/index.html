@@ -1,0 +1,1916 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A declarative framework for building smart data pipelines">
+      
+      
+      
+        <link rel="canonical" href="https://strondata.github.io/smart-data/plans/observability/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Plano: Observabilidade Full-Stack e Resiliente para o aptdata - aptdata</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/custom.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/termynal.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plano-observabilidade-full-stack-e-resiliente-para-o-aptdata" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            aptdata
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Plano: Observabilidade Full-Stack e Resiliente para o aptdata
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="orange"  aria-label="Mudar para modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="orange"  aria-label="Mudar para modo escuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo escuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/strondata/smart-data" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    strondata/smart-data
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Core
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../transform-engines/" class="md-tabs__link">
+          
+  
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/core/" class="md-tabs__link">
+          
+  
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../llms.txt" class="md-tabs__link">
+          
+  
+  
+  AI Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    aptdata
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/strondata/smart-data" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    strondata/smart-data
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scaffold-templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scaffold Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DIYs & Snippets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ADR-001-Revisao-Arquitetural-Core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 001 - Revisão Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../telemetry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telemetry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ci-logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI & Execution Logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transform-engines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cli-interactive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Interactive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llms.txt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    llms.txt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llms-full.txt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    llms-full.txt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prompts/docs-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs Agent Prompts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="plano-observabilidade-full-stack-e-resiliente-para-o-aptdata">Plano: Observabilidade Full-Stack e Resiliente para o aptdata<a class="headerlink" href="#plano-observabilidade-full-stack-e-resiliente-para-o-aptdata" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Status: PROPOSTA (não implementado). Não commitar sem revisão.
+Escopo: <code>aptdata</code> 0.1.0 — modelo System/Flow/Component, núcleo multi-agente,
+MCP server, CLI Typer, TUI Textual.</p>
+</blockquote>
+<hr />
+<h2 id="1-diagnostico-o-que-ja-existe">1. Diagnóstico — o que já existe<a class="headerlink" href="#1-diagnostico-o-que-ja-existe" title="Permanent link">&para;</a></h2>
+<p>Antes de propor, o que o código já entrega hoje (confirmado lendo os módulos):</p>
+<table>
+<thead>
+<tr>
+<th>Peça</th>
+<th>Arquivo:símbolo</th>
+<th>O que faz</th>
+<th>Lacuna</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bootstrap OTel</td>
+<td><code>aptdata/telemetry/instrumentation.py:configure_telemetry</code></td>
+<td>Cria <code>TracerProvider</code>/<code>MeterProvider</code> com <code>Resource(service.name)</code>; helpers <code>get_tracer</code>/<code>get_meter</code></td>
+<td>Só configura se chamado; default via <code>TelemetryProvider.get_instance()</code> usa console-less scaffold. Sem OTLP por padrão.</td>
+</tr>
+<tr>
+<td>Máscara de segredos</td>
+<td><code>instrumentation.py:mask_telemetry_value</code> / <code>register_secret</code></td>
+<td>Redige <code>password/secret/token/...</code> e valores registrados</td>
+<td>Bom — reaproveitar em todos os sinais.</td>
+</tr>
+<tr>
+<td>Métricas de ingestão (in-memory)</td>
+<td><code>instrumentation.py:IngestionMetrics</code> + <code>get_ingestion_metrics</code></td>
+<td>Singleton com counters de docs/chunks/tokens, throughput, progresso; counter OTel <code>llm.tokens.used</code></td>
+<td>Estado global mutável; só cobre ingestão. Não há counter/gauge/histogram genéricos.</td>
+</tr>
+<tr>
+<td>Provider injetável</td>
+<td><code>aptdata/telemetry/provider.py:TelemetryProvider</code></td>
+<td>Singleton exposto em <code>IContext.telemetry</code></td>
+<td>Só expõe tracer/meter; sem logs nem métricas de negócio.</td>
+</tr>
+<tr>
+<td>Observador de LLM</td>
+<td><code>aptdata/observability/llm_observer.py</code></td>
+<td>Custo/latência/tokens por chamada; persiste via <code>store.log_event(...)</code> (SQLite <code>events</code>, kind=<code>llm_call</code>); agrega em <code>get_observability_summary</code></td>
+<td><strong>O <code>store</code> é externo (mindflow), não faz parte do aptdata.</strong> aptdata não tem event store próprio.</td>
+</tr>
+<tr>
+<td>Event Bus</td>
+<td><code>aptdata/core/events.py:EventBus</code></td>
+<td>Async, thread de fundo + fila, <strong>captura exceptions de listeners e loga warning</strong></td>
+<td>Já resiliente. É o backbone ideal para logs/eventos. Sem persistência.</td>
+</tr>
+<tr>
+<td>Instrumentação de Component</td>
+<td><code>aptdata/core/system.py:BaseComponent.__init_subclass__</code> (linha ~247)</td>
+<td>Envolve <code>execute()</code> em span OTel + dispatch de <code>ComponentExecutionEvent</code> (pre/success/failure/post)</td>
+<td>Criação de span e leitura de <code>self.meta</code> <strong>não</strong> estão em try/except — falha de telemetria pode vazar. Sem <code>run_id</code> correlacionando System→Flow→Component.</td>
+</tr>
+<tr>
+<td>Instrumentação de Workflow (funcional)</td>
+<td><code>aptdata/core/workflow.py:Workflow._run</code>/<code>_run_step</code></td>
+<td>Spans por run/step, <code>record_exception</code>, retry/backoff, <code>run_id</code> (<code>name_timens_uuid</code>) e <code>trace_id</code> propagados nos records</td>
+<td>Só o <code>Workflow</code> funcional; o par <code>BaseSystem</code>/<code>BaseWorkflow</code>/<code>BaseComponent</code> não compartilha <code>run_id</code>.</td>
+</tr>
+<tr>
+<td>Hooks de ciclo de vida</td>
+<td><code>workflow.py:BaseWorkflow.before_run</code>/<code>after_run</code> (150–156)</td>
+<td>Setam chaves no context</td>
+<td>Ponto de injeção livre — hoje subutilizado.</td>
+</tr>
+<tr>
+<td>System</td>
+<td><code>system.py:BaseSystem.run</code> (635)</td>
+<td>Injeta context/EventBus, roda flows, <code>event_bus.shutdown()</code> no fim</td>
+<td>Sem span raiz, sem <code>run_id</code>, sem health/erros agregados.</td>
+</tr>
+<tr>
+<td>Router/Agents</td>
+<td><code>aptdata/agents/router.py:Router.route</code>, <code>agents/project.py:ProjectRunner.run</code>, <code>agents/cli_agents.py:CLIAgent.send</code></td>
+<td>Routing prefix/skill/llm/default; <code>send</code> via subprocess com <code>timeout</code>; LLM router em try/except</td>
+<td><strong>Zero telemetria.</strong> Sem spans, sem métricas de decisão/latência/erro por agente.</td>
+</tr>
+<tr>
+<td>MCP server</td>
+<td><code>aptdata/mcp/server.py</code></td>
+<td>Cada tool em try/except retorna dict de erro; <code>_mark_request()</code> counter thread-safe; <code>get_mcp_status()</code></td>
+<td>Só conta requests. Sem latência/erro por tool, sem correlação.</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td><code>aptdata/cli/app.py:_emit</code></td>
+<td>Emite 1 JSON line por evento com <code>trace_id</code> do span corrente</td>
+<td>Bom padrão — estender para <code>run_id</code>.</td>
+</tr>
+<tr>
+<td>CLI telemetry</td>
+<td><code>aptdata/cli/commands/telemetry_cmd.py</code></td>
+<td><code>status</code>/<code>export</code> finos (só tipo do provider)</td>
+<td>Sem <code>observability</code> (custo/erros/latência agregados).</td>
+</tr>
+<tr>
+<td>TUI</td>
+<td><code>aptdata/tui/monitor.py</code></td>
+<td>Abas DAG/Metrics/AgentTrace/MCP; painéis com <strong>dados placeholder</strong></td>
+<td>Não plugado em sinais reais nem no EventBus.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conclusões-chave:</strong>
+1. OpenTelemetry <strong>já é dependência declarada</strong> (<code>pyproject.toml</code>: <code>opentelemetry-api/sdk ^1.40</code>) e já é a base da instrumentação existente. Reinventar traces/métricas seria retrabalho.
+2. O <code>EventBus</code> já é async, isolado e à prova de exceptions — é a espinha dorsal natural para logs estruturados e eventos de domínio.
+3. Falta: (a) um <strong>façade único</strong> de observabilidade, (b) <strong>correlação por <code>run_id</code></strong> ponta-a-ponta (System→Flow→Component e Router→Agent→Task), (c) <strong>persistência própria</strong> (o <code>events</code> SQLite é externo), (d) instrumentação de <strong>agents e MCP</strong>, (e) <strong>alertas</strong>, (f) <strong>garantias formais de resiliência</strong> (best-effort universal), (g) exposição real na CLI/TUI.</p>
+<hr />
+<h2 id="2-decisao-de-arquitetura-opentelemetry-vs-solucao-propria">2. Decisão de arquitetura — OpenTelemetry vs. solução própria<a class="headerlink" href="#2-decisao-de-arquitetura-opentelemetry-vs-solucao-propria" title="Permanent link">&para;</a></h2>
+<p><strong>Recomendação: híbrido — OpenTelemetry como backbone de traces + métricas; camada aptdata-nativa fina por cima para logs estruturados, eventos de domínio, persistência local e alertas.</strong></p>
+<p>Justificativa:</p>
+<ul>
+<li><strong>Usar OTel para traces e métricas</strong> (não reinventar):</li>
+<li>Já é dependência e já instrumenta <code>BaseComponent</code>/<code>Workflow</code>. Migrar para solução própria quebraria o que funciona.</li>
+<li>Ganha de graça: propagação de contexto de span, exporters OTLP (Jaeger/Tempo/Honeycomb/Datadog — já documentado em <code>docs/telemetry.md</code>), <code>OTEL_SDK_DISABLED</code>, semantic conventions.</li>
+<li><code>SpanExporter</code>/<code>MetricReader</code> in-memory tornam os testes triviais.</li>
+<li><strong>Camada própria fina (<code>aptdata/observability/</code>) para o que OTel não cobre bem no nosso caso</strong>:</li>
+<li><strong>Logs estruturados</strong> correlacionados: OTel logs SDK ainda é imaturo em Python; usamos <code>logging</code> + injeção de <code>run_id</code>/<code>trace_id</code> e roteamos pelo EventBus.</li>
+<li><strong>Eventos de domínio</strong> (routing decision, agent dispatch, quality fail, cost): modelados como <code>EventPayload</code> (Pydantic) — já existe o padrão.</li>
+<li><strong>Persistência local opcional</strong> (SQLite): um sink próprio, porque não queremos exigir um collector OTLP rodando para o dev ver custo/erros. Reaproveita o esquema <code>events</code> do llm_observer, mas <strong>dentro</strong> do aptdata.</li>
+<li><strong>Alertas</strong>: regras simples + canal Telegram (fire-and-forget do ecossistema) — fora do escopo do OTel.</li>
+<li><strong>Não</strong> adotar backend pesado (Prometheus server, Grafana) como requisito: exportação Prometheus fica como <em>exporter opcional</em> plugável, não obrigatório.</li>
+</ul>
+<p>Ou seja: <strong>OTel por baixo, façade <code>aptdata.observability</code> por cima</strong>. O código de negócio nunca fala com OTel diretamente — fala com o façade, que é best-effort e nunca levanta exceção.</p>
+<hr />
+<h2 id="3-arquitetura-alvo">3. Arquitetura-alvo<a class="headerlink" href="#3-arquitetura-alvo" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                    aptdata.observability (façade — API estável, best-effort)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                    ┌───────────────────────────────────────────────────────┐
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a> código de negócio → │  Observer (singleton fino, no-throw)                   │
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a> (Component/Agent/   │   ├── metrics: counter/gauge/histogram  → OTel Meter   │
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  MCP/CLI)           │   ├── span(name, attrs)  (context mgr)  → OTel Tracer  │
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                    │   ├── log(level, msg, **fields)         → EventBus     │
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                    │   ├── event(EventPayload)               → EventBus     │
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                    │   ├── error(exc, context)               → span+event   │
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                    │   └── health()                          → HealthRegistry│
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                    └──────────────┬──────────────────┬─────────────────────┘
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                                   │                  │
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                      ┌────────────▼───┐     ┌────────▼─────────┐
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>                      │ OTel providers │     │ EventBus (async) │
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                      │ traces+metrics │     │  listeners:      │
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                      └───────┬────────┘     │  - SqliteSink    │
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                              │              │  - AlertEngine   │
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                   exporters (opt):          │  - TUI bridge    │
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                   OTLP / Prometheus /       │  - stdout JSONL  │
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>                   InMemory(testes)          └──────────────────┘
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>                                                      │
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>                                             ┌────────▼────────┐
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>                                             │ ObservabilityStore
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>                                             │  (SQLite, retenção)
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>                                             └─────────────────┘
+</span></code></pre></div>
+<h3 id="correlacao-run_id">Correlação (<code>run_id</code>)<a class="headerlink" href="#correlacao-run_id" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Um <code>run_id</code> é gerado no topo (<code>BaseSystem.run</code> / CLI <code>run</code> / <code>ProjectRunner.run</code> / MCP tool) e propagado via <code>ExecutionContext</code> (<code>context.set("run.id", run_id)</code>) e como atributo de span (<code>aptdata.run_id</code>).</li>
+<li><code>RunContext</code> (dataclass leve) carrega <code>run_id</code>, <code>span</code> raiz, <code>started_at</code>. Fica no <code>IContext</code> para que Flow e Component herdem sem parâmetros novos na assinatura pública.</li>
+<li>Router→Agent→Task: <code>ProjectRunner</code> cria <code>run_id</code> do projeto; cada <code>Task</code> vira um child span <code>aptdata.agent.dispatch</code> com <code>aptdata.agent_id</code>, <code>aptdata.route_mode</code>, <code>aptdata.task_id</code>.</li>
+</ul>
+<hr />
+<h2 id="4-modulos-e-interfaces-propostos">4. Módulos e interfaces propostos<a class="headerlink" href="#4-modulos-e-interfaces-propostos" title="Permanent link">&para;</a></h2>
+<p>Novo pacote consolida o que hoje está espalhado entre <code>telemetry/</code> e <code>observability/</code> (mantém retrocompat reexportando).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aptdata/observability/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  __init__.py            # reexporta observer, get_observer, decorators
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  observer.py            # Observer + get_observer() (singleton no-throw)   [NOVO]
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  signals.py             # Metric/Span/Log/Event value objects + tipos      [NOVO]
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  safe.py                # @suppress / safe_call / SafeTimeout — resiliência [NOVO]
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  correlation.py         # RunContext, new_run_id, current_run_id            [NOVO]
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  sinks/
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    __init__.py
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    sqlite_sink.py       # ObservabilityStore (SQLite) + retenção           [NOVO]
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    stdout_sink.py       # JSON lines (reaproveita padrão do cli/app _emit)  [NOVO]
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  health.py              # HealthRegistry + HealthCheck                      [NOVO]
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  alerts.py              # AlertRule, AlertEngine, TelegramChannel           [NOVO]
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>  llm_observer.py        # EXISTENTE — refatorado p/ usar ObservabilityStore
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>  instrumentation.py     # (movido de telemetry/) — mantém OTel bootstrap
+</span></code></pre></div>
+<p><code>aptdata/telemetry/</code> permanece como <strong>camada OTel de baixo nível</strong> (bootstrap, máscara, providers). O façade <code>observability.observer</code> a consome.</p>
+<h3 id="41-observer-facade-observabilityobserverpy">4.1 <code>Observer</code> (façade — <code>observability/observer.py</code>)<a class="headerlink" href="#41-observer-facade-observabilityobserverpy" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">IObserver</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">counter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">gauge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">span</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContextManager</span><span class="p">[</span><span class="s2">&quot;Span&quot;</span><span class="p">]:</span> <span class="o">...</span>   <span class="c1"># no-throw</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">fields</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">EventPayload</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">BaseException</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">where</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">ctx</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;HealthStatus&quot;</span><span class="p">]:</span> <span class="o">...</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">Observer</span><span class="p">(</span><span class="n">IObserver</span><span class="p">):</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementação real: OTel meter/tracer + EventBus. TODOS os métodos</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="sd">    são best-effort — encapsulados em safe.suppress. Nunca levantam.&quot;&quot;&quot;</span>
+</span></code></pre></div>
+<p><code>get_observer()</code> retorna um singleton lazy. Se OTel não estiver configurado, cai num <code>NoOpObserver</code> (também no-throw). O código de negócio SEMPRE chama <code>get_observer()</code> — nunca <code>get_tracer()</code>/<code>get_meter()</code> direto.</p>
+<h3 id="42-resiliencia-observabilitysafepy-requisito-central">4.2 Resiliência (<code>observability/safe.py</code>) — requisito central<a class="headerlink" href="#42-resiliencia-observabilitysafepy-requisito-central" title="Permanent link">&para;</a></h3>
+<p>Contrato: <strong>nenhuma chamada de observabilidade pode alterar o resultado nem propagar exceção do código de negócio.</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">suppress</span><span class="p">(</span><span class="n">where</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator/context manager: engole QUALQUER exceção, loga 1x</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="sd">    (rate-limited) via logging.getLogger(&#39;aptdata.observability&#39;).debug,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="sd">    e retorna None. Nunca re-levanta.&quot;&quot;&quot;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">safe_call</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Chama fn, engole exceção, devolve default.&quot;&quot;&quot;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">SafeTimeout</span><span class="p">:</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager: aborta operação de observabilidade que exceda</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="sd">    N ms (default 200ms) sem travar o run — via deadline check ou</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="sd">    thread watchdog para sinks bloqueantes.&quot;&quot;&quot;</span>
+</span></code></pre></div>
+<p>Regras de resiliência aplicadas em todo o módulo:
+1. <strong>Todo método público do <code>Observer</code></strong> é decorado com <code>@suppress</code>.
+2. <strong>Sinks rodam no EventBus</strong> (thread de fundo já isolada) — I/O de persistência nunca no caminho quente.
+3. <strong>Fila com backpressure limitada</strong>: <code>EventBus._queue</code> ganha <code>maxsize</code>; em overflow, <strong>descarta o evento mais antigo</strong> (drop-oldest) e incrementa um counter <code>observability.dropped</code> — degradação graciosa, nunca bloqueio.
+4. <strong>Timeouts</strong> em toda I/O externa (SQLite <code>busy_timeout</code>, alert channel HTTP com timeout, health checks com deadline).
+5. <strong>Import guards</strong>: dependências opcionais (OTel exporters, httpx p/ Telegram) em try/except → feature desliga sozinha se ausente.
+6. <strong>Circuit breaker</strong> por sink: após N falhas consecutivas, o sink entra em <code>cooldown</code> e para de tentar por T segundos (evita tempestade de erros de disco/rede).
+7. <strong>Kill switch</strong>: <code>APTDATA_OBS_DISABLED=1</code> → <code>NoOpObserver</code> global (além do <code>OTEL_SDK_DISABLED</code> já suportado).</p>
+<h3 id="43-persistencia-observabilitysinkssqlite_sinkpy">4.3 Persistência (<code>observability/sinks/sqlite_sink.py</code>)<a class="headerlink" href="#43-persistencia-observabilitysinkssqlite_sinkpy" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ObservabilityStore</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;SQLite local (default ~/.aptdata/observability.db, configurável).</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="sd">    Reaproveita e formaliza o esquema `events` usado pelo llm_observer.&quot;&quot;&quot;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="c1"># Tabelas:</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="c1">#   events(id, run_id, ts, kind, level, source, payload_json)</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="c1">#   metrics(id, run_id, ts, name, kind, value, attrs_json)   -- opcional/rollup</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="c1">#   runs(run_id, started_at, ended_at, status, error_count)</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">log_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">):</span> <span class="o">...</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">since</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span> <span class="o">...</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span> <span class="o">...</span>        <span class="c1"># move get_observability_summary p/ cá</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">keep_days</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span> <span class="o">...</span>     <span class="c1"># retenção</span>
+</span></code></pre></div>
+<ul>
+<li><strong>PRAGMA</strong>: <code>journal_mode=WAL</code>, <code>busy_timeout=2000</code>, <code>synchronous=NORMAL</code> — writes não bloqueiam reads e não travam.</li>
+<li><strong>Retenção</strong>: <code>prune(keep_days)</code> chamada no fim do run (<code>BaseSystem.on_complete</code>) e via <code>aptdata observability prune</code>. Default 30 dias.</li>
+<li><strong>Compatibilidade</strong>: <code>llm_observer.log_llm_call</code> passa a aceitar tanto o <code>store</code> externo (mindflow) quanto o <code>ObservabilityStore</code> (mesma assinatura <code>log_event</code>). Mantém o comportamento silencioso atual.</li>
+</ul>
+<h3 id="44-health-observabilityhealthpy">4.4 Health (<code>observability/health.py</code>)<a class="headerlink" href="#44-health-observabilityhealthpy" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">HealthStatus</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span> <span class="n">UP</span><span class="p">;</span> <span class="n">DEGRADED</span><span class="p">;</span> <span class="n">DOWN</span><span class="p">;</span> <span class="n">UNKNOWN</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nd">@dataclass</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">HealthCheck</span><span class="p">:</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">check</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">HealthStatus</span><span class="p">]</span>   <span class="c1"># deve ser rápido; roda sob SafeTimeout</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">HealthRegistry</span><span class="p">:</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hc</span><span class="p">:</span> <span class="n">HealthCheck</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">HealthStatus</span><span class="p">]:</span> <span class="o">...</span>   <span class="c1"># cada check em @suppress</span>
+</span></code></pre></div>
+<p>Checks embutidos: OTel provider configurado; <code>ObservabilityStore</code> gravável; MCP ativo (<code>get_mcp_status</code>); por-agente via <code>IAgent.health()</code> (já existe em <code>agents/base.py</code>); EventBus worker vivo.</p>
+<h3 id="45-alertas-observabilityalertspy">4.5 Alertas (<code>observability/alerts.py</code>)<a class="headerlink" href="#45-alertas-observabilityalertspy" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nd">@dataclass</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">AlertRule</span><span class="p">:</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">EventPayload</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span>   <span class="c1"># ex.: erro, latência&gt;X, custo&gt;Y</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;telegram&quot;</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">cooldown_s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span>          <span class="c1"># anti-flood por regra</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">severity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;warning&quot;</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">AlertEngine</span><span class="p">:</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Listener no EventBus. Avalia regras contra cada evento; dispara</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="sd">    canal com dedup/cooldown. Disparo é fire-and-forget e best-effort.&quot;&quot;&quot;</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="k">class</span><span class="w"> </span><span class="nc">TelegramChannel</span><span class="p">:</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Envia via mecanismo fire-and-forget já existente no ecossistema</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="sd">    (bot/worker). Timeout curto, nunca bloqueia. Sem httpx? desliga sozinho.&quot;&quot;&quot;</span>
+</span></code></pre></div>
+<p>Regras iniciais: (a) qualquer <code>on_failure</code>/<code>error</code>; (b) <code>execution_time &gt; limiar</code> por componente; (c) <code>cost_usd</code> acumulado do run acima do budget; (d) agente <code>DOWN</code> num dispatch.</p>
+<hr />
+<h2 id="5-pontos-de-integracao-concretos-arquivosimbolo">5. Pontos de integração concretos (arquivo:símbolo)<a class="headerlink" href="#5-pontos-de-integracao-concretos-arquivosimbolo" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Onde</th>
+<th>Mudança</th>
+<th>Sinal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>core/system.py:BaseSystem.run</code></td>
+<td>Abrir span raiz <code>aptdata.system.run</code>, gerar <code>run_id</code>, guardar em <code>context</code>; <code>on_complete</code> → <code>prune()</code> + flush</td>
+<td>trace raiz, <code>run_id</code>, counter <code>system.runs</code></td>
+</tr>
+<tr>
+<td><code>core/system.py:BaseComponent.__init_subclass__</code></td>
+<td><strong>Envolver o bloco de span/meta em <code>@suppress</code></strong>; trocar <code>get_tracer()</code> direto por <code>observer.span()</code>; adicionar <code>aptdata.run_id</code>; emitir histogram <code>component.duration_ms</code> e counter <code>component.errors</code></td>
+<td>span/métrica/erro por componente</td>
+</tr>
+<tr>
+<td><code>core/workflow.py:BaseWorkflow.before_run/after_run</code></td>
+<td>Registrar início/fim no <code>observer</code> (gauge de inputs/outputs, span de flow filho do system)</td>
+<td>span de flow, gauge io</td>
+</tr>
+<tr>
+<td><code>core/workflow.py:Workflow._run_step</code></td>
+<td>Reaproveitar spans existentes; adicionar histogram de retry e counter de step failures via observer</td>
+<td>métricas de retry</td>
+</tr>
+<tr>
+<td><code>core/events.py:EventBus</code></td>
+<td>Adicionar <code>maxsize</code> + drop-oldest + counter <code>observability.dropped</code>; permitir registrar sinks (<code>SqliteSink</code>, <code>AlertEngine</code>)</td>
+<td>resiliência de fila</td>
+</tr>
+<tr>
+<td><code>agents/router.py:Router.route</code></td>
+<td>Span <code>aptdata.route</code>; event <code>RouteDecisionEvent</code>; counter por <code>mode</code></td>
+<td>decisão de routing</td>
+</tr>
+<tr>
+<td><code>agents/project.py:ProjectRunner.run</code></td>
+<td><code>run_id</code> do projeto; span por task <code>aptdata.agent.dispatch</code>; event de resultado; histogram latência por agente</td>
+<td>traces multi-agente</td>
+</tr>
+<tr>
+<td><code>agents/cli_agents.py:CLIAgent.send</code> / <code>base.py:BaseAgent.send</code></td>
+<td>Envolver em span; counter <code>agent.calls{agent,ok}</code>; histogram <code>agent.latency_ms</code>; <code>observer.error</code> em timeout/OSError</td>
+<td>métricas por agente</td>
+</tr>
+<tr>
+<td><code>mcp/server.py</code> (cada <code>@mcp.tool</code>)</td>
+<td>Decorator <code>@observed_tool</code> que abre span, mede latência, conta erros, propaga <code>run_id</code> — sem tocar a lógica de cada tool</td>
+<td>métricas MCP por tool</td>
+</tr>
+<tr>
+<td><code>mcp/server.py:get_mcp_status</code></td>
+<td>Estender com latência média e error_count (lidos do observer)</td>
+<td>health MCP</td>
+</tr>
+<tr>
+<td><code>cli/app.py:_emit</code></td>
+<td>Incluir <code>run_id</code> além do <code>trace_id</code> já presente</td>
+<td>correlação CLI</td>
+</tr>
+<tr>
+<td><code>cli/commands/</code></td>
+<td>Novo <code>observability_cmd.py</code> (ver §6); registrar no <code>app</code></td>
+<td>exposição</td>
+</tr>
+<tr>
+<td><code>tui/monitor.py</code></td>
+<td>Trocar placeholders por leitura real: <code>_IngestionMetricsPanel</code> (já usa métricas reais), <code>_AgentTraceLog</code> assina EventBus, novo painel de custo/erros do <code>ObservabilityStore</code></td>
+<td>TUI viva</td>
+</tr>
+<tr>
+<td><code>core/context.py:ExecutionContext</code></td>
+<td>Expor <code>observer</code> além de <code>telemetry</code>/<code>event_bus</code>; carregar <code>RunContext</code></td>
+<td>injeção</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-exposicao">6. Exposição<a class="headerlink" href="#6-exposicao" title="Permanent link">&para;</a></h2>
+<h3 id="cli-aptdata-observability-clicommandsobservability_cmdpy">CLI — <code>aptdata observability ...</code> (<code>cli/commands/observability_cmd.py</code>)<a class="headerlink" href="#cli-aptdata-observability-clicommandsobservability_cmdpy" title="Permanent link">&para;</a></h3>
+<p>Mesmo contrato JSON-lines do resto da CLI (<code>--json</code>), tabelas Rich no modo humano.
+- <code>observability status</code> — providers OTel, sinks ativos, health snapshot.
+- <code>observability summary [--days 7]</code> — custo/tokens/latência/erros (reusa <code>ObservabilityStore.summary</code>, hoje <code>get_observability_summary</code>).
+- <code>observability events [--kind --run-id --since --limit]</code> — consulta o store.
+- <code>observability health</code> — snapshot do <code>HealthRegistry</code>.
+- <code>observability alerts [list|test]</code> — regras e disparo de teste.
+- <code>observability prune [--keep-days 30]</code> — retenção manual.
+- <code>observability export [--format otlp|prometheus|json]</code> — flush/export.</p>
+<p>O comando <code>telemetry</code> atual permanece (retrocompat), delegando ao novo.</p>
+<h3 id="tui">TUI<a class="headerlink" href="#tui" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Painel de custo/erros/latência lendo <code>ObservabilityStore</code> (poll no <code>set_interval</code> já existente).</li>
+<li><code>_AgentTraceLog</code> vira listener do EventBus (routing/dispatch em tempo real).</li>
+</ul>
+<h3 id="endpoint-export">Endpoint / export<a class="headerlink" href="#endpoint-export" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Padrão</strong>: sink SQLite local (zero infra). Dev vê tudo via CLI/TUI.</li>
+<li><strong>Opcional</strong>: <code>configure_telemetry(span_exporter=OTLP, metric_reader=Prometheus/OTLP)</code> via env (<code>OTEL_EXPORTER_OTLP_ENDPOINT</code> já documentado). Export Prometheus como <code>MetricReader</code> plugável — não obrigatório.</li>
+<li><strong>Não</strong> subir um servidor HTTP próprio na v1 (superfície de ataque/erro). Se necessário, o MCP server pode ganhar uma tool <code>get_observability_summary</code> (fecha o loop pros agentes).</li>
+</ul>
+<hr />
+<h2 id="7-fases-incrementais-cada-uma-entregavel-e-testavel">7. Fases incrementais (cada uma entregável e testável)<a class="headerlink" href="#7-fases-incrementais-cada-uma-entregavel-e-testavel" title="Permanent link">&para;</a></h2>
+<h3 id="fase-0-fundacao-de-resiliencia-bloqueante-das-demais">Fase 0 — Fundação de resiliência (bloqueante das demais)<a class="headerlink" href="#fase-0-fundacao-de-resiliencia-bloqueante-das-demais" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>observability/safe.py</code> (<code>suppress</code>, <code>safe_call</code>, <code>SafeTimeout</code>, circuit breaker).</li>
+<li><code>observability/correlation.py</code> (<code>RunContext</code>, <code>new_run_id</code>, <code>current_run_id</code>).</li>
+<li><code>EventBus</code>: <code>maxsize</code> + drop-oldest + counter <code>observability.dropped</code>.</li>
+<li>Kill switch <code>APTDATA_OBS_DISABLED</code>.</li>
+<li><strong>Entrega</strong>: primitivas no-throw. <strong>Testes</strong>: injeção de falha (sink que sempre levanta) não afeta resultado; overflow dropa sem travar; timeout aborta.</li>
+</ul>
+<h3 id="fase-1-facade-observer-reaproveitar-otel">Fase 1 — Façade Observer + reaproveitar OTel<a class="headerlink" href="#fase-1-facade-observer-reaproveitar-otel" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>observability/observer.py</code> (<code>Observer</code>, <code>NoOpObserver</code>, <code>get_observer</code>), <code>signals.py</code>.</li>
+<li>Refatorar <code>BaseComponent.__init_subclass__</code> para usar <code>observer.span()</code> sob <code>@suppress</code> (sem mudar comportamento observável de negócio).</li>
+<li>Expor <code>observer</code> no <code>ExecutionContext</code>.</li>
+<li><strong>Entrega</strong>: API única de sinais. <strong>Testes</strong>: <code>InMemorySpanExporter</code> confirma spans; observer com OTel quebrado ainda roda component.</li>
+</ul>
+<h3 id="fase-2-persistencia-propria-retencao">Fase 2 — Persistência própria + retenção<a class="headerlink" href="#fase-2-persistencia-propria-retencao" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>sinks/sqlite_sink.py</code> (<code>ObservabilityStore</code>, WAL, <code>prune</code>), <code>sinks/stdout_sink.py</code>.</li>
+<li>Migrar <code>get_observability_summary</code> → <code>ObservabilityStore.summary</code>; <code>llm_observer</code> aceita o store nativo.</li>
+<li>Registrar <code>SqliteSink</code> como listener do EventBus.</li>
+<li><strong>Entrega</strong>: eventos persistidos localmente sem mindflow. <strong>Testes</strong>: round-trip write/query; prune; DB read-only não derruba (circuit breaker).</li>
+</ul>
+<h3 id="fase-3-correlacao-systemflowcomponent">Fase 3 — Correlação System→Flow→Component<a class="headerlink" href="#fase-3-correlacao-systemflowcomponent" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>run_id</code> em <code>BaseSystem.run</code>, propagado a Flow/Component; span raiz; <code>_emit</code>/CLI incluem <code>run_id</code>.</li>
+<li>Métricas <code>component.duration_ms</code>, <code>component.errors</code>, <code>system.runs</code>.</li>
+<li><strong>Entrega</strong>: um trace/<code>run_id</code> conecta o pipeline inteiro. <strong>Testes</strong>: spans compartilham <code>run_id</code>; falha em component gera event <code>on_failure</code> correlacionado.</li>
+</ul>
+<h3 id="fase-4-instrumentacao-de-agents-e-mcp">Fase 4 — Instrumentação de Agents e MCP<a class="headerlink" href="#fase-4-instrumentacao-de-agents-e-mcp" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Spans/métricas em <code>Router.route</code>, <code>ProjectRunner.run</code>, <code>*.send</code>; decorator <code>@observed_tool</code> no MCP.</li>
+<li><code>run_id</code> de projeto; latência/erro por agente.</li>
+<li><strong>Entrega</strong>: observabilidade do núcleo multi-agente e do MCP. <strong>Testes</strong>: dispatch com agente <code>DOWN</code>/timeout vira métrica+event, <code>send</code> continua retornando <code>AgentResponse</code> (nunca levanta).</li>
+</ul>
+<h3 id="fase-5-health-alertas">Fase 5 — Health + Alertas<a class="headerlink" href="#fase-5-health-alertas" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>health.py</code> (<code>HealthRegistry</code> + checks embutidos).</li>
+<li><code>alerts.py</code> (<code>AlertEngine</code>, <code>AlertRule</code>, <code>TelegramChannel</code> fire-and-forget) como listener.</li>
+<li><strong>Entrega</strong>: erro/latência/custo disparam Telegram; <code>health</code> snapshot. <strong>Testes</strong>: regra dispara canal fake com cooldown; canal quebrado não afeta run.</li>
+</ul>
+<h3 id="fase-6-exposicao-cli-tui">Fase 6 — Exposição (CLI + TUI)<a class="headerlink" href="#fase-6-exposicao-cli-tui" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>observability_cmd.py</code> (status/summary/events/health/alerts/prune/export).</li>
+<li>TUI: painel de custo/erros + <code>_AgentTraceLog</code> plugado no EventBus.</li>
+<li>Docs: atualizar <code>docs/telemetry.md</code> / novo <code>docs/observability.md</code>.</li>
+<li><strong>Entrega</strong>: Lucas vê tudo por CLI/TUI. <strong>Testes</strong>: CLI JSON-lines por comando; TUI renderiza dados reais (snapshot test).</li>
+</ul>
+<p>Dependências entre fases: 0 → 1 → {2, 3} → 4 → 5 → 6. Fases 2 e 3 são paralelizáveis após a 1.</p>
+<hr />
+<h2 id="8-estrategia-de-testes-da-propria-observabilidade">8. Estratégia de testes da própria observabilidade<a class="headerlink" href="#8-estrategia-de-testes-da-propria-observabilidade" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Exporters in-memory</strong> (<code>InMemorySpanExporter</code>, <code>InMemoryMetricReader</code>) via <code>configure_telemetry(span_exporter=..., metric_reader=...)</code> — asserção direta de spans/métricas. Padrão já viável (ver <code>tests/test_telemetry_instrumentation.py</code>).</li>
+<li><strong>Testes de resiliência (os mais importantes)</strong>:</li>
+<li><em>Fault injection</em>: sink/exporter/canal que sempre levanta → o run de negócio produz o <strong>mesmo</strong> resultado (asserção de igualdade de output com e sem falha).</li>
+<li><em>Property/fuzz</em> no <code>mask_telemetry_value</code> e no <code>suppress</code> (qualquer input → nunca propaga).</li>
+<li><em>Overflow</em>: floodar o EventBus além do <code>maxsize</code> → nenhum bloqueio, counter <code>observability.dropped</code> sobe.</li>
+<li><em>Timeout</em>: sink lento além do deadline → run não trava (mede wall-clock).</li>
+<li><em>Circuit breaker</em>: N falhas → sink entra em cooldown; conta tentativas.</li>
+<li><strong>Correlação</strong>: asserção de que <code>run_id</code>/<code>trace_id</code> são iguais ao longo de System→Flow→Component e Router→Task.</li>
+<li><strong>Contrato no-throw</strong>: teste parametrizado que chama <strong>todo</strong> método público do <code>Observer</code> com OTel desconfigurado, DB read-only e EventBus parado — nenhum levanta.</li>
+<li><strong>CLI</strong>: subprocess/<code>CliRunner</code>, valida 1 JSON line válido por comando e exit codes.</li>
+<li><strong>Retenção</strong>: <code>prune</code> remove só o que passou de <code>keep_days</code>.</li>
+<li><strong>Kill switch</strong>: <code>APTDATA_OBS_DISABLED=1</code> → <code>NoOpObserver</code>, zero I/O.</li>
+<li>Manter <code>fail_under = 80</code> (pyproject). <code>mcp/server.py</code> está no <code>omit</code> de coverage — cobrir a lógica do decorator <code>@observed_tool</code> em teste unitário separado do server.</li>
+</ul>
+<hr />
+<h2 id="9-riscos-e-mitigacoes">9. Riscos e mitigações<a class="headerlink" href="#9-riscos-e-mitigacoes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Risco</th>
+<th>Mitigação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Observabilidade derrubar o app</td>
+<td><code>@suppress</code> universal, sinks fora do caminho quente, circuit breaker, kill switch, testes de fault injection dedicados.</td>
+</tr>
+<tr>
+<td>Overhead de span por component</td>
+<td>Span é barato; métricas agregadas; <code>OTEL_SDK_DISABLED</code>/<code>NoOpObserver</code> para hot paths; histogram em vez de log por item.</td>
+</tr>
+<tr>
+<td>Estado global (singletons <code>IngestionMetrics</code>, <code>_TOKEN_COUNTER</code>)</td>
+<td>Manter locks já existentes; <code>Observer</code> singleton lazy e substituível por <code>NoOp</code>; evitar novo estado global mutável fora dos sinks.</td>
+</tr>
+<tr>
+<td>Vazamento de segredos nos sinais</td>
+<td>Reusar <code>mask_telemetry_value</code> em TODO payload de event/log/span antes de persistir/exportar.</td>
+</tr>
+<tr>
+<td>Crescimento do SQLite</td>
+<td>WAL + <code>prune</code> automático no fim do run + comando manual.</td>
+</tr>
+<tr>
+<td>Divergência com telemetria existente</td>
+<td><code>telemetry/</code> vira camada baixa; <code>observability/</code> reexporta; nada quebra import público.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-resumo-de-entregaveis-por-arquivo-novos">10. Resumo de entregáveis por arquivo (novos)<a class="headerlink" href="#10-resumo-de-entregaveis-por-arquivo-novos" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>aptdata/observability/observer.py</code>, <code>signals.py</code>, <code>safe.py</code>, <code>correlation.py</code>, <code>health.py</code>, <code>alerts.py</code></li>
+<li><code>aptdata/observability/sinks/{sqlite_sink,stdout_sink}.py</code></li>
+<li><code>aptdata/cli/commands/observability_cmd.py</code></li>
+<li>Edições: <code>core/system.py</code>, <code>core/workflow.py</code>, <code>core/events.py</code>, <code>core/context.py</code>, <code>agents/{router,project,cli_agents,base}.py</code>, <code>mcp/server.py</code>, <code>cli/app.py</code>, <code>tui/monitor.py</code></li>
+<li>Testes: <code>tests/test_observability_{safe,observer,sqlite_sink,correlation,agents,mcp,alerts,health,cli}.py</code></li>
+<li>Docs: atualizar <code>docs/telemetry.md</code> + novo <code>docs/observability.md</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Strondata - Mantido pela comunidade open source.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/strondata/smart-data" target="_blank" rel="noopener" title="Repositório Oficial do aptdata" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/company/strondata/" target="_blank" rel="noopener" title="Acompanhe a Strondata no LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/strondata" target="_blank" rel="noopener" title="Junte-se à Comunidade no Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "toc.integrate", "toc.follow", "content.code.copy", "content.code.annotate", "content.code.select", "content.tabs.link", "search.suggest", "search.highlight", "navigation.footer"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.min.js"></script>
+      
+        <script src="../../assets/termynal.js"></script>
+      
+    
+  </body>
+</html>

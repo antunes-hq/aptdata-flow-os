@@ -1,0 +1,1729 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A declarative framework for building smart data pipelines">
+      
+      
+      
+        <link rel="canonical" href="https://strondata.github.io/smart-data/plans/telegram-orchestration/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Telegram → Orquestração de Agentes (via aptdata) - aptdata</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/custom.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/termynal.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#telegram-orquestracao-de-agentes-via-aptdata" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            aptdata
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Telegram → Orquestração de Agentes (via aptdata)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="orange"  aria-label="Mudar para modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="orange"  aria-label="Mudar para modo escuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo escuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/strondata/smart-data" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    strondata/smart-data
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Core
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../transform-engines/" class="md-tabs__link">
+          
+  
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/core/" class="md-tabs__link">
+          
+  
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../llms.txt" class="md-tabs__link">
+          
+  
+  
+  AI Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    aptdata
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/strondata/smart-data" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    strondata/smart-data
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scaffold-templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scaffold Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DIYs & Snippets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ADR-001-Revisao-Arquitetural-Core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 001 - Revisão Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../telemetry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telemetry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ci-logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI & Execution Logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transform-engines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cli-interactive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Interactive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llms.txt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    llms.txt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llms-full.txt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    llms-full.txt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prompts/docs-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs Agent Prompts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="telegram-orquestracao-de-agentes-via-aptdata">Telegram → Orquestração de Agentes (via aptdata)<a class="headerlink" href="#telegram-orquestracao-de-agentes-via-aptdata" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Plano de arquitetura + UX · 01/07/2026 · não commitar
+Escopo: SÓ planejamento. Nada de implementação aqui.</p>
+</blockquote>
+<hr />
+<h2 id="0-objetivo-em-uma-frase">0. Objetivo em uma frase<a class="headerlink" href="#0-objetivo-em-uma-frase" title="Permanent link">&para;</a></h2>
+<p>Transformar uma mensagem solta no Telegram numa <strong>decisão de roteamento transparente</strong>,
+com <strong>confirmação quando faz sentido</strong>, <strong>contexto multi-turno</strong>, e <strong>entrega/resposta
+rastreável</strong> — reusando o <code>Router</code>/<code>dispatch</code> que o aptdata <strong>já tem</strong>, sem duplicar lógica.</p>
+<hr />
+<h2 id="1-estado-atual-confirmado-no-codigo">1. Estado atual (confirmado no código)<a class="headerlink" href="#1-estado-atual-confirmado-no-codigo" title="Permanent link">&para;</a></h2>
+<h3 id="o-que-o-aptdata-ja-entrega-a-fundacao-esta-pronta">O que o aptdata já entrega (a fundação está pronta)<a class="headerlink" href="#o-que-o-aptdata-ja-entrega-a-fundacao-esta-pronta" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>aptdata/agents/router.py</code> — <code>Router.route(text) -&gt; RouteDecision</code> com 4 modos
+  (<code>prefix</code> 1.0 · <code>skill</code> 0.5–1.0 · <code>llm</code> 0.5 · <code>default</code> 0.3 · <code>none</code>). O <code>RouteDecision</code>
+  <strong>já carrega <code>mode</code>, <code>confidence</code>, <code>skill</code>, <code>matched_keyword</code></strong> — matéria-prima pronta
+  para a transparência da decisão.</li>
+<li><code>aptdata/agents/registry.py</code> — <code>AgentRegistry.from_yaml("agents.yaml")</code>, fonte única.</li>
+<li><code>aptdata/agents/base.py</code> — <code>IAgent.send(prompt) -&gt; AgentResponse(ok/text/error)</code>.</li>
+<li>Adapters: <code>OpenClawAgent</code> (HTTP <code>/api/chat</code>), <code>ClaudeCodeAgent</code>/<code>OpenCodeAgent</code> (CLI
+  one-shot, <strong>já síncronos</strong>), <code>_PlaceholderAgent</code> (ex.: <code>docker_compose</code>/Boleiro).</li>
+<li><code>aptdata/agents/project.py</code> — <code>Project</code>/<code>ProjectRunner</code> (Flow de tarefas → agents).</li>
+<li><code>aptdata/mcp/server.py</code> — MCP tools <code>dispatch(prompt, hint)</code>, <code>list_agents</code>, <code>run_flow</code>.</li>
+</ul>
+<h3 id="o-que-o-plugin-ts-ja-tem-a-herdar-aposentar">O que o plugin TS já tem (a herdar / aposentar)<a class="headerlink" href="#o-que-o-plugin-ts-ja-tem-a-herdar-aposentar" title="Permanent link">&para;</a></h3>
+<p><code>opencode-telegram-plugin/plugin/src/</code>: grammy <code>bot.ts</code>, <code>dispatcher.ts</code> (lógica <strong>duplicada</strong>
+do Router — a aposentar), <code>task-queue.ts</code> (fila persistida pending/running/done/failed com
+correlação por <code>id</code>), <code>pending-questions.ts</code>/<code>pending-permissions.ts</code> (loop de botões inline),
+<code>learning-loop.ts</code> (feedback de overrides), <code>failure-notifier.ts</code>, <code>claim.ts</code>/<code>lock.ts</code>.</p>
+<h3 id="a-restricao-critica-de-transporte">A restrição crítica de transporte<a class="headerlink" href="#a-restricao-critica-de-transporte" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Envio SÍNCRONO ao worker OpenClaw está TRAVADO.</strong> Gateway é WebSocket (protocol 4,
+  <code>sessions.send</code>), exige device operator com scope <code>operator.write</code> — <strong>não provisionado</strong>
+  (só há <code>operator.pairing</code>). Passo 2 = provisionar via <code>openclaw qr</code>.</li>
+<li>Hoje só dá pra alcançar worker <strong>fire-and-forget</strong> (a resposta volta no canal Telegram do
+  próprio worker, não inline). O <code>OpenClawAgent.send()</code> via HTTP <code>/api/chat</code> <strong>não é entrega
+  confiável hoje</strong> — tratar como best-effort/enfileirar.</li>
+<li>CLI agents (Gandalf/Claude Code, Darwin/OpenCode) <strong>já respondem síncrono</strong> — bom pra
+  provar o fluxo ponta-a-ponta antes do WS.</li>
+</ul>
+<p><strong>Consequência de design:</strong> o loop de decisão precisa separar <strong>"despachado" (receipt)</strong> de
+<strong>"respondeu" (result)</strong>, e lidar com resposta assíncrona/correlacionada.</p>
+<hr />
+<h2 id="2-decisao-de-arquitetura">2. Decisão de arquitetura<a class="headerlink" href="#2-decisao-de-arquitetura" title="Permanent link">&para;</a></h2>
+<h3 id="escolha-cerebro-no-aptdata-transporte-fino-cliente-mcp">Escolha: <strong>cérebro no aptdata + transporte fino (cliente-MCP)</strong><a class="headerlink" href="#escolha-cerebro-no-aptdata-transporte-fino-cliente-mcp" title="Permanent link">&para;</a></h3>
+<p>Alinhado com a visão do cerne (Fase 4 do <code>planejamento-aptdata-cerne.md</code>: "plugin vira
+transporte fino, deleta lógica duplicada"). Rejeitamos "plugin-no-aptdata" no sentido de um
+plugin gordo com sua própria lógica de roteamento — isso recria a divergência dos 3 registros.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>  Telegram (Lucas)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>        │  texto / clique em botão
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        ▼
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  ┌──────────────────────────────┐     transporte FINO:
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  │  Transporte Telegram (thin)  │     só renderiza cards + botões,
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  │  - relay texto  → converse   │     relê MCP, nunca decide rota
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  │  - clique       → confirm     │
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  │  - result ready → notify      │
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  └───────────────┬──────────────┘
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                  │ MCP (ou import in-process p/ o bot Python)
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                  ▼
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  ┌──────────────────────────────────────────────────────────┐
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  │  APTDATA — CÉREBRO DE CONVERSA/ORQUESTRAÇÃO (novo)        │
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  │  aptdata/agents/conversation.py  ConversationEngine       │
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  │    · handle(session, text) -&gt; Turn                        │
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  │    · usa Router (já existe) p/ decidir                    │
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  │    · SessionStore (multi-turno, via state)                │
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  │  aptdata/agents/delivery.py      DeliveryTracker          │
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  │    · correlação + fila async (porta do task-queue TS)     │
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  │  Router · AgentRegistry · adapters  (JÁ EXISTEM)          │
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>  └──────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<p><strong>Por que MCP como costura:</strong> o mesmo cérebro serve Telegram, TUI, painel web e agentes-IA.
+Para o <strong>bot Python</strong> (co-localizado), a opção mais barata é <code>import</code> in-process do
+<code>ConversationEngine</code> (sem hop MCP); MCP fica para transportes remotos/heterogêneos. As MCP
+tools novas são um wrapper fino sobre o mesmo engine — não há segunda implementação.</p>
+<p><strong>Onde o transporte vive (recomendação):</strong> aparar o plugin TS existente OU escrever um bot
+Python fino. Recomendo <strong>bot Python fino</strong> que importa o engine in-process (latência mínima,
+tudo Python, sem ponte TS↔Python), reaproveitando as <em>ideias</em> do TS (task-queue, botões,
+failure-notifier) já portadas pra dentro do aptdata. O TS vira legado a aposentar.</p>
+<h3 id="regra-de-ouro">Regra de ouro<a class="headerlink" href="#regra-de-ouro" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>Nenhuma decisão de rota, nenhum threshold, nenhum estado de conversa vive no transporte.
+Transporte = I/O do Telegram. Cérebro = aptdata.</p>
+</blockquote>
+<hr />
+<h2 id="3-fluxo-conversa-decisao-confirmacao-dispatch-resposta">3. Fluxo conversa → decisão → confirmação → dispatch → resposta<a class="headerlink" href="#3-fluxo-conversa-decisao-confirmacao-dispatch-resposta" title="Permanent link">&para;</a></h2>
+<h3 id="diagrama-ascii">Diagrama (ASCII)<a class="headerlink" href="#diagrama-ascii" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> Lucas ──&quot;arruma o css do header&quot;──► Transporte ──converse(sess, txt)──► ConversationEngine
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                                                                              │
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                                                            carrega SessionStore[sess]
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                                                            (histórico, decisão pendente,
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>                                                             correlações ativas, overrides)
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>                                                                              │
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>                                                                     Router.route(txt)
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>                                                                              │
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>                                                                 RouteDecision{agent, mode,
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                                                                   confidence, skill, kw}
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>                                                                              │
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>                                        ┌─────────────────────────────────────┼───────────────┐
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>                                        ▼                     ▼                ▼               ▼
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>                                   POLÍTICA DE DECISÃO (confidence + capability + guardrails)
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>                                        │                     │                │               │
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>                              prefix / skill-alto        skill-médio        default/none    capability
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>                                   (&gt;= 0.75)              ou llm            (sem sinal)      destrutiva
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>                                        │                     │                │           (deploy/ssh/
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>                                        ▼                     ▼                ▼            docker) → SEMPRE
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>                                  DISPATCH DIRETO      NEEDS_CONFIRM      NEEDS_CLARIFY      NEEDS_CONFIRM
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>                                  (+ card &quot;por quê&quot;    (card + botões:    (pergunta:            │
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>                                   + botão desfazer)    Confirmar/Trocar/  &quot;qual área?          │
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>                                        │               Editar)            o quê?&quot;)             │
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>                                        │                     │                │               │
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>                                        │        Lucas clica  │   Lucas responde texto         │
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>                                        │        confirm(...) │   → volta pro Engine (merge)   │
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>                                        │                     └────────┬───────────────────────┘
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>                                        ▼                              ▼
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>                                 ┌───────────── DISPATCH via AgentRegistry.get(id).send / async ─────────┐
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>                                 │                                                                        │
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>                        agente SÍNCRONO (CLI:                            agente FIRE-AND-FORGET
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>                        Gandalf/Darwin)  OU  WS-sync                     (OpenClaw hoje)
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>                                 │                                                │
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>                        AgentResponse inline                       DeliveryTracker.create(corr_id)
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>                                 │                                  envia prompt + tag [apt:req:xxxx]
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>                                 ▼                                  status=pending → devolve RECEIPT
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>                        &quot;✅ Ondina respondeu: …&quot;                            │
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>                                                                    &quot;📨 Despachei pro Ondina
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>                                                                     (req xxxx). Aviso quando responder.&quot;
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>                                                                            │
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>                                                          resposta do worker chega (webhook/dropfile/
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>                                                          canal do worker) → match por corr_id
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>                                                                            │
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>                                                          DeliveryTracker.answer(corr_id, text)
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>                                                                            │
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>                                                          Transporte.notify(chat) ► nova msg (com ping):
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>                                                          &quot;✅ Resposta do Ondina (req xxxx): …&quot;
+</span></code></pre></div>
+<h3 id="politica-de-decisao-quando-dispatch-direto-confirmar-esclarecer">Política de decisão (quando dispatch direto × confirmar × esclarecer)<a class="headerlink" href="#politica-de-decisao-quando-dispatch-direto-confirmar-esclarecer" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Situação (do <code>RouteDecision</code>)</th>
+<th>Ação</th>
+<th>UX no Telegram</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode=prefix</code> (<code>/ondina ...</code>)</td>
+<td>Dispatch direto</td>
+<td>card curto "por quê" + botão <em>Desfazer</em></td>
+</tr>
+<tr>
+<td><code>mode=skill</code>, <code>confidence &gt;= 0.75</code></td>
+<td>Dispatch direto</td>
+<td>card "por quê" + <em>Desfazer/Trocar</em></td>
+</tr>
+<tr>
+<td><code>mode=skill</code>, <code>0.5 ≤ conf &lt; 0.75</code></td>
+<td><strong>Confirmar</strong></td>
+<td>card + botões <em>Confirmar · Trocar agente · Editar</em></td>
+</tr>
+<tr>
+<td><code>mode=llm</code> (0.5)</td>
+<td><strong>Confirmar</strong></td>
+<td>mostra 1º + alternativa; botões idem</td>
+</tr>
+<tr>
+<td><code>mode=default</code> (0.3) / <code>none</code></td>
+<td><strong>Esclarecer</strong></td>
+<td>pergunta ("qual área? o que quer fazer?")</td>
+</tr>
+<tr>
+<td>capability destrutiva (deploy/ssh/docker/ops)</td>
+<td><strong>Confirmar sempre</strong></td>
+<td>guardrail, ignora confiança</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Thresholds e a lista de capabilities-guardrail ficam em <code>agents.yaml</code> (bloco <code>routing:</code>),
+  não hard-coded — Lucas ajusta sem recompilar.</li>
+<li><strong>Follow-up multi-turno:</strong> "continua", "e agora?", "manda de novo pro mesmo" reusam
+  <code>session.last_agent</code> sem re-rotear. Uma resposta a um <em>clarify</em> é mesclada na decisão pendente.</li>
+</ul>
+<h3 id="transparencia-da-decisao-reusa-o-que-ja-existe">Transparência da decisão (reusa o que já existe)<a class="headerlink" href="#transparencia-da-decisao-reusa-o-que-ja-existe" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Card renderiza direto de <code>RouteDecision.to_dict()</code>:
+  <code>🧭 Ondina · skill:frontend · kw:'css' · conf 0.82</code>.</li>
+<li>Botão <strong>Trocar agente</strong> → lista <code>list_agents()</code> (enabled) → <code>reroute(sess, agent_id)</code> força
+  <code>mode=override</code>, dispatch, e <strong>grava o override</strong> (alimenta learning-loop → ajusta skill table).</li>
+<li>Botão <strong>Editar</strong> → reabre o texto pra refinar antes de despachar.</li>
+</ul>
+<hr />
+<h2 id="4-loop-de-confirmacao-e-entrega-assincrona">4. Loop de confirmação e entrega assíncrona<a class="headerlink" href="#4-loop-de-confirmacao-e-entrega-assincrona" title="Permanent link">&para;</a></h2>
+<p>O ponto mais sensível dado o transporte travado. Modelo de <strong>dois acks</strong>:</p>
+<ol>
+<li><strong>Receipt (imediato):</strong> ao despachar fire-and-forget, <code>DeliveryTracker.create(corr_id, agent,
+   prompt)</code> marca <code>pending</code> e o transporte responde na hora: <em>"📨 despachei pro X, req <code>xxxx</code>"</em>.</li>
+<li><strong>Result (eventual):</strong> quando a resposta do worker chega, casa por <code>corr_id</code> e o transporte
+   manda <strong>mensagem nova</strong> (com push) no chat original: <em>"✅ resposta do X (req xxxx): …"</em>.</li>
+</ol>
+<h3 id="correlacao-como-casar-resposta-com-pedido">Correlação (como casar resposta com pedido)<a class="headerlink" href="#correlacao-como-casar-resposta-com-pedido" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Injeta uma tag curta no prompt de saída: <code>[apt:req:xxxx]</code> (ou header, se o canal permitir).</li>
+<li>Coletor de resultado (uma das vias, por ordem de robustez):</li>
+<li><strong>(a) Dropfile compartilhado</strong> — worker escreve resposta em <code>/workspace/.aptdata/replies/&lt;corr&gt;.json</code>
+    (bind mount já existe); <code>DeliveryTracker</code> faz poll/<code>watch</code>. Mais confiável hoje.</li>
+<li><strong>(b) Webhook</strong> — reaproveitar o padrão do <code>holt-webhook.py</code>: worker/gateway faz POST de volta.</li>
+<li><strong>(c) Canal do worker</strong> — se controlarmos o bot do worker, lê a resposta e casa por tag.</li>
+<li><strong>Timeout/retry:</strong> <code>DeliveryTracker</code> herda os estados do task-queue TS (<code>pending/running/done/
+  failed</code> + <code>retryCount</code>), persistido via o módulo <code>state</code> do aptdata. Timeout → <em>"⏳ X não
+  respondeu em Ns"</em> + botão <em>Reenviar</em>.</li>
+</ul>
+<h3 id="interface-do-adapter-para-o-swap-do-passo-2-ser-local">Interface do adapter (para o swap do passo 2 ser local)<a class="headerlink" href="#interface-do-adapter-para-o-swap-do-passo-2-ser-local" title="Permanent link">&para;</a></h3>
+<p>Estender <code>IAgent</code> para expor os dois modos, isolando a mudança de transporte num só lugar:
+- <code>send(prompt) -&gt; AgentResponse</code> — síncrono; hoje só CLI agents cumprem; OpenClaw levanta
+  <code>NotDeliverable</code> até o WS.
+- <code>dispatch_async(prompt, corr_id) -&gt; Receipt</code> — fire-and-forget; devolve receipt na hora.</p>
+<p>O <code>ConversationEngine</code> escolhe <code>send</code> vs <code>dispatch_async</code> por capacidade do agente (flag no spec),
+então <strong>nada acima do adapter muda</strong> quando o WS ligar.</p>
+<hr />
+<h2 id="5-o-que-muda-quando-o-passo-2-operatorwrite-sessionssend-sincrono-ficar-pronto">5. O que muda quando o passo 2 (operator.write / <code>sessions.send</code> síncrono) ficar pronto<a class="headerlink" href="#5-o-que-muda-quando-o-passo-2-operatorwrite-sessionssend-sincrono-ficar-pronto" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Só o transporte do <code>OpenClawAgent</code> troca:</strong> HTTP/fire-and-forget → WS protocol 4
+  <code>sessions.send {key,message}</code>, correlação por <code>id</code> da resposta. <code>send()</code> passa a devolver
+  <code>AgentResponse</code> inline.</li>
+<li><strong>Loop de confirmação colapsa</strong> para OpenClaw: dispatch vira síncrono como os CLI agents; os
+  dois acks viram um só ("✅ respondeu: …").</li>
+<li><strong>DeliveryTracker</strong> deixa de ser obrigatório para OpenClaw — fica reservado a jobs longos
+  (quando a resposta demora além do timeout do WS) e a projetos multi-tarefa.</li>
+<li><strong>Zero mudança</strong> no <code>ConversationEngine</code>, na política de decisão, no transporte Telegram ou
+  nas MCP tools. É por isso que a interface <code>send</code>/<code>dispatch_async</code> do §4 vale a pena agora.</li>
+</ul>
+<hr />
+<h2 id="6-arquitetura-do-plugin-interfaces">6. Arquitetura do plugin — interfaces<a class="headerlink" href="#6-arquitetura-do-plugin-interfaces" title="Permanent link">&para;</a></h2>
+<h3 id="novos-modulos-no-aptdata-o-cerebro">Novos módulos no aptdata (o cérebro)<a class="headerlink" href="#novos-modulos-no-aptdata-o-cerebro" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>aptdata/agents/conversation.py</code></li>
+<li><code>ConversationEngine(router, registry, delivery, store, policy)</code></li>
+<li><code>handle(session_id, text) -&gt; Turn</code></li>
+<li><code>Turn</code> = união: <code>Dispatched(agent, response)</code> · <code>NeedsConfirmation(decision, candidates)</code> ·
+    <code>NeedsClarification(question)</code> · <code>Reply(text)</code> · <code>Receipt(corr_id, agent)</code></li>
+<li><code>confirm(session_id, decision_id, choice)</code>, <code>reroute(session_id, agent_id)</code></li>
+<li><code>SessionStore</code> — persiste histórico/decisão-pendente/correlações via <code>aptdata</code> state.</li>
+<li><code>DecisionPolicy</code> — lê thresholds/guardrails de <code>agents.yaml</code>.</li>
+<li><code>aptdata/agents/delivery.py</code></li>
+<li><code>DeliveryTracker</code> — porta do <code>task-queue.ts</code> (create/start/answer/fail/retry/list/stats),
+    persistido em JSON/state; correlação por <code>corr_id</code>.</li>
+</ul>
+<h3 id="mcp-tools-novas-wrapper-fino-sobre-o-engine">MCP tools novas (wrapper fino sobre o engine)<a class="headerlink" href="#mcp-tools-novas-wrapper-fino-sobre-o-engine" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>converse(session_id, text) -&gt; Turn(json)</code></li>
+<li><code>confirm(session_id, decision_id, choice) -&gt; Turn(json)</code></li>
+<li><code>reroute(session_id, agent_id) -&gt; Turn(json)</code></li>
+<li><code>poll(corr_id) -&gt; DeliveryStatus</code> (ou push via webhook do transporte)</li>
+<li>reusa <code>dispatch</code>, <code>list_agents</code> já existentes.</li>
+</ul>
+<h3 id="transporte-telegram-fino-o-que-ele-pode-fazer">Transporte Telegram (fino — o que ele PODE fazer)<a class="headerlink" href="#transporte-telegram-fino-o-que-ele-pode-fazer" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Relay de texto → <code>converse</code>; clique de botão → <code>confirm</code>/<code>reroute</code>.</li>
+<li>Render de card a partir do <code>Turn</code>/<code>RouteDecision</code> (botões inline).</li>
+<li>Receber/pollar result e emitir mensagem nova (push) no chat.</li>
+<li><strong>Não</strong> contém: skill-matcher, llm-router, prefix-router, thresholds, estado de decisão.</li>
+</ul>
+<hr />
+<h2 id="7-fases-incrementais-cada-uma-entrega-valor-sozinha">7. Fases incrementais (cada uma entrega valor sozinha)<a class="headerlink" href="#7-fases-incrementais-cada-uma-entrega-valor-sozinha" title="Permanent link">&para;</a></h2>
+<p><strong>Fase 0 — Contratos (sem comportamento novo)</strong>
+- Definir <code>Turn</code>, <code>DecisionPolicy</code>, <code>DeliveryStatus</code>, assinaturas MCP.
+- Bloco <code>routing:</code> em <code>agents.yaml</code> (thresholds + capabilities-guardrail).
+- Entrega: contratos revisáveis, nada quebra.</p>
+<p><strong>Fase 1 — ConversationEngine no aptdata (headless)</strong>
+- <code>ConversationEngine</code> + <code>SessionStore</code> + <code>DecisionPolicy</code>, reusando <code>Router</code>.
+- Política: dispatch-direto / confirm / clarify / guardrail.
+- Expor <code>aptdata converse</code> (CLI) + MCP <code>converse</code>/<code>confirm</code>.
+- Entrega: dá pra conversar e ver a decisão + "por quê" <strong>sem Telegram</strong> (CLI/MCP/testes).</p>
+<p><strong>Fase 2 — Telegram fino + fluxo síncrono (CLI agents)</strong>
+- Bot Python fino → engine in-process; cards + botões (confirm/reroute/editar).
+- Sessão multi-turno persistida; captura de override → learning.
+- Entrega: chat → card → confirma → dispatch → resposta <strong>inline</strong> para Gandalf/Darwin
+  (que já são síncronos). Prova o loop ponta-a-ponta.</p>
+<p><strong>Fase 3 — Entrega assíncrona + correlação (OpenClaw fire-and-forget)</strong>
+- <code>DeliveryTracker</code> + tag <code>[apt:req]</code> + coletor (dropfile/webhook) + notificação de result.
+- Modelo dos dois acks (receipt + result), timeout/retry.
+- Entrega: despacho pra Ondina/Maresia com receipt e resposta eventual reportada no canal.</p>
+<p><strong>Fase 4 — WS síncrono (quando operator.write existir)</strong>
+- Trocar transporte do <code>OpenClawAgent</code> p/ WS <code>sessions.send</code> (§5). Loop colapsa. Zero mudança acima.
+- Entrega: experiência síncrona unificada em todos os agentes.</p>
+<p><strong>Fase 5 — Aprendizado + painel</strong>
+- Learning-loop ajusta thresholds/skill table a partir dos overrides.
+- Painel consome telemetry de decisão/entrega (aposenta lógica no painel estático).
+- Aposentar o dispatcher/rota TS de vez.</p>
+<hr />
+<h2 id="8-assuncoes-e-riscos">8. Assunções e riscos<a class="headerlink" href="#8-assuncoes-e-riscos" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Assumo</strong> que o bot Python in-process é aceitável (tudo é Python/co-localizado); se um dia
+   o transporte precisar ser remoto, o MCP já cobre — sem retrabalho.</li>
+<li><strong>Assumo</strong> que dá pra fazer o worker escrever um dropfile em <code>/workspace/.aptdata/replies/</code>
+   (bind mount confirmado) — via de correlação mais robusta antes do WS.</li>
+<li><strong>Risco:</strong> o <code>OpenClawAgent.send()</code> HTTP atual dá falsa sensação de entrega síncrona.
+   Mitigação: marcá-lo <code>NotDeliverable</code>/best-effort até o WS; roteá-lo por <code>dispatch_async</code>.</li>
+<li><strong>Risco:</strong> portar task-queue/learning-loop do TS tem custo. Mitigação: portar só o núcleo
+   (estados + correlação) na Fase 3; o resto do TS morre.</li>
+<li><strong>Decisão:</strong> não forkar nada — estender o aptdata; transporte é cliente fino.
+```</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Strondata - Mantido pela comunidade open source.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/strondata/smart-data" target="_blank" rel="noopener" title="Repositório Oficial do aptdata" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/company/strondata/" target="_blank" rel="noopener" title="Acompanhe a Strondata no LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/strondata" target="_blank" rel="noopener" title="Junte-se à Comunidade no Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "toc.integrate", "toc.follow", "content.code.copy", "content.code.annotate", "content.code.select", "content.tabs.link", "search.suggest", "search.highlight", "navigation.footer"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.min.js"></script>
+      
+        <script src="../../assets/termynal.js"></script>
+      
+    
+  </body>
+</html>

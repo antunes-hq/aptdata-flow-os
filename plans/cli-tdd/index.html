@@ -1,0 +1,1974 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A declarative framework for building smart data pipelines">
+      
+      
+      
+        <link rel="canonical" href="https://strondata.github.io/smart-data/plans/cli-tdd/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Plano de TDD completo do CLI — aptdata - aptdata</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/custom.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/termynal.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plano-de-tdd-completo-do-cli-aptdata" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="aptdata" class="md-header__button md-logo" aria-label="aptdata" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            aptdata
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Plano de TDD completo do CLI — aptdata
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="orange"  aria-label="Mudar para modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="orange"  aria-label="Mudar para modo escuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Mudar para modo escuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/strondata/smart-data" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    strondata/smart-data
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Core
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../transform-engines/" class="md-tabs__link">
+          
+  
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/core/" class="md-tabs__link">
+          
+  
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../llms.txt" class="md-tabs__link">
+          
+  
+  
+  AI Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="aptdata" class="md-nav__button md-logo" aria-label="aptdata" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    aptdata
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/strondata/smart-data" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    strondata/smart-data
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scaffold-templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scaffold Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DIYs & Snippets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ADR-001-Revisao-Arquitetural-Core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 001 - Revisão Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../governance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../telemetry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telemetry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ci-logs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI & Execution Logs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transform-engines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cli-interactive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Interactive
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Docs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llms.txt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    llms.txt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../llms-full.txt" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    llms-full.txt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prompts/docs-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docs Agent Prompts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="plano-de-tdd-completo-do-cli-aptdata">Plano de TDD completo do CLI — aptdata<a class="headerlink" href="#plano-de-tdd-completo-do-cli-aptdata" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Objetivo: travar o <strong>contrato</strong> de cada comando do CLI Typer (<code>aptdata/cli/</code>)
+com testes. Este documento é <strong>só planejamento</strong> — não implementa features
+nem escreve os testes. Ele define, comando a comando: o que DEVE fazer,
+saídas (texto + JSON), exit codes, casos de erro, cobertura atual e os casos
+de teste a escrever.</p>
+</blockquote>
+<p>Estado da árvore (2026-07-01): coverage do subconjunto CLI = <strong>83%</strong>
+(gate CI <code>--cov-fail-under=75</code> no job "CLI tests"). Gate global de 80% do repo
+(~69%) <strong>não é foco</strong> deste plano, mas gaps globais ficam registrados abaixo.</p>
+<hr />
+<h2 id="1-inventario-de-comandos">1. Inventário de comandos<a class="headerlink" href="#1-inventario-de-comandos" title="Permanent link">&para;</a></h2>
+<h3 id="padroes-de-contrato-2-familias-ja-e-a-1a-inconsistencia">Padrões de contrato (2 famílias — já é a 1ª inconsistência)<a class="headerlink" href="#padroes-de-contrato-2-familias-ja-e-a-1a-inconsistencia" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Família A — "always-JSON" (<code>_emit</code>)</strong>: comandos no <code>app.py</code>
+  (<code>run</code>, <code>mcp-start</code>, <code>schema export</code>) e <code>scaffold.py</code> sempre emitem 1 linha
+  JSON, com <code>event</code> de ciclo de vida (<code>*.started</code> / <code>*.completed</code> / <code>*.error</code>).
+  Erro → stderr + <code>raise SystemExit(1)</code>. Sucesso → <code>raise SystemExit(0)</code>.
+  Só o <code>app._emit</code> injeta <code>trace_id</code>; o <code>scaffold._emit</code> <strong>não</strong> (divergência).</li>
+<li><strong>Família B — dual-mode (<code>SmartConsole</code> + <code>--json</code>)</strong>: sub-apps
+  <code>system / plugin / config / telemetry / mesh / agents / project</code>.
+  Modo texto = Rich; <code>--json</code> = 1 linha JSON. Erro via <code>console.error</code>
+  (stderr) + <code>raise typer.Exit(1)</code>. Sucesso = exit 0 implícito.</li>
+<li>Vários comandos da Família B <strong>não têm <code>--json</code></strong> (<code>system validate</code>,
+  <code>plugin preview</code>, <code>plugin load</code>, <code>config *</code>, <code>telemetry export</code>) — ver §4.</li>
+</ul>
+<h3 id="11-comandos-top-level-aptdatacliapppy-scaffoldpy">1.1 Comandos top-level (<code>aptdata/cli/app.py</code> + <code>scaffold.py</code>)<a class="headerlink" href="#11-comandos-top-level-aptdatacliapppy-scaffoldpy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Comando</th>
+<th>Assinatura</th>
+<th>Contrato resumido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>run</code></td>
+<td><code>run PIPELINE [--env/-e dev] [--dry-run]</code></td>
+<td>Lookup em <code>plugins.registry</code>; instancia <code>pipeline_cls(system_id=)</code>, roda (a menos de <code>--dry-run</code>). Emite <code>pipeline.started</code> → <code>pipeline.completed</code> (com <code>elapsed_seconds</code>). Pipeline ausente → <code>LookupError</code> → <code>pipeline.error</code> stderr, exit 1. Qualquer exceção no <code>.run()</code> → <code>pipeline.error</code>, exit 1.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>monitor</code></td>
+<td><code>monitor [--refresh/-r 1.0]</code></td>
+<td>Abre TUI <code>MonitorApp(refresh_interval=)</code> e <code>.run()</code>. Sem contrato de stdout.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>mcp-start</code></td>
+<td><code>mcp-start [--transport/-t stdio]</code></td>
+<td>Emite <code>mcp.server.starting</code>; sobe <code>mcp.server.run(transport=)</code>. Exceção → <code>mcp.server.error</code> stderr, exit 1.</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>scaffold</code></td>
+<td><code>scaffold PROJECT_NAME [--output/-o .] [--template/-t hello-world]</code></td>
+<td>Valida nome (<code>^[A-Za-z][A-Za-z0-9_]*$</code>), valida template ∈ 6 templates, recusa dir existente. Emite <code>scaffold.started</code> → <code>scaffold.completed</code>. Erros → <code>scaffold.error</code> stderr, exit 1.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>interactive</code></td>
+<td><code>interactive</code></td>
+<td>Wizard <code>questionary</code>/fallback <code>typer.prompt</code>. Loop de menu.</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>schema export</code></td>
+<td><code>schema export --output/-o PATH</code></td>
+<td><code>write_domain_schema(output)</code>. Emite <code>schema.export.started</code> → <code>schema.export.completed</code>. Exceção → <code>schema.export.error</code> stderr, exit 1.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-system-commandssystem_cmdpy">1.2 <code>system</code> (<code>commands/system_cmd.py</code>)<a class="headerlink" href="#12-system-commandssystem_cmdpy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Comando</th>
+<th>Assinatura</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td><code>system list</code></td>
+<td><code>[--json]</code></td>
+<td>Lista <code>registry.list_systems()</code>. JSON: <code>{systems, count}</code>. Vazio texto → warning.</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>system info</code></td>
+<td><code>NAME [--json]</code></td>
+<td><code>registry.get(name)</code>. JSON: <code>{name, class, module, doc}</code>. Ausente → error, exit 1.</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>system validate</code></td>
+<td><code>NAME</code> (<strong>sem --json</strong>)</td>
+<td>Instancia e <code>.compile()</code> cada flow. Sucesso → <code>console.success</code>. Ausente → error exit 1. Exceção de compile → error exit 1.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13-plugin-commandsplugin_cmdpy">1.3 <code>plugin</code> (<code>commands/plugin_cmd.py</code>)<a class="headerlink" href="#13-plugin-commandsplugin_cmdpy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Comando</th>
+<th>Assinatura</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td><code>plugin list</code></td>
+<td><code>[--json]</code></td>
+<td><code>plugin_manager.list_plugins()</code>. JSON = dict readers/writers. Vazio texto → warning.</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>plugin inspect</code></td>
+<td><code>NAME [--json]</code></td>
+<td><code>get_plugin_schema(name)</code>. <code>KeyError</code> → error exit 1.</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>plugin preview</code></td>
+<td><code>READER [--limit/-n 5]</code> (<strong>sem --json</strong>)</td>
+<td><code>preview_dataset(reader)[:limit]</code> em tabela Rich. Vazio → warning. <code>KeyError</code> → error exit 1. Outra exceção → "Preview failed" exit 1.</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>plugin load</code></td>
+<td><code>MODULE_PATH</code> (<strong>sem --json</strong>)</td>
+<td><code>load_module()</code>. Sucesso → success. <code>ModuleNotFoundError</code> → "Module not found" exit 1. Outra → "Load failed" exit 1.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="14-config-commandsconfig_cmdpy-nenhum-tem-json">1.4 <code>config</code> (<code>commands/config_cmd.py</code>) — <strong>nenhum tem --json</strong><a class="headerlink" href="#14-config-commandsconfig_cmdpy-nenhum-tem-json" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Comando</th>
+<th>Assinatura</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>14</td>
+<td><code>config validate</code></td>
+<td><code>PATH (exists=True)</code></td>
+<td>Parse via <code>YamlConfigParser</code>. Sucesso → <code>Config valid: system_id=...</code>. Exceção → "Validation failed" exit 1. Path inexistente → Typer erro exit 2.</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>config init</code></td>
+<td><code>[--output/-o pipeline.yaml] [--template]</code></td>
+<td>Escreve <code>_STARTER_YAML</code>. Recusa arquivo existente (exit 1). Renderiza preview.</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>config show</code></td>
+<td><code>PATH (exists=True)</code></td>
+<td>Pretty-print YAML. Path inexistente → exit 2.</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>config run</code></td>
+<td><code>PATH (exists=True) [--env/-e dev]</code></td>
+<td>Parse → registra → <code>.run()</code>. Sucesso → success. Exceção → "Execution failed" exit 1.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="15-telemetry-commandstelemetry_cmdpy">1.5 <code>telemetry</code> (<code>commands/telemetry_cmd.py</code>)<a class="headerlink" href="#15-telemetry-commandstelemetry_cmdpy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Comando</th>
+<th>Assinatura</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18</td>
+<td><code>telemetry status</code></td>
+<td><code>[--json]</code></td>
+<td><code>_get_telemetry_status()</code> → <code>{configured, provider, service}</code>.</td>
+</tr>
+<tr>
+<td>19</td>
+<td><code>telemetry export</code></td>
+<td><code>[--format/-f json]</code> (<strong>--format, não --json</strong>)</td>
+<td><code>json</code> → dump indentado. Formato != json → error exit 1.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="16-mesh-commandsmesh_cmdpy">1.6 <code>mesh</code> (<code>commands/mesh_cmd.py</code>)<a class="headerlink" href="#16-mesh-commandsmesh_cmdpy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Comando</th>
+<th>Assinatura</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20</td>
+<td><code>mesh list</code></td>
+<td><code>[--dir/-d .] [--json]</code></td>
+<td><code>rglob(mesh.yaml)</code> → <code>{component,type,version,path}</code>. JSON <code>{components,count}</code>. Vazio → warning. YAML inválido → entry com <code>error</code>.</td>
+</tr>
+<tr>
+<td>21</td>
+<td><code>mesh run</code></td>
+<td><code>COMPONENT [--dir/-d .] [--dry-run] [--json]</code></td>
+<td>Resolve mesh.yaml (por dir ou por campo <code>component</code>). Ausente → <code>mesh.error</code> exit 1. <code>--dry-run</code> → <code>mesh.run.dry_run</code> com <code>command</code>. <code>job-wheel</code>/<code>docker-compose-app</code> executados via subprocess; <code>mesh.run.started/completed</code>. Tipo desconhecido → ValueError → <code>mesh.run.error</code> exit 1. Subprocess !=0 → RuntimeError → error exit 1.</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code>mesh build</code></td>
+<td><code>COMPONENT [--dir/-d .] [--json]</code></td>
+<td>Idem run mas build (<code>pip wheel</code> / <code>docker compose build</code>). <code>mesh.build.started/completed/error</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="17-agents-commandsagents_cmdpy">1.7 <code>agents</code> (<code>commands/agents_cmd.py</code>)<a class="headerlink" href="#17-agents-commandsagents_cmdpy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Comando</th>
+<th>Assinatura</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>23</td>
+<td><code>agents list</code></td>
+<td><code>[--file/-f] [--enabled] [--json]</code></td>
+<td><code>registry.specs()</code> ordenado (enabled first). JSON <code>{agents,count}</code>. Vazio texto → warning. Arquivo ausente → <code>BadParameter</code> exit 2.</td>
+</tr>
+<tr>
+<td>24</td>
+<td><code>agents send</code></td>
+<td><code>AGENT_ID PROMPT [--file/-f] [--json]</code></td>
+<td><code>registry.get</code> → <code>agent.send(prompt)</code>. <code>KeyError</code> → error exit 1. <code>result.ok=False</code> → error + exit 1. JSON = <code>result.to_dict()</code>.</td>
+</tr>
+<tr>
+<td>25</td>
+<td><code>agents route</code></td>
+<td><code>TEXT [--file/-f] [--json]</code></td>
+<td><code>Router.route(text)</code> (não envia). JSON = <code>decision.to_dict()</code>.</td>
+</tr>
+<tr>
+<td>26</td>
+<td><code>agents dispatch</code></td>
+<td><code>TEXT [--file/-f] [--json]</code></td>
+<td>Route + send. <code>agent_id None</code> → error exit 1. <code>result.ok=False</code> → exit 1. JSON = <code>{routed_to, mode, **result}</code>.</td>
+</tr>
+<tr>
+<td>27</td>
+<td><code>agents resolve</code></td>
+<td><code>CAPABILITY [--file/-f] [--json]</code></td>
+<td><code>registry.resolve(capability)</code>. None → warning/JSON <code>{agent:null}</code> <strong>exit 1</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="18-project-commandsproject_cmdpy">1.8 <code>project</code> (<code>commands/project_cmd.py</code>)<a class="headerlink" href="#18-project-commandsproject_cmdpy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Comando</th>
+<th>Assinatura</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>28</td>
+<td><code>project init</code></td>
+<td><code>NAME [--out/-o] [--json]</code></td>
+<td><code>scaffold_project(name).to_yaml()</code>. Arquivo existente → error exit 1. JSON <code>{created,tasks}</code>.</td>
+</tr>
+<tr>
+<td>29</td>
+<td><code>project plan</code></td>
+<td><code>PROJECT_FILE [--file/-f] [--json]</code></td>
+<td><code>ProjectRunner.plan()</code> (dry-run rota). Arquivo ausente → <code>BadParameter</code> exit 2.</td>
+</tr>
+<tr>
+<td>30</td>
+<td><code>project run</code></td>
+<td><code>PROJECT_FILE [--file/-f] [--json]</code></td>
+<td><code>ProjectRunner.run()</code>. Se <code>ok &lt; total</code> → exit 1. JSON <code>{project,ok,total,results}</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total: 30 comandos</strong> (2 não-testáveis por CLI puro: <code>monitor</code>, <code>interactive</code>).</p>
+<hr />
+<h2 id="2-mapa-de-cobertura-atual">2. Mapa de cobertura atual<a class="headerlink" href="#2-mapa-de-cobertura-atual" title="Permanent link">&para;</a></h2>
+<p>Fonte: <code>pytest &lt;subset CLI&gt; --cov=aptdata/cli --cov-report=term-missing</code>
+(subset = os 12 arquivos <code>test_cli*</code>, <code>test_agents_cli</code>, <code>test_scaffold_templates</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Cover</th>
+<th>Linhas faltantes (o que são)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>app.py</code></td>
+<td>80%</td>
+<td>117-128 (run: <code>except Exception</code> genérico), 150-153 (<code>monitor</code>), 175-185 (<code>mcp-start</code> corpo+erro), 214 (<code>interactive</code> wrapper), 241-251 (<code>schema export</code> erro)</td>
+</tr>
+<tr>
+<td><code>commands/mesh_cmd.py</code></td>
+<td>70%</td>
+<td>24-39 (fallback parser sem PyYAML), 59-64 (<code>_resolve_mesh_file</code> por campo), 107-108 (<code>mesh list</code> YAML inválido), 215-233 (<code>mesh run</code> execução+erro), 247, 318-336 (<code>mesh build</code> execução+erro), 372/396-426 (helpers subprocess)</td>
+</tr>
+<tr>
+<td><code>completions.py</code></td>
+<td>73%</td>
+<td>12-13,22-23,32-33,55-56 (branches <code>except</code>)</td>
+</tr>
+<tr>
+<td><code>interactive.py</code></td>
+<td>51%</td>
+<td>147-191 (<code>_wizard_config</code>), 196-222 (<code>_wizard_scaffold</code>), 236-238, dispatch de menu</td>
+</tr>
+<tr>
+<td><code>plugin_cmd.py</code></td>
+<td>88%</td>
+<td>71 (<code>inspect</code> KeyError), 84-86 (<code>preview</code> erros), 105-107 (<code>load</code> erros)</td>
+</tr>
+<tr>
+<td><code>system_cmd.py</code></td>
+<td>87%</td>
+<td>30 (list vazio warning), 85-90 (<code>validate</code> exceção)</td>
+</tr>
+<tr>
+<td><code>config_cmd.py</code></td>
+<td>94%</td>
+<td>126-128 (<code>config run</code> exceção)</td>
+</tr>
+<tr>
+<td><code>agents_cmd.py</code></td>
+<td>95%</td>
+<td>75-76 (list vazio), 138-139 (dispatch sem rota), 172 (resolve none warning)</td>
+</tr>
+<tr>
+<td><code>project_cmd.py</code></td>
+<td>100%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>telemetry_cmd.py</code></td>
+<td>100%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>scaffold.py</code></td>
+<td>100%</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rendering/*</code></td>
+<td>96-100%</td>
+<td>logger 25-26; panels 40/60; console 48</td>
+</tr>
+</tbody>
+</table>
+<h3 id="furo-estrutural-mesh-fora-do-job-cli-tests">⚠️ Furo estrutural: <code>mesh</code> fora do job "CLI tests"<a class="headerlink" href="#furo-estrutural-mesh-fora-do-job-cli-tests" title="Permanent link">&para;</a></h3>
+<p><code>mesh</code> só é exercitado por <code>tests/test_e2e.py</code> e <code>tests/test_integration.py</code>,
+que <strong>não estão</strong> no job <code>ci-cli.yml</code>. Dentro do subset da CI de CLI, as
+funções de <code>mesh_cmd</code> têm <strong>zero</strong> teste comportamental (os 70% vêm só do
+import: assinaturas/decorators). Ou seja, o contrato do <code>mesh</code> <strong>não está
+travado pelo gate do CLI</strong>. Prioridade máxima.</p>
+<hr />
+<h2 id="3-plano-de-testes-tdd-por-gap">3. Plano de testes TDD (por gap)<a class="headerlink" href="#3-plano-de-testes-tdd-por-gap" title="Permanent link">&para;</a></h2>
+<p>Convenção de stub (padrão já usado no repo):
+- <code>from typer.testing import CliRunner</code>; <code>runner.invoke(app, [...])</code>.
+- <strong>Agentes</strong>: fixture <code>autouse</code> faz <code>monkeypatch</code> de <code>OpenClawAgent.send</code>
+  (e afins) devolvendo <code>AgentResponse</code> — ver <code>test_cli_agents_cmd.py::_stub_send</code>.
+  Nunca bater na rede.
+- <strong>Registry/plugins</strong>: <code>patch("aptdata.plugins.registry.get"/".list_systems")</code>,
+  <code>patch("aptdata.plugins.plugin_manager....")</code>.
+- <strong>mesh subprocess</strong>: <code>monkeypatch.setattr(mesh_cmd.subprocess, "run", fake)</code>
+  devolvendo objeto com <code>.returncode</code>; nunca chamar docker/pip de verdade.
+- <strong>mcp-start</strong>: <code>patch("aptdata.mcp.server.mcp.run")</code> para não bloquear.
+- <strong>monitor</strong>: <code>patch("aptdata.tui.monitor.MonitorApp")</code> (MagicMock <code>.run</code>).
+- Sempre validar <strong>stdout JSON</strong> com <code>json.loads(result.stdout)</code> e <strong>exit_code</strong>.</p>
+<h3 id="p0-teststest_cli_mesh_cmdpy-novo-arquivo-inexistente">P0 — <code>tests/test_cli_mesh_cmd.py</code> (NOVO, arquivo inexistente)<a class="headerlink" href="#p0-teststest_cli_mesh_cmdpy-novo-arquivo-inexistente" title="Permanent link">&para;</a></h3>
+<p>Trava o contrato do <code>mesh</code> dentro do gate de CLI. Casos:
+1. <code>mesh list</code> dir vazio → texto warning; <code>--json</code> <code>{components:[],count:0}</code>.
+2. <code>mesh list</code> acha 1+ <code>mesh.yaml</code> (usar <code>tmp_path</code> + escrever yaml) → campos
+   corretos, ordenado; <code>--json</code> count&gt;0.
+3. <code>mesh list</code> com yaml inválido → entry contém <code>error</code> (linha 107-108).
+4. <code>mesh run</code> componente inexistente → <code>mesh.error</code>, exit 1 (texto e <code>--json</code>).
+5. <code>mesh run --dry-run</code> job-wheel → <code>mesh.run.dry_run</code> com <code>command</code> = entrypoint+args.
+6. <code>mesh run --dry-run</code> docker-compose-app → command <code>["docker","compose","up"]</code>.
+7. <code>mesh run</code> job-wheel sucesso → <code>subprocess.run</code> stubado rc=0 → <code>mesh.run.completed</code>.
+8. <code>mesh run</code> job-wheel rc!=0 → RuntimeError → <code>mesh.run.error</code> exit 1.
+9. <code>mesh run</code> tipo desconhecido → ValueError → <code>mesh.run.error</code> exit 1.
+10. <code>mesh build</code> job-wheel sucesso/rc!=0 → <code>mesh.build.completed</code>/<code>error</code>.
+11. <code>mesh build</code>/<code>run</code> docker-compose-app com subprocess stubado.
+12. <code>_resolve_mesh_file</code> por <strong>campo <code>component</code></strong> (não só por dir) — cria
+    <code>sub/mesh.yaml</code> com <code>component: X</code>, roda <code>mesh run X</code> (cobre 59-64).
+13. <code>_load_mesh</code> fallback sem PyYAML: <code>monkeypatch</code> para forçar <code>ImportError</code>
+    no import de <code>yaml</code> e validar o parser mínimo (cobre 24-39).</p>
+<h3 id="p0-teststest_clipy-estender-paths-de-erro-top-level">P0 — <code>tests/test_cli.py</code> (estender): paths de erro top-level<a class="headerlink" href="#p0-teststest_clipy-estender-paths-de-erro-top-level" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>run</code> pipeline cujo <code>.run()</code> levanta exceção genérica → <code>pipeline.error</code>,
+    exit 1 (cobre 117-128; hoje só <code>LookupError</code> está coberto). Stub: registrar
+    pipeline mock cujo <code>run()</code> faz <code>raise RuntimeError</code>.</li>
+<li><code>schema export</code> com <code>write_domain_schema</code> que levanta (patch para raise) →
+    <code>schema.export.error</code> stderr, exit 1 (cobre 241-251).</li>
+<li><code>mcp-start</code> sucesso: <code>patch mcp.run</code> → <code>mcp.server.starting</code> emitido, sem erro.</li>
+<li><code>mcp-start</code> erro: <code>mcp.run</code> raise → <code>mcp.server.error</code>, exit 1 (cobre 175-185).</li>
+<li><code>monitor</code>: <code>patch MonitorApp</code> → <code>.run()</code> chamado (cobre 150-153).</li>
+</ol>
+<h3 id="p1-teststest_cli_plugin_cmdpy-estender">P1 — <code>tests/test_cli_plugin_cmd.py</code> (estender)<a class="headerlink" href="#p1-teststest_cli_plugin_cmdpy-estender" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>plugin inspect</code> nome inexistente → <code>KeyError</code> → error, exit 1 (linha 71).</li>
+<li><code>plugin preview</code> reader inexistente (<code>KeyError</code>) → exit 1; reader vazio →
+    warning; reader com registros → tabela (cobre 84-86). Stub <code>preview_dataset</code>.</li>
+<li><code>plugin load</code> módulo inexistente → <code>ModuleNotFoundError</code> → exit 1; módulo ok
+    → success (cobre 105-107).</li>
+</ol>
+<h3 id="p1-teststest_cli_system_cmdpy-estender">P1 — <code>tests/test_cli_system_cmd.py</code> (estender)<a class="headerlink" href="#p1-teststest_cli_system_cmdpy-estender" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>system list</code> vazio → warning (linha 30).</li>
+<li><code>system validate</code> sucesso (system mock com flow.compile) → success.</li>
+<li><code>system validate</code> com flow.compile que raise → "Validation failed" exit 1
+    (cobre 85-90).</li>
+</ol>
+<h3 id="p1-teststest_cli_config_cmdpy-estender">P1 — <code>tests/test_cli_config_cmd.py</code> (estender)<a class="headerlink" href="#p1-teststest_cli_config_cmdpy-estender" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>config run</code> cujo <code>.run()</code> levanta → "Execution failed" exit 1 (cobre 126-128).</li>
+<li><code>config validate/show/run</code> com path inexistente → exit code <strong>2</strong> (Typer
+    <code>exists=True</code>) — trava esse contrato explicitamente.</li>
+</ol>
+<h3 id="p2-teststest_cli_agents_cmdpy-estender-completar-95100">P2 — <code>tests/test_cli_agents_cmd.py</code> (estender — completar 95%→100%)<a class="headerlink" href="#p2-teststest_cli_agents_cmdpy-estender-completar-95100" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>agents list</code> registry vazio → warning (75-76).</li>
+<li><code>agents dispatch</code> texto sem rota (<code>agent_id None</code>) → error exit 1 (138-139).</li>
+<li><code>agents resolve</code> capability sem agente → warning + <strong>exit 1</strong> (172).</li>
+</ol>
+<h3 id="p2-teststest_cli_completionspy-estender">P2 — <code>tests/test_cli_completions.py</code> (estender)<a class="headerlink" href="#p2-teststest_cli_completionspy-estender" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Cada <code>complete_*</code> com registry/plugin_manager que levanta exceção →
+    retorna <code>[]</code> (branches 12-13/22-23/32-33/55-56). <code>patch</code> para forçar raise.</li>
+</ol>
+<h3 id="p3-teststest_cli_interactivepy-estender-ux-baixo-risco">P3 — <code>tests/test_cli_interactive.py</code> (estender — UX, baixo risco)<a class="headerlink" href="#p3-teststest_cli_interactivepy-estender-ux-baixo-risco" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>_wizard_config</code> (validate + generate template) com prompts mockados (147-191).</li>
+<li><code>_wizard_scaffold</code> com prompts mockados → invoca scaffold (196-222).</li>
+</ol>
+<hr />
+<h2 id="4-inconsistencias-de-contrato-a-corrigir-itens-de-divida">4. Inconsistências de contrato a corrigir (itens de dívida)<a class="headerlink" href="#4-inconsistencias-de-contrato-a-corrigir-itens-de-divida" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Inconsistência</th>
+<th>Onde</th>
+<th>Ação sugerida</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td><code>--json</code> ausente em comandos que deveriam ser máquina-legíveis</td>
+<td><code>system validate</code>, <code>plugin preview</code>, <code>plugin load</code>, <code>config validate/init/show/run</code></td>
+<td>Adicionar <code>--json</code> (ou documentar explicitamente que são text-only). Travar decisão com teste.</td>
+</tr>
+<tr>
+<td>C2</td>
+<td><code>telemetry export</code> usa <code>--format json</code> em vez do padrão <code>--json</code></td>
+<td><code>telemetry_cmd.py</code></td>
+<td>Alinhar com o resto (<code>--json</code>) ou documentar.</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Duas famílias de emissão (<code>_emit</code> always-JSON vs <code>SmartConsole --json</code>)</td>
+<td><code>app.py</code>/<code>scaffold.py</code> vs sub-apps</td>
+<td>Unificar contrato (idealmente <code>SmartConsole</code> em todos) — grande refactor; ao menos documentar.</td>
+</tr>
+<tr>
+<td>C4</td>
+<td><code>scaffold._emit</code> <strong>não injeta <code>trace_id</code></strong>; <code>app._emit</code> injeta</td>
+<td><code>scaffold.py:17</code> vs <code>app.py:33</code></td>
+<td>Unificar (<code>trace_id</code> em ambos ou nenhum). Teste deve fixar.</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>Exit codes: <code>raise SystemExit(1)</code> (app) vs <code>typer.Exit(1)</code> (sub-apps)</td>
+<td>global</td>
+<td>Comportamento igual, estilo divergente — padronizar em <code>typer.Exit</code>.</td>
+</tr>
+<tr>
+<td>C6</td>
+<td>Erro em <code>--json</code> mode às vezes vai como <code>console.error</code> (JSON <code>{level:error}</code> no stderr), às vezes como <code>_emit(..., error=True)</code> (JSON <code>{event:*.error}</code>)</td>
+<td><code>agents send</code>/<code>mesh run</code></td>
+<td>Definir 1 schema de erro JSON e travar.</td>
+</tr>
+<tr>
+<td>C7</td>
+<td><code>agents resolve</code> sem match retorna <strong>exit 1</strong> (é "sem resultado", não erro) — pode quebrar scripts</td>
+<td><code>agents_cmd.py:173</code></td>
+<td>Decidir: exit 0 com <code>{agent:null}</code> vs exit 1. Travar com teste.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-ordem-de-ataque-prioridade">5. Ordem de ataque (prioridade)<a class="headerlink" href="#5-ordem-de-ataque-prioridade" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>P0 — <code>test_cli_mesh_cmd.py</code> (novo)</strong> + paths de erro top-level em
+   <code>test_cli.py</code> (run genérico, schema export erro, mcp-start, monitor).
+   Fecha o maior furo: <code>mesh</code> sem contrato no gate CLI + branches de erro do app.</li>
+<li><strong>P1 — plugin/system/config</strong> paths de erro (preview/load/validate/config run</li>
+<li>path inexistente exit 2). Alto valor, baixo custo.</li>
+<li><strong>P2 — agents/completions</strong> para 100% e branches defensivas.</li>
+<li><strong>P3 — interactive</strong> wizard flows (UX, baixo risco).</li>
+<li><strong>Dívida de contrato (C1–C7)</strong>: abrir issues; decidir <code>--json</code> universal e
+   schema de erro único antes de escrever testes que os fixem.</li>
+</ol>
+<p>Meta: subset CLI de 83% → ~95%; e mover cobertura de <code>mesh</code> para dentro do job
+<code>ci-cli.yml</code> (adicionar <code>tests/test_cli_mesh_cmd.py</code> à lista do workflow).</p>
+<hr />
+<h3 id="nota-sobre-o-gate-global-fora-de-escopo-registrado">Nota sobre o gate global (fora de escopo, registrado)<a class="headerlink" href="#nota-sobre-o-gate-global-fora-de-escopo-registrado" title="Permanent link">&para;</a></h3>
+<p>Repo global ~69% &lt; gate 80%. Gaps fora do CLI não são deste plano, mas os
+maiores contribuintes tocados aqui são <code>interactive.py</code> (51%) e <code>mesh_cmd.py</code>
+(70%); fechá-los ajuda os dois gates.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Strondata - Mantido pela comunidade open source.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/strondata/smart-data" target="_blank" rel="noopener" title="Repositório Oficial do aptdata" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/company/strondata/" target="_blank" rel="noopener" title="Acompanhe a Strondata no LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/strondata" target="_blank" rel="noopener" title="Junte-se à Comunidade no Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "toc.integrate", "toc.follow", "content.code.copy", "content.code.annotate", "content.code.select", "content.tabs.link", "search.suggest", "search.highlight", "navigation.footer"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@11/dist/mermaid.min.js"></script>
+      
+        <script src="../../assets/termynal.js"></script>
+      
+    
+  </body>
+</html>
