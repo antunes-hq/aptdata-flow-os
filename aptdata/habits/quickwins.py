@@ -1,4 +1,5 @@
-"""Quick Wins — hábitos recorrentes com check. Suporte a frequência: diária, semanal, dias específicos.
+"""Quick Wins — hábitos recorrentes com check.
+Suporte a frequência: diária, semanal, dias específicos.
 
 Lógica compartilhada entre a API (api/server.py) e a rotina "papo" (que cria/marca
 quick wins por conversa). Defs vivem no kv `qw_defs`; o estado do dia em
@@ -44,16 +45,33 @@ def list_status(store) -> dict:
     done = _done(store, today)
     all_defs = get_defs(store)
     active = [w for w in all_defs if _hoje_eh_dia(w.get("dias"))]
-    inactive = [{**w, "done_today": False, "streak": 0, "_inactive": True} for w in all_defs if not _hoje_eh_dia(w.get("dias"))]
+    inactive = [
+        {**w, "done_today": False, "streak": 0, "_inactive": True}
+        for w in all_defs
+        if not _hoje_eh_dia(w.get("dias"))
+    ]
     items = [
         {**w, "done_today": w["id"] in done, "streak": streak(store, w["id"])}
         for w in active
     ]
     all_items = items + inactive
-    return {"items": items, "done_count": sum(1 for i in items if i["done_today"]), "total": len(items), "total_defs": len(all_defs), "all_items": all_items}
+    return {
+        "items": items,
+        "done_count": sum(1 for i in items if i["done_today"]),
+        "total": len(items),
+        "total_defs": len(all_defs),
+        "all_items": all_items,
+    }
 
 
-def create(store, nome: str, emoji: str = "✅", horarios: list | None = None, frequencia: str = "diaria", dias: list | None = None) -> dict | None:
+def create(
+    store,
+    nome: str,
+    emoji: str = "✅",
+    horarios: list | None = None,
+    frequencia: str = "diaria",
+    dias: list | None = None,
+) -> dict | None:
     nome = (nome or "").strip()
     if not nome:
         return None
@@ -83,7 +101,8 @@ def set_done(store, wid: str, want: bool, log_store=None) -> dict | None:
         w = defs[wid]
         (log_store or store).log_event("web", "quickwin", {
             "text": f"{w['emoji']} {w['nome']}", "def_id": wid, "nome": w["nome"],
-            "emoji": w["emoji"], "date": today, "type": "quickwin", "importance": 1, "version": "1",
+            "emoji": w["emoji"], "date": today, "type": "quickwin",
+            "importance": 1, "version": "1",
         })
     elif not want and wid in done:
         done.remove(wid)
@@ -91,7 +110,10 @@ def set_done(store, wid: str, want: bool, log_store=None) -> dict | None:
     return {"done": want, "streak": streak(store, wid)}
 
 
-def update(store, wid: str, nome=None, emoji=None, horarios=None, frequencia=None, dias=None) -> dict | None:
+def update(
+    store, wid: str, nome=None, emoji=None, horarios=None,
+    frequencia=None, dias=None,
+) -> dict | None:
     defs = get_defs(store)
     w = next((x for x in defs if x["id"] == wid), None)
     if not w:

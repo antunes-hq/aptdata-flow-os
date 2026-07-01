@@ -1,14 +1,12 @@
 """Memory Lab — detecção de duplicatas por similaridade."""
 from __future__ import annotations
 
-import json
-from typing import Any
-
 
 def find_duplicates(vstore, threshold: float = 0.92) -> list[dict]:
     try:
         rows = vstore._conn.execute(
-            "SELECT id, text, meta, created_at FROM notes WHERE text IS NOT NULL ORDER BY created_at DESC"
+            "SELECT id, text, meta, created_at FROM notes "
+            "WHERE text IS NOT NULL ORDER BY created_at DESC"
         ).fetchall()
     except Exception:
         return []

@@ -4,7 +4,7 @@ Freeze: ganha 1 a cada 7 dias de streak, máx 2. Consome automaticamente se perd
 """
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 def _today_str() -> str:

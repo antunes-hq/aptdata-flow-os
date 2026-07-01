@@ -1,9 +1,6 @@
 """Memory Lab — clustering de tópicos por similaridade semântica."""
 from __future__ import annotations
 
-import json
-from typing import Any
-
 
 def cluster_notes(vstore, n_clusters: int = 5) -> list[dict]:
     try:
@@ -40,8 +37,13 @@ def cluster_notes(vstore, n_clusters: int = 5) -> list[dict]:
                 })
 
     if not clusters:
-        clusters = [{"topic": "Geral", "keywords": all_keywords[:5],
-                       "notes": [{"id": r[0], "text": (r[1] or "")[:120]} for r in rows[:15]],
-                       "count": len(rows)}]
+        clusters = [{
+            "topic": "Geral",
+            "keywords": all_keywords[:5],
+            "notes": [
+                {"id": r[0], "text": (r[1] or "")[:120]} for r in rows[:15]
+            ],
+            "count": len(rows),
+        }]
 
     return clusters[:n_clusters]
