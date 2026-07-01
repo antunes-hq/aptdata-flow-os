@@ -56,6 +56,8 @@ jobs:
             tests/test_cli_rendering.py \
             tests/test_cli_system_cmd.py \
             tests/test_cli_telemetry_cmd.py \
+            tests/test_cli_agents_cmd.py \
+            tests/test_cli_project_cmd.py \
             tests/test_scaffold_templates.py \
             tests/test_docs.py \
             -v \
