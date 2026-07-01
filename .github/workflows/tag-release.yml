@@ -24,7 +24,7 @@ jobs:
     name: Tag current version
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # create + push the tag
+      contents: write   # create + push the tag and the GitHub Release
 
     steps:
       - name: Checkout repository
@@ -34,7 +34,9 @@ jobs:
           persist-credentials: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create tag if the version is new
+      - name: Tag the new version and publish a GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VER=$(grep -m1 '^current_version' .bumpversion.toml | cut -d'"' -f2)
           TAG="v$VER"
@@ -49,3 +51,21 @@ jobs:
           git tag -a "$TAG" -m "chore(release): $TAG"
           git push origin "$TAG"
           echo "Created and pushed $TAG → PyPI publish will run off the tag."
+
+          # Publish a GitHub Release so the Releases page stays in sync with the
+          # tags. Notes come from the matching changelog section; if that section
+          # is missing, fall back to auto-generated notes.
+          awk -v v="$VER" '
+            $0 ~ "^## \\["v"\\]" {f=1; next}
+            f && /^## \[/ {exit}
+            f {print}
+          ' docs/changelog.md > /tmp/release-notes.md
+
+          if [ -s /tmp/release-notes.md ]; then
+            gh release create "$TAG" --title "$TAG" \
+              --notes-file /tmp/release-notes.md --latest
+          else
+            gh release create "$TAG" --title "$TAG" \
+              --generate-notes --latest
+          fi
+          echo "Published GitHub Release $TAG."
