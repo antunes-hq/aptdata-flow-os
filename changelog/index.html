@@ -1208,7 +1208,18 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="[Unreleased]">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#010-2026-07-01" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [0.1.0] – 2026-07-01
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[0.1.0] – 2026-07-01">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1567,8 +1578,10 @@
 this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <hr />
 <h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h2 id="010-2026-07-01">[0.1.0] – 2026-07-01<a class="headerlink" href="#010-2026-07-01" title="Permanent link">&para;</a></h2>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
 <ul>
+<li><strong>Multi-agent core (<code>aptdata.agents</code>)</strong> — <code>IAgent</code>/<code>AgentRegistry</code>, <code>Router</code> (prefix/skill/llm/default), <code>Project</code>/<code>ProjectRunner</code>, adapters reais (OpenClaw, ClaudeCode, OpenCode via CLI) e MCP dispatch. Novos comandos <code>aptdata agents</code> (list/send/route/dispatch/resolve) e <code>aptdata project</code> (init/plan/run).</li>
 <li><strong>Google Calendar OAuth2</strong> — New <code>aptdata.integrations</code> module with OAuth2 client for Google Calendar API.</li>
 <li><strong>Analytics Engine</strong> — Migrated analytics and gamification engine from mindflow (<code>aptdata.analytics.indicators</code>, stats, clusters, dedup, TF-IDF).</li>
 <li><strong>Gamificação</strong> — XP, streak e levels portados do mindflow para <code>aptdata.gamification</code>.</li>
@@ -1578,6 +1591,7 @@ this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic V
 <ul>
 <li><strong>Observabilidade</strong> — Added <code>timed_create</code> to <code>__init__.py</code> exports.</li>
 <li><strong>CI</strong> — Lint errors and test dependency failures resolved across multiple PRs.</li>
+<li><strong>Lint</strong> — Zerada a dívida de <code>ruff</code> em <code>aptdata/</code> e <code>tests/</code> (imports, linhas longas, <code>__all__</code> nos re-exports).</li>
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
 <ul>
