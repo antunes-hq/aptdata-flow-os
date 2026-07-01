@@ -219,6 +219,74 @@ def preview_dataset(plugin: str, **reader_config: Any) -> dict[str, Any]:
         }
 
 
+def _agents_file() -> str:
+    import os  # noqa: PLC0415
+
+    return os.getenv("APTDATA_AGENTS_FILE", "agents.yaml")
+
+
+@mcp.tool()
+def list_agents() -> dict[str, Any]:
+    """List every agent in the registry with its capabilities."""
+    _mark_request()
+    try:
+        from aptdata.agents import AgentRegistry  # noqa: PLC0415
+
+        registry = AgentRegistry.from_yaml(_agents_file())
+    except Exception as exc:  # noqa: BLE001
+        return {"status": "error", "error": str(exc)}
+    agents = [
+        {"id": s.id, "type": s.type, "enabled": s.enabled,
+         "capabilities": s.capabilities}
+        for s in registry.specs()
+    ]
+    return {"status": "ok", "agents": agents, "count": len(agents)}
+
+
+@mcp.tool()
+def dispatch(prompt: str, hint: str | None = None) -> dict[str, Any]:
+    """Route a prompt to the best agent and send it.
+
+    Parameters
+    ----------
+    prompt:
+        The instruction/message to route. An explicit ``/<agent> ...`` prefix
+        forces a target; otherwise skill matching picks the best agent.
+    hint:
+        Optional capability hint (e.g. ``"frontend"``) to bias routing when the
+        prompt has no clear keywords.
+
+    Returns
+    -------
+    dict
+        ``routed_to``, ``mode`` and the agent's reply (``ok``/``text``/``error``).
+    """
+    _mark_request()
+    try:
+        from aptdata.agents import Router  # noqa: PLC0415
+
+        router = Router.from_yaml(_agents_file())
+    except Exception as exc:  # noqa: BLE001
+        return {"status": "error", "error": str(exc)}
+
+    text = f"/{router.registry.resolve(hint).id} {prompt}" if (
+        hint and router.registry.resolve(hint)
+    ) else prompt
+    decision = router.route(text)
+    if decision.agent_id is None:
+        return {"status": "error", "error": "no agent available", "prompt": prompt}
+
+    result = router.registry.get(decision.agent_id).send(decision.text)
+    return {
+        "status": "ok" if result.ok else "error",
+        "routed_to": decision.agent_id,
+        "mode": decision.mode,
+        "ok": result.ok,
+        "text": result.text,
+        "error": result.error,
+    }
+
+
 @mcp.resource("schema://datasets/{dataset_name}")
 def get_dataset_schema(dataset_name: str) -> str:
     """Return metadata for a dataset registered under *dataset_name*.
