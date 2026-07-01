@@ -5,6 +5,7 @@ Captura tokens, latência e custo estimado de cada chamada ao DeepSeek.
 Armazena como events kind='llm_call' no banco existente.
 """
 from __future__ import annotations
+
 import time
 from typing import Any
 
@@ -21,7 +22,8 @@ _DEFAULT_PRICING = {"input": 0.15, "output": 0.25}
 
 def _estimate_cost(model: str, prompt_tokens: int, completion_tokens: int) -> float:
     p = _PRICING.get(model, _DEFAULT_PRICING)
-    return round((prompt_tokens * p["input"] + completion_tokens * p["output"]) / 1_000_000, 8)
+    cost = (prompt_tokens * p["input"] + completion_tokens * p["output"]) / 1_000_000
+    return round(cost, 8)
 
 
 def log_llm_call(
@@ -69,14 +71,16 @@ def timed_create(client, routine: str, store, **kwargs) -> Any:
 def get_observability_summary(store, days: int = 7) -> dict:
     """Agrega stats de LLM calls dos últimos N dias."""
     import json
-    from datetime import datetime, timezone, timedelta
+    from datetime import datetime, timedelta, timezone
 
     cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
 
     try:
         conn = store._conn
         rows = conn.execute(
-            "SELECT payload, created_at FROM events WHERE kind = 'llm_call' AND created_at >= ? ORDER BY created_at DESC",
+            "SELECT payload, created_at FROM events "
+            "WHERE kind = 'llm_call' AND created_at >= ? "
+            "ORDER BY created_at DESC",
             (cutoff,),
         ).fetchall()
     except Exception:
@@ -107,7 +111,9 @@ def get_observability_summary(store, days: int = 7) -> dict:
 
         rt = p.get("routine", "?")
         if rt not in by_routine:
-            by_routine[rt] = {"calls": 0, "tokens": 0, "cost_usd": 0.0, "latency_ms_sum": 0}
+            by_routine[rt] = {
+                "calls": 0, "tokens": 0, "cost_usd": 0.0, "latency_ms_sum": 0,
+            }
         by_routine[rt]["calls"] += 1
         by_routine[rt]["tokens"] += pt + ct
         by_routine[rt]["cost_usd"] += cost
@@ -131,7 +137,9 @@ def get_observability_summary(store, days: int = 7) -> dict:
             "calls": s["calls"],
             "tokens": s["tokens"],
             "cost_usd": round(s["cost_usd"], 6),
-            "avg_latency_ms": round(s["latency_ms_sum"] / s["calls"]) if s["calls"] else 0,
+            "avg_latency_ms": (
+                round(s["latency_ms_sum"] / s["calls"]) if s["calls"] else 0
+            ),
         })
     routines_summary.sort(key=lambda x: x["calls"], reverse=True)
 

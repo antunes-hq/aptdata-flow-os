@@ -2,9 +2,7 @@
 from __future__ import annotations
 
 import json
-from collections import Counter
 from datetime import datetime, timedelta
-from typing import Any
 
 
 def calc_memory_stats(store, vstore) -> dict:

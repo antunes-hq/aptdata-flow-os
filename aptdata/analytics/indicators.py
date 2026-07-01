@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timedelta, timezone
-from typing import Any
 
 # Fuso Brasília
 _BR_TZ = timezone(timedelta(hours=-3))
@@ -76,7 +75,9 @@ def _trend(current: float, previous: float) -> str:
     return "stable"
 
 
-def _count_events_in_range(store, kinds: list[str], since_days: int, until_days: int = 0) -> int:
+def _count_events_in_range(
+    store, kinds: list[str], since_days: int, until_days: int = 0
+) -> int:
     """Conta eventos dos kinds dados num intervalo de dias.
 
     since_days: quantos dias atrás começa (ex: 14 = 14 dias atrás)
@@ -173,7 +174,11 @@ def _query_fluxo(store, weeks_ago: int = 0) -> dict:
                 continue
 
         if len(timestamps) < 2:
-            return {"sessoes_longas": 0, "maior_gap_horas": 99, "horarios_distintos": len(horarios)}
+            return {
+                "sessoes_longas": 0,
+                "maior_gap_horas": 99,
+                "horarios_distintos": len(horarios),
+            }
 
         # Sessões longas: clusters de eventos com gap < 30min entre ações
         sessoes_longas = 0
@@ -327,7 +332,10 @@ def compute_crescimento(store, weeks_ago: int = 0) -> dict:
     # XP ganho na semana via log
     xp_log = store.get("mf_xp_log", [])
     start_date = _iso_days_ago(7 * (weeks_ago + 1))
-    end_date = _iso_days_ago(7 * weeks_ago) if weeks_ago > 0 else _now().strftime("%Y-%m-%d")
+    end_date = (
+        _iso_days_ago(7 * weeks_ago) if weeks_ago > 0
+        else _now().strftime("%Y-%m-%d")
+    )
     xp_semana = sum(
         e["xp"] for e in xp_log
         if start_date <= e.get("date", "") < end_date
@@ -360,7 +368,8 @@ def compute_conexao(store, weeks_ago: int = 0) -> dict:
     score = round(
         _normalize(stats["tokens"], _THRESHOLDS["conexao_tokens"]) * 0.50
         + _normalize(stats["conversas"], _THRESHOLDS["conexao_conversas"]) * 0.30
-        + _normalize(stats["personas_distintas"], _THRESHOLDS["exploracao_personas"]) * 0.20,
+        + _normalize(stats["personas_distintas"], _THRESHOLDS["exploracao_personas"])
+        * 0.20,
         1,
     )
 
@@ -372,7 +381,9 @@ def compute_conexao(store, weeks_ago: int = 0) -> dict:
         "contribuintes": [
             f"{stats['tokens']} tokens em conversas" if stats["tokens"] > 0 else None,
             f"{stats['conversas']} conversas" if stats["conversas"] > 0 else None,
-            f"{stats['personas_distintas']} personagens diferentes" if stats["personas_distintas"] > 0 else None,
+            f"{stats['personas_distintas']} personagens diferentes"
+            if stats["personas_distintas"] > 0
+            else None,
         ],
     }
 
@@ -398,9 +409,15 @@ def compute_fluxo(store, weeks_ago: int = 0) -> dict:
         "maior_gap_horas": fluxo["maior_gap_horas"],
         "horarios_distintos": fluxo["horarios_distintos"],
         "contribuintes": [
-            f"{fluxo['sessoes_longas']} sessões profundas (>10min)" if fluxo["sessoes_longas"] > 0 else None,
-            f"Maior pausa: {fluxo['maior_gap_horas']}h" if fluxo["maior_gap_horas"] > 0 else None,
-            f"{fluxo['horarios_distintos']} horários diferentes" if fluxo["horarios_distintos"] > 0 else None,
+            f"{fluxo['sessoes_longas']} sessões profundas (>10min)"
+            if fluxo["sessoes_longas"] > 0
+            else None,
+            f"Maior pausa: {fluxo['maior_gap_horas']}h"
+            if fluxo["maior_gap_horas"] > 0
+            else None,
+            f"{fluxo['horarios_distintos']} horários diferentes"
+            if fluxo["horarios_distintos"] > 0
+            else None,
         ],
     }
 
@@ -526,7 +543,11 @@ def compute_espelho(store, weeks_ago: int = 0) -> dict:
                 "emoji": meta["emoji"],
                 "nome": meta["nome"],
                 "score": data["score"],
-                "detalhes": {k: v for k, v in data.items() if k not in ("score", "contribuintes")},
+                "detalhes": {
+                    k: v
+                    for k, v in data.items()
+                    if k not in ("score", "contribuintes")
+                },
                 "contribuintes": data["contribuintes"],
             })
             scores.append(data["score"])
