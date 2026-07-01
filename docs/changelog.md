@@ -9,8 +9,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.0] – 2026-07-01
+
 ### Added
 
+- **Multi-agent core (`aptdata.agents`)** — `IAgent`/`AgentRegistry`, `Router` (prefix/skill/llm/default), `Project`/`ProjectRunner`, adapters reais (OpenClaw, ClaudeCode, OpenCode via CLI) e MCP dispatch. Novos comandos `aptdata agents` (list/send/route/dispatch/resolve) e `aptdata project` (init/plan/run).
 - **Google Calendar OAuth2** — New `aptdata.integrations` module with OAuth2 client for Google Calendar API.
 - **Analytics Engine** — Migrated analytics and gamification engine from mindflow (`aptdata.analytics.indicators`, stats, clusters, dedup, TF-IDF).
 - **Gamificação** — XP, streak e levels portados do mindflow para `aptdata.gamification`.
@@ -20,6 +23,7 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **Observabilidade** — Added `timed_create` to `__init__.py` exports.
 - **CI** — Lint errors and test dependency failures resolved across multiple PRs.
+- **Lint** — Zerada a dívida de `ruff` em `aptdata/` e `tests/` (imports, linhas longas, `__all__` nos re-exports).
 
 ### Changed
 
