@@ -1,54 +1,51 @@
 name: Release
 
 # Triggered on every push to main. Reads the label(s) of the PR that was just
-# merged and – if a release label is present – bumps the version, creates a
-# commit + tag, and pushes them back to origin. The push of the new tag then
-# triggers the existing "Publish to PyPI" workflow automatically.
+# merged and – if a release label is present – bumps the version ON A NEW BRANCH
+# and opens a Pull Request.
+#
+# Why a PR instead of a direct push:
+#   The `main` branch has a repository ruleset that forbids direct pushes
+#   (GH013). The previous version of this workflow tried to `git push origin
+#   main` and always failed. The bump therefore has to land through a PR like
+#   any other change.
+#
+# The bump PR is labelled `release:skip` so THIS workflow does not try to bump
+# again when that PR merges. Tagging + PyPI publish are handled automatically by
+# `tag-release.yml` once the new version reaches main.
 #
 # Supported labels:
 #   release:patch  →  0.0.1 → 0.0.2
 #   release:minor  →  0.0.1 → 0.1.0
 #   release:major  →  0.0.1 → 1.0.0
-#   release:skip   →  no-op (explicit opt-out)
+#   release:skip   →  no-op (explicit opt-out; also used on the bump PR itself)
 #   (no label)     →  no-op (silent skip)
-#
-# Branch protection note:
-#   For the workflow to push the release commit and tag back to `main`, GitHub
-#   Actions must be allowed to bypass branch protection rules, OR the repository
-#   must be configured to allow Actions write access under:
-#   Settings → Actions → General → Workflow permissions → "Read and write permissions"
-#   and, if branch protection is enforced, "Allow GitHub Actions to bypass branch
-#   protection rules" must be enabled.
 
 on:
   push:
     branches:
       - main
 
-# Minimal permissions at the workflow level; the release job overrides below.
 permissions:
   contents: read
 
 jobs:
   release:
-    name: Auto-release on merge
+    name: Open release bump PR
     runs-on: ubuntu-latest
 
-    # Skip automatically-generated release commits to avoid an infinite loop.
+    # Skip the auto-generated bump commits to avoid an infinite loop.
     if: "!startsWith(github.event.head_commit.message, 'chore(release):')"
 
     permissions:
-      contents: write       # push commit + tag
-      pull-requests: read   # read PR labels
+      contents: write        # push the release branch
+      pull-requests: write    # open + auto-merge the bump PR
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # Full history is needed so that bump-my-version can inspect tags and
-          # the git log when creating the new commit + tag.
           fetch-depth: 0
-          # Persist the GITHUB_TOKEN credential so subsequent `git push` works.
           persist-credentials: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -58,8 +55,6 @@ jobs:
         with:
           script: |
             const sha = context.sha;
-            core.info(`Looking for PRs associated with commit ${sha}`);
-
             const { data: prs } =
               await github.rest.repos.listPullRequestsAssociatedWithCommit({
                 owner: context.repo.owner,
@@ -73,24 +68,18 @@ jobs:
               return;
             }
 
-            const pr = prs[0];
-            const labels = pr.labels.map(l => l.name);
-            core.info(`PR #${pr.number} labels: ${labels.join(', ') || '(none)'}`);
+            const labels = prs[0].labels.map(l => l.name);
+            core.info(`PR #${prs[0].number} labels: ${labels.join(', ') || '(none)'}`);
 
             let bump = '';
-            if (labels.includes('release:skip')) {
-              bump = 'skip';
-            } else if (labels.includes('release:major')) {
-              bump = 'major';
-            } else if (labels.includes('release:minor')) {
-              bump = 'minor';
-            } else if (labels.includes('release:patch')) {
-              bump = 'patch';
-            }
+            if (labels.includes('release:skip'))       bump = 'skip';
+            else if (labels.includes('release:major')) bump = 'major';
+            else if (labels.includes('release:minor')) bump = 'minor';
+            else if (labels.includes('release:patch')) bump = 'patch';
 
             core.setOutput('bump', bump);
 
-      # --- Steps below run only when a bump type was determined ---------------
+      # --- Steps below run only when a real bump type was determined ----------
 
       - name: Set up Python
         if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
@@ -102,19 +91,35 @@ jobs:
         if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
         run: pip install "bump-my-version>=0.20.0"
 
-      - name: Configure Git identity
+      - name: Bump on a release branch and open PR
         if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump version (${{ steps.detect.outputs.bump }})
-        if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
-        run: |
-          bump-my-version bump ${{ steps.detect.outputs.bump }}
+          BRANCH="chore/release-${{ github.run_id }}"
+          git switch -c "$BRANCH"
 
-      - name: Push release commit and tag to origin
-        if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
-        run: |
-          # --follow-tags pushes any annotated tags created during the bump step.
-          git push origin main --follow-tags
+          # --no-tag: the tag is created by tag-release.yml AFTER the bump lands
+          # on main, so it always points at a real main commit (never orphaned).
+          bump-my-version bump ${{ steps.detect.outputs.bump }} --no-tag
+
+          NEW=$(grep -m1 '^current_version' .bumpversion.toml | cut -d'"' -f2)
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --base main --head "$BRANCH" \
+            --title "chore(release): bump version to $NEW" \
+            --label "release:skip" \
+            --body "Automated version bump to **$NEW**.
+
+          Opened by the Release workflow because the merged PR carried a \`release:*\` label. Merging this publishes the release: \`tag-release.yml\` creates \`v$NEW\` and the PyPI publish runs off that tag.
+
+          Labelled \`release:skip\` so it does not trigger another bump."
+
+          # Best-effort auto-merge; if the ruleset requires a human review the PR
+          # simply waits to be merged manually (still better than a hard failure).
+          gh pr merge "$BRANCH" --auto --merge \
+            || echo "auto-merge unavailable — merge the bump PR manually to release."
