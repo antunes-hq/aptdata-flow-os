@@ -19,6 +19,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
 packages = [{include = "aptdata"}]
+include = ["aptdata/viz/static/*"]
 
 [tool.poetry.dependencies]
 python = "^3.10"

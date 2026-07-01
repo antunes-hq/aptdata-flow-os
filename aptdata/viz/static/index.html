@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark light" />
+<title>aptdata-viz · ecossistema</title>
+<style>
+  :root{--bg:#0f1117;--card:#181b24;--card2:#20242f;--ink:#e8eaf0;--muted:#9aa1b2;--line:#2a2f3c;
+    --acc:#5b8def;--up:#2ecc71;--down:#ff5c6c;--dis:#6b7280;--unk:#f6c945}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 20px 80px}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{font-size:26px;margin:0;letter-spacing:-.5px}
+  h1 .dim{color:var(--muted);font-weight:400;font-size:15px;margin-left:8px}
+  .sub{color:var(--muted);font-size:13px;margin:4px 0 0}
+
+  .router{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:20px 0}
+  .router .row{display:flex;gap:10px}
+  .router input{flex:1;min-width:0;background:var(--card2);border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;padding:11px 13px;font:inherit;font-size:14px;outline:0}
+  .router button{border:0;background:var(--acc);color:#fff;font:inherit;font-weight:600;padding:0 18px;border-radius:10px;cursor:pointer}
+  .decision{margin-top:12px;font-size:14px;color:var(--muted);min-height:20px}
+  .decision b{color:var(--ink)}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;
+    background:var(--card2);border:1px solid var(--line)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:8px}
+  .agent{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;position:relative}
+  .agent.off{opacity:.55}
+  .agent .top{display:flex;align-items:center;gap:10px}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--unk)}
+  .dot.up{background:var(--up)}.dot.down{background:var(--down)}.dot.disabled{background:var(--dis)}
+  .agent .nm{font-size:16px;font-weight:700}
+  .agent .id{color:var(--muted);font-size:12px;font-weight:500}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+  .tag{font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:8px;background:var(--card2);border:1px solid var(--line);color:var(--muted)}
+  .tag.type{color:var(--acc);border-color:#2b3a5c}
+  .tag.loc{color:#c9a24b}
+  .tag.model{color:#8b7ad6}
+  .caps{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .cap{font-size:11px;padding:2px 8px;border-radius:999px;background:rgba(91,141,239,.12);color:#9cc0ff}
+  .agent .role{position:absolute;top:14px;right:16px;font-size:11px;color:var(--muted)}
+  .empty{color:var(--muted);text-align:center;padding:50px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>aptdata-viz <span class="dim" id="count"></span></h1>
+      <p class="sub">Ecossistema de agentes — registry, capacidades, modelo e saúde.</p>
+    </div>
+    <span class="badge" id="clock"></span>
+  </header>
+
+  <div class="router">
+    <div class="row">
+      <input id="rin" placeholder="testar roteamento: ex. 'mexer no frontend' / '@zeca oi' / 'deploy na vps'" />
+      <button id="rbtn">Rotear</button>
+    </div>
+    <div class="decision" id="rout">Digite um prompt e veja qual agente o Router escolhe (e por quê).</div>
+  </div>
+
+  <div class="grid" id="grid"><div class="empty">carregando…</div></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const api=u=>fetch(u).then(r=>r.json());
+let HEALTH={};
+
+function tag(cls,txt){return txt?`<span class="tag ${cls}">${esc(txt)}</span>`:''}
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+
+async function loadAgents(){
+  const d=await api('/api/agents'); const ags=d.agents||[];
+  $('#count').textContent=`· ${ags.length} agentes`;
+  if(!ags.length){$('#grid').innerHTML=`<div class="empty">Nenhum agente no registry. Confira o agents.yaml.</div>`;return;}
+  $('#grid').innerHTML=ags.map(a=>{
+    const h=HEALTH[a.id]||'unknown';
+    return `<div class="agent ${a.enabled?'':'off'}">
+      <span class="role">${esc(a.role||'')}</span>
+      <div class="top">
+        <span class="dot ${h}" title="${h}"></span>
+        <div><div class="nm">${esc(a.name||a.id)}</div><div class="id">${esc(a.id)} · peso ${a.weight}</div></div>
+      </div>
+      <div class="meta">
+        ${tag('type',a.type)}${tag('loc',a.location)}${a.model?tag('model',a.model):''}
+      </div>
+      <div class="caps">${(a.capabilities||[]).map(c=>`<span class="cap">${esc(c)}</span>`).join('')||'<span class="id">sem capacidades</span>'}</div>
+    </div>`;
+  }).join('');
+}
+async function loadHealth(){ try{const d=await api('/api/health');HEALTH=d.health||{};loadAgents();}catch(e){} }
+
+async function route(){
+  const t=$('#rin').value.trim(); if(!t){return;}
+  $('#rout').innerHTML='roteando…';
+  const d=await api('/api/route?text='+encodeURIComponent(t));
+  if(d.error){$('#rout').innerHTML=`<b style="color:var(--down)">erro:</b> ${esc(d.error)}`;return;}
+  const alvo=d.agent_id||d.agentId||'(nenhum)';
+  const conf=(d.confidence!=null)?` · conf ${Number(d.confidence).toFixed(2)}`:'';
+  const skill=d.skill?` · skill ${esc(d.skill)}`:'';
+  $('#rout').innerHTML=`→ <b>${esc(alvo)}</b> <span class="badge">${esc(d.mode||'?')}${skill}${conf}</span>`;
+}
+$('#rbtn').onclick=route;
+$('#rin').addEventListener('keydown',e=>{if(e.key==='Enter')route();});
+
+function clock(){$('#clock').textContent=new Date().toLocaleTimeString('pt-BR');}
+setInterval(clock,1000);clock();
+
+loadAgents(); loadHealth();
+setInterval(loadHealth, 15000);   // saúde ao vivo a cada 15s
+</script>
+</body>
+</html>
