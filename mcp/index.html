@@ -1539,6 +1539,16 @@
 <td>Roteia um prompt pelo Router e envia ao agente escolhido.</td>
 </tr>
 <tr>
+<td><code>converse</code></td>
+<td><code>(session_id: str, text: str)</code></td>
+<td>Turno de conversa via ConversationEngine: despacha, pede confirmação ou esclarecimento conforme a política do <code>routing:</code>.</td>
+</tr>
+<tr>
+<td><code>confirm</code></td>
+<td><code>(session_id: str, decision_id: str, choice: str \| None)</code></td>
+<td>Resolve uma confirmação pendente do <code>converse</code> (aprova ou troca de agente).</td>
+</tr>
+<tr>
 <td><code>get_pipeline_lineage</code></td>
 <td><code>(flow_id: str)</code></td>
 <td>Retorna a árvore de dependência (DAG) e a linhagem de colunas. <strong>Placeholder:</strong> hoje devolve um grafo ilustrativo fixo.</td>

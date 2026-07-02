@@ -911,10 +911,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cli" class="md-nav__link">
+  <a href="#superficies-mesma-fonte-tres-projecoes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CLI
+        Superfícies (mesma fonte, três projeções)
       
     </span>
   </a>
@@ -1551,10 +1551,22 @@ mesmo <code>run_id</code>:</p>
 </tr>
 </tbody>
 </table>
-<h2 id="cli">CLI<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h2>
+<h2 id="superficies-mesma-fonte-tres-projecoes">Superfícies (mesma fonte, três projeções)<a class="headerlink" href="#superficies-mesma-fonte-tres-projecoes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>CLI</strong>:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>summary<span class="w"> </span><span class="o">[</span>--json<span class="o">]</span><span class="w">   </span><span class="c1"># totais por kind, decisões por modo, saúde dos dispatches</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span><span class="o">[</span>--limit<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--kind<span class="w"> </span>KIND<span class="o">]</span><span class="w"> </span><span class="o">[</span>--run-id<span class="w"> </span>ID<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
 </span></code></pre></div>
+</li>
+<li>
+<p><strong>viz (web)</strong>: <code>GET /api/observability</code> devolve o <code>summary()</code>; o painel
+  mostra o <strong>traço ao vivo</strong> via <code>GET /api/events</code> (<strong>SSE</strong>, <code>?backlog=N</code>
+  reemite os últimos N ao conectar) — sem polling.</p>
+</li>
+<li><strong>TUI</strong> (<code>aptdata monitor</code>): a aba <em>Agent Trace</em> lê incrementalmente o
+  mesmo store (cursor <code>Observer.since</code>), com paridade ao feed do viz.</li>
+</ul>
 <h2 id="configuracao">Configuração<a class="headerlink" href="#configuracao" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

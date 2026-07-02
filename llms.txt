@@ -66,6 +66,7 @@ pipelines. Available MCP tools:
 - `list_available_plugins()` / `get_plugin_schema(plugin_name)` – Plugin discovery
 - `preview_dataset(plugin, **reader_config)` – First rows of a reader
 - `list_agents()` / `dispatch(prompt, hint)` – Multi-agent registry + routing
+- `converse(session_id, text)` / `confirm(session_id, decision_id, choice)` – Conversation engine (policy-driven dispatch/confirm/clarify)
 - `get_pipeline_lineage(flow_id)` – Lineage DAG (placeholder data for now)
 
 Resources: `schema://datasets/{name}`, `quality://reports/{workflow}/latest`,

@@ -179,7 +179,16 @@ Multi-task projects (YAML) routed task-by-task through the Router.
 ### `aptdata viz [--file PATH] [--host HOST] [--port PORT]`
 
 Serve the aptdata-viz web view (read-only HTTP API + thin frontend):
-`/api/agents`, `/api/health`, `/api/route?text=`, `/api/observability` (stub).
+`/api/agents`, `/api/health`, `/api/route?text=`, `/api/observability`
+(event-store summary) and `/api/events` (live SSE trace feed).
+
+### `aptdata converse TEXT [--session ID] [--yes] [--json]`
+
+One conversation turn via the ConversationEngine (route -> dispatch /
+needs_confirmation / needs_clarification, policy from the `routing:` block of
+agents.yaml; guarded capabilities always confirm). Confirm pending decisions
+with `aptdata converse --confirm DECISION_ID [--choose AGENT]`. Sessions are
+multi-turn and persist in `~/.aptdata/sessions`.
 
 ### `aptdata obs summary|tail`
 
@@ -214,6 +223,10 @@ Copilot, Devin, etc.) to discover and execute pipelines.
 - **`list_agents()`** — Agents from `agents.yaml` (id, type, capabilities, enabled).
 - **`dispatch(prompt: str, hint: str | None)`** — Route a prompt via the Router
   and send it to the chosen agent.
+- **`converse(session_id: str, text: str)`** — Conversation turn via the
+  ConversationEngine (dispatch/confirm/clarify per policy).
+- **`confirm(session_id: str, decision_id: str, choice: str | None)`** —
+  Resolve a pending confirmation (approve or override the agent).
 - **`get_pipeline_lineage(flow_id: str)`** — Lineage DAG (placeholder payload today).
 
 ### MCP Resources
