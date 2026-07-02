@@ -966,6 +966,441 @@ def _scaffold_docker_compose_app(project_name: str, project_dir: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
+# design-system templates (viz-panel / dashboard)
+# ---------------------------------------------------------------------------
+# Fonte única de design: os dois templates projetam os MESMOS tokens
+# (paleta validada com o método dataviz — CVD/contraste checados; os slots
+# claros abaixo de 3:1 exigem labels diretos ou tabela, que os templates têm).
+
+_DESIGN_TOKENS_CSS = """\
+/* tokens.css — fonte única de design (não edite por template; edite aqui) */
+:root {
+  --page: #f9f9f7;
+  --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --grid: #e1e0d9;
+  --baseline: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --series-1: #2a78d6;  /* blue   */
+  --series-2: #1baf7a;  /* aqua   — <3:1 no claro: exige label/tabela */
+  --series-3: #eda100;  /* yellow — idem */
+  --series-4: #008300;  /* green  */
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #d03b3b;
+  --radius: 12px;
+  --radius-s: 8px;
+  --gap: 14px;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0d0d0d;
+    --surface-1: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255, 255, 255, 0.10);
+    --series-1: #3987e5;
+    --series-2: #199e70;
+    --series-3: #c98500;
+    --series-4: #008300;
+  }
+}
+"""
+
+_DESIGN_COMPONENTS_CSS = """\
+/* components.css — peças do design system (card, tile, badge, tabela) */
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--page); color: var(--text-primary);
+  font-family: var(--font);
+}
+.wrap { max-width: 1000px; margin: 0 auto; padding: 28px 20px 80px; }
+header h1 { font-size: 24px; margin: 0; letter-spacing: -0.4px; }
+header .sub { color: var(--text-muted); font-size: 13px; margin: 4px 0 0; }
+
+.tiles { display: flex; gap: var(--gap); flex-wrap: wrap; margin: 20px 0; }
+.tile {
+  flex: 1; min-width: 150px; background: var(--surface-1);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.tile .label { color: var(--text-muted); font-size: 12px; }
+.tile .value { font-size: 28px; font-weight: 700; margin-top: 2px; }
+.tile .delta { font-size: 12px; color: var(--text-secondary); }
+
+.card {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin: 14px 0;
+}
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--gap);
+}
+
+/* status: sempre dot + TEXTO (cor nunca carrega o estado sozinha) */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+  font-weight: 600; padding: 3px 9px; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--text-secondary);
+}
+.badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+.badge.good .dot { background: var(--status-good); }
+.badge.warning .dot { background: var(--status-warning); }
+.badge.critical .dot { background: var(--status-critical); }
+.badge.muted .dot { background: var(--text-muted); }
+
+.tag {
+  font-size: 11px; padding: 2px 8px; border-radius: var(--radius-s);
+  border: 1px solid var(--border); color: var(--text-secondary);
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  text-align: left; color: var(--text-muted); font-weight: 600;
+  border-bottom: 1px solid var(--baseline); padding: 6px 8px;
+}
+td { border-top: 1px solid var(--grid); padding: 6px 8px; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.empty { color: var(--text-muted); text-align: center; padding: 40px; }
+"""
+
+_VIZ_PANEL_HTML = """\
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark light" />
+<title>{project_name} · painel</title>
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/components.css" />
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>{project_name}</h1>
+    <p class="sub">Painel fino — consome uma API de leitura (padrão aptdata-viz);
+      zero lógica de negócio no frontend.</p>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+  <div class="grid" id="grid"><div class="empty">carregando…</div></div>
+</div>
+
+<script>
+// Aponte para a sua API (ex.: http://localhost:4570 do `aptdata viz`).
+const API_BASE = '';
+const $ = s => document.querySelector(s);
+const api = p => fetch(API_BASE + p).then(r => r.json());
+const esc = s => String(s).replace(/[&<>"]/g,
+  m => ({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}}[m]));
+
+// status: classe de badge + TEXTO — cor nunca carrega o estado sozinha
+function statusLabel(h) {{
+  const map = {{up: ['good', 'up'], down: ['critical', 'down'],
+               disabled: ['muted', 'off'], unknown: ['warning', '?']}};
+  const [cls, label] = map[h] || map.unknown;
+  return `<span class="badge ${{cls}}"><span class="dot"></span>${{esc(label)}}</span>`;
+}}
+
+function tiles(agents, health) {{
+  const up = Object.values(health).filter(h => h === 'up').length;
+  const enabled = agents.filter(a => a.enabled).length;
+  $('#tiles').innerHTML = [
+    ['agentes', agents.length], ['habilitados', enabled], ['up agora', up],
+  ].map(([label, value]) =>
+    `<div class="tile"><div class="label">${{label}}</div>` +
+    `<div class="value">${{value}}</div></div>`).join('');
+}}
+
+async function load() {{
+  try {{
+    const [a, h] = await Promise.all([api('/api/agents'), api('/api/health')]);
+    const agents = a.agents || [];
+    const health = h.health || {{}};
+    tiles(agents, health);
+    if (!agents.length) {{
+      $('#grid').innerHTML = '<div class="empty">Registry vazio.</div>';
+      return;
+    }}
+    $('#grid').innerHTML = agents.map(ag => `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>${{esc(ag.name || ag.id)}}</strong>
+          ${{statusLabel(health[ag.id] || 'unknown')}}
+        </div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+          <span class="tag">${{esc(ag.type || '?')}}</span>
+          ${{(ag.capabilities || [])
+            .map(c => `<span class="tag">${{esc(c)}}</span>`).join('')}}
+        </div>
+      </div>`).join('');
+  }} catch (err) {{
+    $('#grid').innerHTML =
+      '<div class="empty">API fora do ar — suba com <code>aptdata viz</code> ' +
+      'e configure API_BASE.</div>';
+  }}
+}}
+load();
+setInterval(load, 15000);
+</script>
+</body>
+</html>
+"""
+
+_VIZ_PANEL_README = """\
+# {project_name} — painel fino (design system aptdata)
+
+Painel web **sem build e sem CDN** que consome uma API de leitura no padrão
+do aptdata-viz (`/api/agents`, `/api/health`). Zero lógica de negócio no
+frontend — a API é o contrato.
+
+## Rodando
+
+1. Suba uma API (ex.: `aptdata viz` na porta 4570).
+2. Edite `API_BASE` no `index.html` (ex.: `http://localhost:4570`).
+3. Sirva a pasta: `python -m http.server 8080` e abra `http://localhost:8080`.
+
+## Design system
+
+- `assets/tokens.css` é a **fonte única** de design (cores/spacing/raio,
+  claro+escuro via `prefers-color-scheme`). Edite os tokens, nunca os
+  componentes, para retematizar.
+- Status usa **dot + texto** (cor nunca carrega o estado sozinha).
+- Paleta validada para daltonismo/contraste (método dataviz).
+"""
+
+_DASHBOARD_HTML = """\
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark light" />
+<title>{project_name} · dashboard</title>
+<link rel="stylesheet" href="assets/tokens.css" />
+<link rel="stylesheet" href="assets/components.css" />
+<style>
+  .chart {{ position: relative; }}
+  .chart svg {{ display: block; width: 100%; height: auto; }}
+  .bar {{ fill: var(--series-1); }}
+  .bar:hover {{ opacity: 0.85; }}
+  .axis {{ stroke: var(--baseline); stroke-width: 1; }}
+  .lbl {{ font: 11px var(--font); fill: var(--text-muted); }}
+  .lbl.direct {{ fill: var(--text-secondary); font-weight: 600; }}
+  .tip {{
+    position: absolute; pointer-events: none; background: var(--surface-1);
+    border: 1px solid var(--border); border-radius: var(--radius-s);
+    padding: 6px 9px; font-size: 12px; display: none;
+  }}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>{project_name}</h1>
+    <p class="sub" id="subtitle"></p>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="card chart">
+    <h2 id="chart-title" style="font-size:14px;margin:0 0 10px"></h2>
+    <svg id="chart" viewBox="0 0 720 260" role="img"></svg>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <div class="card">
+    <table id="table"></table>
+  </div>
+</div>
+
+<script>
+// Frontend fino: renderiza o que vem de data.json — nada de regra de negócio.
+const DEFAULT_DATA = {{
+  title: 'Exemplo — troque por data.json',
+  tiles: [
+    {{label: 'total', value: 128, delta: '+12 na semana'}},
+    {{label: 'ok', value: 121}},
+    {{label: 'falhas', value: 7}}
+  ],
+  series: {{
+    label: 'Execuções por dia',
+    points: [
+      {{x: 'seg', y: 14}}, {{x: 'ter', y: 22}}, {{x: 'qua', y: 18}},
+      {{x: 'qui', y: 31}}, {{x: 'sex', y: 25}}, {{x: 'sab', y: 9}},
+      {{x: 'dom', y: 9}}
+    ]
+  }}
+}};
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,
+  m => ({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}}[m]));
+
+function tiles(data) {{
+  $('#tiles').innerHTML = (data.tiles || []).map(t =>
+    `<div class="tile"><div class="label">${{esc(t.label)}}</div>` +
+    `<div class="value">${{esc(t.value)}}</div>` +
+    (t.delta ? `<div class="delta">${{esc(t.delta)}}</div>` : '')
+    + '</div>').join('');
+}}
+
+// barras finas, topo arredondado ancorado na baseline, gaps, label direto
+// só no máximo (seletivo), hover tooltip por barra — 1 série, sem legenda.
+function chart(data) {{
+  const pts = (data.series || {{}}).points || [];
+  $('#chart-title').textContent = (data.series || {{}}).label || '';
+  if (!pts.length) return;
+  const W = 720, H = 260, padL = 36, padB = 28, padT = 14;
+  const max = Math.max(...pts.map(p => p.y));
+  const bw = Math.min(28, (W - padL - 12) / pts.length - 8);
+  const x = i => padL + i * ((W - padL - 12) / pts.length) + 4;
+  const y = v => padT + (1 - v / max) * (H - padT - padB);
+  let svg = `<line class="axis" x1="${{padL}}" y1="${{H - padB}}"` +
+            ` x2="${{W - 8}}" y2="${{H - padB}}"/>`;
+  pts.forEach((p, i) => {{
+    const top = y(p.y), bh = H - padB - top, r = Math.min(4, bh);
+    svg += `<path class="bar" data-i="${{i}}" d="M${{x(i)}} ${{H - padB}}` +
+      ` v-${{bh - r}} q0,-${{r}} ${{r}},-${{r}} h${{bw - 2 * r}}` +
+      ` q${{r}},0 ${{r}},${{r}} v${{bh - r}} z"/>`;
+    svg += `<text class="lbl" x="${{x(i) + bw / 2}}" y="${{H - 8}}"` +
+      ` text-anchor="middle">${{esc(p.x)}}</text>`;
+    if (p.y === max) {{
+      svg += `<text class="lbl direct" x="${{x(i) + bw / 2}}" y="${{top - 6}}"` +
+        ` text-anchor="middle">${{p.y}}</text>`;
+    }}
+  }});
+  $('#chart').innerHTML = svg;
+  const tip = $('#tip');
+  $('#chart').addEventListener('mousemove', e => {{
+    const bar = e.target.closest('.bar');
+    if (!bar) {{ tip.style.display = 'none'; return; }}
+    const p = pts[Number(bar.dataset.i)];
+    tip.innerHTML = `<strong>${{esc(p.x)}}</strong> · ${{p.y}}`;
+    tip.style.display = 'block';
+    tip.style.left = (e.offsetX + 14) + 'px';
+    tip.style.top = (e.offsetY - 8) + 'px';
+  }});
+  $('#chart').addEventListener('mouseleave',
+    () => {{ tip.style.display = 'none'; }});
+}}
+
+// a tabela é a visão acessível dos MESMOS dados (regra de relevo da paleta)
+function table(data) {{
+  const pts = (data.series || {{}}).points || [];
+  $('#table').innerHTML =
+    '<thead><tr><th>x</th><th style="text-align:right">valor</th></tr></thead>' +
+    '<tbody>' + pts.map(p =>
+      `<tr><td>${{esc(p.x)}}</td><td class="num">${{p.y}}</td></tr>`
+    ).join('') + '</tbody>';
+}}
+
+function render(data) {{
+  $('#subtitle').textContent = data.title || '';
+  tiles(data); chart(data); table(data);
+}}
+fetch('data.json').then(r => r.json()).then(render)
+  .catch(() => render(DEFAULT_DATA));
+</script>
+</body>
+</html>
+"""
+
+_DASHBOARD_DATA_JSON = """\
+{
+  "title": "Visão geral — edite data.json (o front só renderiza)",
+  "tiles": [
+    {"label": "total", "value": 128, "delta": "+12 na semana"},
+    {"label": "ok", "value": 121},
+    {"label": "falhas", "value": 7}
+  ],
+  "series": {
+    "label": "Execuções por dia",
+    "points": [
+      {"x": "seg", "y": 14}, {"x": "ter", "y": 22}, {"x": "qua", "y": 18},
+      {"x": "qui", "y": 31}, {"x": "sex", "y": 25}, {"x": "sab", "y": 9},
+      {"x": "dom", "y": 9}
+    ]
+  }
+}
+"""
+
+_DASHBOARD_README = """\
+# {project_name} — dashboard (design system aptdata)
+
+Dashboard **sem build e sem CDN**: stat tiles, gráfico de barras em SVG puro
+e tabela acessível, tudo renderizado de um `data.json` — zero lógica de
+negócio no frontend.
+
+## Rodando
+
+```bash
+python -m http.server 8080   # nesta pasta
+# abra http://localhost:8080 e edite data.json
+```
+
+## Contrato do data.json
+
+```json
+{{
+  "title": "…",
+  "tiles": [{{"label": "…", "value": 0, "delta": "…"}}],
+  "series": {{"label": "…", "points": [{{"x": "…", "y": 0}}]}}
+}}
+```
+
+## Design system
+
+- `assets/tokens.css` é a **fonte única** (claro+escuro); edite tokens, não
+  componentes.
+- Gráfico segue o método dataviz: barras finas com topo arredondado na
+  baseline, 1 série (sem legenda — o título nomeia), label direto só no
+  máximo, tooltip no hover, e a **tabela** como visão acessível dos mesmos
+  dados (paleta validada para daltonismo/contraste).
+"""
+
+
+def _write_design_assets(project_dir: Path) -> None:
+    """Projeta os tokens/components compartilhados (fonte única de design)."""
+    assets = project_dir / "assets"
+    assets.mkdir(parents=True, exist_ok=True)
+    (assets / "tokens.css").write_text(_DESIGN_TOKENS_CSS, encoding="utf-8")
+    (assets / "components.css").write_text(
+        _DESIGN_COMPONENTS_CSS, encoding="utf-8"
+    )
+
+
+def _scaffold_viz_panel(project_name: str, project_dir: Path) -> None:
+    """Generate viz-panel project scaffold (thin web panel)."""
+    _write_design_assets(project_dir)
+    (project_dir / "index.html").write_text(
+        _VIZ_PANEL_HTML.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "README.md").write_text(
+        _VIZ_PANEL_README.format(project_name=project_name), encoding="utf-8"
+    )
+
+
+def _scaffold_dashboard(project_name: str, project_dir: Path) -> None:
+    """Generate dashboard project scaffold (tiles + SVG chart + table)."""
+    _write_design_assets(project_dir)
+    (project_dir / "index.html").write_text(
+        _DASHBOARD_HTML.format(project_name=project_name), encoding="utf-8"
+    )
+    (project_dir / "data.json").write_text(_DASHBOARD_DATA_JSON, encoding="utf-8")
+    (project_dir / "README.md").write_text(
+        _DASHBOARD_README.format(project_name=project_name), encoding="utf-8"
+    )
+
+
+# ---------------------------------------------------------------------------
 # Template dispatch
 # ---------------------------------------------------------------------------
 
@@ -993,6 +1428,14 @@ _TEMPLATES: dict[str, tuple[str, object]] = {
     "docker-compose-app": (
         "Gera uma aplicação Docker Compose multi-serviço.",
         _scaffold_docker_compose_app,
+    ),
+    "viz-panel": (
+        "Gera um painel web fino (design system aptdata, consome API de leitura).",
+        _scaffold_viz_panel,
+    ),
+    "dashboard": (
+        "Gera um dashboard (tiles + gráfico SVG + tabela) sobre um data.json.",
+        _scaffold_dashboard,
     ),
 }
 
