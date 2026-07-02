@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 DOCS_DIR = Path(__file__).resolve().parent.parent / "docs"
+REPO_ROOT = DOCS_DIR.parent
 
 
 class TestLlmsTxt:
@@ -57,3 +58,49 @@ class TestLlmsFullTxt:
     def test_contains_mcp_section(self) -> None:
         content = (DOCS_DIR / "llms-full.txt").read_text(encoding="utf-8")
         assert "MCP" in content
+
+
+class TestCliDocsSync:
+    """Check de sincronização docs↔CLI (docs/plans/sync-architecture.md §6).
+
+    Docs são projeção do código: todo comando/grupo registrado no app Typer
+    precisa aparecer no README e na referência de CLI. Divergência = falha.
+    """
+
+    @staticmethod
+    def _cli_surface() -> set[str]:
+        from aptdata.cli.app import app
+
+        names = {
+            (cmd.name or cmd.callback.__name__).replace("_", "-")
+            for cmd in app.registered_commands
+        }
+        for group in app.registered_groups:
+            names.add(group.name or group.typer_instance.info.name)
+        return names
+
+    def test_cli_surface_is_nontrivial(self) -> None:
+        assert len(self._cli_surface()) >= 10
+
+    def test_readme_documents_every_command(self) -> None:
+        content = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        missing = sorted(
+            name for name in self._cli_surface() if f"aptdata {name}" not in content
+        )
+        assert not missing, f"Comandos ausentes no README.md: {missing}"
+
+    def test_cli_reference_documents_every_command(self) -> None:
+        content = (DOCS_DIR / "api" / "cli.md").read_text(encoding="utf-8")
+        missing = sorted(
+            name for name in self._cli_surface() if f"aptdata {name}" not in content
+        )
+        assert not missing, f"Comandos ausentes em docs/api/cli.md: {missing}"
+
+    def test_scaffold_templates_documented(self) -> None:
+        from aptdata.cli.scaffold import TEMPLATE_NAMES
+
+        content = (DOCS_DIR / "scaffold-templates.md").read_text(encoding="utf-8")
+        readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+        for name in TEMPLATE_NAMES:
+            assert name in content, f"Template '{name}' fora de scaffold-templates.md"
+            assert name in readme, f"Template '{name}' fora do README.md"

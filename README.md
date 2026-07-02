@@ -1,10 +1,10 @@
 # aptdata
 
-> **v0.0.3** · A declarative, extensible framework for building smart data pipelines in Python.
+> **v0.1.0** · A declarative, extensible framework for building smart data pipelines in Python.
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.0.3-orange)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.0-orange)](CHANGELOG.md)
 
 ---
 
@@ -121,12 +121,17 @@ aptdata run my_system
 # {"event": "pipeline.completed", "pipeline": "my_system", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001, "trace_id": null}
 ```
 
+> `aptdata run` resolves the pipeline in its **own** process, so the
+> registration must be importable there — load it with
+> `aptdata plugin load my_package.module` (or run a declarative YAML with
+> `aptdata config run`) instead of relying on a script that already exited.
+
 ---
 
 ## CLI reference
 
 ```
-aptdata run SYSTEM_NAME [--env ENV] [--dry-run]
+aptdata run PIPELINE [--env ENV] [--dry-run]
 aptdata monitor [--refresh SECONDS]
 aptdata scaffold PROJECT_NAME [--template TEMPLATE] [--output PATH]
 aptdata schema export --output schema.json
@@ -138,7 +143,7 @@ aptdata plugin inspect NAME [--json]
 aptdata plugin preview READER [--limit N]
 aptdata plugin load MODULE_PATH
 aptdata config validate PATH
-aptdata config init [--output PATH]
+aptdata config init [--output PATH] [--template]
 aptdata config show PATH
 aptdata config run PATH [--env ENV]
 aptdata telemetry status [--json]
@@ -146,13 +151,25 @@ aptdata telemetry export [--format json]
 aptdata mesh list [--dir DIR] [--json]
 aptdata mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
 aptdata mesh build COMPONENT [--dir DIR] [--json]
+aptdata agents list [--file PATH] [--enabled] [--json]
+aptdata agents send AGENT_ID PROMPT [--file PATH] [--json]
+aptdata agents route TEXT [--file PATH] [--json]
+aptdata agents dispatch TEXT [--file PATH] [--json]
+aptdata agents resolve CAPABILITY [--file PATH] [--json]
+aptdata project init NAME [--out PATH] [--json]
+aptdata project plan PROJECT_FILE [--file PATH] [--json]
+aptdata project run PROJECT_FILE [--file PATH] [--json]
+aptdata viz [--file PATH] [--host HOST] [--port PORT]
 aptdata mcp-start [--transport TRANSPORT]
 aptdata interactive
 ```
 
-Every static command supports `--json` for machine-readable JSON line output
-(backward compatible). Without `--json`, commands render Rich tables, panels,
-and syntax-highlighted output.
+Top-level commands (`run`, `scaffold`, `schema export`, `mcp-start`) always
+emit machine-readable JSON lines. Sub-commands marked `[--json]` above are
+dual-mode: Rich tables/panels by default, one JSON line with `--json`. The
+remaining text-only commands (`system validate`, `plugin preview`,
+`plugin load`, `config *`; `telemetry export` uses `--format json`) do not
+take `--json` yet.
 
 ### Scaffold templates
 
@@ -235,9 +252,14 @@ See [Governance docs](docs/governance.md) for the full API.
 aptdata ships with a built-in [Model Context Protocol](https://modelcontextprotocol.io/) server (`mcp-start`). This transforms AI assistants (like Claude, Copilot, or Devin) into autonomous data engineers with direct access to:
 
 - **Pipeline Execution:** Trigger and monitor data flows (`run_flow`).
-- **Data Quality:** Audit the latest quality test results (`quality://reports/...`).
-- **Data Governance:** Read business rules to prevent violations (`governance://rules`).
-- **Lineage:** Trace upstream dependencies and column-level provenance (`get_pipeline_lineage`).
+- **Agents:** List the agent registry and route/dispatch prompts (`list_agents`, `dispatch`).
+- **Data Quality:** Audit the latest quality test results (`quality://reports/...`) — *placeholder data for now*.
+- **Data Governance:** Read business rules to prevent violations (`governance://rules`) — *placeholder data for now*.
+- **Lineage:** Trace upstream dependencies and column-level provenance (`get_pipeline_lineage`) — *placeholder data for now*.
+
+> The quality/governance/lineage resources currently return illustrative mock
+> payloads (see `aptdata/mcp/server.py`); they define the contract while the
+> real stores are being built.
 
 ```bash
 aptdata mcp-start --transport stdio
