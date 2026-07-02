@@ -981,6 +981,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../telegram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telegram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1663,6 +1691,28 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aptdata-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        aptdata setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aptdata-telegram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        aptdata telegram
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2411,14 +2461,35 @@ send fails.</p>
 each result carries <code>{task_id, agent_id, mode, ok, text, skipped, error}</code>.
 Exits 1 when any task fails.</p>
 <hr />
+<h2 id="aptdata-setup"><code>aptdata setup</code><a class="headerlink" href="#aptdata-setup" title="Permanent link">&para;</a></h2>
+<p>Diagnose and configure the aptdata ecosystem. The wizard shows every check
+transparently, offers to create a starter <code>agents.yaml</code> (with the <code>routing:</code>
+policy block) and configures the Telegram channel — the bot token stays in
+the <code>TELEGRAM_BOT_TOKEN</code> env var, <strong>never in a file</strong> (the yaml records only
+<code>token_env</code>).</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>aptdata setup [--file/-f PATH]           # wizard interativo
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>aptdata setup --check [--json]           # não interativo; exit 1 se incompleto
+</span></code></pre></div>
+<p><code>--check</code> reports: <code>agents_file</code><em>, <code>router</code></em> (agents/skills carregados),
+<code>routing_policy</code>, <code>telegram_token</code>, <code>telegram_transport</code>, <code>observability</code>,
+<code>viz</code> (* = obrigatórios para o exit 0). See <a href="../../telegram/">Telegram</a>.</p>
+<hr />
+<h2 id="aptdata-telegram"><code>aptdata telegram</code><a class="headerlink" href="#aptdata-telegram" title="Permanent link">&para;</a></h2>
+<p>Run the thin Telegram transport (long-polling) over the ConversationEngine —
+text messages become <code>converse</code> turns, inline buttons resolve confirmations.
+No routing logic lives in the transport.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TELEGRAM_BOT_TOKEN</span><span class="o">=</span><span class="m">123</span>:abc
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>aptdata<span class="w"> </span>telegram<span class="w"> </span><span class="o">[</span>--file<span class="w"> </span>PATH<span class="o">]</span><span class="w"> </span><span class="o">[</span>--token-env<span class="w"> </span>TELEGRAM_BOT_TOKEN<span class="o">]</span>
+</span></code></pre></div>
+<hr />
 <h2 id="aptdata-converse"><code>aptdata converse</code><a class="headerlink" href="#aptdata-converse" title="Permanent link">&para;</a></h2>
 <p>One conversation turn against the multi-agent ecosystem, via the
 <code>ConversationEngine</code> (route → dispatch / confirm / clarify per the policy in
 the <code>routing:</code> block of <code>agents.yaml</code>). Sessions are multi-turn ("continua"
 reuses the last agent) and persist under <code>~/.aptdata/sessions</code>
 (<code>$APTDATA_SESSIONS_DIR</code>).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--yes] [--json]
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--yes] [--json]
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
 </span></code></pre></div>
 <ul>
 <li>High-confidence routes (prefix, strong skill match) dispatch directly.</li>
@@ -2431,9 +2502,9 @@ reuses the last agent) and persist under <code>~/.aptdata/sessions</code>
 <li>Every turn is recorded in the observability trace
   (<code>permission.requested</code>/<code>permission.resolved</code>, dispatches).</li>
 </ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json<span class="w">         </span><span class="c1"># dispatch direto</span>
-</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;/hermez deploy&quot;</span><span class="w"> </span>-s<span class="w"> </span>ops<span class="w">            </span><span class="c1"># guardrail -&gt; confirmação</span>
-</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>aptdata<span class="w"> </span>converse<span class="w"> </span>--confirm<span class="w"> </span>1a2b3c4d<span class="w"> </span>-s<span class="w"> </span>ops<span class="w">          </span><span class="c1"># aprova e despacha</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json<span class="w">         </span><span class="c1"># dispatch direto</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;/hermez deploy&quot;</span><span class="w"> </span>-s<span class="w"> </span>ops<span class="w">            </span><span class="c1"># guardrail -&gt; confirmação</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>aptdata<span class="w"> </span>converse<span class="w"> </span>--confirm<span class="w"> </span>1a2b3c4d<span class="w"> </span>-s<span class="w"> </span>ops<span class="w">          </span><span class="c1"># aprova e despacha</span>
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-viz"><code>aptdata viz</code><a class="headerlink" href="#aptdata-viz" title="Permanent link">&para;</a></h2>
@@ -2442,7 +2513,7 @@ thin frontend). Endpoints: <code>/api/agents</code>, <code>/api/health</code>, <
 (503 on router failure), <code>/api/observability</code> (event-store summary) and
 <code>/api/events</code> — live <strong>SSE</strong> feed of the observability trace
 (<code>?backlog=N</code> replays the last N events on connect).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>aptdata viz [--file PATH] [--host HOST] [--port PORT]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>aptdata viz [--file PATH] [--host HOST] [--port PORT]
 </span></code></pre></div>
 <table>
 <thead>
@@ -2484,22 +2555,22 @@ success rate and average latency.</p>
 <p>Latest events in chronological order. Filter by kind
 (<code>routing.decision</code>, <code>agent.dispatch</code>, <code>agent.response</code>, <code>app.started</code>, …)
 or correlate a whole run with <code>--run-id</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
-</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span>--json<span class="w">           </span><span class="c1"># decisão + dispatch + response, mesmo run_id</span>
-</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>summary
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span>--json<span class="w">           </span><span class="c1"># decisão + dispatch + response, mesmo run_id</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>summary
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-mcp-start"><code>aptdata mcp-start</code><a class="headerlink" href="#aptdata-mcp-start" title="Permanent link">&para;</a></h2>
 <p>Start the MCP (Model Context Protocol) server so AI agents can discover and
 run pipelines. Emits <code>mcp.server.starting</code>; failures emit
 <code>mcp.server.error</code> and exit 1.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>aptdata<span class="w"> </span>mcp-start<span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>stdio<span class="p">|</span>sse<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>aptdata<span class="w"> </span>mcp-start<span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>stdio<span class="p">|</span>sse<span class="o">]</span>
 </span></code></pre></div>
 <p>See the <a href="../../mcp/">MCP documentation</a> for tools and resources.</p>
 <hr />
 <h2 id="aptdata-interactive"><code>aptdata interactive</code><a class="headerlink" href="#aptdata-interactive" title="Permanent link">&para;</a></h2>
 <p>Launch the guided interactive wizard.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>aptdata<span class="w"> </span>interactive
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>aptdata<span class="w"> </span>interactive
 </span></code></pre></div>
 <p>See <a href="../cli-interactive/">CLI Interactive Wizard</a> for full documentation.</p>
 <hr />

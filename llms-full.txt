@@ -103,7 +103,8 @@ Open the interactive TUI dashboard with three tabs:
 ### `aptdata scaffold PROJECT_NAME [--output PATH] [--template TEMPLATE]`
 
 Generate a project from a scaffold template (hello-world, medallion,
-rag-ingestion, data-quality-test, job-wheel, docker-compose-app).
+rag-ingestion, data-quality-test, job-wheel, docker-compose-app,
+viz-panel, dashboard).
 
 ### `aptdata schema export --output PATH`
 
@@ -181,6 +182,17 @@ Multi-task projects (YAML) routed task-by-task through the Router.
 Serve the aptdata-viz web view (read-only HTTP API + thin frontend):
 `/api/agents`, `/api/health`, `/api/route?text=`, `/api/observability`
 (event-store summary) and `/api/events` (live SSE trace feed).
+
+### `aptdata setup [--check] [--json]`
+
+Wizard de diagnóstico/configuração (agents.yaml inicial + canal Telegram; o
+token fica só em env var). `--check` é não interativo: exit 1 se os itens
+obrigatórios (agents_file, router) falharem.
+
+### `aptdata telegram [--file PATH] [--token-env VAR]`
+
+Thin Telegram transport (long-polling) over the ConversationEngine — cards
+and inline buttons only; zero routing logic in the transport.
 
 ### `aptdata converse TEXT [--session ID] [--yes] [--json]`
 
