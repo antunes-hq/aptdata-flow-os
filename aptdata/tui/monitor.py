@@ -161,7 +161,11 @@ class _IngestionMetricsPanel(Static):
 
 
 class _AgentTraceLog(RichLog):
-    """Real-time log viewer for agent events and dynamic routing traces."""
+    """Log ao vivo do traço de observabilidade (mesmo store do viz/CLI).
+
+    Lê incrementalmente do event store via cursor (``Observer.since``) —
+    paridade com o SSE do aptdata-viz sobre a MESMA fonte.
+    """
 
     DEFAULT_CSS = """
     _AgentTraceLog {
@@ -171,9 +175,35 @@ class _AgentTraceLog(RichLog):
     }
     """
 
+    _cursor: int = 0
+
     def on_mount(self) -> None:
         self.write("[bold yellow]Agent Trace[/bold yellow]")
-        self.write("[dim]Listening for branch_on / routing events…[/dim]")
+        if self.refresh_trace() == 0:
+            self.write("[dim]Sem eventos ainda — aguardando routing/dispatch…[/dim]")
+
+    def refresh_trace(self) -> int:
+        """Puxa eventos novos do event store; devolve quantos entraram.
+
+        Best-effort: observabilidade indisponível não pode derrubar a TUI.
+        """
+        try:
+            from aptdata.observability import Observer  # noqa: PLC0415
+
+            self._cursor, events = Observer.get().since(self._cursor, limit=100)
+        except Exception:  # noqa: BLE001 - TUI degrada com graça
+            return 0
+        import json  # noqa: PLC0415
+        from datetime import datetime  # noqa: PLC0415
+
+        for event in events:
+            when = datetime.fromtimestamp(event["ts"]).strftime("%H:%M:%S")
+            agent = f" [cyan]{event['agent_id']}[/cyan]" if event["agent_id"] else ""
+            payload = json.dumps(event["payload"], ensure_ascii=False)[:120]
+            self.write(
+                f"[dim]{when}[/dim] [bold]{event['kind']}[/bold]{agent} {payload}"
+            )
+        return len(events)
 
 
 class _MCPStatusPanel(Static):
@@ -272,6 +302,9 @@ class MonitorApp(App):
 
         mcp_panel = self.query_one(_MCPStatusPanel)
         mcp_panel.refresh_status()
+
+        trace_log = self.query_one(_AgentTraceLog)
+        trace_log.refresh_trace()
 
     def log_agent_event(self, message: str) -> None:
         """Append *message* to the Agent Trace log tab."""

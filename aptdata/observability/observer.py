@@ -138,3 +138,11 @@ class Observer:
 
     def summary(self) -> dict[str, Any]:
         return self._ensure_store().summary()
+
+    def since(
+        self, last_id: int = 0, limit: int = 100
+    ) -> tuple[int, list[dict[str, Any]]]:
+        return self._ensure_store().since(last_id, limit)
+
+    def last_id(self) -> int:
+        return self._ensure_store().last_id()

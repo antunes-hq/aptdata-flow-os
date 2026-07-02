@@ -26,6 +26,19 @@
   .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;
     background:var(--card2);border:1px solid var(--line)}
 
+  .trace{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:20px 0}
+  .trace h2{font-size:14px;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+  .trace .sum{color:var(--muted);font-size:12px;margin:0 0 10px}
+  .feed{list-style:none;margin:0;padding:0;max-height:220px;overflow-y:auto;font-size:12.5px}
+  .feed li{display:flex;gap:8px;align-items:baseline;padding:4px 0;border-top:1px solid var(--line)}
+  .feed .t{color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
+  .feed .k{font-weight:600;flex:none}
+  .feed .k.decision{color:var(--acc)}.feed .k.dispatch{color:#c9a24b}.feed .k.response{color:var(--up)}
+  .feed .k.err{color:var(--down)}
+  .feed .p{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .live{width:8px;height:8px;border-radius:50%;background:var(--dis)}
+  .live.on{background:var(--up)}
+
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:8px}
   .agent{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;position:relative}
   .agent.off{opacity:.55}
@@ -64,6 +77,12 @@
   </div>
 
   <div class="grid" id="grid"><div class="empty">carregando…</div></div>
+
+  <div class="trace">
+    <h2><span class="live" id="live" title="SSE"></span> Traço ao vivo <span class="dim" style="font-weight:400;color:var(--muted)">/api/events</span></h2>
+    <p class="sum" id="obs-sum">—</p>
+    <ul class="feed" id="feed"><li class="empty" style="border:0">sem eventos ainda — rode um dispatch/route</li></ul>
+  </div>
 </div>
 
 <script>
@@ -111,8 +130,39 @@ $('#rin').addEventListener('keydown',e=>{if(e.key==='Enter')route();});
 function clock(){$('#clock').textContent=new Date().toLocaleTimeString('pt-BR');}
 setInterval(clock,1000);clock();
 
-loadAgents(); loadHealth();
+// --- traço ao vivo (SSE): frontend fino, só renderiza o que a API manda ---
+const KIND_CLS={'routing.decision':'decision','agent.dispatch':'dispatch','agent.response':'response'};
+function feedLine(e){
+  const t=new Date(e.ts*1000).toLocaleTimeString('pt-BR');
+  const cls=(e.kind==='agent.response'&&e.payload&&e.payload.ok===false)?'err':(KIND_CLS[e.kind]||'');
+  const ag=e.agent_id?` <span class="tag">${esc(e.agent_id)}</span>`:'';
+  return `<li><span class="t">${t}</span><span class="k ${cls}">${esc(e.kind)}</span>${ag}<span class="p">${esc(JSON.stringify(e.payload))}</span></li>`;
+}
+function startTrace(){
+  const feed=$('#feed'); let empty=true;
+  const es=new EventSource('/api/events?backlog=15');
+  es.onopen=()=>$('#live').classList.add('on');
+  es.onerror=()=>$('#live').classList.remove('on');
+  es.onmessage=m=>{
+    const e=JSON.parse(m.data);
+    if(empty){feed.innerHTML='';empty=false;}
+    feed.insertAdjacentHTML('afterbegin',feedLine(e));
+    while(feed.children.length>50)feed.removeChild(feed.lastChild);
+  };
+}
+async function loadObsSummary(){
+  try{
+    const s=await api('/api/observability');
+    if(!s.available){$('#obs-sum').textContent='observabilidade indisponível';return;}
+    const d=s.dispatches||{};
+    const lat=d.avg_latency_ms?` · ${d.avg_latency_ms}ms média`:'';
+    $('#obs-sum').textContent=`${s.total_events} eventos · dispatches ${d.ok||0}/${d.total||0} ok${lat}`;
+  }catch(e){}
+}
+
+loadAgents(); loadHealth(); startTrace(); loadObsSummary();
 setInterval(loadHealth, 15000);   // saúde ao vivo a cada 15s
+setInterval(loadObsSummary, 15000);
 </script>
 </body>
 </html>

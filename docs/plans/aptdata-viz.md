@@ -1,5 +1,9 @@
 # Plano — aptdata-viz (camada de visualização do aptdata)
 
+> Status: Fases 1–2 entregues (API + view ecossistema); Fase 4 parcial
+> (`/api/observability` real + `/api/events` SSE + feed ao vivo no painel
+> + Agent Trace da TUI lendo o mesmo store). Fases 3/5/6 pendentes.
+
 > Objetivo: uma camada de **visualização web** do aptdata — ver flows, runs, agentes,
 > decisões de roteamento e observabilidade **ao vivo**, unificando o que hoje está
 > espalhado (TUI monitor + painel multiverso) sobre uma única API de dados.

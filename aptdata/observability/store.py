@@ -114,6 +114,40 @@ class ObservabilityStore:
         events.reverse()
         return events
 
+    def last_id(self) -> int:
+        """Maior id já gravado (0 se vazio) — cursor para :meth:`since`."""
+        with self._lock:
+            row = self._conn.execute("SELECT MAX(id) FROM events").fetchone()
+        return row[0] or 0
+
+    def since(
+        self, last_id: int = 0, limit: int = 100
+    ) -> tuple[int, list[dict[str, Any]]]:
+        """Eventos com ``id > last_id`` (ordem cronológica) + novo cursor.
+
+        Base do streaming incremental (SSE do viz, refresh da TUI): o
+        chamador guarda o cursor devolvido e repete a chamada.
+        """
+        with self._lock:
+            rows = self._conn.execute(
+                "SELECT id, ts, run_id, trace_id, kind, agent_id, payload"
+                " FROM events WHERE id > ? ORDER BY id ASC LIMIT ?",
+                (last_id, limit),
+            ).fetchall()
+        events = [
+            {
+                "ts": ts,
+                "run_id": rid,
+                "trace_id": tid,
+                "kind": kind,
+                "agent_id": aid,
+                "payload": json.loads(body),
+            }
+            for _, ts, rid, tid, kind, aid, body in rows
+        ]
+        cursor = rows[-1][0] if rows else last_id
+        return cursor, events
+
     def summary(self) -> dict[str, Any]:
         """Resumo agregado: totais por kind, dispatches ok/erro, latência média."""
         with self._lock:

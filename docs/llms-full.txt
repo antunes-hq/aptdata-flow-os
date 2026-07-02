@@ -179,7 +179,8 @@ Multi-task projects (YAML) routed task-by-task through the Router.
 ### `aptdata viz [--file PATH] [--host HOST] [--port PORT]`
 
 Serve the aptdata-viz web view (read-only HTTP API + thin frontend):
-`/api/agents`, `/api/health`, `/api/route?text=`, `/api/observability` (stub).
+`/api/agents`, `/api/health`, `/api/route?text=`, `/api/observability`
+(event-store summary) and `/api/events` (live SSE trace feed).
 
 ### `aptdata obs summary|tail`
 

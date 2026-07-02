@@ -106,7 +106,7 @@ class TestVizServer:
             assert rout.get("agent_id") == "ondina"
 
             obs = get("/api/observability")
-            assert obs["available"] is False
+            assert obs["available"] is True
 
             html = urllib.request.urlopen(base + "/", timeout=5).read().decode()
             assert "aptdata-viz" in html
@@ -138,6 +138,57 @@ class TestVizServer:
             # o resto da API continua servindo normalmente
             status, data = _get_json(base, "/api/agents")
             assert status == 200 and len(data["agents"]) == 3
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+
+
+class TestVizObservability:
+    def test_summary_reflects_trace(self, agents_file):
+        from aptdata.observability import Observer
+
+        Observer.get().emit("routing.decision", {"mode": "skill"}, agent_id="zeca")
+        httpd, base = _serve(VizState(agents_file))
+        try:
+            status, data = _get_json(base, "/api/observability")
+            assert status == 200
+            assert data["available"] is True
+            assert data["total_events"] >= 1
+            assert data["by_kind"]["routing.decision"] >= 1
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+
+    def test_route_via_http_lands_in_trace(self, agents_file):
+        """A decisão servida pelo viz é gravada no MESMO store (fonte única)."""
+        from aptdata.observability import Observer
+
+        httpd, base = _serve(VizState(agents_file))
+        try:
+            _get_json(base, "/api/route?text=mexer%20no%20frontend")
+            events = Observer.get().tail(kind="routing.decision")
+            assert events and events[-1]["payload"]["agent_id"] == "ondina"
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+
+
+class TestVizSSE:
+    def test_events_stream_sends_backlog(self, agents_file):
+        from aptdata.observability import Observer
+
+        Observer.get().emit("agent.response", {"ok": True}, agent_id="zeca")
+        httpd, base = _serve(VizState(agents_file))
+        try:
+            resp = urllib.request.urlopen(base + "/api/events?backlog=5", timeout=5)
+            assert resp.headers["Content-Type"].startswith("text/event-stream")
+            line = resp.readline()
+            while line and not line.startswith(b"data:"):
+                line = resp.readline()
+            event = json.loads(line[len(b"data:"):].strip())
+            assert event["kind"] == "agent.response"
+            assert event["agent_id"] == "zeca"
+            resp.close()
         finally:
             httpd.shutdown()
             httpd.server_close()
