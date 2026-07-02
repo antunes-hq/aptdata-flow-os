@@ -188,6 +188,8 @@ take `--json` yet.
 | `data-quality-test`   | Schema contract + expectation suite                  |
 | `job-wheel`           | Python wheel executor for portable job packaging     |
 | `docker-compose-app`  | Multi-service Docker Compose application             |
+| `viz-panel`           | Thin web panel (aptdata design system, reads a viz-style API) |
+| `dashboard`           | No-build dashboard: stat tiles + SVG chart + table over `data.json` |
 
 ```bash
 aptdata scaffold my_lakehouse --template medallion

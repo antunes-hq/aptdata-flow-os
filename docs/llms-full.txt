@@ -103,7 +103,8 @@ Open the interactive TUI dashboard with three tabs:
 ### `aptdata scaffold PROJECT_NAME [--output PATH] [--template TEMPLATE]`
 
 Generate a project from a scaffold template (hello-world, medallion,
-rag-ingestion, data-quality-test, job-wheel, docker-compose-app).
+rag-ingestion, data-quality-test, job-wheel, docker-compose-app,
+viz-panel, dashboard).
 
 ### `aptdata schema export --output PATH`
 
