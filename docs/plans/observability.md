@@ -1,6 +1,8 @@
 # Plano: Observabilidade Full-Stack e Resiliente para o aptdata
 
-> Status: PROPOSTA (não implementado). Não commitar sem revisão.
+> Status: PARCIALMENTE IMPLEMENTADO — Observer no-throw + ObservabilityStore
+> (SQLite) + correlação run_id + instrumentação de Router/dispatch/MCP + CLI
+> `aptdata obs` já existem (ver docs/observability.md). Restante: proposta.
 > Escopo: `aptdata` 0.1.0 — modelo System/Flow/Component, núcleo multi-agente,
 > MCP server, CLI Typer, TUI Textual.
 

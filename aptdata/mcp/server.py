@@ -272,11 +272,18 @@ def dispatch(prompt: str, hint: str | None = None) -> dict[str, Any]:
     text = f"/{router.registry.resolve(hint).id} {prompt}" if (
         hint and router.registry.resolve(hint)
     ) else prompt
-    decision = router.route(text)
-    if decision.agent_id is None:
-        return {"status": "error", "error": "no agent available", "prompt": prompt}
 
-    result = router.registry.get(decision.agent_id).send(decision.text)
+    from aptdata.agents.base import observed_send  # noqa: PLC0415
+    from aptdata.observability import Observer  # noqa: PLC0415
+
+    with Observer.get().run_context() as run_id:
+        decision = router.route(text)
+        if decision.agent_id is None:
+            return {
+                "status": "error", "error": "no agent available", "prompt": prompt,
+            }
+
+        result = observed_send(router.registry.get(decision.agent_id), decision.text)
     return {
         "status": "ok" if result.ok else "error",
         "routed_to": decision.agent_id,
@@ -284,6 +291,7 @@ def dispatch(prompt: str, hint: str | None = None) -> dict[str, Any]:
         "ok": result.ok,
         "text": result.text,
         "error": result.error,
+        "run_id": run_id,
     }
 
 

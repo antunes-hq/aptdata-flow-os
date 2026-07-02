@@ -172,6 +172,18 @@ class Router:
     # -- orchestration ------------------------------------------------------
 
     def route(self, text: str) -> RouteDecision:
+        decision = self._route(text)
+        try:  # observabilidade é best-effort: nunca derruba o roteamento
+            from aptdata.observability import Observer  # noqa: PLC0415
+
+            Observer.get().emit(
+                "routing.decision", decision.to_dict(), agent_id=decision.agent_id
+            )
+        except Exception:  # noqa: BLE001 - façade quebrado não pode vazar
+            pass
+        return decision
+
+    def _route(self, text: str) -> RouteDecision:
         # 1. explicit prefix
         prefix = self.detect_prefix(text)
         if prefix:

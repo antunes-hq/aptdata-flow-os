@@ -160,6 +160,8 @@ aptdata project init NAME [--out PATH] [--json]
 aptdata project plan PROJECT_FILE [--file PATH] [--json]
 aptdata project run PROJECT_FILE [--file PATH] [--json]
 aptdata viz [--file PATH] [--host HOST] [--port PORT]
+aptdata obs summary [--json]
+aptdata obs tail [--limit N] [--kind KIND] [--run-id ID] [--json]
 aptdata mcp-start [--transport TRANSPORT]
 aptdata interactive
 ```

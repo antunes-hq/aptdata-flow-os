@@ -31,12 +31,24 @@ schema_app = typer.Typer(help="Schema utilities for declarative configuration.")
 
 
 def _emit(payload: dict, *, error: bool = False) -> None:
-    """Emit *payload* as a single JSON line to stdout or stderr."""
+    """Emit *payload* as a single JSON line to stdout or stderr.
+
+    Injeta ``trace_id`` (OTel) sempre, e ``run_id`` quando há um run de
+    observabilidade ativo — correlação com o event store (``aptdata obs``).
+    """
     event = dict(payload)
     span_context = trace.get_current_span().get_span_context()
     event["trace_id"] = (
         f"{span_context.trace_id:032x}" if span_context.is_valid else None
     )
+    try:
+        from aptdata.observability import Observer  # noqa: PLC0415
+
+        run_id = Observer.current_run_id()
+    except Exception:  # noqa: BLE001 - façade quebrado não pode vazar
+        run_id = None
+    if run_id is not None:
+        event["run_id"] = run_id
     line = json.dumps(event, default=str)
     if error:
         print(line, file=sys.stderr, flush=True)
@@ -192,6 +204,7 @@ from aptdata.cli.commands import (  # noqa: E402
     agents_app,
     config_app,
     mesh_app,
+    obs_app,
     plugin_app,
     project_app,
     system_app,
@@ -206,6 +219,7 @@ app.add_typer(telemetry_app, name="telemetry")
 app.add_typer(mesh_app, name="mesh")
 app.add_typer(agents_app, name="agents")
 app.add_typer(project_app, name="project")
+app.add_typer(obs_app, name="obs")
 
 
 @app.command("interactive")

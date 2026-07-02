@@ -97,6 +97,7 @@ nav:
       - Quality: quality.md
       - Governance: governance.md
       - Telemetry: telemetry.md
+      - Observability: observability.md
       - CI & Execution Logs: ci-logs.md
   - Plugins:
       - Engines: transform-engines.md
