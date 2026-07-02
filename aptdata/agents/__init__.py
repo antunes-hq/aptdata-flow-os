@@ -15,6 +15,12 @@ from aptdata.agents.base import (
     IAgent,
 )
 from aptdata.agents.cli_agents import ClaudeCodeAgent, CLIAgent, OpenCodeAgent
+from aptdata.agents.conversation import (
+    ConversationEngine,
+    DecisionPolicy,
+    SessionStore,
+    Turn,
+)
 from aptdata.agents.openclaw import OpenClawAgent
 from aptdata.agents.project import (
     Project,
@@ -35,7 +41,11 @@ __all__ = [
     "BaseAgent",
     "CLIAgent",
     "ClaudeCodeAgent",
+    "ConversationEngine",
+    "DecisionPolicy",
     "IAgent",
+    "SessionStore",
+    "Turn",
     "OpenClawAgent",
     "OpenCodeAgent",
     "Project",

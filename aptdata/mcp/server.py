@@ -244,6 +244,45 @@ def list_agents() -> dict[str, Any]:
 
 
 @mcp.tool()
+def converse(session_id: str, text: str) -> dict[str, Any]:
+    """One conversation turn: route, and dispatch/confirm/clarify per policy.
+
+    Thin wrapper over :class:`aptdata.agents.ConversationEngine` — the same
+    brain behind ``aptdata converse`` and the Telegram transport. Returns the
+    ``Turn`` as a dict (``type`` = dispatched | needs_confirmation |
+    needs_clarification | reply; confirmations carry ``decision_id``).
+    """
+    _mark_request()
+    try:
+        from aptdata.agents.conversation import ConversationEngine  # noqa: PLC0415
+
+        return ConversationEngine.from_yaml(_agents_file()).handle(
+            session_id, text
+        ).to_dict()
+    except Exception as exc:  # noqa: BLE001
+        return {"status": "error", "error": str(exc)}
+
+
+@mcp.tool()
+def confirm(
+    session_id: str, decision_id: str, choice: str | None = None
+) -> dict[str, Any]:
+    """Resolve a pending confirmation from ``converse`` (approve or reroute).
+
+    ``choice`` (optional) overrides the agent (mode becomes ``override``).
+    """
+    _mark_request()
+    try:
+        from aptdata.agents.conversation import ConversationEngine  # noqa: PLC0415
+
+        return ConversationEngine.from_yaml(_agents_file()).confirm(
+            session_id, decision_id, choice=choice
+        ).to_dict()
+    except Exception as exc:  # noqa: BLE001
+        return {"status": "error", "error": str(exc)}
+
+
+@mcp.tool()
 def dispatch(prompt: str, hint: str | None = None) -> dict[str, Any]:
     """Route a prompt to the best agent and send it.
 

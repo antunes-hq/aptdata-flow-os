@@ -56,6 +56,8 @@ A IA possui acesso nativo aos seguintes comandos:
 | `preview_dataset` | `(plugin: str, **reader_config)` | Instancia o reader com a config informada e retorna as primeiras 5 linhas reais para a IA inspecionar os dados. |
 | `list_agents` | `()` | Lista os agentes registrados no `agents.yaml` (id, tipo, capabilities, enabled). |
 | `dispatch` | `(prompt: str, hint: str \| None)` | Roteia um prompt pelo Router e envia ao agente escolhido. |
+| `converse` | `(session_id: str, text: str)` | Turno de conversa via ConversationEngine: despacha, pede confirmação ou esclarecimento conforme a política do `routing:`. |
+| `confirm` | `(session_id: str, decision_id: str, choice: str \| None)` | Resolve uma confirmação pendente do `converse` (aprova ou troca de agente). |
 | `get_pipeline_lineage` | `(flow_id: str)` | Retorna a árvore de dependência (DAG) e a linhagem de colunas. **Placeholder:** hoje devolve um grafo ilustrativo fixo. |
 
 ---
