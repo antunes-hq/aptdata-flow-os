@@ -383,6 +383,37 @@ Exits 1 when any task fails.
 
 ---
 
+## `aptdata converse`
+
+One conversation turn against the multi-agent ecosystem, via the
+`ConversationEngine` (route → dispatch / confirm / clarify per the policy in
+the `routing:` block of `agents.yaml`). Sessions are multi-turn ("continua"
+reuses the last agent) and persist under `~/.aptdata/sessions`
+(`$APTDATA_SESSIONS_DIR`).
+
+```
+aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--yes] [--json]
+aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
+```
+
+- High-confidence routes (prefix, strong skill match) dispatch directly.
+- Medium confidence / LLM routes return `needs_confirmation` with a
+  `decision_id`; approve with `--confirm` (or `--yes` inline), or reroute
+  with `--choose AGENT`.
+- Agents holding a **guarded capability** (`routing.guarded_capabilities`,
+  e.g. deploy/ssh/docker) always require confirmation, regardless of
+  confidence.
+- Every turn is recorded in the observability trace
+  (`permission.requested`/`permission.resolved`, dispatches).
+
+```bash
+aptdata converse "mexer no frontend" --json         # dispatch direto
+aptdata converse "/hermez deploy" -s ops            # guardrail -> confirmação
+aptdata converse --confirm 1a2b3c4d -s ops          # aprova e despacha
+```
+
+---
+
 ## `aptdata viz`
 
 Serve the aptdata-viz web view of the agent ecosystem (read-only API +

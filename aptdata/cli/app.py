@@ -221,6 +221,10 @@ app.add_typer(agents_app, name="agents")
 app.add_typer(project_app, name="project")
 app.add_typer(obs_app, name="obs")
 
+from aptdata.cli.commands.converse_cmd import converse_command  # noqa: E402
+
+app.command("converse")(converse_command)
+
 
 @app.command("interactive")
 def interactive() -> None:

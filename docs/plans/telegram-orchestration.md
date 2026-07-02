@@ -1,7 +1,9 @@
 # Telegram → Orquestração de Agentes (via aptdata)
 
-> Plano de arquitetura + UX · 01/07/2026 · não commitar
-> Escopo: SÓ planejamento. Nada de implementação aqui.
+> Plano de arquitetura + UX · 01/07/2026
+> Status: Fases 0-1 IMPLEMENTADAS (ConversationEngine headless + DecisionPolicy
+> via bloco `routing:` + SessionStore + CLI `aptdata converse` + MCP
+> `converse`/`confirm`, com eventos permission.* no traço). Fases 2+ pendentes.
 
 ---
 
