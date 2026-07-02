@@ -118,6 +118,26 @@ class TestSend:
         assert r.exit_code == 0
         assert json.loads(r.stdout)["ok"] is True
 
+    def test_json_exposes_raw_diagnostics(self, agents_file, monkeypatch):
+        from aptdata.agents.openclaw import OpenClawAgent
+
+        monkeypatch.setattr(
+            OpenClawAgent,
+            "send",
+            lambda self, p, **k: AgentResponse(
+                ok=False,
+                agent_id=self.id,
+                error="HTTP 502",
+                raw={"status": 502, "body": "bad gateway"},
+            ),
+        )
+        r = runner.invoke(
+            app, ["agents", "send", "zeca", "oi", "--file", agents_file, "--json"]
+        )
+        assert r.exit_code == 1
+        data = json.loads(r.stdout)
+        assert data["raw"] == {"status": 502, "body": "bad gateway"}
+
     def test_unknown_agent_exits_1(self, agents_file):
         r = runner.invoke(
             app, ["agents", "send", "ninguem", "oi", "--file", agents_file]
