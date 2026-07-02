@@ -74,6 +74,7 @@ class TaskResult:
             "agent_id": self.agent_id,
             "mode": self.mode,
             "ok": self.ok,
+            "text": self.text,
             "skipped": self.skipped,
             "error": self.error,
         }

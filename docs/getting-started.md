@@ -41,20 +41,27 @@ Rode no terminal:
 aptdata --help
 ```
 
-Saída esperada:
+Saída esperada (resumida):
 ```text
 Usage: aptdata [OPTIONS] COMMAND [ARGS]...
 
-  Smart Data – framework declarativo de pipelines.
-
-Options:
-  --help  Exibe esta mensagem e encerra.
+ Smart Data – declarative data-pipeline framework.
 
 Commands:
-  monitor   Abre o dashboard TUI de monitoramento.
-  run       Executa um sistema registrado.
-  scaffold  Inicializa um novo projeto aptdata.
-  mesh      Orquestra componentes via mesh.yaml.
+  run           Run a registered data pipeline.
+  monitor       Open the interactive TUI monitoring dashboard.
+  mcp-start     Start the MCP (Model Context Protocol) server.
+  scaffold      Gera um projeto aptdata a partir de um template.
+  interactive   Launch the interactive wizard mode.
+  viz           Launch aptdata-viz — the web view of the agent ecosystem.
+  schema        Schema utilities for declarative configuration.
+  system        Inspect and validate registered systems.
+  plugin        Manage and inspect plugins.
+  config        Manage declarative YAML configurations.
+  telemetry     Inspect OpenTelemetry telemetry status.
+  mesh          Orchestrate mesh components (job-wheel, docker-compose-app, …).
+  agents        Talk to the multi-agent ecosystem.
+  project       Orchestrate projects across agents.
 ```
 
 ---
@@ -198,7 +205,10 @@ registry.register("my_system", MySystem)
 ```
 
 ### 5. Executar via CLI
-Com o seu componente registrado no entrypoint do módulo, execute:
+O `aptdata run` resolve o sistema no **próprio processo**, então o registro
+(`registry.register`) precisa estar importável nele — carregue o módulo com
+`aptdata plugin load meu_pacote.modulo` (ou use um YAML declarativo com
+`aptdata config run`) e execute:
 
 ```bash
 aptdata run my_system
@@ -206,10 +216,11 @@ aptdata run my_system
 
 Eventos de ciclo de vida automáticos (`pre_execute`, `on_success`) são emitidos internamente pelo EventBus.
 
-Saída esperada em formato JSON Lines:
+Saída esperada em formato JSON Lines (todo evento carrega `trace_id` — o id
+do trace OpenTelemetry quando configurado, `null` caso contrário):
 ```json
-{"event": "pipeline.started", "pipeline": "my_system", "env": "dev", "dry_run": false}
-{"event": "pipeline.completed", "pipeline": "my_system", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001}
+{"event": "pipeline.started", "pipeline": "my_system", "env": "dev", "dry_run": false, "trace_id": null}
+{"event": "pipeline.completed", "pipeline": "my_system", "env": "dev", "dry_run": false, "elapsed_seconds": 0.001, "trace_id": null}
 ```
 
 ---

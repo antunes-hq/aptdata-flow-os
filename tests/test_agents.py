@@ -191,6 +191,14 @@ class TestOpenClawAgent:
         monkeypatch.setattr(requests, "post", lambda *a, **k: _Resp())
         result = OpenClawAgent(spec).send("oi")
         assert result.ok is False and "HTTP 500" in (result.error or "")
+        # diagnóstico HTTP tem que sobreviver ao contrato JSON
+        assert result.to_dict()["raw"] == {"status": 500, "body": "boom"}
+
+    def test_response_to_dict_keeps_raw(self):
+        resp = AgentResponse(
+            ok=False, agent_id="x", error="HTTP 502", raw={"status": 502}
+        )
+        assert resp.to_dict()["raw"] == {"status": 502}
 
     def test_health_disabled(self):
         spec = AgentSpec(id="x", name="X", type="openclaw", enabled=False)

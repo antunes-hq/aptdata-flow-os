@@ -133,6 +133,9 @@ class TestRun:
         assert r.exit_code == 0
         data = json.loads(r.stdout)
         assert data["ok"] == data["total"] and data["total"] >= 1
+        # o texto de resposta de cada task faz parte do contrato JSON
+        assert all("text" in item for item in data["results"])
+        assert any(item["text"] for item in data["results"])
 
     def test_text(self, project_file, agents_file):
         r = runner.invoke(

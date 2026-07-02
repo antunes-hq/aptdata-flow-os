@@ -146,3 +146,23 @@ class TestDefaultAndLLM:
         registry = AgentRegistry.from_yaml(path)
         r = Router(registry, default_agent="ondina")
         assert r.default_agent == "ondina"
+
+    def test_explicit_default_disabled_falls_back(self, tmp_path: Path):
+        # holt is disabled -> explicit default must be ignored, heuristic wins
+        path = tmp_path / "agents.yaml"
+        path.write_text(ROUTING_YAML, encoding="utf-8")
+        registry = AgentRegistry.from_yaml(path)
+        r = Router(registry, default_agent="holt")
+        assert r.default_agent == "zeca"
+        d = r.route("blablabla sem keyword nenhuma")
+        assert d.mode == "default" and d.agent_id == "zeca"
+
+    def test_llm_choice_disabled_falls_to_default(self, tmp_path: Path):
+        # LLM may return any id -> a disabled agent must not be routed to
+        path = tmp_path / "agents.yaml"
+        path.write_text(ROUTING_YAML, encoding="utf-8")
+        registry = AgentRegistry.from_yaml(path)
+        r = Router(registry, llm=lambda text, candidates: "holt")
+        d = r.route("mensagem ambigua")
+        assert d.agent_id != "holt"
+        assert d.mode == "default" and d.agent_id == "zeca"

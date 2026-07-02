@@ -53,8 +53,10 @@ A IA possui acesso nativo aos seguintes comandos:
 | `list_registered_systems` | `()` | Lista todos os sistemas orquestráveis disponíveis. |
 | `list_available_plugins` | `()` | Lista adaptadores e conectores de infraestrutura instalados. |
 | `get_plugin_schema` | `(plugin_name: str)` | Retorna o schema Pydantic exato exigido por um componente. Elimina alucinações da IA na hora de gerar código. |
-| `preview_dataset` | `(reader: str, limit: int)`| Retorna as primeiras *N* linhas reais para a IA inspecionar os dados. |
-| `get_pipeline_lineage` | `(flow_id: str)` | Retorna a árvore de dependência (DAG) e a linhagem de colunas. |
+| `preview_dataset` | `(plugin: str, **reader_config)` | Instancia o reader com a config informada e retorna as primeiras 5 linhas reais para a IA inspecionar os dados. |
+| `list_agents` | `()` | Lista os agentes registrados no `agents.yaml` (id, tipo, capabilities, enabled). |
+| `dispatch` | `(prompt: str, hint: str \| None)` | Roteia um prompt pelo Router e envia ao agente escolhido. |
+| `get_pipeline_lineage` | `(flow_id: str)` | Retorna a árvore de dependência (DAG) e a linhagem de colunas. **Placeholder:** hoje devolve um grafo ilustrativo fixo. |
 
 ---
 
@@ -67,6 +69,11 @@ Recursos funcionam como URIs internas para o agente consumir contexto sob demand
 | `schema://datasets/{name}` | JSON Schema (Tipagem) para o dataset informado. |
 | `quality://reports/{workflow}/latest`| Último relatório de qualidade (QualityReport) com contagem de erros e regras falhas. |
 | `governance://rules` | Lista de Regras de Negócios registradas no catálogo. |
+
+> **Nota:** os resources de schema/quality/governance (e a tool
+> `get_pipeline_lineage`) hoje retornam **payloads mock** que definem o
+> contrato (ver `aptdata/mcp/server.py`) — os stores reais ainda não foram
+> plugados. Trate os dados como ilustrativos.
 
 ---
 

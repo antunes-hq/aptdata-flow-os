@@ -107,6 +107,7 @@ class AgentResponse:
             "agent_id": self.agent_id,
             "text": self.text,
             "error": self.error,
+            "raw": self.raw,
         }
 
 

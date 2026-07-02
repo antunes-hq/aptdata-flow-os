@@ -104,8 +104,16 @@ class Router:
 
     @property
     def default_agent(self) -> str | None:
-        """Entry-point agent: explicit, else 'porta_de_entrada', else top weight."""
-        if self._default and self._default in self.registry:
+        """Entry-point agent: explicit, else 'porta_de_entrada', else top weight.
+
+        An explicit default that is disabled is ignored (falls back to the
+        heuristic) — the router never targets disabled agents.
+        """
+        if (
+            self._default
+            and self._default in self.registry
+            and self.registry.spec(self._default).enabled
+        ):
             return self._default
         enabled = [s for s in self.registry.specs() if s.enabled]
         if not enabled:
@@ -186,7 +194,11 @@ class Router:
             except Exception as exc:  # pragma: no cover - defensive
                 logger.warning("LLM router failed: %s", exc)
                 choice = None
-            if choice and choice in self.registry:
+            if (
+                choice
+                and choice in self.registry
+                and self.registry.spec(choice).enabled
+            ):
                 return RouteDecision(
                     agent_id=choice, mode="llm", text=text, confidence=0.5
                 )

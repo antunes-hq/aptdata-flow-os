@@ -22,7 +22,7 @@ lint:
 	poetry run ruff check aptdata/ tests/
 
 lint-fix:
-	poetry run ruff check --fix smart_data/ tests/
+	poetry run ruff check --fix aptdata/ tests/
 
 docs:
 	poetry run mkdocs build

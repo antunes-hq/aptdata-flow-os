@@ -146,3 +146,12 @@ class TestRun:
         assert results[0].ok is False  # unroutable agent
         assert results[1].skipped is True
         assert "dependency" in (results[1].error or "")
+
+    def test_result_to_dict_keeps_text(self, router: Router):
+        # o output da task é o produto do run — precisa estar no JSON
+        project = Project(
+            name="p", tasks=[Task(id="a", prompt="backend", capability="backend")]
+        )
+        results = ProjectRunner(project, router).run()
+        d = results[0].to_dict()
+        assert d["text"].startswith("done:")
