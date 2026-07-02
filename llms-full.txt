@@ -83,8 +83,11 @@ aptdata --help
 
 ## 4. CLI Reference
 
-All static commands support `--json` for machine-readable JSON line output.
-Without `--json`, commands render Rich tables, panels, and highlighted output.
+Top-level commands (`run`, `scaffold`, `schema export`, `mcp-start`) always
+emit JSON lines. Sub-commands marked `[--json]` are dual-mode: Rich
+tables/panels by default, one JSON line with `--json`. `system validate`,
+`plugin preview/load` and `config *` are text-only today; `telemetry export`
+uses `--format json`.
 
 ### `aptdata run PIPELINE [--env ENV] [--dry-run]`
 
@@ -100,7 +103,7 @@ Open the interactive TUI dashboard with three tabs:
 ### `aptdata scaffold PROJECT_NAME [--output PATH] [--template TEMPLATE]`
 
 Generate a project from a scaffold template (hello-world, medallion,
-rag-ingestion, data-quality-test).
+rag-ingestion, data-quality-test, job-wheel, docker-compose-app).
 
 ### `aptdata schema export --output PATH`
 
@@ -143,6 +146,41 @@ Inspect OpenTelemetry configuration and export telemetry data.
 - `telemetry status [--json]` – show OTel provider status
 - `telemetry export [--format json]` – export collected telemetry
 
+### `aptdata mesh list|run|build`
+
+Discover and operate data-mesh components described by `mesh.yaml`
+manifests (types: `job-wheel`, `docker-compose-app`).
+
+- `mesh list [--dir DIR] [--json]` – find manifests, list name/type/version
+- `mesh run COMPONENT [--dir DIR] [--dry-run] [--json]` – execute a component
+- `mesh build COMPONENT [--dir DIR] [--json]` – build (pip wheel / docker compose build)
+
+### `aptdata agents list|send|route|dispatch|resolve`
+
+Operate the multi-agent registry/router defined in `agents.yaml`
+(`--file/-f` or env `APTDATA_AGENTS_FILE` override the file).
+
+- `agents list [--enabled] [--json]` – list registered agents
+- `agents send AGENT_ID PROMPT [--json]` – send to a specific agent;
+  JSON = `{ok, agent_id, text, error, raw}`
+- `agents route TEXT [--json]` – show the RouteDecision without sending
+- `agents dispatch TEXT [--json]` – route + send in one step
+- `agents resolve CAPABILITY [--json]` – best enabled agent for a capability
+
+### `aptdata project init|plan|run`
+
+Multi-task projects (YAML) routed task-by-task through the Router.
+
+- `project init NAME [--out PATH] [--json]` – scaffold a starter project file
+- `project plan PROJECT_FILE [--json]` – dry-run routing per task
+- `project run PROJECT_FILE [--json]` – execute; JSON results carry
+  `{task_id, agent_id, mode, ok, text, skipped, error}`
+
+### `aptdata viz [--file PATH] [--host HOST] [--port PORT]`
+
+Serve the aptdata-viz web view (read-only HTTP API + thin frontend):
+`/api/agents`, `/api/health`, `/api/route?text=`, `/api/observability` (stub).
+
 ### `aptdata interactive`
 
 Launch the guided menu-driven interactive wizard.  Uses questionary for
@@ -161,10 +199,20 @@ Copilot, Devin, etc.) to discover and execute pipelines.
   `{"status": "completed"|"error", "flow_id": ..., "elapsed_seconds": ...}`.
 - **`list_registered_systems()`** — Returns
   `{"systems": [...], "count": N}`.
+- **`list_available_plugins()`** — Registered readers/writers.
+- **`get_plugin_schema(plugin_name: str)`** — Constructor schema for a plugin.
+- **`preview_dataset(plugin: str, **reader_config)`** — First 5 rows of a reader.
+- **`list_agents()`** — Agents from `agents.yaml` (id, type, capabilities, enabled).
+- **`dispatch(prompt: str, hint: str | None)`** — Route a prompt via the Router
+  and send it to the chosen agent.
+- **`get_pipeline_lineage(flow_id: str)`** — Lineage DAG (placeholder payload today).
 
 ### MCP Resources
 
 - **`schema://datasets/{dataset_name}`** — Read metadata for a specific dataset.
+- **`quality://reports/{workflow_name}/latest`** — Latest quality report
+  (mock payload today).
+- **`governance://rules`** — Registered business rules (mock payload today).
 
 ### Starting the MCP Server
 

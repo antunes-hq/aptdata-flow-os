@@ -49,7 +49,7 @@ methods, and register their systems in the plugin registry.
 - **Plugin registry** for named system discovery
 - **Structured CLI** emitting machine-readable JSON lines (with Rich human-readable mode)
 - **Rich rendering layer** with dual-mode output (JSON lines or Rich tables/panels)
-- **Sub-commands**: `system`, `plugin`, `config`, `telemetry`
+- **Sub-commands**: `system`, `plugin`, `config`, `telemetry`, `mesh`, `agents`, `project`, `schema`
 - **Interactive wizard** mode (`aptdata interactive`) powered by questionary
 - **Shell completions** for system names, plugin names, environments, templates
 - **Interactive TUI** (Textual) with DAG, Metrics, and Agent Trace tabs
@@ -63,6 +63,13 @@ pipelines. Available MCP tools:
 
 - `run_flow(flow_id)` – Execute a registered system
 - `list_registered_systems()` – List available pipelines
+- `list_available_plugins()` / `get_plugin_schema(plugin_name)` – Plugin discovery
+- `preview_dataset(plugin, **reader_config)` – First rows of a reader
+- `list_agents()` / `dispatch(prompt, hint)` – Multi-agent registry + routing
+- `get_pipeline_lineage(flow_id)` – Lineage DAG (placeholder data for now)
+
+Resources: `schema://datasets/{name}`, `quality://reports/{workflow}/latest`,
+`governance://rules` (quality/governance/lineage return mock payloads today).
 
 Start the server: `aptdata mcp-start`
 

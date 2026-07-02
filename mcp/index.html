@@ -1497,13 +1497,23 @@
 </tr>
 <tr>
 <td><code>preview_dataset</code></td>
-<td><code>(reader: str, limit: int)</code></td>
-<td>Retorna as primeiras <em>N</em> linhas reais para a IA inspecionar os dados.</td>
+<td><code>(plugin: str, **reader_config)</code></td>
+<td>Instancia o reader com a config informada e retorna as primeiras 5 linhas reais para a IA inspecionar os dados.</td>
+</tr>
+<tr>
+<td><code>list_agents</code></td>
+<td><code>()</code></td>
+<td>Lista os agentes registrados no <code>agents.yaml</code> (id, tipo, capabilities, enabled).</td>
+</tr>
+<tr>
+<td><code>dispatch</code></td>
+<td><code>(prompt: str, hint: str \| None)</code></td>
+<td>Roteia um prompt pelo Router e envia ao agente escolhido.</td>
 </tr>
 <tr>
 <td><code>get_pipeline_lineage</code></td>
 <td><code>(flow_id: str)</code></td>
-<td>Retorna a árvore de dependência (DAG) e a linhagem de colunas.</td>
+<td>Retorna a árvore de dependência (DAG) e a linhagem de colunas. <strong>Placeholder:</strong> hoje devolve um grafo ilustrativo fixo.</td>
 </tr>
 </tbody>
 </table>
@@ -1532,6 +1542,12 @@
 </tr>
 </tbody>
 </table>
+<blockquote>
+<p><strong>Nota:</strong> os resources de schema/quality/governance (e a tool
+<code>get_pipeline_lineage</code>) hoje retornam <strong>payloads mock</strong> que definem o
+contrato (ver <code>aptdata/mcp/server.py</code>) — os stores reais ainda não foram
+plugados. Trate os dados como ilustrativos.</p>
+</blockquote>
 <hr />
 <h2 id="configurando-no-claude-desktop">Configurando no Claude Desktop<a class="headerlink" href="#configurando-no-claude-desktop" title="Permanent link">&para;</a></h2>
 <p>Adicione o servidor <code>aptdata</code> ao arquivo de configuração do Claude Desktop:</p>
