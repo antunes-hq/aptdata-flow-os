@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import textwrap
 import threading
+import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
 from pathlib import Path
@@ -73,6 +74,21 @@ class TestVizState:
         assert all(isinstance(v, str) for v in h.values())
 
 
+def _serve(state: VizState):
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), _make_handler(state))
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    return httpd, f"http://127.0.0.1:{httpd.server_address[1]}"
+
+
+def _get_json(base: str, path: str) -> tuple[int, dict]:
+    """GET que devolve (status, body-json) mesmo em respostas de erro."""
+    try:
+        resp = urllib.request.urlopen(base + path, timeout=5)
+        return resp.status, json.loads(resp.read())
+    except urllib.error.HTTPError as err:
+        return err.code, json.loads(err.read())
+
+
 class TestVizServer:
     def test_endpoints(self, agents_file):
         st = VizState(agents_file)
@@ -97,6 +113,75 @@ class TestVizServer:
         finally:
             httpd.shutdown()
             httpd.server_close()
+
+    def test_health_endpoint_envelope(self, agents_file):
+        httpd, base = _serve(VizState(agents_file))
+        try:
+            status, data = _get_json(base, "/api/health")
+            assert status == 200
+            assert set(data["health"]) == {"zeca", "ondina", "holt"}
+            assert all(isinstance(v, str) for v in data["health"].values())
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+
+    def test_route_error_returns_503(self, tmp_path):
+        # skills inválidas: registry carrega, Router.from_yaml falha -> router None
+        broken = AGENTS_YAML + "  - name: quebrada\n"
+        p = tmp_path / "agents.yaml"
+        p.write_text(broken, encoding="utf-8")
+        httpd, base = _serve(VizState(str(p)))
+        try:
+            status, data = _get_json(base, "/api/route?text=oi")
+            assert status == 503
+            assert "error" in data
+            # o resto da API continua servindo normalmente
+            status, data = _get_json(base, "/api/agents")
+            assert status == 200 and len(data["agents"]) == 3
+        finally:
+            httpd.shutdown()
+            httpd.server_close()
+
+
+class TestVizStateReload:
+    def test_reload_swaps_state_atomically(self, agents_file, monkeypatch):
+        """Durante um reload, leitores nunca observam registry/router mistos."""
+        import time
+
+        from aptdata.agents import Router
+
+        st = VizState(agents_file)
+        assert st.agents()  # carga inicial
+        old_registry = st._registry
+
+        in_reload = threading.Event()
+        release = threading.Event()
+        real_from_yaml = Router.from_yaml.__func__
+
+        def slow_from_yaml(cls, path, **kw):
+            in_reload.set()
+            assert release.wait(timeout=5)
+            return real_from_yaml(cls, path, **kw)
+
+        monkeypatch.setattr(Router, "from_yaml", classmethod(slow_from_yaml))
+
+        # bump de mtime para forçar reload
+        p = Path(agents_file)
+        p.write_text(AGENTS_YAML, encoding="utf-8")
+        now = time.time()
+        import os
+
+        os.utime(p, (now + 10, now + 10))
+
+        t = threading.Thread(target=st.agents)
+        t.start()
+        assert in_reload.wait(timeout=5)
+        # o estado antigo tem que continuar publicado até o swap completo
+        assert st._registry is old_registry
+        release.set()
+        t.join(timeout=5)
+        assert st._registry is not old_registry
+        assert st.route("mexer no frontend").get("agent_id") == "ondina"
 
 
 def test_cli_registers_viz():

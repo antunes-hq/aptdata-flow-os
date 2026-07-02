@@ -4,8 +4,10 @@ Endpoints:
 - ``GET /``                 → frontend (static/index.html)
 - ``GET /api/agents``       → registry (specs) — rápido, sem health
 - ``GET /api/health``       → {id: "up"|"down"|"disabled"|"unknown"} (best-effort)
-- ``GET /api/route?text=``  → decisão do Router para um prompt
-- ``GET /api/observability``→ resumo de custo/tokens/latência (se houver store)
+- ``GET /api/route?text=``  → decisão do Router para um prompt (503 se o
+  router estiver indisponível ou falhar)
+- ``GET /api/observability``→ stub: ``{"available": false}`` até o event
+  store da observability existir (ver docs/plans/observability.md)
 """
 
 from __future__ import annotations
@@ -13,6 +15,7 @@ from __future__ import annotations
 import json
 import mimetypes
 import os
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -40,22 +43,32 @@ class VizState:
         self._mtime: float | None = None
         self._registry = None
         self._router = None
+        self._lock = threading.Lock()
 
     def _maybe_reload(self):
+        """Recarrega registry+router se o arquivo mudou.
+
+        Serializado por lock (o servidor é thread-per-request): constrói os
+        objetos novos localmente e só então publica os dois juntos — leitores
+        concorrentes nunca veem registry novo com router velho.
+        """
         try:
             mtime = self.path.stat().st_mtime
         except OSError:
             return
-        if mtime == self._mtime and self._registry is not None:
-            return
-        from aptdata.agents import AgentRegistry, Router  # lazy
+        with self._lock:
+            if mtime == self._mtime and self._registry is not None:
+                return
+            from aptdata.agents import AgentRegistry, Router  # lazy
 
-        self._registry = AgentRegistry.from_yaml(self.path)
-        try:
-            self._router = Router.from_yaml(self.path)
-        except Exception:
-            self._router = None
-        self._mtime = mtime
+            registry = AgentRegistry.from_yaml(self.path)
+            try:
+                router = Router.from_yaml(self.path)
+            except Exception:
+                router = None
+            self._registry = registry
+            self._router = router
+            self._mtime = mtime
 
     def agents(self) -> list[dict]:
         self._maybe_reload()
@@ -124,7 +137,9 @@ def _make_handler(state: VizState):
                 self._json(200, {"health": state.health()})
             elif path == "/api/route":
                 text = (parse_qs(parsed.query).get("text") or [""])[0]
-                self._json(200, state.route(text))
+                decision = state.route(text)
+                # falha de roteamento não é sucesso: 503 em vez de 200
+                self._json(503 if "error" in decision else 200, decision)
             elif path == "/api/observability":
                 self._json(200, _observability())
             else:
