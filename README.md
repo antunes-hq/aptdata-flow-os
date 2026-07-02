@@ -159,8 +159,11 @@ aptdata agents resolve CAPABILITY [--file PATH] [--json]
 aptdata project init NAME [--out PATH] [--json]
 aptdata project plan PROJECT_FILE [--file PATH] [--json]
 aptdata project run PROJECT_FILE [--file PATH] [--json]
+aptdata setup [--file PATH]            # wizard de diagnóstico + configuração
+aptdata setup --check [--json]         # diagnóstico não interativo (CI)
 aptdata converse TEXT [--session ID] [--file PATH] [--yes] [--json]
 aptdata converse --confirm DECISION_ID [--choose AGENT] [--session ID]
+aptdata telegram [--file PATH] [--token-env VAR]
 aptdata viz [--file PATH] [--host HOST] [--port PORT]
 aptdata obs summary [--json]
 aptdata obs tail [--limit N] [--kind KIND] [--run-id ID] [--json]
@@ -248,6 +251,24 @@ store.save(graph)
 ```
 
 See [Governance docs](docs/governance.md) for the full API.
+
+---
+
+## Setup
+
+O ponto de partida é o wizard de setup — ele diagnostica o ambiente com
+transparência (agents.yaml, router, política de roteamento, Telegram,
+observabilidade, viz) e configura o que faltar:
+
+```bash
+aptdata setup                 # wizard guiado (cria agents.yaml inicial, canal Telegram)
+aptdata setup --check --json  # relatório de saúde para CI/painéis (exit 1 se incompleto)
+```
+
+O token do Telegram **nunca é gravado em arquivo** — fica na env
+`TELEGRAM_BOT_TOKEN`; o `agents.yaml` guarda só o nome da variável. Depois do
+setup: `aptdata converse` (conversa headless), `aptdata viz` (painel + traço
+ao vivo), `aptdata telegram` (bot fino). Veja [docs/telegram.md](docs/telegram.md).
 
 ---
 

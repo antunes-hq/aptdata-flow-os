@@ -102,6 +102,7 @@ nav:
   - Plugins:
       - Engines: transform-engines.md
       - MCP Server: mcp.md
+      - Telegram: telegram.md
   - API:
       - Core Reference: api/core.md
       - CLI: api/cli.md
