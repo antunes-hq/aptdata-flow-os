@@ -222,8 +222,33 @@ app.add_typer(project_app, name="project")
 app.add_typer(obs_app, name="obs")
 
 from aptdata.cli.commands.converse_cmd import converse_command  # noqa: E402
+from aptdata.cli.commands.setup_cmd import setup_command  # noqa: E402
 
 app.command("converse")(converse_command)
+app.command("setup")(setup_command)
+
+
+@app.command("telegram")
+def telegram(
+    file: str = typer.Option(None, "--file", "-f", help="Path to agents.yaml."),
+    token_env: str = typer.Option(
+        "TELEGRAM_BOT_TOKEN", "--token-env", help="Env var holding the bot token."
+    ),
+) -> None:
+    """Run the thin Telegram transport (long-polling) over the engine."""
+    from aptdata.agents.conversation import ConversationEngine  # noqa: PLC0415
+    from aptdata.cli.commands.agents_cmd import _resolve_file  # noqa: PLC0415
+    from aptdata.transports.telegram import TelegramTransport  # noqa: PLC0415
+
+    engine = ConversationEngine.from_yaml(_resolve_file(file))
+    transport = TelegramTransport(engine, token_env=token_env)
+    try:  # traço de subida de app é best-effort
+        from aptdata.observability import Observer  # noqa: PLC0415
+
+        Observer.get().emit("app.started", {"app": "telegram"})
+    except Exception:  # noqa: BLE001
+        pass
+    transport.run_polling()
 
 
 @app.command("interactive")

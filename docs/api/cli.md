@@ -383,6 +383,38 @@ Exits 1 when any task fails.
 
 ---
 
+## `aptdata setup`
+
+Diagnose and configure the aptdata ecosystem. The wizard shows every check
+transparently, offers to create a starter `agents.yaml` (with the `routing:`
+policy block) and configures the Telegram channel — the bot token stays in
+the `TELEGRAM_BOT_TOKEN` env var, **never in a file** (the yaml records only
+`token_env`).
+
+```
+aptdata setup [--file/-f PATH]           # wizard interativo
+aptdata setup --check [--json]           # não interativo; exit 1 se incompleto
+```
+
+`--check` reports: `agents_file`*, `router`* (agents/skills carregados),
+`routing_policy`, `telegram_token`, `telegram_transport`, `observability`,
+`viz` (* = obrigatórios para o exit 0). See [Telegram](../telegram.md).
+
+---
+
+## `aptdata telegram`
+
+Run the thin Telegram transport (long-polling) over the ConversationEngine —
+text messages become `converse` turns, inline buttons resolve confirmations.
+No routing logic lives in the transport.
+
+```bash
+export TELEGRAM_BOT_TOKEN=123:abc
+aptdata telegram [--file PATH] [--token-env TELEGRAM_BOT_TOKEN]
+```
+
+---
+
 ## `aptdata converse`
 
 One conversation turn against the multi-agent ecosystem, via the
