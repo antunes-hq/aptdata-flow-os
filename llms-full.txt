@@ -181,6 +181,15 @@ Multi-task projects (YAML) routed task-by-task through the Router.
 Serve the aptdata-viz web view (read-only HTTP API + thin frontend):
 `/api/agents`, `/api/health`, `/api/route?text=`, `/api/observability` (stub).
 
+### `aptdata obs summary|tail`
+
+Inspect the local observability trace (SQLite event store, `~/.aptdata/events.db`):
+routing decisions, agent dispatches/responses (with latency), app start-ups —
+correlated by `run_id`. Kill-switch: `APTDATA_OBS_DISABLED=1`.
+
+- `obs summary [--json]` – totals by kind, decisions by mode, dispatch health
+- `obs tail [--limit N] [--kind KIND] [--run-id ID] [--json]` – latest events
+
 ### `aptdata interactive`
 
 Launch the guided menu-driven interactive wizard.  Uses questionary for

@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://strondata.github.io/smart-data/telemetry/">
+        <link rel="canonical" href="https://strondata.github.io/smart-data/observability/">
       
       
-        <link rel="prev" href="../governance/">
+        <link rel="prev" href="../telemetry/">
       
       
-        <link rel="next" href="../observability/">
+        <link rel="next" href="../ci-logs/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Telemetry - aptdata</title>
+        <title>Observability - aptdata</title>
       
     
     
@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#telemetria-e-observabilidade-telemetry" class="md-skip">
+        <a href="#observability-o-traco-do-ecossistema" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Telemetry
+              Observability
             
           </span>
         </div>
@@ -787,6 +787,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../telemetry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Telemetry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -806,7 +834,7 @@
   <span class="md-ellipsis">
     
   
-    Telemetry
+    Observability
   
 
     
@@ -824,7 +852,7 @@
   <span class="md-ellipsis">
     
   
-    Telemetry
+    Observability
   
 
     
@@ -850,10 +878,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#visao-geral" class="md-nav__link">
+  <a href="#como-funciona" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Visão Geral
+        Como funciona
       
     </span>
   </a>
@@ -861,10 +889,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#comandos-da-cli-telemetry" class="md-nav__link">
+  <a href="#correlacao-por-run_id" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comandos da CLI (telemetry)
+        Correlação por run_id
       
     </span>
   </a>
@@ -872,10 +900,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#spans-auto-instrumentados" class="md-nav__link">
+  <a href="#taxonomia-de-eventos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Spans Auto-Instrumentados
+        Taxonomia de eventos
       
     </span>
   </a>
@@ -883,10 +911,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#integracao-de-backends" class="md-nav__link">
+  <a href="#cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Integração de Backends
+        CLI
       
     </span>
   </a>
@@ -894,10 +922,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#desabilitando-a-telemetria" class="md-nav__link">
+  <a href="#configuracao" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Desabilitando a Telemetria
+        Configuração
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#garantias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Garantias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relacao-com-opentelemetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relação com OpenTelemetry
       
     </span>
   </a>
@@ -908,34 +958,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../observability/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Observability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1458,120 +1480,115 @@
   
 
 
-<h1 id="telemetria-e-observabilidade-telemetry">Telemetria e Observabilidade (Telemetry)<a class="headerlink" href="#telemetria-e-observabilidade-telemetry" title="Permanent link">&para;</a></h1>
-<p>O <strong>aptdata</strong> integra-se nativamente com o <a href="https://opentelemetry.io/">OpenTelemetry</a>, provendo observabilidade <em>zero-config</em> e instrumentação automática para todas as execuções de pipeline.</p>
-<hr />
-<h2 id="visao-geral">Visão Geral<a class="headerlink" href="#visao-geral" title="Permanent link">&para;</a></h2>
-<p>Através do método <code>__init_subclass__</code>, toda classe que herda de <code>BaseComponent</code> é <strong>auto-instrumentada</strong>. Ao invocar o <code>execute()</code>, o framework encapsula a chamada em um <em>Span</em> (Rastro) do OpenTelemetry carregando os metadados ricos daquele componente. Nenhuma alteração no código de negócio é necessária.</p>
-<pre class="mermaid"><code>graph TD
-    E["BaseComponent.execute()"]
-    S["span: aptdata.component"]
-    ID["component.id = &lt;component_id&gt;"]
-    K["component.kind = TRANSFORM | FILTER | AGGREGATE | …"]
-    T["component.tags = ['tag1', 'tag2']"]
-    ST["component.status = success | error"]
-    Q["child span: aptdata.quality.validate"]
-    G["child span: aptdata.governance.lineage"]
-
-    E --&gt; S
-    S --&gt; ID
-    S --&gt; K
-    S --&gt; T
-    S --&gt; ST
-    S --&gt; Q
-    S --&gt; G</code></pre>
-<p>Validadores de Qualidade de Dados e <em>hooks</em> de Governança emitem <em>child spans</em> (rastros filhos), garantindo visibilidade end-to-end e tempo de execução granulado ao longo do pipeline.</p>
-<hr />
-<h2 id="comandos-da-cli-telemetry">Comandos da CLI (<code>telemetry</code>)<a class="headerlink" href="#comandos-da-cli-telemetry" title="Permanent link">&para;</a></h2>
-<div class="grid cards">
+<h1 id="observability-o-traco-do-ecossistema">Observability — o traço do ecossistema<a class="headerlink" href="#observability-o-traco-do-ecossistema" title="Permanent link">&para;</a></h1>
+<p>O aptdata grava um <strong>traço de eventos</strong> de tudo que acontece na orquestração
+multi-agente: por que o Router escolheu um agente, quando um prompt saiu,
+quanto demorou a resposta, quando um app subiu. O traço é a <strong>fonte única</strong>
+que todas as superfícies leem — CLI (<code>aptdata obs</code>), viz e TUI — seguindo a
+north star de sincronização (<code>docs/plans/sync-architecture.md</code>).</p>
+<h2 id="como-funciona">Como funciona<a class="headerlink" href="#como-funciona" title="Permanent link">&para;</a></h2>
 <ul>
-<li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.5 5.5v13h-2v-13zm-7 5v8h-2v-8zm-7 5v3h-2v-3zM21 4h-5v16h5zm-7 5H9v11h5zm-7 5H2v6h5z"/></svg></span> <strong><code>telemetry status</code></strong></p>
-<p>Exibe a configuração atual e o status da integração OpenTelemetry no ambiente.
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span>status<span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
-</span></code></pre></div></p>
-</li>
-<li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v2h1a1 1 0 0 1 1 1h7v2h-7a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1H2v-2h7a1 1 0 0 1 1-1h1v-2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-5 2.5L7.5 10H11v4h2v-4h3.5z"/></svg></span> <strong><code>telemetry export</code></strong></p>
-<p>Esvazia o <em>buffer</em> de spans locais e os força para o <em>exporter</em> configurado (Console ou OTLP).
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="o">[</span>--format<span class="w"> </span>json<span class="o">]</span>
-</span></code></pre></div></p>
-</li>
+<li><strong><code>Observer</code></strong> (<code>aptdata.observability.Observer</code>) é a façade de emissão:
+  <strong>best-effort e no-throw</strong> — uma falha de telemetria nunca derruba o fluxo
+  de negócio.</li>
+<li><strong><code>ObservabilityStore</code></strong> persiste os eventos em <strong>SQLite local</strong>
+  (<code>~/.aptdata/events.db</code> por padrão) — nenhum collector externo é
+  necessário.</li>
+<li>Cada evento carrega <code>ts</code>, <code>kind</code>, <code>agent_id</code>, <code>payload</code>, o <code>trace_id</code>
+  OpenTelemetry corrente (quando houver) e o <strong><code>run_id</code></strong> de correlação.</li>
 </ul>
-</div>
-<hr />
-<h2 id="spans-auto-instrumentados">Spans Auto-Instrumentados<a class="headerlink" href="#spans-auto-instrumentados" title="Permanent link">&para;</a></h2>
+<h2 id="correlacao-por-run_id">Correlação por <code>run_id</code><a class="headerlink" href="#correlacao-por-run_id" title="Permanent link">&para;</a></h2>
+<p>Um comando como <code>aptdata agents dispatch</code> abre um <em>run context</em>; tudo que
+acontece dentro dele — decisão do Router, dispatch, resposta — compartilha o
+mesmo <code>run_id</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$<span class="w"> </span>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>$<span class="w"> </span>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span>--json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.events[] | {kind, run_id}&#39;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="o">{</span><span class="s2">&quot;kind&quot;</span>:<span class="w"> </span><span class="s2">&quot;routing.decision&quot;</span>,<span class="w"> </span><span class="s2">&quot;run_id&quot;</span>:<span class="w"> </span><span class="s2">&quot;run_20260702...&quot;</span><span class="o">}</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="o">{</span><span class="s2">&quot;kind&quot;</span>:<span class="w"> </span><span class="s2">&quot;agent.dispatch&quot;</span>,<span class="w">  </span><span class="s2">&quot;run_id&quot;</span>:<span class="w"> </span><span class="s2">&quot;run_20260702...&quot;</span><span class="o">}</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="o">{</span><span class="s2">&quot;kind&quot;</span>:<span class="w"> </span><span class="s2">&quot;agent.response&quot;</span>,<span class="w">  </span><span class="s2">&quot;run_id&quot;</span>:<span class="w"> </span><span class="s2">&quot;run_20260702...&quot;</span><span class="o">}</span>
+</span></code></pre></div>
+<p>Programaticamente:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">aptdata.observability</span><span class="w"> </span><span class="kn">import</span> <span class="n">Observer</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">obs</span> <span class="o">=</span> <span class="n">Observer</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">with</span> <span class="n">obs</span><span class="o">.</span><span class="n">run_context</span><span class="p">()</span> <span class="k">as</span> <span class="n">run_id</span><span class="p">:</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="o">...</span>  <span class="c1"># tudo emitido aqui herda o run_id</span>
+</span></code></pre></div>
+<h2 id="taxonomia-de-eventos">Taxonomia de eventos<a class="headerlink" href="#taxonomia-de-eventos" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Nome do Span</th>
-<th>Emitido Por</th>
-<th>Principais Atributos (<code>attributes</code>)</th>
+<th>Kind</th>
+<th>Emitido por</th>
+<th>Payload</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>aptdata.component</code></td>
-<td><code>BaseComponent.execute()</code></td>
-<td><code>component.id</code>, <code>component.kind</code>, <code>component.tags</code></td>
+<td><code>app.started</code></td>
+<td>viz (e demais apps ao subir)</td>
+<td><code>{app, host, port}</code></td>
 </tr>
 <tr>
-<td><code>aptdata.quality.validate</code></td>
-<td><code>QualityValidator.validate()</code></td>
-<td><code>quality.rule_count</code>, <code>quality.enforcement</code></td>
+<td><code>routing.decision</code></td>
+<td><code>Router.route()</code> — toda superfície (CLI, viz, MCP, projects)</td>
+<td><code>RouteDecision</code> completo: <code>{agent_id, mode, confidence, skill, matched_keyword, text}</code></td>
 </tr>
 <tr>
-<td><code>aptdata.governance.lineage</code></td>
-<td><code>LineageStore.save()</code></td>
-<td><code>lineage.run_id</code>, <code>lineage.workflow</code></td>
+<td><code>agent.dispatch</code></td>
+<td><code>observed_send()</code> (CLI <code>agents send/dispatch</code>, <code>project run</code>, MCP <code>dispatch</code>)</td>
+<td><code>{prompt_chars}</code></td>
 </tr>
 <tr>
-<td><code>aptdata.transform</code></td>
-<td><code>PandasTransformer</code> / <code>PySparkTransformer</code></td>
-<td><code>transform.engine</code>, <code>transform.rows_in</code>, <code>transform.rows_out</code></td>
+<td><code>agent.response</code></td>
+<td>idem</td>
+<td><code>{ok, error, latency_ms, text_chars}</code></td>
+</tr>
+<tr>
+<td><code>permission.requested</code> / <code>permission.resolved</code></td>
+<td>loop de confirmação do ConversationEngine (planejado)</td>
+<td>decisão pendente / escolha</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition warning">
-<p class="admonition-title">Mascaramento Automático</p>
-<p>O módulo de telemetria inspeciona <em>payloads</em> em busca de chaves sensíveis (ex: <code>password</code>, <code>token</code>, <code>secret</code>, <code>key</code>) e mascara seus valores com <code>***</code> antes de exportar o evento para o OTLP.</p>
-</div>
-<hr />
-<h2 id="integracao-de-backends">Integração de Backends<a class="headerlink" href="#integracao-de-backends" title="Permanent link">&para;</a></h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Jaeger (Desenvolvimento Local)</label><label for="__tabbed_1_2">OTLP (Produção)</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p>Inicie o serviço do Jaeger via Docker:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>jaeger<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>-p<span class="w"> </span><span class="m">16686</span>:16686<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>-p<span class="w"> </span><span class="m">4317</span>:4317<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>jaegertracing/all-in-one:latest
-</span></code></pre></div></p>
-<p>Aponte as variáveis de ambiente e rode seu sistema:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;http://localhost:4317&quot;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SERVICE_NAME</span><span class="o">=</span><span class="s2">&quot;aptdata&quot;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>aptdata<span class="w"> </span>run<span class="w"> </span>my_system
+<h2 id="cli">CLI<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>summary<span class="w"> </span><span class="o">[</span>--json<span class="o">]</span><span class="w">   </span><span class="c1"># totais por kind, decisões por modo, saúde dos dispatches</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span><span class="o">[</span>--limit<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--kind<span class="w"> </span>KIND<span class="o">]</span><span class="w"> </span><span class="o">[</span>--run-id<span class="w"> </span>ID<span class="o">]</span><span class="w"> </span><span class="o">[</span>--json<span class="o">]</span>
 </span></code></pre></div>
-Abra <code>http://localhost:16686</code> para visualizar a árvore de <em>traces</em>.</p>
-</div>
-<div class="tabbed-block">
-<p>Utilize a integração genérica para enviar eventos para qualquer <em>collector</em> OTLP compatível (Datadog, Grafana Tempo, Honeycomb):
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;https://api.honeycomb.io&quot;</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_HEADERS</span><span class="o">=</span><span class="s2">&quot;x-honeycomb-team=&lt;API_KEY&gt;&quot;</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SERVICE_NAME</span><span class="o">=</span><span class="s2">&quot;aptdata&quot;</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>aptdata<span class="w"> </span>run<span class="w"> </span>my_system
-</span></code></pre></div></p>
-</div>
-</div>
-</div>
-<hr />
-<h2 id="desabilitando-a-telemetria">Desabilitando a Telemetria<a class="headerlink" href="#desabilitando-a-telemetria" title="Permanent link">&para;</a></h2>
-<p>Caso precise desligar a telemetria completamente para otimizar performance em testes locais, utilize a variável de ambiente padrão do SDK do OpenTelemetry:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SDK_DISABLED</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>aptdata<span class="w"> </span>run<span class="w"> </span>my_system
-</span></code></pre></div>
+<h2 id="configuracao">Configuração<a class="headerlink" href="#configuracao" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variável</th>
+<th>Efeito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>APTDATA_OBS_DB</code></td>
+<td>Caminho do SQLite (default <code>~/.aptdata/events.db</code>)</td>
+</tr>
+<tr>
+<td><code>APTDATA_OBS_DISABLED=1</code></td>
+<td>Kill-switch: desliga toda a emissão</td>
+</tr>
+</tbody>
+</table>
+<h2 id="garantias">Garantias<a class="headerlink" href="#garantias" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>No-throw</strong>: <code>Observer.emit()</code> engole qualquer erro (payload não
+  serializável, disco cheio, store quebrado) e loga em <code>DEBUG</code>.</li>
+<li><strong>Thread-safe</strong>: o store serializa escritas/leituras com lock (o viz é
+  thread-per-request).</li>
+<li><strong>Isolado em testes</strong>: a suite aponta <code>APTDATA_OBS_DB</code> para um banco
+  temporário (fixture autouse em <code>tests/conftest.py</code>).</li>
+</ul>
+<h2 id="relacao-com-opentelemetry">Relação com OpenTelemetry<a class="headerlink" href="#relacao-com-opentelemetry" title="Permanent link">&para;</a></h2>
+<p>OTel continua sendo o backbone de <strong>traces/métricas</strong> (ver
+<a href="../telemetry/">Telemetry</a>); o traço de eventos é a camada aptdata-nativa para
+<strong>eventos de domínio</strong> com persistência local — os dois se correlacionam pelo
+<code>trace_id</code> embutido em cada evento. Roadmap completo em
+<code>docs/plans/observability.md</code>.</p>
 
 
 
@@ -1609,7 +1626,7 @@ Abra <code>http://localhost:16686</code> para visualizar a árvore de <em>traces
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../governance/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Governance">
+          <a href="../telemetry/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Telemetry">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1619,20 +1636,20 @@ Abra <code>http://localhost:16686</code> para visualizar a árvore de <em>traces
                 Previous
               </span>
               <div class="md-ellipsis">
-                Governance
+                Telemetry
               </div>
             </div>
           </a>
         
         
           
-          <a href="../observability/" class="md-footer__link md-footer__link--next" aria-label="Next: Observability">
+          <a href="../ci-logs/" class="md-footer__link md-footer__link--next" aria-label="Next: CI &amp; Execution Logs">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Observability
+                CI & Execution Logs
               </div>
             </div>
             <div class="md-footer__button md-icon">
