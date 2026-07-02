@@ -6,8 +6,9 @@ Endpoints:
 - ``GET /api/health``       → {id: "up"|"down"|"disabled"|"unknown"} (best-effort)
 - ``GET /api/route?text=``  → decisão do Router para um prompt (503 se o
   router estiver indisponível ou falhar)
-- ``GET /api/observability``→ stub: ``{"available": false}`` até o event
-  store da observability existir (ver docs/plans/observability.md)
+- ``GET /api/observability``→ resumo do event store (``Observer.summary()``)
+- ``GET /api/events``       → **SSE** ao vivo do traço (``?backlog=N`` para
+  reemitir os últimos N eventos ao conectar)
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ import json
 import mimetypes
 import os
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -142,8 +144,39 @@ def _make_handler(state: VizState):
                 self._json(503 if "error" in decision else 200, decision)
             elif path == "/api/observability":
                 self._json(200, _observability())
+            elif path == "/api/events":
+                self._sse(parsed)
             else:
                 self._serve_static(path)
+
+        def _sse(self, parsed):
+            """Stream do traço via Server-Sent Events (frontend fino, sem poll).
+
+            Reemite os últimos ``backlog`` eventos ao conectar e segue
+            entregando os novos até o cliente desconectar.
+            """
+            from aptdata.observability import Observer  # lazy
+
+            obs = Observer.get()
+            backlog = int((parse_qs(parsed.query).get("backlog") or ["10"])[0])
+            cursor = max(0, obs.last_id() - max(0, backlog))
+
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+            self.send_header("Cache-Control", "no-cache")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            try:
+                while True:
+                    cursor, events = obs.since(cursor, limit=100)
+                    for event in events:
+                        body = json.dumps(event, ensure_ascii=False)
+                        self.wfile.write(f"data: {body}\n\n".encode())
+                    self.wfile.flush()
+                    if not events:
+                        time.sleep(0.5)
+            except (BrokenPipeError, ConnectionResetError):
+                pass  # cliente desconectou
 
         def _serve_static(self, path: str):
             rel = "index.html" if path == "/" else path.lstrip("/")
@@ -170,12 +203,13 @@ def _make_handler(state: VizState):
 
 
 def _observability() -> dict:
-    """Resumo de observabilidade se um store estiver disponível; senão vazio.
+    """Resumo do event store (Observer.summary()); nunca derruba o endpoint."""
+    try:
+        from aptdata.observability import Observer  # lazy
 
-    A fonte real (event store da observability) ainda não existe como módulo
-    próprio — quando existir, plugar aqui. Por ora retorna available=false.
-    """
-    return {"available": False, "note": "observability store ainda não implementado"}
+        return Observer.get().summary()
+    except Exception as exc:  # noqa: BLE001 - viz é leitor, degrada com graça
+        return {"available": False, "error": str(exc)}
 
 
 def serve(agents_file: str | None = None, host: str = "0.0.0.0", port: int = 4570):

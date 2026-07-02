@@ -386,7 +386,10 @@ Exits 1 when any task fails.
 ## `aptdata viz`
 
 Serve the aptdata-viz web view of the agent ecosystem (read-only API +
-thin frontend). See the endpoints in `aptdata/viz/server.py`.
+thin frontend). Endpoints: `/api/agents`, `/api/health`, `/api/route?text=`
+(503 on router failure), `/api/observability` (event-store summary) and
+`/api/events` — live **SSE** feed of the observability trace
+(`?backlog=N` replays the last N events on connect).
 
 ```
 aptdata viz [--file PATH] [--host HOST] [--port PORT]

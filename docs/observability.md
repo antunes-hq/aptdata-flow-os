@@ -51,12 +51,20 @@ with obs.run_context() as run_id:
 | `agent.response` | idem | `{ok, error, latency_ms, text_chars}` |
 | `permission.requested` / `permission.resolved` | loop de confirmação do ConversationEngine (planejado) | decisão pendente / escolha |
 
-## CLI
+## Superfícies (mesma fonte, três projeções)
 
-```bash
-aptdata obs summary [--json]   # totais por kind, decisões por modo, saúde dos dispatches
-aptdata obs tail [--limit N] [--kind KIND] [--run-id ID] [--json]
-```
+- **CLI**:
+
+    ```bash
+    aptdata obs summary [--json]   # totais por kind, decisões por modo, saúde dos dispatches
+    aptdata obs tail [--limit N] [--kind KIND] [--run-id ID] [--json]
+    ```
+
+- **viz (web)**: `GET /api/observability` devolve o `summary()`; o painel
+  mostra o **traço ao vivo** via `GET /api/events` (**SSE**, `?backlog=N`
+  reemite os últimos N ao conectar) — sem polling.
+- **TUI** (`aptdata monitor`): a aba *Agent Trace* lê incrementalmente o
+  mesmo store (cursor `Observer.since`), com paridade ao feed do viz.
 
 ## Configuração
 

@@ -103,3 +103,45 @@ class TestMonitorAppHeadless:
             monitor_app.log_agent_event("test_event: branch_on triggered")
             trace = monitor_app.query_one(_AgentTraceLog)
             assert trace is not None
+
+
+class TestAgentTraceEventStore:
+    """O Agent Trace lê o MESMO event store da observability (fonte única)."""
+
+    @pytest.mark.asyncio()
+    async def test_backlog_loaded_on_mount(self, monitor_app: MonitorApp) -> None:
+        from aptdata.observability import Observer
+
+        Observer.get().emit("routing.decision", {"mode": "skill"}, agent_id="zeca")
+        async with monitor_app.run_test():
+            trace = monitor_app.query_one(_AgentTraceLog)
+            assert trace._cursor >= 1  # backlog consumido no mount
+
+    @pytest.mark.asyncio()
+    async def test_refresh_appends_only_new_events(
+        self, monitor_app: MonitorApp
+    ) -> None:
+        from aptdata.observability import Observer
+
+        async with monitor_app.run_test():
+            trace = monitor_app.query_one(_AgentTraceLog)
+            assert trace.refresh_trace() == 0
+            Observer.get().emit("agent.response", {"ok": True}, agent_id="zeca")
+            assert trace.refresh_trace() == 1
+            assert trace.refresh_trace() == 0  # cursor avançou
+
+    @pytest.mark.asyncio()
+    async def test_refresh_survives_broken_observer(
+        self, monitor_app: MonitorApp, monkeypatch
+    ) -> None:
+        from aptdata import observability
+
+        def _boom(cls):
+            raise RuntimeError("store down")
+
+        async with monitor_app.run_test():
+            trace = monitor_app.query_one(_AgentTraceLog)
+            monkeypatch.setattr(
+                observability.Observer, "get", classmethod(_boom)
+            )
+            assert trace.refresh_trace() == 0  # TUI não pode quebrar

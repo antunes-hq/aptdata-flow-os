@@ -204,3 +204,33 @@ class TestProjectRunnerEmission:
         assert dispatches[0]["run_id"] == responses[0]["run_id"] is not None
         assert responses[0]["payload"]["ok"] is True
         assert responses[0]["payload"]["latency_ms"] >= 0
+
+
+class TestStoreSince:
+    def test_since_returns_only_new_events(self, tmp_path: Path):
+        store = ObservabilityStore(tmp_path / "e.db")
+        store.append("a", {"i": 1})
+        last, events = store.since(0)
+        assert [e["payload"]["i"] for e in events] == [1]
+        store.append("a", {"i": 2})
+        last2, events2 = store.since(last)
+        assert [e["payload"]["i"] for e in events2] == [2]
+        assert last2 > last
+        # nada novo -> lista vazia, cursor estável
+        last3, events3 = store.since(last2)
+        assert events3 == [] and last3 == last2
+        store.close()
+
+    def test_last_id_tracks_appends(self, tmp_path: Path):
+        store = ObservabilityStore(tmp_path / "e.db")
+        assert store.last_id() == 0
+        store.append("a", {})
+        store.append("b", {})
+        assert store.last_id() == 2
+        store.close()
+
+    def test_observer_exposes_since(self, obs_db: Path):
+        obs = Observer.get()
+        obs.emit("k", {"x": 1})
+        last, events = obs.since(0)
+        assert len(events) == 1 and events[0]["kind"] == "k"
