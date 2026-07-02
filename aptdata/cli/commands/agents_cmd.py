@@ -14,7 +14,9 @@ from pathlib import Path
 
 import typer
 
+from aptdata.agents.base import observed_send
 from aptdata.cli.rendering.console import SmartConsole
+from aptdata.observability import Observer
 
 agents_app = typer.Typer(name="agents", help="Talk to the multi-agent ecosystem.")
 
@@ -96,7 +98,8 @@ def agents_send(
         console.error(f"Agent '{agent_id}' is not registered.")
         raise typer.Exit(1)
 
-    result = agent.send(prompt)
+    with Observer.get().run_context():
+        result = observed_send(agent, prompt)
     if json_mode:
         print(json.dumps(result.to_dict()), flush=True)
     elif result.ok:
@@ -133,13 +136,14 @@ def agents_dispatch(
     """Route a prompt to the best agent and send it (route + send in one)."""
     console = SmartConsole(json_mode=json_mode)
     router = _load_router(file)
-    decision = router.route(text)
-    if decision.agent_id is None:
-        console.error("No agent available to handle this prompt.")
-        raise typer.Exit(1)
+    with Observer.get().run_context():
+        decision = router.route(text)
+        if decision.agent_id is None:
+            console.error("No agent available to handle this prompt.")
+            raise typer.Exit(1)
 
-    agent = router.registry.get(decision.agent_id)
-    result = agent.send(decision.text)
+        agent = router.registry.get(decision.agent_id)
+        result = observed_send(agent, decision.text)
     if json_mode:
         print(
             json.dumps({"routed_to": decision.agent_id, "mode": decision.mode,

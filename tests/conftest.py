@@ -29,6 +29,26 @@ def pytest_configure(config: pytest.Config) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Observability isolation
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _isolated_observability(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """Aponta o event store para um banco temporário em TODOS os testes.
+
+    O Router/adapters emitem eventos por padrão; sem isolamento a suite
+    escreveria em ``~/.aptdata/events.db`` (e testes vazariam uns nos outros).
+    """
+    monkeypatch.setenv("APTDATA_OBS_DB", str(tmp_path / "obs-events.db"))
+    from aptdata.observability import Observer  # noqa: PLC0415
+
+    Observer.reset()
+    yield
+    Observer.reset()
+
+
+# ---------------------------------------------------------------------------
 # DataFrame helpers (require pandas)
 # ---------------------------------------------------------------------------
 

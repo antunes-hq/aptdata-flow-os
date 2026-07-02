@@ -157,3 +157,32 @@ class BaseAgent(IAgent):
 
     def __repr__(self) -> str:  # pragma: no cover - cosmetic
         return f"<{self.__class__.__name__} id={self.spec.id!r} type={self.type!r}>"
+
+
+def observed_send(agent: IAgent, prompt: str, **kwargs: Any) -> AgentResponse:
+    """``agent.send`` com traço de observabilidade (dispatch/response + latência).
+
+    Ponto único de emissão para toda superfície que despacha (CLI, ProjectRunner,
+    MCP): mantém a fonte de eventos uma só. Best-effort — o Observer nunca
+    levanta, e o send acontece mesmo se a emissão falhar.
+    """
+    import time  # noqa: PLC0415
+
+    from aptdata.observability import Observer  # noqa: PLC0415
+
+    obs = Observer.get()
+    agent_id = getattr(agent, "id", None)
+    obs.emit("agent.dispatch", {"prompt_chars": len(prompt)}, agent_id=agent_id)
+    started = time.perf_counter()
+    response = agent.send(prompt, **kwargs)
+    obs.emit(
+        "agent.response",
+        {
+            "ok": response.ok,
+            "error": response.error,
+            "latency_ms": round((time.perf_counter() - started) * 1000, 3),
+            "text_chars": len(response.text or ""),
+        },
+        agent_id=agent_id,
+    )
+    return response

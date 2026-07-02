@@ -21,6 +21,7 @@ from typing import Any
 import yaml
 from pydantic import BaseModel, Field
 
+from aptdata.agents.base import observed_send as _observed_send
 from aptdata.agents.router import Router
 
 logger = logging.getLogger(__name__)
@@ -123,7 +124,17 @@ class ProjectRunner:
         return results
 
     def run(self) -> list[TaskResult]:
-        """Execute tasks in order, skipping those whose dependencies failed."""
+        """Execute tasks in order, skipping those whose dependencies failed.
+
+        Todo o run compartilha um ``run_id`` de observabilidade; cada task
+        emite ``agent.dispatch``/``agent.response`` correlacionados.
+        """
+        from aptdata.observability import Observer  # noqa: PLC0415
+
+        with Observer.get().run_context():
+            return self._run()
+
+    def _run(self) -> list[TaskResult]:
         results: dict[str, TaskResult] = {}
         for task in self.project.tasks:
             failed_dep = next(
@@ -149,8 +160,8 @@ class ProjectRunner:
                 )
                 continue
 
-            response = self.router.registry.get(decision.agent_id).send(
-                decision.text
+            response = _observed_send(
+                self.router.registry.get(decision.agent_id), decision.text
             )
             results[task.id] = TaskResult(
                 task_id=task.id,

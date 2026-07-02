@@ -400,6 +400,33 @@ aptdata viz [--file PATH] [--host HOST] [--port PORT]
 
 ---
 
+## `aptdata obs`
+
+Inspect the aptdata observability trace — the local event store where routing
+decisions, agent dispatches/responses and app start-ups are recorded (see
+[Observability](../observability.md)). Store path: `$APTDATA_OBS_DB`
+(default `~/.aptdata/events.db`); disable emission with
+`APTDATA_OBS_DISABLED=1`.
+
+### `aptdata obs summary [--json]`
+
+Aggregated view: totals by event kind, routing decisions by mode, dispatch
+success rate and average latency.
+
+### `aptdata obs tail [--limit N] [--kind KIND] [--run-id ID] [--json]`
+
+Latest events in chronological order. Filter by kind
+(`routing.decision`, `agent.dispatch`, `agent.response`, `app.started`, …)
+or correlate a whole run with `--run-id`.
+
+```bash
+aptdata agents dispatch "mexer no frontend" --json
+aptdata obs tail --json           # decisão + dispatch + response, mesmo run_id
+aptdata obs summary
+```
+
+---
+
 ## `aptdata mcp-start`
 
 Start the MCP (Model Context Protocol) server so AI agents can discover and

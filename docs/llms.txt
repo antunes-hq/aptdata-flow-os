@@ -49,7 +49,7 @@ methods, and register their systems in the plugin registry.
 - **Plugin registry** for named system discovery
 - **Structured CLI** emitting machine-readable JSON lines (with Rich human-readable mode)
 - **Rich rendering layer** with dual-mode output (JSON lines or Rich tables/panels)
-- **Sub-commands**: `system`, `plugin`, `config`, `telemetry`, `mesh`, `agents`, `project`, `schema`
+- **Sub-commands**: `system`, `plugin`, `config`, `telemetry`, `mesh`, `agents`, `project`, `schema`, `obs`
 - **Interactive wizard** mode (`aptdata interactive`) powered by questionary
 - **Shell completions** for system names, plugin names, environments, templates
 - **Interactive TUI** (Textual) with DAG, Metrics, and Agent Trace tabs
