@@ -46,20 +46,28 @@ Boa parte do desenho abaixo **já está no código** — a ADR consolida e fecha
 
 ## 2. Decisões Arquiteturais Propostas
 
-### 2.1. Descoberta de plugins por entry points
+### 2.1. Descoberta de plugins por entry points + pluggy
 
-Adotar o mecanismo padrão da biblioteca-padrão — `importlib.metadata.entry_points(group=...)`,
-estável desde o Python 3.10 — para **descoberta automática** de extensões. Definir os grupos:
+Não hand-rollar o sistema de plugins — usar as ferramentas provadas da comunidade:
 
-* `aptdata.systems` — implementações de `ISystem`.
-* `aptdata.components` — componentes reutilizáveis.
-* `aptdata.agents` — adapters de backend de agente (kind → classe).
-* `aptdata.plugins` — readers / writers / engines.
+* **Descoberta:** o mecanismo padrão da biblioteca-padrão — `importlib.metadata.entry_points(group=...)`,
+  estável desde o Python 3.10. Grupos:
+  * `aptdata.systems` — implementações de `ISystem`.
+  * `aptdata.components` — componentes reutilizáveis.
+  * `aptdata.agents` — adapters de backend de agente (kind → classe).
+  * `aptdata.plugins` — readers / writers / engines.
+  * `aptdata.commands` — subcomandos de CLI (ver §2.4).
+* **Gestão de hooks:** [`pluggy`](https://pluggy.readthedocs.io/) — a mesma biblioteca que dá o
+  sistema de plugins do `pytest`. Define os hooks de ciclo de vida via `@hookspec` no núcleo e
+  `@hookimpl` nos plugins. É o encaixe natural para os hooks `pre_execute` / `post_execute` /
+  `on_success` / `on_failure` que a **ADR-001** já pede (a "governança invisível" via event bus deixa
+  de ser código ad-hoc e vira hook specs versionados).
 
 Um terceiro passa a estender o `aptdata` **só instalando um pacote** que declare o entry point
 correspondente, sem que o núcleo tenha qualquer dependência ou conhecimento prévio dele. O registro
-imperativo (`registry.register(...)`) permanece como atalho para scripts e testes locais. O
-`PluginManager` já cita "entry-point-style discovery" como intenção — esta decisão a concretiza.
+imperativo (`registry.register(...)`) permanece como atalho para scripts e testes locais. Isto
+substitui o `PluginManager` / `_SystemRegistry` caseiros (que já citam "entry-point-style discovery"
+como intenção) por entry points + pluggy.
 
 ```toml
 # no pyproject.toml de um pacote de terceiro
@@ -78,6 +86,14 @@ responsabilidade, backend trocável). O `.aptdata/` reúne o que hoje está espa
 * `.aptdata/config.yaml` — a configuração declarativa (`ParsedConfig`).
 * Um **JSON Schema versionado** por arquivo, gerado pelo `schema export` já existente — a superfície
   que qualquer ferramenta lê e valida (é o contrato tool-agnóstico).
+
+Ferramentas da comunidade (sem validação manual):
+
+* **[`pydantic-settings`](https://pydantic.dev/docs/validation/latest/concepts/pydantic_settings/)**
+  para o loader tipado e *fail-fast* — o repo já é pydantic-heavy, então o `.aptdata/` vira um
+  modelo validado que quebra cedo se a config estiver errada.
+* **`check-jsonschema`** no pre-commit/CI, validando os arquivos do `.aptdata/` contra o JSON Schema
+  versionado a cada commit.
 
 Distinção importante — **projeto ≠ usuário**:
 
@@ -110,8 +126,13 @@ Fechar as pontas que faltam para tratá-lo como produto completo:
 
 * `aptdata init` — cria o `.aptdata/` do projeto a partir de um template.
 * `aptdata plugins` — lista o que foi **descoberto por entry point** (systems/components/agents/plugins).
-* `aptdata doctor` — valida o `.aptdata/` contra os JSON Schemas versionados.
+* `aptdata doctor` — valida o `.aptdata/` contra os JSON Schemas versionados (via `check-jsonschema`).
 * Consistência de `--json` e `dry_run` (plan-only) em **todos** os comandos que mudam estado.
+
+O CLI já é **Typer** (moderno, sobre Click). Subcomandos de terceiros entram pelo grupo de entry
+point `aptdata.commands` e são montados com `app.add_typer(...)` na inicialização — o padrão
+[`click-plugins`](https://github.com/click-contrib/click-plugins) aplicado ao Typer. Assim um pacote
+instalado pode adicionar um subcomando sem tocar no núcleo.
 
 ### 2.5. Governança e telemetria (evolução alinhada à ADR-001)
 
@@ -119,6 +140,20 @@ Manter a direção da ADR-001 (governança invisível via event bus). Como evolu
 bloqueante: os eventos do `EventBus` podem ganhar campos "5W" (o quê / quando / onde / quem / porquê)
 para auditoria uniforme, e as `BusinessRule` do `RuleRegistry` podem virar um passo de verificação
 bloqueante do workflow. Fica registrado como caminho, não como pré-requisito desta ADR.
+
+### 2.6. Toolchain e DX (stack moderno)
+
+Adotar o toolchain Python que a comunidade consolidou em 2025/26, tratando os três repositórios como
+um só espaço de trabalho:
+
+* **[`uv`](https://andrewodendaal.com/python-packaging-2026-uv-poetry-modern-ecosystem/)** no lugar do
+  Poetry — resolução 10–100× mais rápida e **workspace** nativo, que cobre `smart-data` (o núcleo),
+  a camada web e o Lab num monorepo lógico com um lockfile reproduzível.
+* **`ruff`** (já em uso) como linter + formatter único.
+* **`pre-commit`** rodando `ruff` + `check-jsonschema` (valida o `.aptdata/`) antes de cada commit.
+* **Type-check estrito** (`mypy`, ou `ty` quando amadurecer) — os contratos Pydantic estritos do
+  `aptdata` tornam a checagem de tipos um ganho real, não cerimônia.
+* Mantém `pytest` + cobertura ≥ 80% e os workflows de CI existentes (adaptados para `uv`).
 
 ## 3. Consumidores: camada web única e o papel do Lab
 
@@ -144,12 +179,18 @@ cima são consumidoras da superfície de leitura do `aptdata`:
   de migração e compatibilidade temporária (loader aceita o formato antigo com aviso de depreciação).
 * **Atenção (descoberta implícita):** entry points tornam a origem de um plugin menos óbvia no
   código; mitiga-se com `aptdata plugins` (lista a proveniência) e `aptdata doctor`.
+* **Atenção (toolchain):** migrar Poetry→`uv` e adotar workspace/type-check é ganho de DX, mas mexe
+  no CI e no fluxo de contribuição; fazer como PR 0 isolado, com o lockfile commitado, antes das
+  mudanças de arquitetura.
 
 ## 5. Próximos Passos (roadmap de PRs, cada um entregável)
 
-1. Descoberta por entry points (`aptdata.systems/components/agents/plugins`) + `aptdata plugins`.
-2. Loader do `.aptdata/` + JSON Schemas versionados + `aptdata init` / `aptdata doctor`
-   (com migração de `aptdata.yaml` / `agents.yaml`).
+0. **DX/toolchain:** migração Poetry→`uv` (workspace dos três repos) + `pre-commit`
+   (`ruff` + `check-jsonschema`) + type-check (`mypy`/`ty`) + CI adaptado. Base para o resto.
+1. **Plugins:** entry points + `pluggy` (grupos + `hookspec`s de ciclo de vida), migrando o
+   `PluginManager` / `_SystemRegistry` + comando `aptdata plugins`.
+2. **`.aptdata/`:** loader com `pydantic-settings` + JSON Schemas versionados + `aptdata init` /
+   `aptdata doctor` (com migração de `aptdata.yaml` / `agents.yaml`).
 3. Modos de agente formalizados (CLI + `.aptdata/` + docs).
 4. Camada web como consumidora da read-API, absorvendo os dashboards.
 5. Painel do Lab migrado para consumir o `aptdata`.
