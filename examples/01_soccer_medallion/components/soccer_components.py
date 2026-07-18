@@ -13,7 +13,9 @@ if TYPE_CHECKING:
 from domain.transformations import aggregate_player_stats_logic, clean_match_data_logic
 
 # Default path for mock data; can be overridden via constructor
-DEFAULT_MOCK_DATA_PATH = Path(__file__).parent.parent / "data" / "raw" / "matches_mock.csv"
+DEFAULT_MOCK_DATA_PATH = (
+    Path(__file__).parent.parent / "data" / "raw" / "matches_mock.csv"
+)
 
 
 class IngestMatchDataComponent(BaseComponent):
@@ -42,7 +44,9 @@ class CleanMatchDataComponent(BaseComponent):
 
     def execute(self, inputs: list[IDataset]) -> list[IDataset]:
         if getattr(self, "context", None):
-            self.context.logger.info("Iniciando limpeza da camada Silver com validação Pydantic")
+            self.context.logger.info(
+                "Iniciando limpeza da camada Silver com validação Pydantic"
+            )
 
         all_records = []
         for ds in inputs:

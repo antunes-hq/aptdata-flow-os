@@ -1,4 +1,5 @@
 """Google Calendar integration — OAuth2 + Calendar API wrapper."""
+
 from __future__ import annotations
 
 import os
@@ -31,14 +32,17 @@ def _get_credentials(store) -> Any | None:
 
 
 def _save_credentials(store, creds) -> None:
-    store.set("google_token", {
-        "token": creds.token,
-        "refresh_token": creds.refresh_token,
-        "token_uri": creds.token_uri,
-        "client_id": creds.client_id,
-        "client_secret": creds.client_secret,
-        "expiry": creds.expiry.isoformat() if creds.expiry else None,
-    })
+    store.set(
+        "google_token",
+        {
+            "token": creds.token,
+            "refresh_token": creds.refresh_token,
+            "token_uri": creds.token_uri,
+            "client_id": creds.client_id,
+            "client_secret": creds.client_secret,
+            "expiry": creds.expiry.isoformat() if creds.expiry else None,
+        },
+    )
 
 
 def _build_service(store) -> Any:
@@ -46,6 +50,7 @@ def _build_service(store) -> Any:
     if not creds:
         return None
     from googleapiclient.discovery import build
+
     return build("calendar", "v3", credentials=creds)
 
 
@@ -54,7 +59,9 @@ def get_auth_url(store) -> str:
 
     redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "")
     if not redirect_uri:
-        redirect_uri = "https://mindflow.srv1723096.hstgr.cloud/api/calendar/auth/callback"
+        redirect_uri = (
+            "https://mindflow.srv1723096.hstgr.cloud/api/calendar/auth/callback"
+        )
 
     flow = Flow.from_client_config(
         {
@@ -81,7 +88,9 @@ def handle_callback(store, code: str) -> bool:
 
     redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "")
     if not redirect_uri:
-        redirect_uri = "https://mindflow.srv1723096.hstgr.cloud/api/calendar/auth/callback"
+        redirect_uri = (
+            "https://mindflow.srv1723096.hstgr.cloud/api/calendar/auth/callback"
+        )
 
     flow = Flow.from_client_config(
         {
@@ -120,8 +129,9 @@ def get_calendars(store) -> list[dict]:
     ]
 
 
-def list_events(store, calendar_id: str = "primary", date_str: str | None = None,
-                days: int = 7) -> list[dict]:
+def list_events(
+    store, calendar_id: str = "primary", date_str: str | None = None, days: int = 7
+) -> list[dict]:
     service = _build_service(store)
     if not service:
         return []
@@ -133,28 +143,34 @@ def list_events(store, calendar_id: str = "primary", date_str: str | None = None
 
     tmax = tmin + timedelta(days=days)
 
-    result = service.events().list(
-        calendarId=calendar_id,
-        timeMin=tmin.isoformat() + "Z",
-        timeMax=tmax.isoformat() + "Z",
-        singleEvents=True,
-        orderBy="startTime",
-        maxResults=20,
-    ).execute()
+    result = (
+        service.events()
+        .list(
+            calendarId=calendar_id,
+            timeMin=tmin.isoformat() + "Z",
+            timeMax=tmax.isoformat() + "Z",
+            singleEvents=True,
+            orderBy="startTime",
+            maxResults=20,
+        )
+        .execute()
+    )
 
     events = []
     for item in result.get("items", []):
         start = item.get("start", {})
         end = item.get("end", {})
-        events.append({
-            "id": item["id"],
-            "summary": item.get("summary", ""),
-            "description": item.get("description", ""),
-            "location": item.get("location", ""),
-            "start": start.get("dateTime", start.get("date", "")),
-            "end": end.get("dateTime", end.get("date", "")),
-            "html_link": item.get("htmlLink", ""),
-        })
+        events.append(
+            {
+                "id": item["id"],
+                "summary": item.get("summary", ""),
+                "description": item.get("description", ""),
+                "location": item.get("location", ""),
+                "start": start.get("dateTime", start.get("date", "")),
+                "end": end.get("dateTime", end.get("date", "")),
+                "html_link": item.get("htmlLink", ""),
+            }
+        )
 
     return events
 
@@ -197,9 +213,11 @@ def update_event(
     if "end" in kwargs:
         event["end"] = {"dateTime": kwargs["end"], "timeZone": "America/Sao_Paulo"}
 
-    result = service.events().update(
-        calendarId=calendar_id, eventId=event_id, body=event
-    ).execute()
+    result = (
+        service.events()
+        .update(calendarId=calendar_id, eventId=event_id, body=event)
+        .execute()
+    )
     return {"id": result["id"], "summary": result.get("summary", "")}
 
 

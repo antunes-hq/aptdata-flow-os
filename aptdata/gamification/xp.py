@@ -4,6 +4,7 @@ XP por ação: nota (+5), qw_check (+3), chat (+10), briefing (+15), login (+5).
 Levels com flora brasileira:
 Semente→Broto→Raiz→Caule→Galho→Bambu→Ipê→Jatobá→Baobá→Floresta.
 """
+
 from __future__ import annotations
 
 from datetime import datetime

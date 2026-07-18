@@ -192,9 +192,7 @@ class TestDispatch:
 
 class TestResolve:
     def test_found_text(self, agents_file):
-        r = runner.invoke(
-            app, ["agents", "resolve", "frontend", "--file", agents_file]
-        )
+        r = runner.invoke(app, ["agents", "resolve", "frontend", "--file", agents_file])
         assert r.exit_code == 0
         assert "ondina" in r.stdout
 

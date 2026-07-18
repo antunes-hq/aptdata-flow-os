@@ -40,16 +40,12 @@ class AnthropicAgent(BaseAgent):
 
     def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
         if not self.spec.enabled:
-            return AgentResponse(
-                ok=False, agent_id=self.id, error="agent disabled"
-            )
+            return AgentResponse(ok=False, agent_id=self.id, error="agent disabled")
         try:
             return self._call(prompt, **kwargs)
         except Exception as exc:
             logger.exception("AnthropicAgent[%s] send failed", self.id)
-            return AgentResponse(
-                ok=False, agent_id=self.id, error=str(exc)
-            )
+            return AgentResponse(ok=False, agent_id=self.id, error=str(exc))
 
     def _call(self, prompt: str, **kwargs: Any) -> AgentResponse:
         client = self._client()
@@ -65,19 +61,27 @@ class AnthropicAgent(BaseAgent):
         # thinking mode (opcional, via spec.note ou kwargs)
         thinking = self._parse_thinking(kwargs.get("thinking"))
         if thinking:
-            body["thinking"]={"type": "enabled", "budget_tokens": thinking}
+            body["thinking"] = {"type": "enabled", "budget_tokens": thinking}
             # Quando thinking tá ligado, não pode mandar temperature
             body.pop("temperature", None)
 
         # merge extra kwargs que o SDK aceita
-        for safe_key in ("temperature", "top_p", "top_k", "stop_sequences",
-                         "metadata", "system"):
+        for safe_key in (
+            "temperature",
+            "top_p",
+            "top_k",
+            "stop_sequences",
+            "metadata",
+            "system",
+        ):
             if safe_key in kwargs:
                 body[safe_key] = kwargs[safe_key]
 
         logger.debug(
             "AnthropicAgent[%s] calling %s (thinking=%s)",
-            self.id, model, bool(thinking),
+            self.id,
+            model,
+            bool(thinking),
         )
 
         resp = client.messages.create(**body)

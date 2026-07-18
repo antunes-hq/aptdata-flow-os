@@ -4,6 +4,7 @@ mindflow.llm_observer — Observabilidade de chamadas LLM.
 Captura tokens, latência e custo estimado de cada chamada ao DeepSeek.
 Armazena como events kind='llm_call' no banco existente.
 """
+
 from __future__ import annotations
 
 import time
@@ -37,16 +38,20 @@ def log_llm_call(
     """Registra uma chamada LLM no banco. Silencioso em caso de erro."""
     try:
         cost = _estimate_cost(model, prompt_tokens, completion_tokens)
-        store.log_event("mindflow", "llm_call", {
-            "routine": routine,
-            "model": model,
-            "prompt_tokens": prompt_tokens,
-            "completion_tokens": completion_tokens,
-            "total_tokens": prompt_tokens + completion_tokens,
-            "latency_ms": latency_ms,
-            "cost_usd": cost,
-            "version": "1",
-        })
+        store.log_event(
+            "mindflow",
+            "llm_call",
+            {
+                "routine": routine,
+                "model": model,
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "total_tokens": prompt_tokens + completion_tokens,
+                "latency_ms": latency_ms,
+                "cost_usd": cost,
+                "version": "1",
+            },
+        )
     except Exception:
         pass
 
@@ -112,7 +117,10 @@ def get_observability_summary(store, days: int = 7) -> dict:
         rt = p.get("routine", "?")
         if rt not in by_routine:
             by_routine[rt] = {
-                "calls": 0, "tokens": 0, "cost_usd": 0.0, "latency_ms_sum": 0,
+                "calls": 0,
+                "tokens": 0,
+                "cost_usd": 0.0,
+                "latency_ms_sum": 0,
             }
         by_routine[rt]["calls"] += 1
         by_routine[rt]["tokens"] += pt + ct
@@ -120,27 +128,31 @@ def get_observability_summary(store, days: int = 7) -> dict:
         by_routine[rt]["latency_ms_sum"] += lat
 
         if len(recent) < 20:
-            recent.append({
-                "routine": rt,
-                "model": p.get("model", "?"),
-                "prompt_tokens": pt,
-                "completion_tokens": ct,
-                "latency_ms": lat,
-                "cost_usd": cost,
-                "ts": row[1],
-            })
+            recent.append(
+                {
+                    "routine": rt,
+                    "model": p.get("model", "?"),
+                    "prompt_tokens": pt,
+                    "completion_tokens": ct,
+                    "latency_ms": lat,
+                    "cost_usd": cost,
+                    "ts": row[1],
+                }
+            )
 
     routines_summary = []
     for rt, s in by_routine.items():
-        routines_summary.append({
-            "routine": rt,
-            "calls": s["calls"],
-            "tokens": s["tokens"],
-            "cost_usd": round(s["cost_usd"], 6),
-            "avg_latency_ms": (
-                round(s["latency_ms_sum"] / s["calls"]) if s["calls"] else 0
-            ),
-        })
+        routines_summary.append(
+            {
+                "routine": rt,
+                "calls": s["calls"],
+                "tokens": s["tokens"],
+                "cost_usd": round(s["cost_usd"], 6),
+                "avg_latency_ms": (
+                    round(s["latency_ms_sum"] / s["calls"]) if s["calls"] else 0
+                ),
+            }
+        )
     routines_summary.sort(key=lambda x: x["calls"], reverse=True)
 
     return {

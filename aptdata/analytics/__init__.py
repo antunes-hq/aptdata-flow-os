@@ -1,4 +1,5 @@
 """aptdata.analytics — Context Intelligence Engine, memory stats, clusters, dedup."""
+
 from aptdata.analytics.clusters import cluster_notes
 from aptdata.analytics.dedup import find_duplicates
 from aptdata.analytics.indicators import (

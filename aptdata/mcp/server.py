@@ -236,8 +236,12 @@ def list_agents() -> dict[str, Any]:
     except Exception as exc:  # noqa: BLE001
         return {"status": "error", "error": str(exc)}
     agents = [
-        {"id": s.id, "type": s.type, "enabled": s.enabled,
-         "capabilities": s.capabilities}
+        {
+            "id": s.id,
+            "type": s.type,
+            "enabled": s.enabled,
+            "capabilities": s.capabilities,
+        }
         for s in registry.specs()
     ]
     return {"status": "ok", "agents": agents, "count": len(agents)}
@@ -256,9 +260,11 @@ def converse(session_id: str, text: str) -> dict[str, Any]:
     try:
         from aptdata.agents.conversation import ConversationEngine  # noqa: PLC0415
 
-        return ConversationEngine.from_yaml(_agents_file()).handle(
-            session_id, text
-        ).to_dict()
+        return (
+            ConversationEngine.from_yaml(_agents_file())
+            .handle(session_id, text)
+            .to_dict()
+        )
     except Exception as exc:  # noqa: BLE001
         return {"status": "error", "error": str(exc)}
 
@@ -275,9 +281,11 @@ def confirm(
     try:
         from aptdata.agents.conversation import ConversationEngine  # noqa: PLC0415
 
-        return ConversationEngine.from_yaml(_agents_file()).confirm(
-            session_id, decision_id, choice=choice
-        ).to_dict()
+        return (
+            ConversationEngine.from_yaml(_agents_file())
+            .confirm(session_id, decision_id, choice=choice)
+            .to_dict()
+        )
     except Exception as exc:  # noqa: BLE001
         return {"status": "error", "error": str(exc)}
 
@@ -308,9 +316,11 @@ def dispatch(prompt: str, hint: str | None = None) -> dict[str, Any]:
     except Exception as exc:  # noqa: BLE001
         return {"status": "error", "error": str(exc)}
 
-    text = f"/{router.registry.resolve(hint).id} {prompt}" if (
-        hint and router.registry.resolve(hint)
-    ) else prompt
+    text = (
+        f"/{router.registry.resolve(hint).id} {prompt}"
+        if (hint and router.registry.resolve(hint))
+        else prompt
+    )
 
     from aptdata.agents.base import observed_send  # noqa: PLC0415
     from aptdata.observability import Observer  # noqa: PLC0415
@@ -319,7 +329,9 @@ def dispatch(prompt: str, hint: str | None = None) -> dict[str, Any]:
         decision = router.route(text)
         if decision.agent_id is None:
             return {
-                "status": "error", "error": "no agent available", "prompt": prompt,
+                "status": "error",
+                "error": "no agent available",
+                "prompt": prompt,
             }
 
         result = observed_send(router.registry.get(decision.agent_id), decision.text)

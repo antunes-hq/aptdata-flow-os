@@ -74,7 +74,10 @@ class TestProject:
         loaded = Project.from_yaml(path)
         assert loaded.name == "meuapp"
         assert [t.id for t in loaded.tasks] == [
-            "planejar", "backend", "frontend", "deploy",
+            "planejar",
+            "backend",
+            "frontend",
+            "deploy",
         ]
 
     def test_scaffold_has_dependencies(self):
@@ -104,8 +107,9 @@ class TestPlan:
     def test_explicit_agent_wins(self, router: Router):
         project = Project(
             name="p",
-            tasks=[Task(id="a", prompt="qualquer", agent="zeca",
-                        capability="frontend")],
+            tasks=[
+                Task(id="a", prompt="qualquer", agent="zeca", capability="frontend")
+            ],
         )
         plan = ProjectRunner(project, router).plan()
         assert plan[0].agent_id == "zeca" and plan[0].mode == "explicit"

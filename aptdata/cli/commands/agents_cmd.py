@@ -146,8 +146,13 @@ def agents_dispatch(
         result = observed_send(agent, decision.text)
     if json_mode:
         print(
-            json.dumps({"routed_to": decision.agent_id, "mode": decision.mode,
-                        **result.to_dict()}),
+            json.dumps(
+                {
+                    "routed_to": decision.agent_id,
+                    "mode": decision.mode,
+                    **result.to_dict(),
+                }
+            ),
             flush=True,
         )
     elif result.ok:
@@ -177,8 +182,6 @@ def agents_resolve(
         raise typer.Exit(1)
 
     if json_mode:
-        print(
-            json.dumps({"capability": capability, "agent": agent.id}), flush=True
-        )
+        print(json.dumps({"capability": capability, "agent": agent.id}), flush=True)
     else:
         print(f"{capability} -> {agent.id}")

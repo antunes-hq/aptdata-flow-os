@@ -51,9 +51,7 @@ class CLIAgent(BaseAgent):
                 check=False,
             )
         except subprocess.TimeoutExpired:
-            return AgentResponse(
-                ok=False, agent_id=self.id, error="timeout"
-            )
+            return AgentResponse(ok=False, agent_id=self.id, error="timeout")
         except OSError as exc:  # pragma: no cover - defensive
             return AgentResponse(ok=False, agent_id=self.id, error=str(exc))
 
@@ -63,9 +61,7 @@ class CLIAgent(BaseAgent):
                 agent_id=self.id,
                 error=(proc.stderr or proc.stdout or "non-zero exit").strip()[:500],
             )
-        return AgentResponse(
-            ok=True, agent_id=self.id, text=proc.stdout.strip()
-        )
+        return AgentResponse(ok=True, agent_id=self.id, text=proc.stdout.strip())
 
     def health(self) -> AgentHealth:
         if not self.spec.enabled:

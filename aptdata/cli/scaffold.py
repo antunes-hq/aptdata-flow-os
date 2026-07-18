@@ -1372,9 +1372,7 @@ def _write_design_assets(project_dir: Path) -> None:
     assets = project_dir / "assets"
     assets.mkdir(parents=True, exist_ok=True)
     (assets / "tokens.css").write_text(_DESIGN_TOKENS_CSS, encoding="utf-8")
-    (assets / "components.css").write_text(
-        _DESIGN_COMPONENTS_CSS, encoding="utf-8"
-    )
+    (assets / "components.css").write_text(_DESIGN_COMPONENTS_CSS, encoding="utf-8")
 
 
 def _scaffold_viz_panel(project_name: str, project_dir: Path) -> None:

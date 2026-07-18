@@ -78,17 +78,19 @@ class VizState:
             return []
         rows = []
         for s in self._registry.specs(include_disabled=True):
-            rows.append({
-                "id": s.id,
-                "name": s.name,
-                "type": s.type,
-                "location": s.location,
-                "role": s.role,
-                "model": s.model,
-                "enabled": s.enabled,
-                "weight": s.weight,
-                "capabilities": list(s.capabilities),
-            })
+            rows.append(
+                {
+                    "id": s.id,
+                    "name": s.name,
+                    "type": s.type,
+                    "location": s.location,
+                    "role": s.role,
+                    "model": s.model,
+                    "enabled": s.enabled,
+                    "weight": s.weight,
+                    "capabilities": list(s.capabilities),
+                }
+            )
         rows.sort(key=lambda r: (not r["enabled"], r["id"]))
         return rows
 

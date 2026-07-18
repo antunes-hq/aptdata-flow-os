@@ -29,9 +29,7 @@ class OpenClawAgent(BaseAgent):
 
     def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
         if not self.spec.enabled:
-            return AgentResponse(
-                ok=False, agent_id=self.id, error="agent disabled"
-            )
+            return AgentResponse(ok=False, agent_id=self.id, error="agent disabled")
 
         url = self._endpoint()
         if not url:
@@ -45,9 +43,7 @@ class OpenClawAgent(BaseAgent):
 
         payload = {"message": prompt, **kwargs}
         try:
-            resp = requests.post(
-                url, json=payload, timeout=self.spec.timeout_ms / 1000
-            )
+            resp = requests.post(url, json=payload, timeout=self.spec.timeout_ms / 1000)
         except requests.RequestException as exc:
             logger.warning("OpenClaw %s unreachable: %s", self.id, exc)
             return AgentResponse(ok=False, agent_id=self.id, error=str(exc))

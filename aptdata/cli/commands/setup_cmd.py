@@ -60,9 +60,7 @@ def _telegram_get_me(token: str) -> dict[str, Any]:
     """GET /getMe para validar o token (stubado nos testes)."""
     import requests  # noqa: PLC0415 - lazy
 
-    resp = requests.get(
-        f"https://api.telegram.org/bot{token}/getMe", timeout=10
-    )
+    resp = requests.get(f"https://api.telegram.org/bot{token}/getMe", timeout=10)
     return resp.json()
 
 
@@ -96,8 +94,10 @@ def run_checks(file: str | None) -> dict[str, Any]:
             check("router", False, f"falha ao carregar: {exc}", required=True)
     if exists and router_ok:
         check(
-            "router", True,
-            f"{agents_count} agente(s), {skills_count} skill(s)", required=True,
+            "router",
+            True,
+            f"{agents_count} agente(s), {skills_count} skill(s)",
+            required=True,
         )
     elif not exists:
         check("router", False, "sem agents.yaml", required=True)
@@ -106,7 +106,8 @@ def run_checks(file: str | None) -> dict[str, Any]:
         "routing_policy",
         bool(raw.get("routing")),
         "bloco routing: presente (thresholds/guardrails)"
-        if raw.get("routing") else "bloco routing: ausente (defaults em uso)",
+        if raw.get("routing")
+        else "bloco routing: ausente (defaults em uso)",
     )
 
     transport = (raw.get("transports") or {}).get("telegram") or {}
@@ -120,7 +121,8 @@ def run_checks(file: str | None) -> dict[str, Any]:
         "telegram_transport",
         bool(transport.get("chat_id")),
         "transports.telegram configurado no agents.yaml"
-        if transport else "transports.telegram ausente (rode `aptdata setup`)",
+        if transport
+        else "transports.telegram ausente (rode `aptdata setup`)",
     )
 
     try:

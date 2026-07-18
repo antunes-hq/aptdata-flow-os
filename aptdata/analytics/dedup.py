@@ -1,4 +1,5 @@
 """Memory Lab — detecção de duplicatas por similaridade."""
+
 from __future__ import annotations
 
 
@@ -31,11 +32,21 @@ def find_duplicates(vstore, threshold: float = 0.92) -> list[dict]:
             if ratio >= threshold:
                 seen.add(rows[i][0])
                 seen.add(rows[j][0])
-                duplicates.append({
-                    "note_a": {"id": rows[i][0], "text": a[:200], "date": rows[i][3]},
-                    "note_b": {"id": rows[j][0], "text": b[:200], "date": rows[j][3]},
-                    "score": round(ratio, 3),
-                })
+                duplicates.append(
+                    {
+                        "note_a": {
+                            "id": rows[i][0],
+                            "text": a[:200],
+                            "date": rows[i][3],
+                        },
+                        "note_b": {
+                            "id": rows[j][0],
+                            "text": b[:200],
+                            "date": rows[j][3],
+                        },
+                        "score": round(ratio, 3),
+                    }
+                )
             if len(duplicates) >= 10:
                 break
         if len(duplicates) >= 10:

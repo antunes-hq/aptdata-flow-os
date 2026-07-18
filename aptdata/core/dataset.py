@@ -18,6 +18,7 @@ class DataContractError(Exception):
 
 T = TypeVar("T")
 
+
 @dataclass
 class IDataset(ABC, Generic[T]):
     """Dataclass interface for dataset types.

@@ -17,6 +17,7 @@ Indicadores (escala 0-100):
 
 Arquitetura: read-only sobre ContextStore. Nenhum write — o Espelho só lê.
 """
+
 from __future__ import annotations
 
 import json
@@ -39,20 +40,20 @@ def _iso_days_ago(days: int) -> str:
 # Ajustáveis conforme a base de usuários crescer. Por enquanto, calibrados
 # para um usuário ativo que usa o app ~30min/dia.
 _THRESHOLDS: dict[str, float] = {
-    "consistencia_dias": 7,         # 7 dias ativos na semana = 100
-    "consistencia_qw": 21,          # ~3 quick wins/dia = 100
-    "reflexao_notas": 14,           # ~2 notas/dia = 100
-    "reflexao_perolas": 7,          # 1 pérola/dia = 100
-    "exploracao_mundos": 3,         # 3 mundos novos na semana = 100
-    "exploracao_personas": 5,       # 5 personas distintas usadas = 100
-    "crescimento_xp": 350,          # ~50 XP/dia = 100
-    "conexao_tokens": 15000,        # ~2000 tokens/dia = 100
-    "conexao_conversas": 14,        # ~2 conversas/dia = 100
-    "fluxo_sessoes": 10,            # 10 sessões profundas = 100
-    "criacao_ideias": 5,            # 5 ideias/semana = 100
-    "criacao_temas": 2,             # 2 temas/semana = 100
-    "cuidado_gratidoes": 5,         # ~1 gratidão/dia útil = 100
-    "cuidado_doutor": 3,            # 3 check-ins/semana = 100
+    "consistencia_dias": 7,  # 7 dias ativos na semana = 100
+    "consistencia_qw": 21,  # ~3 quick wins/dia = 100
+    "reflexao_notas": 14,  # ~2 notas/dia = 100
+    "reflexao_perolas": 7,  # 1 pérola/dia = 100
+    "exploracao_mundos": 3,  # 3 mundos novos na semana = 100
+    "exploracao_personas": 5,  # 5 personas distintas usadas = 100
+    "crescimento_xp": 350,  # ~50 XP/dia = 100
+    "conexao_tokens": 15000,  # ~2000 tokens/dia = 100
+    "conexao_conversas": 14,  # ~2 conversas/dia = 100
+    "fluxo_sessoes": 10,  # 10 sessões profundas = 100
+    "criacao_ideias": 5,  # 5 ideias/semana = 100
+    "criacao_temas": 2,  # 2 temas/semana = 100
+    "cuidado_gratidoes": 5,  # ~1 gratidão/dia útil = 100
+    "cuidado_doutor": 3,  # 3 check-ins/semana = 100
 }
 
 
@@ -333,12 +334,10 @@ def compute_crescimento(store, weeks_ago: int = 0) -> dict:
     xp_log = store.get("mf_xp_log", [])
     start_date = _iso_days_ago(7 * (weeks_ago + 1))
     end_date = (
-        _iso_days_ago(7 * weeks_ago) if weeks_ago > 0
-        else _now().strftime("%Y-%m-%d")
+        _iso_days_ago(7 * weeks_ago) if weeks_ago > 0 else _now().strftime("%Y-%m-%d")
     )
     xp_semana = sum(
-        e["xp"] for e in xp_log
-        if start_date <= e.get("date", "") < end_date
+        e["xp"] for e in xp_log if start_date <= e.get("date", "") < end_date
     )
 
     score = round(
@@ -470,9 +469,21 @@ def compute_cuidado(store, weeks_ago: int = 0) -> dict:
     qw_cuidado = 0
     try:
         defs = store.get("qw_defs", []) or []
-        bem_estar_keywords = ["água", "agua", "meditar", "meditação", "meditacao",
-                              "alongamento", "respirar", "pausa", "caminhada",
-                              "dormir", "sono", "exercício", "exercicio"]
+        bem_estar_keywords = [
+            "água",
+            "agua",
+            "meditar",
+            "meditação",
+            "meditacao",
+            "alongamento",
+            "respirar",
+            "pausa",
+            "caminhada",
+            "dormir",
+            "sono",
+            "exercício",
+            "exercicio",
+        ]
         for w in defs:
             nome_lower = w.get("nome", "").lower()
             if any(kw in nome_lower for kw in bem_estar_keywords):
@@ -538,28 +549,32 @@ def compute_espelho(store, weeks_ago: int = 0) -> dict:
             data = meta["fn"](store, weeks_ago)
             # Filtra None dos contribuintes
             data["contribuintes"] = [c for c in data["contribuintes"] if c]
-            indicadores.append({
-                "id": ind_id,
-                "emoji": meta["emoji"],
-                "nome": meta["nome"],
-                "score": data["score"],
-                "detalhes": {
-                    k: v
-                    for k, v in data.items()
-                    if k not in ("score", "contribuintes")
-                },
-                "contribuintes": data["contribuintes"],
-            })
+            indicadores.append(
+                {
+                    "id": ind_id,
+                    "emoji": meta["emoji"],
+                    "nome": meta["nome"],
+                    "score": data["score"],
+                    "detalhes": {
+                        k: v
+                        for k, v in data.items()
+                        if k not in ("score", "contribuintes")
+                    },
+                    "contribuintes": data["contribuintes"],
+                }
+            )
             scores.append(data["score"])
         except Exception:
-            indicadores.append({
-                "id": ind_id,
-                "emoji": meta["emoji"],
-                "nome": meta["nome"],
-                "score": 0,
-                "detalhes": {},
-                "contribuintes": [],
-            })
+            indicadores.append(
+                {
+                    "id": ind_id,
+                    "emoji": meta["emoji"],
+                    "nome": meta["nome"],
+                    "score": 0,
+                    "detalhes": {},
+                    "contribuintes": [],
+                }
+            )
             scores.append(0)
 
     score_geral = round(sum(scores) / len(scores), 1) if scores else 0

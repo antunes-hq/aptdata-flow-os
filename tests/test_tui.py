@@ -141,7 +141,5 @@ class TestAgentTraceEventStore:
 
         async with monitor_app.run_test():
             trace = monitor_app.query_one(_AgentTraceLog)
-            monkeypatch.setattr(
-                observability.Observer, "get", classmethod(_boom)
-            )
+            monkeypatch.setattr(observability.Observer, "get", classmethod(_boom))
             assert trace.refresh_trace() == 0  # TUI não pode quebrar

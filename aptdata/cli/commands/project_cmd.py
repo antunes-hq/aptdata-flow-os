@@ -50,8 +50,9 @@ def project_init(
     project = scaffold_project(name)
     project.to_yaml(path)
     if json_mode:
-        print(json.dumps({"created": str(path), "tasks": len(project.tasks)}),
-              flush=True)
+        print(
+            json.dumps({"created": str(path), "tasks": len(project.tasks)}), flush=True
+        )
     else:
         print(f"✓ {path} ({len(project.tasks)} tasks)")
 
@@ -70,8 +71,12 @@ def project_plan(
     results = runner.plan()
 
     if json_mode:
-        print(json.dumps({"project": project.name,
-                          "plan": [r.to_dict() for r in results]}), flush=True)
+        print(
+            json.dumps(
+                {"project": project.name, "plan": [r.to_dict() for r in results]}
+            ),
+            flush=True,
+        )
         return
     print(f"📋 {project.name} — {len(results)} tasks")
     for r in results:
@@ -94,9 +99,17 @@ def project_run(
     ok = sum(1 for r in results if r.ok)
 
     if json_mode:
-        print(json.dumps({"project": project.name, "ok": ok,
-                          "total": len(results),
-                          "results": [r.to_dict() for r in results]}), flush=True)
+        print(
+            json.dumps(
+                {
+                    "project": project.name,
+                    "ok": ok,
+                    "total": len(results),
+                    "results": [r.to_dict() for r in results],
+                }
+            ),
+            flush=True,
+        )
     else:
         print(f"▶ {project.name} — {ok}/{len(results)} ok")
         for r in results:

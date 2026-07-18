@@ -2,6 +2,7 @@
 Streak global do mindflow — dias consecutivos com pelo menos 1 ação.
 Freeze: ganha 1 a cada 7 dias de streak, máx 2. Consome automaticamente se perder 1 dia.
 """
+
 from __future__ import annotations
 
 from datetime import datetime

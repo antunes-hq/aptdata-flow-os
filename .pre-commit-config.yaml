@@ -21,5 +21,8 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: check-yaml
+        # mkdocs.yml usa tags custom !!python/name: do mkdocs-material que o
+        # loader safe do check-yaml não parseia; mkdocs as valida no build.
+        exclude: ^mkdocs\.yml$
       - id: check-toml
       - id: check-merge-conflict

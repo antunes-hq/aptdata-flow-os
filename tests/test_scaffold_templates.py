@@ -816,7 +816,7 @@ class TestVizPanelScaffold:
         assert "assets/tokens.css" in html
         assert "/api/agents" in html and "/api/health" in html
         # zero build / zero CDN: nenhum script externo
-        assert "<script src=\"http" not in html
+        assert '<script src="http' not in html
 
     def test_tokens_have_light_and_dark_modes(self, tmp_path: Path) -> None:
         d = tmp_path / "p"
@@ -863,7 +863,7 @@ class TestDashboardScaffold:
         _scaffold_dashboard("dash", d)
         html = (d / "index.html").read_text(encoding="utf-8")
         assert "<svg" in html or "createElementNS" in html
-        assert "<script src=\"http" not in html  # sem CDN
+        assert '<script src="http' not in html  # sem CDN
 
 
 class TestDesignTokensSingleSource:
