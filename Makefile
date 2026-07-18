@@ -1,34 +1,37 @@
-.PHONY: install test test-cov test-unit test-integration test-e2e lint clean docs docs-serve
+.PHONY: install test test-cov test-unit test-integration test-e2e lint lint-fix typecheck docs docs-serve clean
 
 install:
-	poetry install
+	uv sync
 
 test:
-	poetry run pytest tests/ -v
+	uv run pytest tests/ -v
 
 test-cov:
-	poetry run pytest tests/ -v --cov=aptdata --cov-report=term-missing --cov-fail-under=80
+	uv run pytest tests/ -v --cov=aptdata --cov-report=term-missing --cov-fail-under=80
 
 test-unit:
-	poetry run pytest tests/ -v -m "not integration and not e2e"
+	uv run pytest tests/ -v -m "not integration and not e2e"
 
 test-integration:
-	poetry run pytest tests/test_integration.py -v -m integration
+	uv run pytest tests/test_integration.py -v -m integration
 
 test-e2e:
-	poetry run pytest tests/test_e2e.py -v -m e2e
+	uv run pytest tests/test_e2e.py -v -m e2e
 
 lint:
-	poetry run ruff check aptdata/ tests/
+	uv run ruff check aptdata/ tests/
 
 lint-fix:
-	poetry run ruff check --fix aptdata/ tests/
+	uv run ruff check --fix aptdata/ tests/
+
+typecheck:
+	uv run mypy aptdata/
 
 docs:
-	poetry run mkdocs build
+	uv run mkdocs build
 
 docs-serve:
-	poetry run mkdocs serve
+	uv run mkdocs serve
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +

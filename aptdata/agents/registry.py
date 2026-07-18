@@ -14,9 +14,9 @@ from typing import Any
 
 import yaml
 
+from aptdata.agents.anthropic import AnthropicAgent
 from aptdata.agents.base import AgentResponse, AgentSpec, BaseAgent, IAgent
 from aptdata.agents.cli_agents import ClaudeCodeAgent, OpenCodeAgent
-from aptdata.agents.anthropic import AnthropicAgent
 from aptdata.agents.openclaw import OpenClawAgent
 
 logger = logging.getLogger(__name__)

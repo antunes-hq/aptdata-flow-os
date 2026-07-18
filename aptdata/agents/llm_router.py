@@ -8,10 +8,8 @@ e as capacidades deles.
 
 from __future__ import annotations
 
-import json
 import logging
 import os
-from typing import Any
 
 from aptdata.agents.base import AgentSpec
 
@@ -22,7 +20,8 @@ _SYSTEM = """Você é um roteador de mensagens num ecossistema de agentes.
 Dado um prompt do usuário e a lista de agentes disponíveis, responda EXATAMENTE
 com o id do agente mais adequado (nada mais, nem explicação).
 
-Se o prompt for sobre: code/backend -> maresia, frontend -> ondina, infra/deploy/docker -> hermez
+Se o prompt for sobre: code/backend -> maresia, frontend -> ondina,
+infra/deploy/docker -> hermez
 Revisão/arquitetura/planejamento -> gandalf-api
 Monitoramento/infra VPS -> holt
 Chat casual -> serginho
@@ -36,7 +35,9 @@ class LLMRouter:
 
     Uso::
 
-        router = Router.from_yaml("agents.yaml", llm=LLMRouter(agents_yaml="agents.yaml"))
+        router = Router.from_yaml(
+            "agents.yaml", llm=LLMRouter(agents_yaml="agents.yaml")
+        )
     """
 
     _ENV_KEY = "ANTHROPIC_API_KEY"
