@@ -33,9 +33,7 @@ class CLIAgent(BaseAgent):
         """Return the argv list to run for *prompt*. Subclasses implement."""
         raise NotImplementedError
 
-    def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
-        if not self.spec.enabled:
-            return AgentResponse(ok=False, agent_id=self.id, error="agent disabled")
+    def _do_send(self, prompt: str, **kwargs: Any) -> AgentResponse:
         if shutil.which(self.binary) is None:
             return AgentResponse(
                 ok=False, agent_id=self.id, error=f"'{self.binary}' not found in PATH"

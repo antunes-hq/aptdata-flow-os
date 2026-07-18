@@ -141,7 +141,12 @@ class IAgent(ABC):
 
 
 class BaseAgent(IAgent):
-    """Common behaviour shared by adapters; holds the declarative spec."""
+    """Common behaviour shared by adapters; holds the declarative spec.
+
+    Uses the template-method pattern for :meth:`send`: the enabled-guard and
+    the canonical ``"agent disabled"`` error string live here once, so adapters
+    only implement :meth:`_do_send` and can never drift the guard or the string.
+    """
 
     #: adapter kind this class handles; subclasses override.
     type: str = "base"
@@ -159,6 +164,17 @@ class BaseAgent(IAgent):
 
     def supports(self, capability: str) -> bool:
         return capability in self.spec.capabilities
+
+    def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
+        """Template-method send: guards ``enabled``, delegates to ``_do_send``."""
+        if not self.spec.enabled:
+            return AgentResponse(ok=False, agent_id=self.id, error="agent disabled")
+        return self._do_send(prompt, **kwargs)
+
+    @abstractmethod
+    def _do_send(self, prompt: str, **kwargs: Any) -> AgentResponse:
+        """Backend-specific dispatch — subclasses implement this, not ``send``."""
+        raise NotImplementedError
 
     def health(self) -> AgentHealth:
         if not self.spec.enabled:

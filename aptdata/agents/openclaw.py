@@ -27,10 +27,7 @@ class OpenClawAgent(BaseAgent):
         path = self.spec.endpoint or "/api/chat"
         return f"{base}{path}"
 
-    def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
-        if not self.spec.enabled:
-            return AgentResponse(ok=False, agent_id=self.id, error="agent disabled")
-
+    def _do_send(self, prompt: str, **kwargs: Any) -> AgentResponse:
         url = self._endpoint()
         if not url:
             return AgentResponse(

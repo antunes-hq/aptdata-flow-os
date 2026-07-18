@@ -33,14 +33,13 @@ class AnthropicAgent(BaseAgent):
     #: campos do spec interpretados por este adapter
     _ENV_KEY = "ANTHROPIC_API_KEY"
     _DEFAULT_MODEL = "claude-opus-4-8"
+    _DEFAULT_MAX_TOKENS = 4096
 
     # ------------------------------------------------------------------
     # send
     # ------------------------------------------------------------------
 
-    def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
-        if not self.spec.enabled:
-            return AgentResponse(ok=False, agent_id=self.id, error="agent disabled")
+    def _do_send(self, prompt: str, **kwargs: Any) -> AgentResponse:
         try:
             return self._call(prompt, **kwargs)
         except Exception as exc:
@@ -54,16 +53,9 @@ class AnthropicAgent(BaseAgent):
         # Monta body da requisição
         body: dict[str, Any] = {
             "model": model,
-            "max_tokens": self.spec.timeout_ms * 2,  # ~2 tokens/ms
+            "max_tokens": self._DEFAULT_MAX_TOKENS,
             "messages": [{"role": "user", "content": prompt}],
         }
-
-        # thinking mode (opcional, via spec.note ou kwargs)
-        thinking = self._parse_thinking(kwargs.get("thinking"))
-        if thinking:
-            body["thinking"] = {"type": "enabled", "budget_tokens": thinking}
-            # Quando thinking tá ligado, não pode mandar temperature
-            body.pop("temperature", None)
 
         # merge extra kwargs que o SDK aceita
         for safe_key in (
@@ -76,6 +68,14 @@ class AnthropicAgent(BaseAgent):
         ):
             if safe_key in kwargs:
                 body[safe_key] = kwargs[safe_key]
+
+        # thinking mode (opcional, via spec.note ou kwargs)
+        thinking = self._parse_thinking(kwargs.get("thinking"))
+        if thinking:
+            body["thinking"] = {"type": "enabled", "budget_tokens": thinking}
+            # Quando thinking tá ligado, não pode mandar temperature.
+            # O pop vem DEPOIS do merge acima para cobrir kwargs também.
+            body.pop("temperature", None)
 
         logger.debug(
             "AnthropicAgent[%s] calling %s (thinking=%s)",
@@ -106,7 +106,10 @@ class AnthropicAgent(BaseAgent):
     # ------------------------------------------------------------------
 
     def _client(self):
-        """Retorna cliente Anthropic, validando a chave."""
+        """Retorna cliente Anthropic (cached), validando a chave na 1ª chamada."""
+        cached = getattr(self, "_cached_client", None)
+        if cached is not None:
+            return cached
         try:
             from anthropic import Anthropic
         except ImportError:
@@ -119,7 +122,9 @@ class AnthropicAgent(BaseAgent):
             raise ValueError(
                 f"{self._ENV_KEY} não definida — não dá pra chamar a API do Claude."
             )
-        return Anthropic(api_key=api_key)
+        client = Anthropic(api_key=api_key)
+        self._cached_client = client
+        return client
 
     @staticmethod
     def _extract(resp) -> str:

@@ -40,7 +40,7 @@ class _PlaceholderAgent(BaseAgent):
 
     type = "placeholder"
 
-    def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
+    def _do_send(self, prompt: str, **kwargs: Any) -> AgentResponse:
         return AgentResponse(
             ok=False,
             agent_id=self.id,
