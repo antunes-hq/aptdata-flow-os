@@ -82,6 +82,54 @@ class TestAgentSpec:
         with pytest.raises(Exception):
             AgentSpec(id="x", name="X", type="openclaw", bogus=1)  # type: ignore[call-arg]
 
+    def test_container_optional_defaults_none(self):
+        spec = AgentSpec(id="x", name="X", type="openclaw")
+        assert spec.container is None
+        assert spec.metadata is None
+
+    def test_container_and_metadata_accepted(self):
+        spec = AgentSpec(
+            id="holt",
+            name="Holt",
+            type="openclaw",
+            container="openclaw-holt-openclaw-1",
+            metadata={"telegram": "@holt_dev_bot", "vps": True},
+        )
+        assert spec.container == "openclaw-holt-openclaw-1"
+        assert spec.metadata["telegram"] == "@holt_dev_bot"
+
+    def test_extra_still_forbidden_with_new_fields(self):
+        # novo campo conhecido não abre brecha pra typos em campos alheios
+        with pytest.raises(Exception):
+            AgentSpec(  # type: ignore[call-args]
+                id="x", name="X", type="openclaw", container="c", typo_field=1
+            )
+
+    def test_from_yaml_loads_container_and_metadata(self, tmp_path: Path):
+        # regressão do bloqueador real: agents.yaml do ecossistema carrega `container:`
+        # e `metadata:` sem invalidar o AgentSpec (extra="forbid" permanece).
+        yaml_src = textwrap.dedent(
+            """
+            agents:
+              holt:
+                name: Holt
+                type: openclaw
+                container: openclaw-holt-openclaw-1
+                metadata:
+                  telegram: "@holt_dev_bot"
+                  vps: true
+                capabilities: [monitoria]
+                enabled: true
+            """
+        )
+        path = tmp_path / "agents.yaml"
+        path.write_text(yaml_src, encoding="utf-8")
+        reg = AgentRegistry.from_yaml(path)
+        spec = reg.spec("holt")
+        assert spec.container == "openclaw-holt-openclaw-1"
+        assert spec.metadata == {"telegram": "@holt_dev_bot", "vps": True}
+        assert spec.type == "openclaw"
+
 
 # ---------------------------------------------------------------------------
 # Registry

@@ -64,6 +64,16 @@ class AgentSpec(BaseModel):
     timeout_ms: int = 30000
     weight: int = 5
 
+    # OpenClaw runtime — name of the container backing this agent, when the
+    # adapter reaches the backend through docker compose. Free for other
+    # adapters to repurpose; ``None`` means "no container mapping".
+    container: str | None = None
+
+    # Free-form, adapter-specific bucket. Kept narrow on purpose: known fields
+    # stay first-class above so ``extra="forbid"`` still catches typos, while
+    # ``metadata`` holds the long tail that does not deserve its own column.
+    metadata: dict[str, Any] | None = None
+
     note: str = ""
 
     @property
