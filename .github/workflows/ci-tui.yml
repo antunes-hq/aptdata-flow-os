@@ -29,19 +29,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          pip install -e .
-          pip install pytest pytest-cov pytest-asyncio textual
+      - name: Sync dependencies
+        run: uv sync
 
       - name: Run TUI tests
         run: |
-          python -m pytest \
+          uv run pytest \
             tests/test_tui.py \
             -v \
             --cov=aptdata/tui \

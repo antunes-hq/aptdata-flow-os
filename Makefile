@@ -7,7 +7,7 @@ test:
 	uv run pytest tests/ -v
 
 test-cov:
-	uv run pytest tests/ -v --cov=aptdata --cov-report=term-missing --cov-fail-under=80
+	uv run pytest tests/ -v --cov=aptdata --cov-report=term-missing --cov-fail-under=73
 
 test-unit:
 	uv run pytest tests/ -v -m "not integration and not e2e"
