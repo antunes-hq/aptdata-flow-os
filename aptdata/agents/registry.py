@@ -16,6 +16,7 @@ import yaml
 
 from aptdata.agents.base import AgentResponse, AgentSpec, BaseAgent, IAgent
 from aptdata.agents.cli_agents import ClaudeCodeAgent, OpenCodeAgent
+from aptdata.agents.anthropic import AnthropicAgent
 from aptdata.agents.openclaw import OpenClawAgent
 
 logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ ADAPTERS: dict[str, type[BaseAgent]] = {
     "openclaw": OpenClawAgent,
     "claude_code": ClaudeCodeAgent,
     "opencode": OpenCodeAgent,
+    "anthropic": AnthropicAgent,
 }
 
 
