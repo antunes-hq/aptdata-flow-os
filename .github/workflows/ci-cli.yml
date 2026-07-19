@@ -50,6 +50,7 @@ jobs:
             tests/test_cli.py \
             tests/test_cli_completions.py \
             tests/test_cli_config_cmd.py \
+            tests/test_cli_init_doctor.py \
             tests/test_cli_interactive.py \
             tests/test_cli_plugin_cmd.py \
             tests/test_cli_plugins_cmd.py \

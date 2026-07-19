@@ -53,7 +53,21 @@ routing:
 
 
 def _resolve_path(file: str | None) -> Path:
-    return Path(file or os.getenv(ENV_VAR) or DEFAULT_FILE).expanduser()
+    """Locate ``agents.yaml`` from --file, env var, .aptdata/ dotdir, or CWD.
+
+    ADR-002 §2.2: ``.aptdata/agents.yaml`` wins over the legacy root file.
+    """
+    if file:
+        return Path(file).expanduser()
+    env_value = os.getenv(ENV_VAR)
+    if env_value:
+        return Path(env_value).expanduser()
+    from aptdata.config.loader import locate_project_optional  # noqa: PLC0415
+
+    project = locate_project_optional()
+    if project is not None and project.agents_yaml.is_file():
+        return project.agents_yaml
+    return Path(DEFAULT_FILE)
 
 
 def _telegram_get_me(token: str) -> dict[str, Any]:

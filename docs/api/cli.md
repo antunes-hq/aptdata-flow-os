@@ -407,6 +407,45 @@ Exits 1 when any task fails.
 
 ---
 
+## `aptdata init`
+
+Create the `.aptdata/` dotdir for a project (ADR-002 §2.2). Writes the three
+core YAMLs (`system.yaml`, `agents.yaml`, `config.yaml`) and the three versioned
+JSON Schemas under `.aptdata/schemas/`.
+
+With `--migrate`, moves legacy root-level `aptdata.yaml` and `agents.yaml` into
+`.aptdata/` (renaming `aptdata.yaml` → `system.yaml`). Per ADR-002 §4.1
+(exceção Q6), migration is **immediate** — there is no dual-read fallback;
+after `--migrate` only the dotdir is read by the framework.
+
+```bash
+aptdata init [--path/-p PATH]              # create .aptdata/ with starter templates
+aptdata init --migrate [--force]          # move legacy root YAMLs into .aptdata/
+aptdata init --json                       # one JSON line per action taken
+```
+
+`--force` overwrites existing starter files (migrated files are always moved;
+existing dotdir files are kept without `--force`).
+
+---
+
+## `aptdata doctor`
+
+Validate `.aptdata/` against its versioned JSON Schemas (ADR-002 §2.4). Runs
+`check-jsonschema` for each of `system.yaml`, `agents.yaml`, `config.yaml`
+against the matching schema under `.aptdata/schemas/`. Walks up the tree from
+`--path` (or the CWD) to find the project's `.aptdata/`.
+
+```bash
+aptdata doctor [--path/-p PATH]           # rich table output; exit 1 on failure
+aptdata doctor --json                     # single JSON line report
+```
+
+Exit codes: `0` when every required file validates, `1` otherwise. `agents.yaml`
+is required; `system.yaml` and `config.yaml` are optional (missing → warning).
+
+---
+
 ## `aptdata setup`
 
 Diagnose and configure the aptdata ecosystem. The wizard shows every check

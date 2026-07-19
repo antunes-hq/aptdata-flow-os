@@ -2,6 +2,8 @@
 
 from aptdata.cli.commands.agents_cmd import agents_app
 from aptdata.cli.commands.config_cmd import config_app
+from aptdata.cli.commands.doctor_cmd import doctor_app
+from aptdata.cli.commands.init_cmd import init_app
 from aptdata.cli.commands.mesh_cmd import mesh_app
 from aptdata.cli.commands.obs_cmd import obs_app
 from aptdata.cli.commands.plugin_cmd import plugin_app, plugins_app
@@ -19,4 +21,6 @@ __all__ = [
     "telemetry_app",
     "mesh_app",
     "obs_app",
+    "init_app",
+    "doctor_app",
 ]
