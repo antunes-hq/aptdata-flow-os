@@ -1451,6 +1451,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#aptdata-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        aptdata plugins
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="aptdata plugins">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aptdata-plugins-list-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        aptdata plugins list [--json]
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#aptdata-config" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2406,38 +2434,53 @@ stderr with exit code 1).</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>aptdata<span class="w"> </span>plugin<span class="w"> </span>load<span class="w"> </span>my_package.plugins
 </span></code></pre></div>
 <hr />
+<h2 id="aptdata-plugins"><code>aptdata plugins</code><a class="headerlink" href="#aptdata-plugins" title="Permanent link">&para;</a></h2>
+<p>Discover plugins registered via <a href="https://docs.python.org/3/library/importlib.metadata.html#entry-points">entry points</a> (ADR-002 §2.1).
+Lists every entry point declared under the <code>aptdata.*</code> groups (<code>aptdata.agents</code>,
+<code>aptdata.plugins</code>, <code>aptdata.systems</code>, <code>aptdata.components</code>, <code>aptdata.commands</code>) with
+name, <code>module:attr</code> value, and load status. Broken plugins are surfaced with their
+error instead of being hidden — this is the diagnostic surface promised by ADR-002 §4
+("entry points tornam a origem menos óbvia; mitiga-se com <code>aptdata plugins</code>").</p>
+<h3 id="aptdata-plugins-list-json"><code>aptdata plugins list [--json]</code><a class="headerlink" href="#aptdata-plugins-list-json" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>aptdata<span class="w"> </span>plugins<span class="w"> </span>list
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>aptdata<span class="w"> </span>plugins<span class="w"> </span>list<span class="w"> </span>--json
+</span></code></pre></div>
+<p>In <code>--json</code> mode, emits one JSON line per discovered entry point:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="p">{</span><span class="nt">&quot;group&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;aptdata.agents&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;anthropic&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;aptdata.agents.anthropic:AnthropicAgent&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;loaded&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">}</span>
+</span></code></pre></div>
+<hr />
 <h2 id="aptdata-config"><code>aptdata config</code><a class="headerlink" href="#aptdata-config" title="Permanent link">&para;</a></h2>
 <p>Manage declarative YAML pipeline configurations.</p>
 <h3 id="aptdata-config-validate-path"><code>aptdata config validate PATH</code><a class="headerlink" href="#aptdata-config-validate-path" title="Permanent link">&para;</a></h3>
 <p>Parse and validate a YAML config file.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>pipeline.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>pipeline.yaml
 </span></code></pre></div>
 <h3 id="aptdata-config-init-output-path"><code>aptdata config init [--output PATH]</code><a class="headerlink" href="#aptdata-config-init-output-path" title="Permanent link">&para;</a></h3>
 <p>Generate a starter YAML configuration template.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>init
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>aptdata<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--output<span class="w"> </span>my_pipeline.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>init
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>aptdata<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--output<span class="w"> </span>my_pipeline.yaml
 </span></code></pre></div>
 <h3 id="aptdata-config-show-path"><code>aptdata config show PATH</code><a class="headerlink" href="#aptdata-config-show-path" title="Permanent link">&para;</a></h3>
 <p>Pretty-print a YAML config file with syntax highlighting.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>pipeline.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>pipeline.yaml
 </span></code></pre></div>
 <h3 id="aptdata-config-run-path-env-env"><code>aptdata config run PATH [--env ENV]</code><a class="headerlink" href="#aptdata-config-run-path-env-env" title="Permanent link">&para;</a></h3>
 <p>Parse a YAML config, register the system, and execute it.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>run<span class="w"> </span>pipeline.yaml
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>aptdata<span class="w"> </span>config<span class="w"> </span>run<span class="w"> </span>pipeline.yaml<span class="w"> </span>--env<span class="w"> </span>prod
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>aptdata<span class="w"> </span>config<span class="w"> </span>run<span class="w"> </span>pipeline.yaml
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>aptdata<span class="w"> </span>config<span class="w"> </span>run<span class="w"> </span>pipeline.yaml<span class="w"> </span>--env<span class="w"> </span>prod
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-telemetry"><code>aptdata telemetry</code><a class="headerlink" href="#aptdata-telemetry" title="Permanent link">&para;</a></h2>
 <p>Inspect OpenTelemetry telemetry configuration.</p>
 <h3 id="aptdata-telemetry-status-json"><code>aptdata telemetry status [--json]</code><a class="headerlink" href="#aptdata-telemetry-status-json" title="Permanent link">&para;</a></h3>
 <p>Show whether OpenTelemetry is configured and the active tracer provider.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span>status
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span>status<span class="w"> </span>--json
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span>status
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span>status<span class="w"> </span>--json
 </span></code></pre></div>
 <h3 id="aptdata-telemetry-export-format-json"><code>aptdata telemetry export [--format json]</code><a class="headerlink" href="#aptdata-telemetry-export-format-json" title="Permanent link">&para;</a></h3>
 <p>Export collected telemetry spans/metrics as JSON.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span>
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--format<span class="w"> </span>json
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>aptdata<span class="w"> </span>telemetry<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--format<span class="w"> </span>json
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-mesh"><code>aptdata mesh</code><a class="headerlink" href="#aptdata-mesh" title="Permanent link">&para;</a></h2>
@@ -2452,8 +2495,8 @@ failures emit <code>mesh.run.error</code> and exit 1.</p>
 <h3 id="aptdata-mesh-build-component-dir-dir-json"><code>aptdata mesh build COMPONENT [--dir DIR] [--json]</code><a class="headerlink" href="#aptdata-mesh-build-component-dir-dir-json" title="Permanent link">&para;</a></h3>
 <p>Build a component (<code>pip wheel</code> / <code>docker compose build</code>), with the
 equivalent <code>mesh.build.*</code> events.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>list<span class="w"> </span>--json
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>analytics-job<span class="w"> </span>--dry-run
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>list<span class="w"> </span>--json
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>analytics-job<span class="w"> </span>--dry-run
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-agents"><code>aptdata agents</code><a class="headerlink" href="#aptdata-agents" title="Permanent link">&para;</a></h2>
@@ -2474,8 +2517,8 @@ send fails.</p>
 <h3 id="aptdata-agents-resolve-capability-file-path-json"><code>aptdata agents resolve CAPABILITY [--file PATH] [--json]</code><a class="headerlink" href="#aptdata-agents-resolve-capability-file-path-json" title="Permanent link">&para;</a></h3>
 <p>Resolve the best enabled agent for a capability. No match prints
 <code>{"agent": null}</code> and exits 1.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>route<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
-</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;/zeca deploy do painel&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>route<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;/zeca deploy do painel&quot;</span>
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-project"><code>aptdata project</code><a class="headerlink" href="#aptdata-project" title="Permanent link">&para;</a></h2>
@@ -2495,8 +2538,8 @@ transparently, offers to create a starter <code>agents.yaml</code> (with the <co
 policy block) and configures the Telegram channel — the bot token stays in
 the <code>TELEGRAM_BOT_TOKEN</code> env var, <strong>never in a file</strong> (the yaml records only
 <code>token_env</code>).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>aptdata setup [--file/-f PATH]           # wizard interativo
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>aptdata setup --check [--json]           # não interativo; exit 1 se incompleto
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>aptdata setup [--file/-f PATH]           # wizard interativo
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>aptdata setup --check [--json]           # não interativo; exit 1 se incompleto
 </span></code></pre></div>
 <p><code>--check</code> reports: <code>agents_file</code><em>, <code>router</code></em> (agents/skills carregados),
 <code>routing_policy</code>, <code>telegram_token</code>, <code>telegram_transport</code>, <code>observability</code>,
@@ -2506,8 +2549,8 @@ the <code>TELEGRAM_BOT_TOKEN</code> env var, <strong>never in a file</strong> (t
 <p>Run the thin Telegram transport (long-polling) over the ConversationEngine —
 text messages become <code>converse</code> turns, inline buttons resolve confirmations.
 No routing logic lives in the transport.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TELEGRAM_BOT_TOKEN</span><span class="o">=</span><span class="m">123</span>:abc
-</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>aptdata<span class="w"> </span>telegram<span class="w"> </span><span class="o">[</span>--file<span class="w"> </span>PATH<span class="o">]</span><span class="w"> </span><span class="o">[</span>--token-env<span class="w"> </span>TELEGRAM_BOT_TOKEN<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TELEGRAM_BOT_TOKEN</span><span class="o">=</span><span class="m">123</span>:abc
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>aptdata<span class="w"> </span>telegram<span class="w"> </span><span class="o">[</span>--file<span class="w"> </span>PATH<span class="o">]</span><span class="w"> </span><span class="o">[</span>--token-env<span class="w"> </span>TELEGRAM_BOT_TOKEN<span class="o">]</span>
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-converse"><code>aptdata converse</code><a class="headerlink" href="#aptdata-converse" title="Permanent link">&para;</a></h2>
@@ -2516,8 +2559,8 @@ No routing logic lives in the transport.</p>
 the <code>routing:</code> block of <code>agents.yaml</code>). Sessions are multi-turn ("continua"
 reuses the last agent) and persist under <code>~/.aptdata/sessions</code>
 (<code>$APTDATA_SESSIONS_DIR</code>).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--yes] [--json]
-</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--yes] [--json]
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
 </span></code></pre></div>
 <ul>
 <li>High-confidence routes (prefix, strong skill match) dispatch directly.</li>
@@ -2530,9 +2573,9 @@ reuses the last agent) and persist under <code>~/.aptdata/sessions</code>
 <li>Every turn is recorded in the observability trace
   (<code>permission.requested</code>/<code>permission.resolved</code>, dispatches).</li>
 </ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json<span class="w">         </span><span class="c1"># dispatch direto</span>
-</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;/hermez deploy&quot;</span><span class="w"> </span>-s<span class="w"> </span>ops<span class="w">            </span><span class="c1"># guardrail -&gt; confirmação</span>
-</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>aptdata<span class="w"> </span>converse<span class="w"> </span>--confirm<span class="w"> </span>1a2b3c4d<span class="w"> </span>-s<span class="w"> </span>ops<span class="w">          </span><span class="c1"># aprova e despacha</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json<span class="w">         </span><span class="c1"># dispatch direto</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;/hermez deploy&quot;</span><span class="w"> </span>-s<span class="w"> </span>ops<span class="w">            </span><span class="c1"># guardrail -&gt; confirmação</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>aptdata<span class="w"> </span>converse<span class="w"> </span>--confirm<span class="w"> </span>1a2b3c4d<span class="w"> </span>-s<span class="w"> </span>ops<span class="w">          </span><span class="c1"># aprova e despacha</span>
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-viz"><code>aptdata viz</code><a class="headerlink" href="#aptdata-viz" title="Permanent link">&para;</a></h2>
@@ -2541,7 +2584,7 @@ thin frontend). Endpoints: <code>/api/agents</code>, <code>/api/health</code>, <
 (503 on router failure), <code>/api/observability</code> (event-store summary) and
 <code>/api/events</code> — live <strong>SSE</strong> feed of the observability trace
 (<code>?backlog=N</code> replays the last N events on connect).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>aptdata viz [--file PATH] [--host HOST] [--port PORT]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>aptdata viz [--file PATH] [--host HOST] [--port PORT]
 </span></code></pre></div>
 <table>
 <thead>
@@ -2583,22 +2626,22 @@ success rate and average latency.</p>
 <p>Latest events in chronological order. Filter by kind
 (<code>routing.decision</code>, <code>agent.dispatch</code>, <code>agent.response</code>, <code>app.started</code>, …)
 or correlate a whole run with <code>--run-id</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
-</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span>--json<span class="w">           </span><span class="c1"># decisão + dispatch + response, mesmo run_id</span>
-</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>summary
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span>--json<span class="w">           </span><span class="c1"># decisão + dispatch + response, mesmo run_id</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>summary
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-mcp-start"><code>aptdata mcp-start</code><a class="headerlink" href="#aptdata-mcp-start" title="Permanent link">&para;</a></h2>
 <p>Start the MCP (Model Context Protocol) server so AI agents can discover and
 run pipelines. Emits <code>mcp.server.starting</code>; failures emit
 <code>mcp.server.error</code> and exit 1.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>aptdata<span class="w"> </span>mcp-start<span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>stdio<span class="p">|</span>sse<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>aptdata<span class="w"> </span>mcp-start<span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>stdio<span class="p">|</span>sse<span class="o">]</span>
 </span></code></pre></div>
 <p>See the <a href="../../mcp/">MCP documentation</a> for tools and resources.</p>
 <hr />
 <h2 id="aptdata-interactive"><code>aptdata interactive</code><a class="headerlink" href="#aptdata-interactive" title="Permanent link">&para;</a></h2>
 <p>Launch the guided interactive wizard.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>aptdata<span class="w"> </span>interactive
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>aptdata<span class="w"> </span>interactive
 </span></code></pre></div>
 <p>See <a href="../cli-interactive/">CLI Interactive Wizard</a> for full documentation.</p>
 <hr />
