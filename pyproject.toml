@@ -30,6 +30,11 @@ dependencies = [
     # Lifecycle hookspecs (pre_execute / on_success / on_failure / post_execute)
     # are emitted by the EventBus→pluggy bridge in aptdata.plugins.hooks.
     "pluggy>=1.4,<2.0",
+    # ADR-002 §2.2: typed, fail-fast loader for the .aptdata/ dotdir.
+    "pydantic-settings>=2.0,<3.0",
+    # ADR-002 §2.4: aptdata doctor validates .aptdata/ against versioned
+    # JSON Schemas using check-jsonschema (same lib already in pre-commit).
+    "check-jsonschema>=0.28,<0.29",
 ]
 
 # ADR-002 §2.1 — agent adapters discovered via entry points (group aptdata.agents).
