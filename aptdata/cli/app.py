@@ -203,6 +203,8 @@ app.add_typer(schema_app, name="schema")
 from aptdata.cli.commands import (  # noqa: E402
     agents_app,
     config_app,
+    doctor_app,
+    init_app,
     mesh_app,
     obs_app,
     plugin_app,
@@ -225,6 +227,9 @@ app.add_typer(mesh_app, name="mesh")
 app.add_typer(agents_app, name="agents")
 app.add_typer(project_app, name="project")
 app.add_typer(obs_app, name="obs")
+# ADR-002 §2.2/§2.4 — .aptdata/ dotdir scaffolding + schema validation.
+app.add_typer(init_app, name="init")
+app.add_typer(doctor_app, name="doctor")
 
 from aptdata.cli.commands.converse_cmd import converse_command  # noqa: E402
 from aptdata.cli.commands.setup_cmd import setup_command  # noqa: E402
