@@ -59,6 +59,17 @@ class TestSchemaGeneration:
         schema = export_system_schema()
         assert schema.get("additionalProperties") is False
 
+    def test_agents_schema_exposes_default_mode(self):
+        """PR3 — AgentsFile.default_mode aparece no JSON Schema (ADR-002 §2.3)."""
+        schema = export_agents_schema()
+        props = schema["properties"]
+        assert "default_mode" in props
+        # O enum dos 4 modos canônicos tem que aparecer no schema (em $defs
+        # ou inline) para check-jsonschema validar valores inválidos.
+        body = json.dumps(schema)
+        for mode in ("oneshot", "converse", "project", "orchestrated"):
+            assert mode in body, f"modo {mode!r} ausente do agents.json"
+
     def test_domain_schema_aliases_config_schema(self):
         """export_domain_schema is a legacy alias for the config schema."""
         assert export_domain_schema() == export_config_schema()
@@ -141,6 +152,27 @@ class TestAgentsFileModel:
         assert model.skills == []
         assert model.routing.dispatch_above == 0.75
         assert model.transports == {}
+        # PR3 — default_mode None por default
+        assert model.default_mode is None
+
+    def test_default_mode_parses_canonical_value(self):
+        """PR3 — AgentsFile aceita default_mode como string canônica."""
+        from aptdata.agents.modes import ExecutionMode
+
+        for value in ("oneshot", "converse", "project", "orchestrated"):
+            model = AgentsFile(default_mode=value)
+            assert model.default_mode == ExecutionMode.from_str(value)
+
+    def test_default_mode_rejects_unknown_value(self):
+        with pytest.raises(Exception):
+            AgentsFile(default_mode="bogus")  # type: ignore[arg-type]
+
+    def test_default_mode_round_trip_json(self):
+        from aptdata.agents.modes import ExecutionMode
+
+        model = AgentsFile(default_mode=ExecutionMode.ORCHESTRATED)
+        dumped = model.model_dump(mode="json")
+        assert dumped["default_mode"] == "orchestrated"
 
     def test_rejects_unknown_top_level_field(self):
         with pytest.raises(Exception):

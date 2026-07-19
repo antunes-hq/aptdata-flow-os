@@ -13,6 +13,7 @@ from aptdata.config.loader import (
     ProjectConfig,
     ProjectNotFoundError,
     detect_legacy_files,
+    load_default_mode,
     load_yaml_file,
     locate_project,
     locate_project_optional,
@@ -179,3 +180,49 @@ class TestLoadYamlFile:
         path = tmp_path / "empty.yaml"
         path.write_text("", encoding="utf-8")
         assert load_yaml_file(path) == {}
+
+
+# ---------------------------------------------------------------------------
+# load_default_mode (ADR-002 §2.3)
+# ---------------------------------------------------------------------------
+
+
+class TestLoadDefaultMode:
+    """PR3 — o loader expõe só o ``default_mode`` do agents.yaml sem validar
+    specs inteiros (usado pelo CLI para resolver o ``--mode`` default)."""
+
+    def test_returns_mode_when_present(self, tmp_path: Path):
+        from aptdata.agents.modes import ExecutionMode
+
+        path = tmp_path / "agents.yaml"
+        path.write_text("default_mode: orchestrated\nagents: {}\n", encoding="utf-8")
+        assert load_default_mode(path) is ExecutionMode.ORCHESTRATED
+
+    def test_returns_none_when_field_absent(self, tmp_path: Path):
+        path = tmp_path / "agents.yaml"
+        path.write_text("agents: {}\n", encoding="utf-8")
+        assert load_default_mode(path) is None
+
+    def test_returns_none_when_file_missing(self, tmp_path: Path):
+        assert load_default_mode(tmp_path / "nope.yaml") is None
+
+    def test_returns_none_when_yaml_is_not_mapping(self, tmp_path: Path):
+        path = tmp_path / "agents.yaml"
+        path.write_text("- just\n- a\n- list\n", encoding="utf-8")
+        assert load_default_mode(path) is None
+
+    def test_raises_on_invalid_mode(self, tmp_path: Path):
+        path = tmp_path / "agents.yaml"
+        path.write_text("default_mode: bogus\nagents: {}\n", encoding="utf-8")
+        with pytest.raises(ValueError, match="Unknown execution mode"):
+            load_default_mode(path)
+
+    def test_accepts_all_four_modes(self, tmp_path: Path):
+        from aptdata.agents.modes import ExecutionMode
+
+        for mode in ExecutionMode:
+            path = tmp_path / f"{mode.value}.yaml"
+            path.write_text(
+                f"default_mode: {mode.value}\nagents: {{}}\n", encoding="utf-8"
+            )
+            assert load_default_mode(path) is mode

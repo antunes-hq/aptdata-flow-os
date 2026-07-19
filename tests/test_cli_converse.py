@@ -69,6 +69,79 @@ class TestConverseCli:
         assert turn["type"] == "dispatched"
         assert turn["decision"]["agent_id"] == "zeca"
         assert turn["response"]["ok"] is True
+        # PR3 — converse expõe mode=converse no JSON
+        assert turn["mode"] == "converse"
+
+    def test_mode_override_to_oneshot(self, agents_file):
+        r = runner.invoke(
+            app,
+            [
+                "converse",
+                "mexer no frontend",
+                "-f",
+                agents_file,
+                "--json",
+                "--mode",
+                "oneshot",
+            ],
+        )
+        assert r.exit_code == 0
+        assert json.loads(r.stdout)["mode"] == "oneshot"
+
+    def test_dry_run_dispatch_action(self, agents_file):
+        """dry-run no skill roteado → action=dispatch, sem despachar."""
+        r = runner.invoke(
+            app,
+            [
+                "converse",
+                "mexer no frontend",
+                "-f",
+                agents_file,
+                "--dry-run",
+                "--json",
+            ],
+        )
+        assert r.exit_code == 0, r.stdout
+        data = json.loads(r.stdout)
+        assert data["mode"] == "converse"
+        assert data["dry_run"] is True
+        assert data["action"] == "dispatch"
+        assert data["decision"]["agent_id"] == "zeca"
+        # sem response (não despachou)
+        assert "response" not in data or data.get("response") is None
+
+    def test_dry_run_guarded_action_is_confirm(self, agents_file):
+        """dry-run num guarded capability → action=confirm, sem pedir/gravar."""
+        r = runner.invoke(
+            app,
+            ["converse", "/hermez deploy", "-f", agents_file, "--dry-run", "--json"],
+        )
+        assert r.exit_code == 0
+        data = json.loads(r.stdout)
+        assert data["action"] == "confirm"
+        assert data["decision"]["agent_id"] == "hermez"
+        assert data["dry_run"] is True
+        # sem decision_id (não pediu confirmação)
+        assert "decision_id" not in data or data.get("decision_id") is None
+
+    def test_dry_run_text_mode(self, agents_file):
+        r = runner.invoke(
+            app, ["converse", "mexer no frontend", "-f", agents_file, "--dry-run"]
+        )
+        assert r.exit_code == 0
+        assert "dry-run" in r.stdout
+        assert "dispatch" in r.stdout
+
+    def test_dry_run_with_confirm_exits_2(self, agents_file):
+        r = runner.invoke(
+            app,
+            ["converse", "--confirm", "abcd1234", "-f", agents_file, "--dry-run"],
+        )
+        assert r.exit_code == 2
+
+    def test_dry_run_without_text_exits_2(self, agents_file):
+        r = runner.invoke(app, ["converse", "-f", agents_file, "--dry-run"])
+        assert r.exit_code == 2
 
     def test_guarded_asks_confirmation_then_confirms(self, agents_file):
         r = runner.invoke(

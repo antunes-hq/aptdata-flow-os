@@ -106,6 +106,26 @@ class TestPlan:
         assert r.exit_code == 0
         data = json.loads(r.stdout)
         assert data["project"] == "demo" and len(data["plan"]) >= 1
+        # PR3 — plan expõe mode=project + dry_run=True (plan é sempre plan-only)
+        assert data["mode"] == "project"
+        assert data["dry_run"] is True
+
+    def test_mode_override_to_oneshot(self, project_file, agents_file):
+        r = runner.invoke(
+            app,
+            [
+                "project",
+                "plan",
+                project_file,
+                "--file",
+                agents_file,
+                "--json",
+                "--mode",
+                "oneshot",
+            ],
+        )
+        assert r.exit_code == 0
+        assert json.loads(r.stdout)["mode"] == "oneshot"
 
     def test_text(self, project_file, agents_file):
         r = runner.invoke(app, ["project", "plan", project_file, "--file", agents_file])
@@ -132,6 +152,60 @@ class TestRun:
         # o texto de resposta de cada task faz parte do contrato JSON
         assert all("text" in item for item in data["results"])
         assert any(item["text"] for item in data["results"])
+        # PR3 — run expõe mode=project no JSON
+        assert data["mode"] == "project"
+
+    def test_mode_override_to_orchestrated(self, project_file, agents_file):
+        r = runner.invoke(
+            app,
+            [
+                "project",
+                "run",
+                project_file,
+                "--file",
+                agents_file,
+                "--json",
+                "--mode",
+                "orchestrated",
+            ],
+        )
+        assert r.exit_code == 0
+        assert json.loads(r.stdout)["mode"] == "orchestrated"
+
+    def test_dry_run_aliases_plan(self, project_file, agents_file):
+        """--dry-run em run == plan: roteia tasks sem despachar nenhum send."""
+        r = runner.invoke(
+            app,
+            [
+                "project",
+                "run",
+                project_file,
+                "--file",
+                agents_file,
+                "--dry-run",
+                "--json",
+            ],
+        )
+        assert r.exit_code == 0, r.stdout
+        data = json.loads(r.stdout)
+        assert data["mode"] == "project"
+        assert data["dry_run"] is True
+        assert "plan" in data
+        assert len(data["plan"]) >= 1
+        # nenhum "results" (não despachou)
+        assert "results" not in data
+        # cada task do plan tem task_id + agent_id + mode
+        for item in data["plan"]:
+            assert {"task_id", "agent_id", "mode"} <= set(item)
+
+    def test_dry_run_text_mode(self, project_file, agents_file):
+        r = runner.invoke(
+            app,
+            ["project", "run", project_file, "--file", agents_file, "--dry-run"],
+        )
+        assert r.exit_code == 0
+        assert "dry-run" in r.stdout
+        assert "demo" in r.stdout
 
     def test_text(self, project_file, agents_file):
         r = runner.invoke(app, ["project", "run", project_file, "--file", agents_file])

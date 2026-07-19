@@ -366,3 +366,90 @@ class TestConsumersReadDotdir:
         payload = json.loads(result.output.strip())
         assert payload["count"] == 1
         assert payload["agents"][0]["id"] == "testbot"
+
+    def test_default_mode_in_dotdir_is_respected_by_cli(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """PR3 (ADR-002 §2.3) — ``default_mode`` no ``.aptdata/agents.yaml``
+        vira o default do ``--mode`` em todos os comandos de execução do CLI."""
+        runner.invoke(app, ["init", "--path", str(tmp_path)])
+        agents_yaml = tmp_path / APTDATA_DIR_NAME / "agents.yaml"
+        agents_yaml.write_text(
+            "default_mode: orchestrated\n"
+            "agents:\n"
+            "  testbot:\n"
+            "    name: TestBot\n"
+            "    type: openclaw\n"
+            "    host: localhost\n"
+            "    port: 48330\n"
+            "    capabilities: [chat]\n"
+            "    enabled: true\n",
+            encoding="utf-8",
+        )
+
+        # stub do send para o dry-run não precisar de rede
+        from aptdata.agents.base import AgentResponse
+        from aptdata.agents.openclaw import OpenClawAgent
+
+        monkeypatch.setattr(
+            OpenClawAgent,
+            "send",
+            lambda self, p, **k: AgentResponse(
+                ok=True, agent_id=self.id, text=f"re:{p}"
+            ),
+        )
+
+        monkeypatch.chdir(tmp_path)
+        # send sem --mode → cai no default_mode do projeto (orchestrated).
+        # (send ainda usa o agent_id explícito, mas o campo `mode` no JSON
+        # reflete o modo efetivo, que aqui é o default do projeto.)
+        result = runner.invoke(app, ["agents", "send", "testbot", "oi", "--json"])
+        assert result.exit_code == 0, result.output
+        payload = json.loads(result.output.strip())
+        assert payload["mode"] == "orchestrated"
+        assert payload["ok"] is True
+
+    def test_explicit_mode_overrides_project_default(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """``--mode`` explícito vence o ``default_mode`` do projeto."""
+        runner.invoke(app, ["init", "--path", str(tmp_path)])
+        agents_yaml = tmp_path / APTDATA_DIR_NAME / "agents.yaml"
+        agents_yaml.write_text(
+            "default_mode: orchestrated\n"
+            "agents:\n"
+            "  testbot:\n"
+            "    name: TestBot\n"
+            "    type: openclaw\n"
+            "    host: localhost\n"
+            "    port: 48330\n"
+            "    capabilities: [chat]\n"
+            "    enabled: true\n",
+            encoding="utf-8",
+        )
+
+        from aptdata.agents.base import AgentResponse
+        from aptdata.agents.openclaw import OpenClawAgent
+
+        monkeypatch.setattr(
+            OpenClawAgent,
+            "send",
+            lambda self, p, **k: AgentResponse(
+                ok=True, agent_id=self.id, text=f"re:{p}"
+            ),
+        )
+        monkeypatch.chdir(tmp_path)
+        result = runner.invoke(
+            app,
+            [
+                "agents",
+                "send",
+                "testbot",
+                "oi",
+                "--json",
+                "--mode",
+                "oneshot",
+            ],
+        )
+        assert result.exit_code == 0, result.output
+        assert json.loads(result.output.strip())["mode"] == "oneshot"
