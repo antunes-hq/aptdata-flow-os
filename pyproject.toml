@@ -26,7 +26,21 @@ dependencies = [
     "opentelemetry-sdk>=1.40.0,<2.0.0",
     "python-dotenv>=1.0,<2.0",
     "questionary>=2.0",
+    # ADR-002 §2.1: plugin host — same lib pytest uses for its hook system.
+    # Lifecycle hookspecs (pre_execute / on_success / on_failure / post_execute)
+    # are emitted by the EventBus→pluggy bridge in aptdata.plugins.hooks.
+    "pluggy>=1.4,<2.0",
 ]
+
+# ADR-002 §2.1 — agent adapters discovered via entry points (group aptdata.agents).
+# A third party registers a new backend by adding a section like this to its own
+# pyproject.toml; aptdata picks it up at runtime via importlib.metadata.
+[project.entry-points."aptdata.agents"]
+anthropic = "aptdata.agents.anthropic:AnthropicAgent"
+openclaw = "aptdata.agents.openclaw:OpenClawAgent"
+claude_code = "aptdata.agents.cli_agents:ClaudeCodeAgent"
+opencode = "aptdata.agents.cli_agents:OpenCodeAgent"
+placeholder = "aptdata.agents.registry:_PlaceholderAgent"
 
 [project.urls]
 Homepage = "https://strondata.github.io/smart-data"

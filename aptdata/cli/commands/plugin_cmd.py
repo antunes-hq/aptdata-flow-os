@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+from importlib.metadata import entry_points
+from typing import Any
 
 import typer
 
@@ -10,6 +12,10 @@ from aptdata.cli.rendering.console import SmartConsole
 from aptdata.cli.rendering.tables import plugin_schema_table, plugins_table
 
 plugin_app = typer.Typer(name="plugin", help="Manage and inspect plugins.")
+#: ``plugins`` (plural) — entry-point discovery surface (ADR-002 §2.1/§2.4).
+#: Distinct from ``plugin`` (singular, which manages reader/writer plugins
+#: registered imperatively on the global ``plugin_manager``).
+plugins_app = typer.Typer(name="plugins", help="Discover plugins via entry points.")
 
 
 @plugin_app.command("list")
@@ -105,3 +111,103 @@ def plugin_load(
     except Exception as exc:  # noqa: BLE001
         console.error(f"Load failed: {exc}")
         raise typer.Exit(1) from exc
+
+
+# ---------------------------------------------------------------------------
+# aptdata plugins — entry-point discovery (ADR-002 §2.1 / §2.4)
+# ---------------------------------------------------------------------------
+
+#: Entry-point groups surfaced by ``aptdata plugins list``. Each group
+#: represents one extension axis of the framework.
+ENTRY_POINT_GROUPS: tuple[str, ...] = (
+    "aptdata.agents",
+    "aptdata.plugins",
+    "aptdata.systems",
+    "aptdata.components",
+    "aptdata.commands",
+)
+
+
+def _discover_entry_points() -> list[dict[str, Any]]:
+    """Inspect each declared entry-point group and report what was found.
+
+    Returns a list of records (one per entry point) with name, group,
+    value (``module:attr``), and a ``loaded`` flag indicating whether
+    ``EntryPoint.load()`` succeeded. Failures are surfaced (not raised)
+    so the CLI can show broken plugins.
+    """
+    records: list[dict[str, Any]] = []
+    for group in ENTRY_POINT_GROUPS:
+        try:
+            eps = list(entry_points(group=group))
+        except Exception as exc:  # noqa: BLE001 — never crash discovery
+            records.append(
+                {
+                    "group": group,
+                    "name": "<group-error>",
+                    "value": str(exc),
+                    "loaded": False,
+                    "error": str(exc),
+                }
+            )
+            continue
+        for ep in eps:
+            record: dict[str, Any] = {
+                "group": group,
+                "name": ep.name,
+                "value": ep.value,
+                "loaded": False,
+                "error": None,
+            }
+            try:
+                ep.load()
+                record["loaded"] = True
+            except Exception as exc:  # noqa: BLE001 — broken plugin ≠ broken CLI
+                record["error"] = str(exc)
+            records.append(record)
+    return records
+
+
+@plugins_app.command("list")
+def plugins_list(
+    json_mode: bool = typer.Option(False, "--json", help="Emit JSON lines."),
+) -> None:
+    """List plugins discovered via entry points (groups ``aptdata.*``).
+
+    Shows name, group, ``module:attr`` value, and whether the entry point
+    loaded successfully. Broken plugins are surfaced (with their error)
+    rather than hidden — this is the diagnostic surface promised by
+    ADR-002 §4 ("entry points tornam a origem menos óbvia; mitiga-se com
+    ``aptdata plugins``").
+    """
+    console = SmartConsole(json_mode=json_mode)
+    records = _discover_entry_points()
+
+    if json_mode:
+        for record in records:
+            print(json.dumps(record, default=str), flush=True)
+        return
+
+    if not records:
+        console.warning("No entry-point plugins discovered.")
+        return
+
+    from rich.table import Table  # noqa: PLC0415
+
+    table = Table(
+        title="Entry-Point Plugins", show_header=True, header_style="bold cyan"
+    )
+    table.add_column("Group", style="bold magenta")
+    table.add_column("Name", style="bold")
+    table.add_column("Module:Attr")
+    table.add_column("Status")
+    for record in records:
+        status = "ok" if record["loaded"] else f"FAIL: {record['error']}"
+        style = "green" if record["loaded"] else "red"
+        table.add_row(
+            record["group"],
+            record["name"],
+            record["value"],
+            f"[{style}]{status}[/{style}]",
+        )
+    console.render(table)
