@@ -1,6 +1,6 @@
 # ADR 002: aptdata como Núcleo de Orquestração Pluggable (`.aptdata/`, entry points, camada web)
 
-**Status:** Proposed
+**Status:** Accepted (18/07/2026) — com exceção Q6 registrada em §4.1
 **Data:** 2026-07-17
 **Contexto:** Consolidação do ecossistema — posicionar o `aptdata` como a biblioteca-base
 abstrata que qualquer ferramenta consome, e não como mais um app entre vários.
@@ -182,6 +182,29 @@ cima são consumidoras da superfície de leitura do `aptdata`:
 * **Atenção (toolchain):** migrar Poetry→`uv` e adotar workspace/type-check é ganho de DX, mas mexe
   no CI e no fluxo de contribuição; fazer como PR 0 isolado, com o lockfile commitado, antes das
   mudanças de arquitetura.
+
+### 4.1. Exceção: Migração Imediata (decisão Q6, 18/07/2026)
+
+A regra de "compatibilidade temporária" em §4 (loader aceita o formato antigo com aviso de
+depreciação) é **sobrescrita** pela decisão Q6 tomada na sessão de planejamento de
+18/07/2026: a migração para `.aptdata/` é **imediata**, sem dual-read.
+
+Justificativa: o ecossistema é controlado por um único operador (Lucas), os consumers são
+contáveis e conhecidos (mindflow, multiverso, stronda-cup, financas, mariana-ingles, workers),
+e manter dois caminhos de leitura adiciona complexidade sem benefício real. O custo de uma
+janela de depreciação supera o custo de migrar os consumers de uma vez.
+
+**Implicações operacionais:**
+1. `aptdata init --migrate` é **obrigatório** — não existe fallback automático para
+   `aptdata.yaml`/`agents.yaml` no formato legado. Quem não migrar quebra.
+2. O loader `.aptdata/` rejeita formatos antigos com erro explícito (não warning).
+3. A migração dos consumers listados é pré-requisito ou passo imediato ao PR2 (`.aptdata/`),
+   não trabalho paralelo indefinido.
+4. Esta exceção não se estende a terceiros (se `aptdata` for consumido fora do ecossistema
+   controlado, reverte-se para compat temporária — não é o caso hoje).
+
+**Risco registrado:** se um consumer não-migrado tentar rodar pós-PR2, falha com erro claro
+em vez de degradar silenciosamente. Aceito: melhor falha ruidosa do que divergência oculta.
 
 ## 5. Próximos Passos (roadmap de PRs, cada um entregável)
 
