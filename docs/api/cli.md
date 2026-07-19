@@ -235,6 +235,30 @@ aptdata plugin load my_package.plugins
 
 ---
 
+## `aptdata plugins`
+
+Discover plugins registered via [entry points](https://docs.python.org/3/library/importlib.metadata.html#entry-points) (ADR-002 §2.1).
+Lists every entry point declared under the `aptdata.*` groups (`aptdata.agents`,
+`aptdata.plugins`, `aptdata.systems`, `aptdata.components`, `aptdata.commands`) with
+name, `module:attr` value, and load status. Broken plugins are surfaced with their
+error instead of being hidden — this is the diagnostic surface promised by ADR-002 §4
+("entry points tornam a origem menos óbvia; mitiga-se com `aptdata plugins`").
+
+### `aptdata plugins list [--json]`
+
+```bash
+aptdata plugins list
+aptdata plugins list --json
+```
+
+In `--json` mode, emits one JSON line per discovered entry point:
+
+```json
+{"group": "aptdata.agents", "name": "anthropic", "value": "aptdata.agents.anthropic:AnthropicAgent", "loaded": true, "error": null}
+```
+
+---
+
 ## `aptdata config`
 
 Manage declarative YAML pipeline configurations.

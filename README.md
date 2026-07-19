@@ -142,6 +142,7 @@ aptdata plugin list [--json]
 aptdata plugin inspect NAME [--json]
 aptdata plugin preview READER [--limit N]
 aptdata plugin load MODULE_PATH
+aptdata plugins list [--json]
 aptdata config validate PATH
 aptdata config init [--output PATH] [--template]
 aptdata config show PATH

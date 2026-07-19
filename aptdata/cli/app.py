@@ -206,6 +206,7 @@ from aptdata.cli.commands import (  # noqa: E402
     mesh_app,
     obs_app,
     plugin_app,
+    plugins_app,
     project_app,
     system_app,
     telemetry_app,
@@ -214,6 +215,10 @@ from aptdata.cli.interactive import interactive_command  # noqa: E402
 
 app.add_typer(system_app, name="system")
 app.add_typer(plugin_app, name="plugin")
+# ADR-002 §2.4 — plural namespace for entry-point discovery surface
+# (``aptdata plugins list``). Distinct from ``plugin`` (singular) which
+# manages reader/writer plugins registered imperatively.
+app.add_typer(plugins_app, name="plugins")
 app.add_typer(config_app, name="config")
 app.add_typer(telemetry_app, name="telemetry")
 app.add_typer(mesh_app, name="mesh")
