@@ -53,7 +53,7 @@ Commands:
   mcp-start     Start the MCP (Model Context Protocol) server.
   scaffold      Gera um projeto aptdata a partir de um template.
   interactive   Launch the interactive wizard mode.
-  viz           Launch aptdata-viz — the web view of the agent ecosystem.
+  studio        Launch aptdata studio — the web view of the agent ecosystem.
   schema        Schema utilities for declarative configuration.
   system        Inspect and validate registered systems.
   plugin        Manage and inspect plugins.

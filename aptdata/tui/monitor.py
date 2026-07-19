@@ -161,10 +161,10 @@ class _IngestionMetricsPanel(Static):
 
 
 class _AgentTraceLog(RichLog):
-    """Log ao vivo do traço de observabilidade (mesmo store do viz/CLI).
+    """Log ao vivo do traço de observabilidade (mesmo store do studio/CLI).
 
     Lê incrementalmente do event store via cursor (``Observer.since``) —
-    paridade com o SSE do aptdata-viz sobre a MESMA fonte.
+    paridade com o SSE do aptdata studio sobre a MESMA fonte.
     """
 
     DEFAULT_CSS = """

@@ -966,7 +966,7 @@ def _scaffold_docker_compose_app(project_name: str, project_dir: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# design-system templates (viz-panel / dashboard)
+# design-system templates (studio-panel / dashboard)
 # ---------------------------------------------------------------------------
 # Fonte única de design: os dois templates projetam os MESMOS tokens
 # (paleta validada com o método dataviz — CVD/contraste checados; os slots
@@ -1071,7 +1071,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .empty { color: var(--text-muted); text-align: center; padding: 40px; }
 """
 
-_VIZ_PANEL_HTML = """\
+_STUDIO_PANEL_HTML = """\
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -1086,7 +1086,7 @@ _VIZ_PANEL_HTML = """\
 <div class="wrap">
   <header>
     <h1>{project_name}</h1>
-    <p class="sub">Painel fino — consome uma API de leitura (padrão aptdata-viz);
+    <p class="sub">Painel fino — consome uma API de leitura (padrão aptdata studio);
       zero lógica de negócio no frontend.</p>
   </header>
 
@@ -1095,7 +1095,7 @@ _VIZ_PANEL_HTML = """\
 </div>
 
 <script>
-// Aponte para a sua API (ex.: http://localhost:4570 do `aptdata viz`).
+// Aponte para a sua API (ex.: http://localhost:4570 do `aptdata studio`).
 const API_BASE = '';
 const $ = s => document.querySelector(s);
 const api = p => fetch(API_BASE + p).then(r => r.json());
@@ -1144,7 +1144,7 @@ async function load() {{
       </div>`).join('');
   }} catch (err) {{
     $('#grid').innerHTML =
-      '<div class="empty">API fora do ar — suba com <code>aptdata viz</code> ' +
+      '<div class="empty">API fora do ar — suba com <code>aptdata studio</code> ' +
       'e configure API_BASE.</div>';
   }}
 }}
@@ -1155,16 +1155,16 @@ setInterval(load, 15000);
 </html>
 """
 
-_VIZ_PANEL_README = """\
+_STUDIO_PANEL_README = """\
 # {project_name} — painel fino (design system aptdata)
 
 Painel web **sem build e sem CDN** que consome uma API de leitura no padrão
-do aptdata-viz (`/api/agents`, `/api/health`). Zero lógica de negócio no
+do aptdata studio (`/api/agents`, `/api/health`). Zero lógica de negócio no
 frontend — a API é o contrato.
 
 ## Rodando
 
-1. Suba uma API (ex.: `aptdata viz` na porta 4570).
+1. Suba uma API (ex.: `aptdata studio` na porta 4570).
 2. Edite `API_BASE` no `index.html` (ex.: `http://localhost:4570`).
 3. Sirva a pasta: `python -m http.server 8080` e abra `http://localhost:8080`.
 
@@ -1375,14 +1375,14 @@ def _write_design_assets(project_dir: Path) -> None:
     (assets / "components.css").write_text(_DESIGN_COMPONENTS_CSS, encoding="utf-8")
 
 
-def _scaffold_viz_panel(project_name: str, project_dir: Path) -> None:
-    """Generate viz-panel project scaffold (thin web panel)."""
+def _scaffold_studio_panel(project_name: str, project_dir: Path) -> None:
+    """Generate studio-panel project scaffold (thin web panel)."""
     _write_design_assets(project_dir)
     (project_dir / "index.html").write_text(
-        _VIZ_PANEL_HTML.format(project_name=project_name), encoding="utf-8"
+        _STUDIO_PANEL_HTML.format(project_name=project_name), encoding="utf-8"
     )
     (project_dir / "README.md").write_text(
-        _VIZ_PANEL_README.format(project_name=project_name), encoding="utf-8"
+        _STUDIO_PANEL_README.format(project_name=project_name), encoding="utf-8"
     )
 
 
@@ -1427,9 +1427,9 @@ _TEMPLATES: dict[str, tuple[str, object]] = {
         "Gera uma aplicação Docker Compose multi-serviço.",
         _scaffold_docker_compose_app,
     ),
-    "viz-panel": (
+    "studio-panel": (
         "Gera um painel web fino (design system aptdata, consome API de leitura).",
-        _scaffold_viz_panel,
+        _scaffold_studio_panel,
     ),
     "dashboard": (
         "Gera um dashboard (tiles + gráfico SVG + tabela) sobre um data.json.",

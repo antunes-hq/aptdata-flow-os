@@ -536,7 +536,7 @@ aptdata setup --check [--json]           # não interativo; exit 1 se incompleto
 
 `--check` reports: `agents_file`*, `router`* (agents/skills carregados),
 `routing_policy`, `telegram_token`, `telegram_transport`, `observability`,
-`viz` (* = obrigatórios para o exit 0). See [Telegram](../telegram.md).
+`studio` (* = obrigatórios para o exit 0). See [Telegram](../telegram.md).
 
 ---
 
@@ -588,16 +588,16 @@ aptdata converse --confirm 1a2b3c4d -s ops          # aprova e despacha
 
 ---
 
-## `aptdata viz`
+## `aptdata studio`
 
-Serve the aptdata-viz web view of the agent ecosystem (read-only API +
+Serve the aptdata studio web view of the agent ecosystem (read-only API +
 thin frontend). Endpoints: `/api/agents`, `/api/health`, `/api/route?text=`
 (503 on router failure), `/api/observability` (event-store summary) and
 `/api/events` — live **SSE** feed of the observability trace
 (`?backlog=N` replays the last N events on connect).
 
 ```
-aptdata viz [--file PATH] [--host HOST] [--port PORT]
+aptdata studio [--file PATH] [--host HOST] [--port PORT]
 ```
 
 | Flag | Default | Description |

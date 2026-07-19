@@ -270,14 +270,14 @@ def interactive() -> None:
     interactive_command()
 
 
-@app.command("viz")
-def viz(
+@app.command("studio")
+def studio(
     file: str = typer.Option(None, "--file", "-f", help="Path to agents.yaml."),
     port: int = typer.Option(4570, "--port", "-p", help="HTTP port."),
     host: str = typer.Option("0.0.0.0", "--host", help="Bind host."),
 ) -> None:
-    """Launch aptdata-viz — the web view of the agent ecosystem."""
-    from aptdata.viz import serve  # noqa: PLC0415
+    """Launch aptdata studio — the web view of the agent ecosystem."""
+    from aptdata.studio import serve  # noqa: PLC0415
 
     serve(agents_file=file, host=host, port=port)
 

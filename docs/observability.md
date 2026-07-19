@@ -3,7 +3,7 @@
 O aptdata grava um **traço de eventos** de tudo que acontece na orquestração
 multi-agente: por que o Router escolheu um agente, quando um prompt saiu,
 quanto demorou a resposta, quando um app subiu. O traço é a **fonte única**
-que todas as superfícies leem — CLI (`aptdata obs`), viz e TUI — seguindo a
+que todas as superfícies leem — CLI (`aptdata obs`), studio e TUI — seguindo a
 north star de sincronização (`docs/plans/sync-architecture.md`).
 
 ## Como funciona
@@ -45,8 +45,8 @@ with obs.run_context() as run_id:
 
 | Kind | Emitido por | Payload |
 |------|-------------|---------|
-| `app.started` | viz (e demais apps ao subir) | `{app, host, port}` |
-| `routing.decision` | `Router.route()` — toda superfície (CLI, viz, MCP, projects) | `RouteDecision` completo: `{agent_id, mode, confidence, skill, matched_keyword, text}` |
+| `app.started` | studio (e demais apps ao subir) | `{app, host, port}` |
+| `routing.decision` | `Router.route()` — toda superfície (CLI, studio, MCP, projects) | `RouteDecision` completo: `{agent_id, mode, confidence, skill, matched_keyword, text}` |
 | `agent.dispatch` | `observed_send()` (CLI `agents send/dispatch`, `project run`, MCP `dispatch`) | `{prompt_chars}` |
 | `agent.response` | idem | `{ok, error, latency_ms, text_chars}` |
 | `permission.requested` / `permission.resolved` | loop de confirmação do ConversationEngine (planejado) | decisão pendente / escolha |
@@ -60,11 +60,11 @@ with obs.run_context() as run_id:
     aptdata obs tail [--limit N] [--kind KIND] [--run-id ID] [--json]
     ```
 
-- **viz (web)**: `GET /api/observability` devolve o `summary()`; o painel
+- **studio (web)**: `GET /api/observability` devolve o `summary()`; o painel
   mostra o **traço ao vivo** via `GET /api/events` (**SSE**, `?backlog=N`
   reemite os últimos N ao conectar) — sem polling.
 - **TUI** (`aptdata monitor`): a aba *Agent Trace* lê incrementalmente o
-  mesmo store (cursor `Observer.since`), com paridade ao feed do viz.
+  mesmo store (cursor `Observer.since`), com paridade ao feed do studio.
 
 ## Configuração
 
@@ -77,7 +77,7 @@ with obs.run_context() as run_id:
 
 - **No-throw**: `Observer.emit()` engole qualquer erro (payload não
   serializável, disco cheio, store quebrado) e loga em `DEBUG`.
-- **Thread-safe**: o store serializa escritas/leituras com lock (o viz é
+- **Thread-safe**: o store serializa escritas/leituras com lock (o studio é
   thread-per-request).
 - **Isolado em testes**: a suite aponta `APTDATA_OBS_DB` para um banco
   temporário (fixture autouse em `tests/conftest.py`).

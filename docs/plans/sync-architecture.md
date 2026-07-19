@@ -1,18 +1,18 @@
-# Sincronização CLI ↔ viz ↔ UI ↔ docs — north star + working agreement
+# Sincronização CLI ↔ studio ↔ UI ↔ docs — north star + working agreement
 
 > Brief de direção para agentes trabalhando neste repositório. A meta não é só
-> "não ter bug": é ter **tecnologia suficiente para manter CLI, viz, UI e docs
+> "não ter bug": é ter **tecnologia suficiente para manter CLI, studio, UI e docs
 > sincronizados** a partir de uma fonte única — que uma mudança na fonte se
 > propague (ou quebre o CI) em todas as superfícies.
 
 ## 1. North star
-- **Uma fonte única de verdade por domínio.** CLI, viz, UI e docs são **projeções**
+- **Uma fonte única de verdade por domínio.** CLI, studio, UI e docs são **projeções**
   dessa fonte, nunca cópias que divergem. (Ecoa o problema dos "3 registros
   divergentes" que o `agents.yaml` resolveu — não recriar essa dor em outra camada.)
 - **Contrato antes de superfície.** Os shapes canônicos (`AgentSpec`, `RouteDecision`,
-  os payloads da API do viz, os eventos de observabilidade) são o contrato. Toda
+  os payloads da API do studio, os eventos de observabilidade) são o contrato. Toda
   superfície lê o MESMO contrato — não redefine.
-- **Sincronização é verificável.** Divergência entre código, CLI, viz e docs deve
+- **Sincronização é verificável.** Divergência entre código, CLI, studio e docs deve
   **falhar o CI**, não passar silenciosa. "Docs drift" é bug.
 
 ## 2. As camadas (e como se ligam)
@@ -20,12 +20,12 @@
 - **aptdata (núcleo)**: System/Flow/Component, `agents/` (Registry/Router/Project),
   MCP, observability.
 - **CLI** (`aptdata/cli`): projeção operável do núcleo. Todo comando com `--json`.
-- **viz/UI** (`aptdata/viz`): projeção visual — API de leitura (contrato) + frontends
+- **studio/UI** (`aptdata/studio`): projeção visual — API de leitura (contrato) + frontends
   finos (web + TUI) que só consomem. Adicionar view = endpoint + consumidor, sem
   duplicar lógica.
 - **docs** (`docs/**`, docstrings, README): projeção textual — deve refletir o código
   atual, com exemplos que rodam.
-- Planos vivos em `docs/plans/`: observability, cli-tdd, telegram-orchestration, aptdata-viz.
+- Planos vivos em `docs/plans/`: observability, cli-tdd, telegram-orchestration, aptdata-studio.
 
 ## 3. TDD (disciplina inegociável)
 - **Red → Green → Refactor**: escreva o teste que descreve o comportamento ANTES,
@@ -40,9 +40,9 @@
   `tests/test_cli_agents_cmd.py` — `monkeypatch` em `OpenClawAgent.send`).
 - **Um comportamento por teste**, com assert claro; nome que diz o que garante.
 
-## 5. Painel (viz/UI) bem definido e escalável
-- A **API de leitura do viz é o contrato**; os frontends (web/TUI) são clientes finos.
-- **Zero lógica de negócio no viz** — ele lê a mesma fonte (registry/observability) e
+## 5. Painel (studio/UI) bem definido e escalável
+- A **API de leitura do studio é o contrato**; os frontends (web/TUI) são clientes finos.
+- **Zero lógica de negócio no studio** — ele lê a mesma fonte (registry/observability) e
   renderiza. Escala adicionando view = endpoint + consumidor.
 - Uma view nova só entra com: contrato do endpoint + teste do endpoint + consumidor.
 

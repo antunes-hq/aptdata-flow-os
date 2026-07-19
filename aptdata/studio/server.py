@@ -1,4 +1,4 @@
-"""Servidor de leitura do aptdata-viz (stdlib http.server, zero deps).
+"""Servidor de leitura do aptdata studio (stdlib http.server, zero deps).
 
 Endpoints:
 - ``GET /``                 → frontend (static/index.html)
@@ -51,7 +51,7 @@ def _health_str(value: object) -> str:
     return str(getattr(value, "value", getattr(value, "name", value))).lower()
 
 
-class VizState:
+class StudioState:
     """Carrega registry/router do agents.yaml, recarregando se o arquivo mudar."""
 
     def __init__(self, agents_file: str | None):
@@ -130,7 +130,7 @@ class VizState:
             return {"error": str(exc)}
 
 
-def _make_handler(state: VizState):
+def _make_handler(state: StudioState):
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *a):  # silencia
             pass
@@ -224,20 +224,22 @@ def _observability() -> dict:
         from aptdata.observability import Observer  # lazy
 
         return Observer.get().summary()
-    except Exception as exc:  # noqa: BLE001 - viz é leitor, degrada com graça
+    except Exception as exc:  # noqa: BLE001 - studio é leitor, degrada com graça
         return {"available": False, "error": str(exc)}
 
 
 def serve(agents_file: str | None = None, host: str = "0.0.0.0", port: int = 4570):
-    state = VizState(agents_file)
+    state = StudioState(agents_file)
     httpd = ThreadingHTTPServer((host, port), _make_handler(state))
     try:  # traço de subida de app é best-effort
         from aptdata.observability import Observer  # noqa: PLC0415
 
-        Observer.get().emit("app.started", {"app": "viz", "host": host, "port": port})
+        Observer.get().emit(
+            "app.started", {"app": "studio", "host": host, "port": port}
+        )
     except Exception:  # noqa: BLE001 - façade quebrado não pode vazar
         pass
-    print(f"🔭 aptdata-viz em http://{host}:{port} (agents: {state.path})")
+    print(f"🔭 aptdata studio em http://{host}:{port} (agents: {state.path})")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

@@ -41,7 +41,7 @@ Boa parte do desenho abaixo **já está no código** — a ADR consolida e fecha
 | Orquestrar qualquer agente | `aptdata/agents/`: contrato `IAgent`, adapters `OpenClawAgent` / `ClaudeCodeAgent` / `OpenCodeAgent`, `Router` + `Skill`, `ConversationEngine`, `Project` / `ProjectRunner` | modos de execução não nomeados; adapter novo ainda exige código |
 | Plugar engines/frameworks | `plugins/`: `_SystemRegistry`, `PluginManager` (carga por caminho pontilhado), extras `[pandas/spark/ai/...]` | descoberta manual; sem entry points |
 | Fonte declarativa | `YamlSystemBuilder` (YAML→System), `aptdata.yaml`, `agents.yaml`, `schema export` (JSON Schema do `ParsedConfig`), dir `~/.aptdata/` | três fontes divergentes; sem local de projeto unificado |
-| Camada web | `aptdata viz` já no CLI (`aptdata/viz/static/`); o plano de viz já a define como consumidora que absorve o painel | os dashboards ainda não convergiram |
+| Camada web | `aptdata studio` já no CLI (`aptdata/studio/static/`); o plano do studio já a define como consumidora que absorve o painel | os dashboards ainda não convergiram |
 | Governança / telemetria | `governance/RuleRegistry` + audit, `EventBus` (JSON Lines), MCP, `dry_run`, `observability/` | evolução opcional (ver §2.5) |
 
 ## 2. Decisões Arquiteturais Propostas
@@ -121,7 +121,7 @@ deixam de ser conhecimento implícito no código e viram vocabulário de primeir
 
 ### 2.4. CLI como produto
 
-O surface do CLI já é amplo (`run`, `agents`, `project`, `mesh`, `converse`, `mcp`, `obs`, `viz`, …).
+O surface do CLI já é amplo (`run`, `agents`, `project`, `mesh`, `converse`, `mcp`, `obs`, `studio`, …).
 Fechar as pontas que faltam para tratá-lo como produto completo:
 
 * `aptdata init` — cria o `.aptdata/` do projeto a partir de um template.
@@ -160,11 +160,11 @@ um só espaço de trabalho:
 A lógica de negócio (registries, orquestração, observabilidade) vive **só no núcleo**. As camadas de
 cima são consumidoras da superfície de leitura do `aptdata`:
 
-* **Camada web (o repo hoje chamado `aptdata-viz`)** passa a ser a **única** superfície web —
+* **Camada web (historicamente `aptdata-viz`)** passa a ser a **única** superfície web —
   consumidora da read-API do `aptdata` (event store da observability + registry via MCP; ao vivo via
-  SSE plugado no `EventBus`), **absorvendo os dashboards existentes** num só. Como o escopo cresceu
-  além de "visualização", o nome "viz" fica apertado; sugere-se renome (ex.: `aptdata-console` /
-  `aptdata-hub` / `aptdata-studio`) — a decisão de nome fica para a revisão.
+  SSE plugado no `EventBus`), **absorvendo os dashboards existentes** num só. O rename para
+  `aptdata studio` foi implementado no PR4 (2026-07-19): módulo `aptdata/viz/` → `aptdata/studio/`,
+  comando `aptdata viz` → `aptdata studio`, template `viz-panel` → `studio-panel`.
 * **O Lab (`ai-labs`)** segue como fábrica de kits + o `lab` CLI; seu painel deixa de ser dono da
   lógica de agentes/observabilidade e passa a **consumir o `aptdata` como biblioteca** (ou é
   absorvido pela camada web). O `agents.yaml` do Lab converge no formato de `.aptdata/agents.yaml`.

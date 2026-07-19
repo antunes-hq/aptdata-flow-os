@@ -7,7 +7,7 @@ Contrato (docs/plans/observability.md):
   toda emissão aninhada — Router → Agent → Task compartilham o mesmo id.
 
 Taxonomia de eventos (kinds):
-- ``app.started``          — CLI/viz/MCP subiu
+- ``app.started``          — CLI/studio/MCP subiu
 - ``routing.decision``     — RouteDecision completo (o "porquê" da rota)
 - ``agent.dispatch``       — prompt saiu para um agente
 - ``agent.response``       — resposta (ok, latency_ms, error)
