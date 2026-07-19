@@ -15,6 +15,7 @@ on:
       - "tests/test_system.py"
       - "tests/test_lineage.py"
       - "tests/test_secrets.py"
+      - "tests/test_agents_modes.py"
       - "tests/conftest.py"
   pull_request:
     branches: ["main"]
@@ -30,6 +31,7 @@ on:
       - "tests/test_system.py"
       - "tests/test_lineage.py"
       - "tests/test_secrets.py"
+      - "tests/test_agents_modes.py"
       - "tests/conftest.py"
   workflow_dispatch:
 
@@ -68,6 +70,7 @@ jobs:
             tests/test_system.py \
             tests/test_lineage.py \
             tests/test_secrets.py \
+            tests/test_agents_modes.py \
             tests/core/test_declarative_api.py \
             -v \
             --cov=aptdata/core \
