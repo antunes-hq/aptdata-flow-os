@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://strondata.github.io/smart-data/telegram/">
+        <link rel="canonical" href="https://strondata.github.io/smart-data/ADR-002-aptdata-nucleo-pluggable/">
       
       
-        <link rel="prev" href="../mcp/">
+        <link rel="prev" href="../ADR-001-Revisao-Arquitetural-Core/">
       
       
-        <link rel="next" href="../api/core/">
+        <link rel="next" href="../quality/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Telegram - aptdata</title>
+        <title>ADR 002 - Núcleo Pluggable - aptdata</title>
       
     
     
@@ -86,7 +86,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#telegram-conversa-fluida-com-o-ecossistema" class="md-skip">
+        <a href="#adr-002-aptdata-como-nucleo-de-orquestracao-pluggable-aptdata-entry-points-camada-web" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Telegram
+              ADR 002 - Núcleo Pluggable
             
           </span>
         </div>
@@ -265,10 +265,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../architecture/" class="md-tabs__link">
           
   
@@ -285,12 +287,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../transform-engines/" class="md-tabs__link">
           
   
@@ -618,28 +618,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -657,7 +660,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -728,10 +731,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ADR-002-aptdata-nucleo-pluggable/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 002 - Núcleo Pluggable
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -747,6 +777,181 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-contexto-e-problema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Contexto e Problema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-o-achado-que-orienta-a-decisao-a-base-ja-existe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. O achado que orienta a decisão: a base já existe
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-decisoes-arquiteturais-propostas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Decisões Arquiteturais Propostas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Decisões Arquiteturais Propostas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-descoberta-de-plugins-por-entry-points-pluggy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Descoberta de plugins por entry points + pluggy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-fonte-unica-de-projeto-o-diretorio-aptdata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Fonte única de projeto: o diretório .aptdata/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-modos-de-agente-formalizados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3. Modos de agente formalizados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-cli-como-produto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4. CLI como produto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-governanca-e-telemetria-evolucao-alinhada-a-adr-001" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5. Governança e telemetria (evolução alinhada à ADR-001)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-toolchain-e-dx-stack-moderno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6. Toolchain e DX (stack moderno)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-consumidores-camada-web-unica-e-o-papel-do-lab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Consumidores: camada web única e o papel do Lab
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-trade-offs-e-consequencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Trade-offs e Consequências
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Trade-offs e Consequências">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-excecao-migracao-imediata-decisao-q6-18072026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Exceção: Migração Imediata (decisão Q6, 18/07/2026)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-proximos-passos-roadmap-de-prs-cada-um-entregavel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Próximos Passos (roadmap de PRs, cada um entregável)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -903,31 +1108,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -945,7 +1147,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1016,37 +1218,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Telegram
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../telegram/" class="md-nav__link">
         
   
   
@@ -1062,59 +1237,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#setup-em-3-passos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Setup em 3 passos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#como-a-conversa-funciona" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Como a conversa funciona
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuracao" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuração
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1492,97 +1614,227 @@
   
 
 
-<h1 id="telegram-conversa-fluida-com-o-ecossistema">Telegram — conversa fluida com o ecossistema<a class="headerlink" href="#telegram-conversa-fluida-com-o-ecossistema" title="Permanent link">&para;</a></h1>
-<p>O canal Telegram é um <strong>transporte fino</strong> sobre o
-<code>ConversationEngine</code>: ele só renderiza cards e botões — toda decisão de rota,
-threshold e estado de conversa vive no aptdata
-(<code>docs/plans/telegram-orchestration.md</code>).</p>
-<h2 id="setup-em-3-passos">Setup em 3 passos<a class="headerlink" href="#setup-em-3-passos" title="Permanent link">&para;</a></h2>
+<h1 id="adr-002-aptdata-como-nucleo-de-orquestracao-pluggable-aptdata-entry-points-camada-web">ADR 002: aptdata como Núcleo de Orquestração Pluggable (<code>.aptdata/</code>, entry points, camada web)<a class="headerlink" href="#adr-002-aptdata-como-nucleo-de-orquestracao-pluggable-aptdata-entry-points-camada-web" title="Permanent link">&para;</a></h1>
+<p><strong>Status:</strong> Accepted (18/07/2026) — com exceção Q6 registrada em §4.1
+<strong>Data:</strong> 2026-07-17
+<strong>Contexto:</strong> Consolidação do ecossistema — posicionar o <code>aptdata</code> como a biblioteca-base
+abstrata que qualquer ferramenta consome, e não como mais um app entre vários.</p>
+<h2 id="1-contexto-e-problema">1. Contexto e Problema<a class="headerlink" href="#1-contexto-e-problema" title="Permanent link">&para;</a></h2>
+<p>O <code>aptdata</code> já é um framework declarativo publicado (PyPI, v0.2.0) com três abstrações universais
+(<code>ISystem</code> / <code>IFlow</code> / <code>IComponent</code>) e uma camada de agentes que abstrai backends heterogêneos.
+Em paralelo, cresceram dois consumidores ao redor dele — um repositório de visualização
+(<code>aptdata-viz</code>) e um painel de observabilidade num monorepo separado (o "Lab", <code>ai-labs</code>) — cada um
+com <strong>sua própria cópia de fonte de verdade</strong> (um <code>agents.yaml</code> aqui, um <code>agents.yaml</code> lá, um
+<code>DEFAULT_CONFIG</code> acolá) e <strong>sua própria lógica de dashboard</strong>.</p>
+<p>O problema não é falta de peças — é <strong>dispersão</strong>. Três sintomas concretos:</p>
+<ul>
+<li><strong>Fonte de verdade fragmentada.</strong> A configuração declarativa vive hoje em pelo menos três lugares
+  distintos: <code>aptdata.yaml</code> (manifesto de sistema, lido pelo <code>YamlSystemBuilder</code>), <code>agents.yaml</code>
+  (registry de agentes, lido pelo <code>AgentRegistry</code>) e o diretório de estado <code>~/.aptdata/</code>. Não há um
+  local canônico único de <strong>projeto</strong> que qualquer ferramenta encontre e valide.</li>
+<li><strong>Extensão exige código, não <code>pip install</code>.</strong> Registrar um sistema/componente/agente novo passa
+  por chamada imperativa (<code>registry.register(...)</code>) ou carregamento por caminho pontilhado. Não há
+  descoberta automática — um terceiro não consegue estender o <code>aptdata</code> só instalando um pacote.</li>
+<li><strong>Consumidores reimplementam o núcleo.</strong> Os dashboards (aptdata-viz e o painel do Lab) carregam
+  regras, registries e leitura de estado por conta própria, em vez de consumir uma superfície de
+  leitura estável do <code>aptdata</code>.</li>
+</ul>
+<p>O objetivo desta ADR é decidir a arquitetura que faz do <code>aptdata</code> o <strong>núcleo abstrato e pluggable</strong>:
+um modelo de orquestração no qual (a) qualquer framework/ferramenta pluga por um contrato estável,
+(b) toda a estrutura do projeto vive numa <strong>fonte única versionada</strong>, e (c) as camadas de cima
+(web, TUI, bots) são <strong>consumidoras</strong>, independentes da ferramenta que dispara o trabalho.</p>
+<h2 id="2-o-achado-que-orienta-a-decisao-a-base-ja-existe">2. O achado que orienta a decisão: a base já existe<a class="headerlink" href="#2-o-achado-que-orienta-a-decisao-a-base-ja-existe" title="Permanent link">&para;</a></h2>
+<p>Boa parte do desenho abaixo <strong>já está no código</strong> — a ADR consolida e fecha pontas, não reescreve.</p>
+<table>
+<thead>
+<tr>
+<th>Peça</th>
+<th>O que já existe</th>
+<th>Lacuna a fechar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orquestrar qualquer agente</td>
+<td><code>aptdata/agents/</code>: contrato <code>IAgent</code>, adapters <code>OpenClawAgent</code> / <code>ClaudeCodeAgent</code> / <code>OpenCodeAgent</code>, <code>Router</code> + <code>Skill</code>, <code>ConversationEngine</code>, <code>Project</code> / <code>ProjectRunner</code></td>
+<td>modos de execução não nomeados; adapter novo ainda exige código</td>
+</tr>
+<tr>
+<td>Plugar engines/frameworks</td>
+<td><code>plugins/</code>: <code>_SystemRegistry</code>, <code>PluginManager</code> (carga por caminho pontilhado), extras <code>[pandas/spark/ai/...]</code></td>
+<td>descoberta manual; sem entry points</td>
+</tr>
+<tr>
+<td>Fonte declarativa</td>
+<td><code>YamlSystemBuilder</code> (YAML→System), <code>aptdata.yaml</code>, <code>agents.yaml</code>, <code>schema export</code> (JSON Schema do <code>ParsedConfig</code>), dir <code>~/.aptdata/</code></td>
+<td>três fontes divergentes; sem local de projeto unificado</td>
+</tr>
+<tr>
+<td>Camada web</td>
+<td><code>aptdata viz</code> já no CLI (<code>aptdata/viz/static/</code>); o plano de viz já a define como consumidora que absorve o painel</td>
+<td>os dashboards ainda não convergiram</td>
+</tr>
+<tr>
+<td>Governança / telemetria</td>
+<td><code>governance/RuleRegistry</code> + audit, <code>EventBus</code> (JSON Lines), MCP, <code>dry_run</code>, <code>observability/</code></td>
+<td>evolução opcional (ver §2.5)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-decisoes-arquiteturais-propostas">2. Decisões Arquiteturais Propostas<a class="headerlink" href="#2-decisoes-arquiteturais-propostas" title="Permanent link">&para;</a></h2>
+<h3 id="21-descoberta-de-plugins-por-entry-points-pluggy">2.1. Descoberta de plugins por entry points + pluggy<a class="headerlink" href="#21-descoberta-de-plugins-por-entry-points-pluggy" title="Permanent link">&para;</a></h3>
+<p>Não hand-rollar o sistema de plugins — usar as ferramentas provadas da comunidade:</p>
+<ul>
+<li><strong>Descoberta:</strong> o mecanismo padrão da biblioteca-padrão — <code>importlib.metadata.entry_points(group=...)</code>,
+  estável desde o Python 3.10. Grupos:</li>
+<li><code>aptdata.systems</code> — implementações de <code>ISystem</code>.</li>
+<li><code>aptdata.components</code> — componentes reutilizáveis.</li>
+<li><code>aptdata.agents</code> — adapters de backend de agente (kind → classe).</li>
+<li><code>aptdata.plugins</code> — readers / writers / engines.</li>
+<li><code>aptdata.commands</code> — subcomandos de CLI (ver §2.4).</li>
+<li><strong>Gestão de hooks:</strong> <a href="https://pluggy.readthedocs.io/"><code>pluggy</code></a> — a mesma biblioteca que dá o
+  sistema de plugins do <code>pytest</code>. Define os hooks de ciclo de vida via <code>@hookspec</code> no núcleo e
+  <code>@hookimpl</code> nos plugins. É o encaixe natural para os hooks <code>pre_execute</code> / <code>post_execute</code> /
+  <code>on_success</code> / <code>on_failure</code> que a <strong>ADR-001</strong> já pede (a "governança invisível" via event bus deixa
+  de ser código ad-hoc e vira hook specs versionados).</li>
+</ul>
+<p>Um terceiro passa a estender o <code>aptdata</code> <strong>só instalando um pacote</strong> que declare o entry point
+correspondente, sem que o núcleo tenha qualquer dependência ou conhecimento prévio dele. O registro
+imperativo (<code>registry.register(...)</code>) permanece como atalho para scripts e testes locais. Isto
+substitui o <code>PluginManager</code> / <code>_SystemRegistry</code> caseiros (que já citam "entry-point-style discovery"
+como intenção) por entry points + pluggy.</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># no pyproject.toml de um pacote de terceiro</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">[project.entry-points.</span><span class="s2">&quot;aptdata.agents&quot;</span><span class="k">]</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">meu_backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;meu_pacote.adapters:MeuAgent&quot;</span>
+</span></code></pre></div>
+<h3 id="22-fonte-unica-de-projeto-o-diretorio-aptdata">2.2. Fonte única de projeto: o diretório <code>.aptdata/</code><a class="headerlink" href="#22-fonte-unica-de-projeto-o-diretorio-aptdata" title="Permanent link">&para;</a></h3>
+<p>Consolidar as fontes de verdade num <strong>dotdir de projeto</strong> <code>.aptdata/</code>, no estilo XDG e inspirado no
+papel que o <code>pyproject.toml</code> cumpre para pacotes Python (um local canônico, seções por
+responsabilidade, backend trocável). O <code>.aptdata/</code> reúne o que hoje está espalhado:</p>
+<ul>
+<li><code>.aptdata/system.yaml</code> — o manifesto de sistema (hoje <code>aptdata.yaml</code>, consumido pelo <code>YamlSystemBuilder</code>).</li>
+<li><code>.aptdata/agents.yaml</code> — o registry de agentes (hoje <code>agents.yaml</code>, consumido pelo <code>AgentRegistry</code>).</li>
+<li><code>.aptdata/config.yaml</code> — a configuração declarativa (<code>ParsedConfig</code>).</li>
+<li>Um <strong>JSON Schema versionado</strong> por arquivo, gerado pelo <code>schema export</code> já existente — a superfície
+  que qualquer ferramenta lê e valida (é o contrato tool-agnóstico).</li>
+</ul>
+<p>Ferramentas da comunidade (sem validação manual):</p>
+<ul>
+<li><strong><a href="https://pydantic.dev/docs/validation/latest/concepts/pydantic_settings/"><code>pydantic-settings</code></a></strong>
+  para o loader tipado e <em>fail-fast</em> — o repo já é pydantic-heavy, então o <code>.aptdata/</code> vira um
+  modelo validado que quebra cedo se a config estiver errada.</li>
+<li><strong><code>check-jsonschema</code></strong> no pre-commit/CI, validando os arquivos do <code>.aptdata/</code> contra o JSON Schema
+  versionado a cada commit.</li>
+</ul>
+<p>Distinção importante — <strong>projeto ≠ usuário</strong>:</p>
+<ul>
+<li><code>.aptdata/</code> (na raiz do projeto, versionado no git) = <strong>a estrutura do projeto/usuário</strong> que
+  qualquer ferramenta consome.</li>
+<li><code>~/.aptdata/</code> (no home, não versionado) = <strong>estado de máquina</strong> (sessões, <code>events.db</code>) — permanece
+  separado, é outra responsabilidade.</li>
+</ul>
+<p>Um loader único em <code>aptdata.config</code> localiza o <code>.aptdata/</code> subindo a árvore de diretórios (como o
+git e o <code>pyproject.toml</code> fazem), de forma que qualquer comando encontre o projeto a partir de
+qualquer subpasta.</p>
+<h3 id="23-modos-de-agente-formalizados">2.3. Modos de agente formalizados<a class="headerlink" href="#23-modos-de-agente-formalizados" title="Permanent link">&para;</a></h3>
+<p>Nomear e documentar <strong>como o <code>aptdata</code> executa</strong>, sobre o <code>IAgent</code> + <code>Router</code> + <code>ConversationEngine</code>
+que já existem — cada modo com entrada clara no CLI e no <code>.aptdata/</code>:</p>
+<ul>
+<li><code>oneshot</code> — um <code>send</code> único a um agente resolvido por id/capability.</li>
+<li><code>converse</code> — sessão multi-turno via <code>ConversationEngine</code> / <code>DecisionPolicy</code> / <code>SessionStore</code>.</li>
+<li><code>project</code> — execução orientada a tarefas via <code>Project</code> / <code>ProjectRunner</code>.</li>
+<li><code>orchestrated</code> — roteamento multi-agente pelo <code>Router</code> (mode/skill/confidence).</li>
+</ul>
+<p>Isso responde diretamente ao pedido de "colocar alguns modos de agente, como é executado": os modos
+deixam de ser conhecimento implícito no código e viram vocabulário de primeira classe.</p>
+<h3 id="24-cli-como-produto">2.4. CLI como produto<a class="headerlink" href="#24-cli-como-produto" title="Permanent link">&para;</a></h3>
+<p>O surface do CLI já é amplo (<code>run</code>, <code>agents</code>, <code>project</code>, <code>mesh</code>, <code>converse</code>, <code>mcp</code>, <code>obs</code>, <code>viz</code>, …).
+Fechar as pontas que faltam para tratá-lo como produto completo:</p>
+<ul>
+<li><code>aptdata init</code> — cria o <code>.aptdata/</code> do projeto a partir de um template.</li>
+<li><code>aptdata plugins</code> — lista o que foi <strong>descoberto por entry point</strong> (systems/components/agents/plugins).</li>
+<li><code>aptdata doctor</code> — valida o <code>.aptdata/</code> contra os JSON Schemas versionados (via <code>check-jsonschema</code>).</li>
+<li>Consistência de <code>--json</code> e <code>dry_run</code> (plan-only) em <strong>todos</strong> os comandos que mudam estado.</li>
+</ul>
+<p>O CLI já é <strong>Typer</strong> (moderno, sobre Click). Subcomandos de terceiros entram pelo grupo de entry
+point <code>aptdata.commands</code> e são montados com <code>app.add_typer(...)</code> na inicialização — o padrão
+<a href="https://github.com/click-contrib/click-plugins"><code>click-plugins</code></a> aplicado ao Typer. Assim um pacote
+instalado pode adicionar um subcomando sem tocar no núcleo.</p>
+<h3 id="25-governanca-e-telemetria-evolucao-alinhada-a-adr-001">2.5. Governança e telemetria (evolução alinhada à ADR-001)<a class="headerlink" href="#25-governanca-e-telemetria-evolucao-alinhada-a-adr-001" title="Permanent link">&para;</a></h3>
+<p>Manter a direção da ADR-001 (governança invisível via event bus). Como evolução <strong>opcional</strong> e não
+bloqueante: os eventos do <code>EventBus</code> podem ganhar campos "5W" (o quê / quando / onde / quem / porquê)
+para auditoria uniforme, e as <code>BusinessRule</code> do <code>RuleRegistry</code> podem virar um passo de verificação
+bloqueante do workflow. Fica registrado como caminho, não como pré-requisito desta ADR.</p>
+<h3 id="26-toolchain-e-dx-stack-moderno">2.6. Toolchain e DX (stack moderno)<a class="headerlink" href="#26-toolchain-e-dx-stack-moderno" title="Permanent link">&para;</a></h3>
+<p>Adotar o toolchain Python que a comunidade consolidou em 2025/26, tratando os três repositórios como
+um só espaço de trabalho:</p>
+<ul>
+<li><strong><a href="https://andrewodendaal.com/python-packaging-2026-uv-poetry-modern-ecosystem/"><code>uv</code></a></strong> no lugar do
+  Poetry — resolução 10–100× mais rápida e <strong>workspace</strong> nativo, que cobre <code>smart-data</code> (o núcleo),
+  a camada web e o Lab num monorepo lógico com um lockfile reproduzível.</li>
+<li><strong><code>ruff</code></strong> (já em uso) como linter + formatter único.</li>
+<li><strong><code>pre-commit</code></strong> rodando <code>ruff</code> + <code>check-jsonschema</code> (valida o <code>.aptdata/</code>) antes de cada commit.</li>
+<li><strong>Type-check estrito</strong> (<code>mypy</code>, ou <code>ty</code> quando amadurecer) — os contratos Pydantic estritos do
+  <code>aptdata</code> tornam a checagem de tipos um ganho real, não cerimônia.</li>
+<li>Mantém <code>pytest</code> + cobertura ≥ 80% e os workflows de CI existentes (adaptados para <code>uv</code>).</li>
+</ul>
+<h2 id="3-consumidores-camada-web-unica-e-o-papel-do-lab">3. Consumidores: camada web única e o papel do Lab<a class="headerlink" href="#3-consumidores-camada-web-unica-e-o-papel-do-lab" title="Permanent link">&para;</a></h2>
+<p>A lógica de negócio (registries, orquestração, observabilidade) vive <strong>só no núcleo</strong>. As camadas de
+cima são consumidoras da superfície de leitura do <code>aptdata</code>:</p>
+<ul>
+<li><strong>Camada web (o repo hoje chamado <code>aptdata-viz</code>)</strong> passa a ser a <strong>única</strong> superfície web —
+  consumidora da read-API do <code>aptdata</code> (event store da observability + registry via MCP; ao vivo via
+  SSE plugado no <code>EventBus</code>), <strong>absorvendo os dashboards existentes</strong> num só. Como o escopo cresceu
+  além de "visualização", o nome "viz" fica apertado; sugere-se renome (ex.: <code>aptdata-console</code> /
+  <code>aptdata-hub</code> / <code>aptdata-studio</code>) — a decisão de nome fica para a revisão.</li>
+<li><strong>O Lab (<code>ai-labs</code>)</strong> segue como fábrica de kits + o <code>lab</code> CLI; seu painel deixa de ser dono da
+  lógica de agentes/observabilidade e passa a <strong>consumir o <code>aptdata</code> como biblioteca</strong> (ou é
+  absorvido pela camada web). O <code>agents.yaml</code> do Lab converge no formato de <code>.aptdata/agents.yaml</code>.</li>
+</ul>
+<h2 id="4-trade-offs-e-consequencias">4. Trade-offs e Consequências<a class="headerlink" href="#4-trade-offs-e-consequencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Positivo:</strong> uma fonte de verdade só (<code>.aptdata/</code>), extensão por <code>pip install</code>, e consumidores
+  finos que não reimplementam o núcleo. O ecossistema deixa de divergir.</li>
+<li><strong>Positivo:</strong> o contrato tool-agnóstico (JSON Schema versionado) torna o <code>aptdata</code> consumível por
+  qualquer ferramenta — Claude ou qualquer outra —, que é a meta central.</li>
+<li><strong>Atenção (migração):</strong> consolidar <code>aptdata.yaml</code> + <code>agents.yaml</code> no <code>.aptdata/</code> exige um caminho
+  de migração e compatibilidade temporária (loader aceita o formato antigo com aviso de depreciação).</li>
+<li><strong>Atenção (descoberta implícita):</strong> entry points tornam a origem de um plugin menos óbvia no
+  código; mitiga-se com <code>aptdata plugins</code> (lista a proveniência) e <code>aptdata doctor</code>.</li>
+<li><strong>Atenção (toolchain):</strong> migrar Poetry→<code>uv</code> e adotar workspace/type-check é ganho de DX, mas mexe
+  no CI e no fluxo de contribuição; fazer como PR 0 isolado, com o lockfile commitado, antes das
+  mudanças de arquitetura.</li>
+</ul>
+<h3 id="41-excecao-migracao-imediata-decisao-q6-18072026">4.1. Exceção: Migração Imediata (decisão Q6, 18/07/2026)<a class="headerlink" href="#41-excecao-migracao-imediata-decisao-q6-18072026" title="Permanent link">&para;</a></h3>
+<p>A regra de "compatibilidade temporária" em §4 (loader aceita o formato antigo com aviso de
+depreciação) é <strong>sobrescrita</strong> pela decisão Q6 tomada na sessão de planejamento de
+18/07/2026: a migração para <code>.aptdata/</code> é <strong>imediata</strong>, sem dual-read.</p>
+<p>Justificativa: o ecossistema é controlado por um único operador (Lucas), os consumers são
+contáveis e conhecidos (mindflow, multiverso, stronda-cup, financas, mariana-ingles, workers),
+e manter dois caminhos de leitura adiciona complexidade sem benefício real. O custo de uma
+janela de depreciação supera o custo de migrar os consumers de uma vez.</p>
+<p><strong>Implicações operacionais:</strong>
+1. <code>aptdata init --migrate</code> é <strong>obrigatório</strong> — não existe fallback automático para
+   <code>aptdata.yaml</code>/<code>agents.yaml</code> no formato legado. Quem não migrar quebra.
+2. O loader <code>.aptdata/</code> rejeita formatos antigos com erro explícito (não warning).
+3. A migração dos consumers listados é pré-requisito ou passo imediato ao PR2 (<code>.aptdata/</code>),
+   não trabalho paralelo indefinido.
+4. Esta exceção não se estende a terceiros (se <code>aptdata</code> for consumido fora do ecossistema
+   controlado, reverte-se para compat temporária — não é o caso hoje).</p>
+<p><strong>Risco registrado:</strong> se um consumer não-migrado tentar rodar pós-PR2, falha com erro claro
+em vez de degradar silenciosamente. Aceito: melhor falha ruidosa do que divergência oculta.</p>
+<h2 id="5-proximos-passos-roadmap-de-prs-cada-um-entregavel">5. Próximos Passos (roadmap de PRs, cada um entregável)<a class="headerlink" href="#5-proximos-passos-roadmap-de-prs-cada-um-entregavel" title="Permanent link">&para;</a></h2>
 <ol>
-<li>
-<p><strong>Crie o bot</strong> com o <a href="https://t.me/BotFather">@BotFather</a> e exporte o
-   token (o aptdata <strong>nunca</strong> grava o token em arquivo):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TELEGRAM_BOT_TOKEN</span><span class="o">=</span><span class="s2">&quot;123456:ABC-DEF...&quot;</span>
-</span></code></pre></div>
-</li>
-<li>
-<p><strong>Rode o wizard</strong> — ele valida o token (<code>getMe</code>), pergunta o chat id e
-   grava o bloco <code>transports:</code> no <code>agents.yaml</code> (só o <em>nome</em> da env var):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aptdata<span class="w"> </span>setup
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>aptdata<span class="w"> </span>setup<span class="w"> </span>--check<span class="w"> </span>--json<span class="w">   </span><span class="c1"># confere tudo (CI-friendly)</span>
-</span></code></pre></div>
-</li>
-<li>
-<p><strong>Suba o bot</strong> (long-polling, sem dependência extra):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aptdata<span class="w"> </span>telegram
-</span></code></pre></div>
-</li>
+<li><strong>DX/toolchain:</strong> migração Poetry→<code>uv</code> (workspace dos três repos) + <code>pre-commit</code>
+   (<code>ruff</code> + <code>check-jsonschema</code>) + type-check (<code>mypy</code>/<code>ty</code>) + CI adaptado. Base para o resto.</li>
+<li><strong>Plugins:</strong> entry points + <code>pluggy</code> (grupos + <code>hookspec</code>s de ciclo de vida), migrando o
+   <code>PluginManager</code> / <code>_SystemRegistry</code> + comando <code>aptdata plugins</code>.</li>
+<li><strong><code>.aptdata/</code>:</strong> loader com <code>pydantic-settings</code> + JSON Schemas versionados + <code>aptdata init</code> /
+   <code>aptdata doctor</code> (com migração de <code>aptdata.yaml</code> / <code>agents.yaml</code>).</li>
+<li>Modos de agente formalizados (CLI + <code>.aptdata/</code> + docs).</li>
+<li>Camada web como consumidora da read-API, absorvendo os dashboards.</li>
+<li>Painel do Lab migrado para consumir o <code>aptdata</code>.</li>
 </ol>
-<h2 id="como-a-conversa-funciona">Como a conversa funciona<a class="headerlink" href="#como-a-conversa-funciona" title="Permanent link">&para;</a></h2>
-<p>Cada mensagem vira um turno do engine, com a política do bloco <code>routing:</code> do
-<code>agents.yaml</code>:</p>
-<table>
-<thead>
-<tr>
-<th>Você manda</th>
-<th>O bot responde</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>/ondina arruma o header</code></td>
-<td>despacho direto + resposta inline</td>
-</tr>
-<tr>
-<td><code>mexer no frontend</code> (match forte)</td>
-<td>despacho direto</td>
-</tr>
-<tr>
-<td>texto ambíguo (match médio / LLM)</td>
-<td>card <code>🧭 agente · skill · conf</code> + botões <strong>✅ Confirmar</strong> / <strong>→ trocar de agente</strong></td>
-</tr>
-<tr>
-<td>sem sinal nenhum</td>
-<td>pergunta de esclarecimento</td>
-</tr>
-<tr>
-<td><code>/hermez deploy</code> (capability guardada)</td>
-<td><strong>sempre</strong> pede confirmação — deploy/ssh/docker ignoram confiança</td>
-</tr>
-<tr>
-<td><code>continua</code></td>
-<td>reusa o último agente da sessão (multi-turno)</td>
-</tr>
-</tbody>
-</table>
-<p>Sessões seguem o chat (<code>tg-&lt;chat_id&gt;</code>) e persistem em
-<code>~/.aptdata/sessions</code>. Cada decisão, confirmação (<code>permission.requested</code> /
-<code>permission.resolved</code>) e dispatch entra no
-<a href="../observability/">traço de observabilidade</a> — visível no
-<code>aptdata obs tail</code>, no painel <code>aptdata viz</code> (SSE ao vivo) e na TUI.</p>
-<h2 id="configuracao">Configuração<a class="headerlink" href="#configuracao" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Onde</th>
-<th>O quê</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>env <code>TELEGRAM_BOT_TOKEN</code></td>
-<td>token do bot (obrigatório; nome da var configurável com <code>--token-env</code>)</td>
-</tr>
-<tr>
-<td><code>agents.yaml → transports.telegram.chat_id</code></td>
-<td>chat/grupo padrão</td>
-</tr>
-<tr>
-<td><code>agents.yaml → routing:</code></td>
-<td>thresholds (<code>dispatch_above</code>) e <code>guarded_capabilities</code></td>
-</tr>
-</tbody>
-</table>
 
 
 
@@ -1620,7 +1872,7 @@ threshold e estado de conversa vive no aptdata
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../mcp/" class="md-footer__link md-footer__link--prev" aria-label="Previous: MCP Server">
+          <a href="../ADR-001-Revisao-Arquitetural-Core/" class="md-footer__link md-footer__link--prev" aria-label="Previous: ADR 001 - Revisão Core">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1630,20 +1882,20 @@ threshold e estado de conversa vive no aptdata
                 Previous
               </span>
               <div class="md-ellipsis">
-                MCP Server
+                ADR 001 - Revisão Core
               </div>
             </div>
           </a>
         
         
           
-          <a href="../api/core/" class="md-footer__link md-footer__link--next" aria-label="Next: Core Reference">
+          <a href="../quality/" class="md-footer__link md-footer__link--next" aria-label="Next: Quality">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Core Reference
+                Quality
               </div>
             </div>
             <div class="md-footer__button md-icon">
