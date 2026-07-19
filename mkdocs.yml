@@ -94,6 +94,7 @@ nav:
   - Core:
       - Architecture: architecture.md
       - ADR 001 - Revisão Core: ADR-001-Revisao-Arquitetural-Core.md
+      - ADR 002 - Núcleo Pluggable: ADR-002-aptdata-nucleo-pluggable.md
       - Quality: quality.md
       - Governance: governance.md
       - Telemetry: telemetry.md
