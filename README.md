@@ -143,6 +143,8 @@ aptdata plugin inspect NAME [--json]
 aptdata plugin preview READER [--limit N]
 aptdata plugin load MODULE_PATH
 aptdata plugins list [--json]
+aptdata init [--path PATH] [--migrate] [--force] [--json]
+aptdata doctor [--path PATH] [--json]
 aptdata config validate PATH
 aptdata config init [--output PATH] [--template]
 aptdata config show PATH

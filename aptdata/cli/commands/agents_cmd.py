@@ -25,12 +25,35 @@ ENV_VAR = "APTDATA_AGENTS_FILE"
 
 
 def _resolve_file(file: str | None) -> Path:
-    """Locate ``agents.yaml`` from --file, env var, or the working directory."""
-    candidate = file or os.getenv(ENV_VAR) or DEFAULT_FILE
-    path = Path(candidate).expanduser()
+    """Locate ``agents.yaml`` from --file, env var, APTDATA_AGENTS_FILE or .aptdata/.
+
+    Resolution order (ADR-002 §2.2):
+
+    1. ``--file`` flag (explicit path).
+    2. ``$APTDATA_AGENTS_FILE`` env var (path).
+    3. The ``.aptdata/agents.yaml`` of the project containing the CWD
+       (walks up the tree like ``git``).
+    4. The legacy ``agents.yaml`` at the CWD (still accepted so existing
+       projects without ``.aptdata/`` keep working until they migrate).
+    """
+    if file:
+        path = Path(file).expanduser()
+    elif os.getenv(ENV_VAR):
+        path = Path(os.getenv(ENV_VAR)).expanduser()  # type: ignore[arg-type]
+    else:
+        # ADR-002 §2.2: prefer the .aptdata/ dotdir over the legacy root file.
+        from aptdata.config.loader import locate_project_optional  # noqa: PLC0415
+
+        project = locate_project_optional()
+        if project is not None and project.agents_yaml.is_file():
+            path = project.agents_yaml
+        else:
+            path = Path(DEFAULT_FILE)
+
     if not path.exists():
         raise typer.BadParameter(
-            f"Agents file not found: {path}. Pass --file or set ${ENV_VAR}."
+            f"Agents file not found: {path}. Pass --file, set ${ENV_VAR}, "
+            "or run 'aptdata init' to create a .aptdata/ project."
         )
     return path
 

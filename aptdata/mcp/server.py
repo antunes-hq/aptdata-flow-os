@@ -222,7 +222,16 @@ def preview_dataset(plugin: str, **reader_config: Any) -> dict[str, Any]:
 def _agents_file() -> str:
     import os  # noqa: PLC0415
 
-    return os.getenv("APTDATA_AGENTS_FILE", "agents.yaml")
+    env_value = os.getenv("APTDATA_AGENTS_FILE")
+    if env_value:
+        return env_value
+    # ADR-002 §2.2: prefer the .aptdata/ dotdir over the legacy root file.
+    from aptdata.config.loader import locate_project_optional  # noqa: PLC0415
+
+    project = locate_project_optional()
+    if project is not None and project.agents_yaml.is_file():
+        return str(project.agents_yaml)
+    return "agents.yaml"
 
 
 @mcp.tool()

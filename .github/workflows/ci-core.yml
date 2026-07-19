@@ -8,6 +8,8 @@ on:
       - "aptdata/config/**"
       - "tests/test_core.py"
       - "tests/test_config.py"
+      - "tests/test_config_loader.py"
+      - "tests/test_config_schema.py"
       - "tests/test_context.py"
       - "tests/test_workflow.py"
       - "tests/test_system.py"
@@ -21,6 +23,8 @@ on:
       - "aptdata/config/**"
       - "tests/test_core.py"
       - "tests/test_config.py"
+      - "tests/test_config_loader.py"
+      - "tests/test_config_schema.py"
       - "tests/test_context.py"
       - "tests/test_workflow.py"
       - "tests/test_system.py"
@@ -57,6 +61,8 @@ jobs:
           uv run pytest \
             tests/test_core.py \
             tests/test_config.py \
+            tests/test_config_loader.py \
+            tests/test_config_schema.py \
             tests/test_context.py \
             tests/test_workflow.py \
             tests/test_system.py \

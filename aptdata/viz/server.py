@@ -28,8 +28,22 @@ DEFAULT_FILE = "agents.yaml"
 
 
 def _resolve_agents_file(file: str | None) -> Path:
-    candidate = file or os.getenv(ENV_VAR) or DEFAULT_FILE
-    return Path(candidate).expanduser()
+    """Locate ``agents.yaml``: --file, env var, ``.aptdata/`` dotdir, or CWD.
+
+    ADR-002 §2.2: ``.aptdata/agents.yaml`` wins over the legacy root file.
+    """
+    if file:
+        return Path(file).expanduser()
+    env_value = os.getenv(ENV_VAR)
+    if env_value:
+        return Path(env_value).expanduser()
+    # ADR-002 §2.2: prefer the .aptdata/ dotdir over the legacy root file.
+    from aptdata.config.loader import locate_project_optional  # noqa: PLC0415
+
+    project = locate_project_optional()
+    if project is not None and project.agents_yaml.is_file():
+        return project.agents_yaml
+    return Path(DEFAULT_FILE)
 
 
 def _health_str(value: object) -> str:
