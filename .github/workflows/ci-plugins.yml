@@ -8,6 +8,7 @@ on:
       - "aptdata/mcp/**"
       - "aptdata/telemetry/**"
       - "tests/test_plugins.py"
+      - "tests/test_plugins_hooks.py"
       - "tests/test_quality.py"
       - "tests/test_transform.py"
       - "tests/test_governance.py"
@@ -22,6 +23,7 @@ on:
       - "aptdata/mcp/**"
       - "aptdata/telemetry/**"
       - "tests/test_plugins.py"
+      - "tests/test_plugins_hooks.py"
       - "tests/test_quality.py"
       - "tests/test_transform.py"
       - "tests/test_governance.py"
@@ -58,6 +60,7 @@ jobs:
         run: |
           uv run pytest \
             tests/test_plugins.py \
+            tests/test_plugins_hooks.py \
             tests/test_quality.py \
             tests/test_transform.py \
             tests/test_governance.py \
