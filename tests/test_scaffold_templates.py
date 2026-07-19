@@ -13,7 +13,7 @@ from aptdata.cli.scaffold import (
     _scaffold_job_wheel,  # noqa: PLC2701
     _scaffold_medallion,  # noqa: PLC2701
     _scaffold_rag_ingestion,  # noqa: PLC2701
-    _scaffold_viz_panel,  # noqa: PLC2701
+    _scaffold_studio_panel,  # noqa: PLC2701
 )
 
 # ---------------------------------------------------------------------------
@@ -29,7 +29,7 @@ class TestTemplateNames:
         assert "data-quality-test" in TEMPLATE_NAMES
         assert "job-wheel" in TEMPLATE_NAMES
         assert "docker-compose-app" in TEMPLATE_NAMES
-        assert "viz-panel" in TEMPLATE_NAMES
+        assert "studio-panel" in TEMPLATE_NAMES
         assert "dashboard" in TEMPLATE_NAMES
 
     def test_template_count(self) -> None:
@@ -794,15 +794,15 @@ class TestMeshCLI:
 
 
 # ---------------------------------------------------------------------------
-# design-system templates (viz-panel / dashboard)
+# design-system templates (studio-panel / dashboard)
 # ---------------------------------------------------------------------------
 
 
-class TestVizPanelScaffold:
+class TestStudioPanelScaffold:
     def test_generates_expected_files(self, tmp_path: Path) -> None:
         d = tmp_path / "meupainel"
         d.mkdir()
-        _scaffold_viz_panel("meupainel", d)
+        _scaffold_studio_panel("meupainel", d)
         assert (d / "index.html").exists()
         assert (d / "assets" / "tokens.css").exists()
         assert (d / "assets" / "components.css").exists()
@@ -811,7 +811,7 @@ class TestVizPanelScaffold:
     def test_index_is_thin_client(self, tmp_path: Path) -> None:
         d = tmp_path / "p"
         d.mkdir()
-        _scaffold_viz_panel("p", d)
+        _scaffold_studio_panel("p", d)
         html = (d / "index.html").read_text(encoding="utf-8")
         assert "assets/tokens.css" in html
         assert "/api/agents" in html and "/api/health" in html
@@ -821,7 +821,7 @@ class TestVizPanelScaffold:
     def test_tokens_have_light_and_dark_modes(self, tmp_path: Path) -> None:
         d = tmp_path / "p"
         d.mkdir()
-        _scaffold_viz_panel("p", d)
+        _scaffold_studio_panel("p", d)
         css = (d / "assets" / "tokens.css").read_text(encoding="utf-8")
         assert "--surface-1" in css and "--series-1" in css
         assert "prefers-color-scheme: dark" in css
@@ -829,7 +829,7 @@ class TestVizPanelScaffold:
     def test_status_badges_carry_label_not_only_color(self, tmp_path: Path) -> None:
         d = tmp_path / "p"
         d.mkdir()
-        _scaffold_viz_panel("p", d)
+        _scaffold_studio_panel("p", d)
         html = (d / "index.html").read_text(encoding="utf-8")
         # status nunca é só cor: o texto do estado acompanha o dot
         assert "badge" in html and "statusLabel" in html
@@ -873,7 +873,7 @@ class TestDesignTokensSingleSource:
         b = tmp_path / "b"
         a.mkdir()
         b.mkdir()
-        _scaffold_viz_panel("a", a)
+        _scaffold_studio_panel("a", a)
         _scaffold_dashboard("b", b)
         assert (a / "assets" / "tokens.css").read_text(encoding="utf-8") == (
             b / "assets" / "tokens.css"

@@ -1,4 +1,4 @@
-"""Tests for aptdata.viz — servidor de visualização do ecossistema."""
+"""Tests for aptdata.studio — servidor de visualização do ecossistema."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from aptdata.viz.server import VizState, _make_handler
+from aptdata.studio.server import StudioState, _make_handler
 
 AGENTS_YAML = textwrap.dedent(
     """
@@ -52,9 +52,9 @@ def agents_file(tmp_path: Path) -> str:
     return str(p)
 
 
-class TestVizState:
+class TestStudioState:
     def test_agents_lists_specs(self, agents_file):
-        st = VizState(agents_file)
+        st = StudioState(agents_file)
         ags = st.agents()
         assert {a["id"] for a in ags} == {"zeca", "ondina", "holt"}
         # disabled vem por último
@@ -63,18 +63,18 @@ class TestVizState:
         assert zeca["type"] == "openclaw" and "chat" in zeca["capabilities"]
 
     def test_route_returns_decision(self, agents_file):
-        st = VizState(agents_file)
+        st = StudioState(agents_file)
         d = st.route("mexer no frontend")
         assert d.get("agent_id") == "ondina"
 
     def test_health_maps_all(self, agents_file):
-        st = VizState(agents_file)
+        st = StudioState(agents_file)
         h = st.health()
         assert set(h) == {"zeca", "ondina", "holt"}
         assert all(isinstance(v, str) for v in h.values())
 
 
-def _serve(state: VizState):
+def _serve(state: StudioState):
     httpd = ThreadingHTTPServer(("127.0.0.1", 0), _make_handler(state))
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     return httpd, f"http://127.0.0.1:{httpd.server_address[1]}"
@@ -89,9 +89,9 @@ def _get_json(base: str, path: str) -> tuple[int, dict]:
         return err.code, json.loads(err.read())
 
 
-class TestVizServer:
+class TestStudioServer:
     def test_endpoints(self, agents_file):
-        st = VizState(agents_file)
+        st = StudioState(agents_file)
         httpd = ThreadingHTTPServer(("127.0.0.1", 0), _make_handler(st))
         threading.Thread(target=httpd.serve_forever, daemon=True).start()
         base = f"http://127.0.0.1:{httpd.server_address[1]}"
@@ -110,13 +110,13 @@ class TestVizServer:
             assert obs["available"] is True
 
             html = urllib.request.urlopen(base + "/", timeout=5).read().decode()
-            assert "aptdata-viz" in html
+            assert "aptdata studio" in html
         finally:
             httpd.shutdown()
             httpd.server_close()
 
     def test_health_endpoint_envelope(self, agents_file):
-        httpd, base = _serve(VizState(agents_file))
+        httpd, base = _serve(StudioState(agents_file))
         try:
             status, data = _get_json(base, "/api/health")
             assert status == 200
@@ -131,7 +131,7 @@ class TestVizServer:
         broken = AGENTS_YAML + "  - name: quebrada\n"
         p = tmp_path / "agents.yaml"
         p.write_text(broken, encoding="utf-8")
-        httpd, base = _serve(VizState(str(p)))
+        httpd, base = _serve(StudioState(str(p)))
         try:
             status, data = _get_json(base, "/api/route?text=oi")
             assert status == 503
@@ -144,12 +144,12 @@ class TestVizServer:
             httpd.server_close()
 
 
-class TestVizObservability:
+class TestStudioObservability:
     def test_summary_reflects_trace(self, agents_file):
         from aptdata.observability import Observer
 
         Observer.get().emit("routing.decision", {"mode": "skill"}, agent_id="zeca")
-        httpd, base = _serve(VizState(agents_file))
+        httpd, base = _serve(StudioState(agents_file))
         try:
             status, data = _get_json(base, "/api/observability")
             assert status == 200
@@ -161,10 +161,10 @@ class TestVizObservability:
             httpd.server_close()
 
     def test_route_via_http_lands_in_trace(self, agents_file):
-        """A decisão servida pelo viz é gravada no MESMO store (fonte única)."""
+        """A decisão servida pelo studio é gravada no MESMO store (fonte única)."""
         from aptdata.observability import Observer
 
-        httpd, base = _serve(VizState(agents_file))
+        httpd, base = _serve(StudioState(agents_file))
         try:
             _get_json(base, "/api/route?text=mexer%20no%20frontend")
             events = Observer.get().tail(kind="routing.decision")
@@ -174,12 +174,12 @@ class TestVizObservability:
             httpd.server_close()
 
 
-class TestVizSSE:
+class TestStudioSSE:
     def test_events_stream_sends_backlog(self, agents_file):
         from aptdata.observability import Observer
 
         Observer.get().emit("agent.response", {"ok": True}, agent_id="zeca")
-        httpd, base = _serve(VizState(agents_file))
+        httpd, base = _serve(StudioState(agents_file))
         try:
             resp = urllib.request.urlopen(base + "/api/events?backlog=5", timeout=5)
             assert resp.headers["Content-Type"].startswith("text/event-stream")
@@ -195,14 +195,14 @@ class TestVizSSE:
             httpd.server_close()
 
 
-class TestVizStateReload:
+class TestStudioStateReload:
     def test_reload_swaps_state_atomically(self, agents_file, monkeypatch):
         """Durante um reload, leitores nunca observam registry/router mistos."""
         import time
 
         from aptdata.agents import Router
 
-        st = VizState(agents_file)
+        st = StudioState(agents_file)
         assert st.agents()  # carga inicial
         old_registry = st._registry
 
@@ -236,11 +236,23 @@ class TestVizStateReload:
         assert st.route("mexer no frontend").get("agent_id") == "ondina"
 
 
-def test_cli_registers_viz():
+def test_cli_registers_studio():
     from typer.testing import CliRunner
 
     from aptdata.cli.app import app
 
-    r = CliRunner().invoke(app, ["viz", "--help"])
+    r = CliRunner().invoke(app, ["studio", "--help"])
     assert r.exit_code == 0
-    assert "aptdata-viz" in r.stdout
+    assert "aptdata studio" in r.stdout
+
+
+def test_module_imports_and_serve_callable():
+    """Regressão do rename: módulo aptdata.studio importa e serve() é callable."""
+    import aptdata.studio as studio_mod
+    from aptdata.studio import serve
+    from aptdata.studio.server import StudioState
+
+    assert callable(serve)
+    assert callable(getattr(StudioState, "agents"))
+    assert studio_mod.__name__ == "aptdata.studio"
+    assert studio_mod.serve is serve

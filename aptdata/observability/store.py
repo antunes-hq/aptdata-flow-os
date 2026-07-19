@@ -2,7 +2,7 @@
 
 Persistência local dos eventos de observabilidade — decisões de roteamento,
 dispatches, respostas, permissões, subida de apps — sem exigir collector
-externo. É a fonte que CLI (``aptdata obs``), viz e TUI leem.
+externo. É a fonte que CLI (``aptdata obs``), studio e TUI leem.
 
 Schema: ``events(id, ts, run_id, trace_id, kind, agent_id, payload)``,
 payload serializado como JSON.
@@ -43,7 +43,7 @@ def resolve_db_path(path: str | Path | None = None) -> Path:
 
 
 class ObservabilityStore:
-    """Sink SQLite thread-safe (o servidor viz é thread-per-request)."""
+    """Sink SQLite thread-safe (o servidor studio é thread-per-request)."""
 
     def __init__(self, path: str | Path | None = None):
         self.path = resolve_db_path(path)
@@ -131,7 +131,7 @@ class ObservabilityStore:
     ) -> tuple[int, list[dict[str, Any]]]:
         """Eventos com ``id > last_id`` (ordem cronológica) + novo cursor.
 
-        Base do streaming incremental (SSE do viz, refresh da TUI): o
+        Base do streaming incremental (SSE do studio, refresh da TUI): o
         chamador guarda o cursor devolvido e repete a chamada.
         """
         with self._lock:

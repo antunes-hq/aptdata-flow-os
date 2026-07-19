@@ -92,16 +92,16 @@ aptdata scaffold <project-name> [--template TEMPLATE] [--output DIR]
     aptdata scaffold my_service --template docker-compose-app
     ```
 
-=== "viz-panel"
+=== "studio-panel"
 
     Painel web **fino** com o design system aptdata (sem build, sem CDN):
     cards de agentes com badges de status (dot + texto — cor nunca carrega o
-    estado sozinha), consumindo uma API de leitura no padrão do aptdata-viz
+    estado sozinha), consumindo uma API de leitura no padrão do aptdata studio
     (`/api/agents`, `/api/health`). `assets/tokens.css` é a fonte única de
     design (claro + escuro), com paleta validada para daltonismo/contraste.
 
     ```bash
-    aptdata scaffold meu_painel --template viz-panel
+    aptdata scaffold meu_painel --template studio-panel
     ```
 
     **Arquivos Gerados:**
@@ -120,7 +120,7 @@ aptdata scaffold <project-name> [--template TEMPLATE] [--output DIR]
     finas, topo arredondado na baseline, label direto seletivo, tooltip no
     hover, 1 série sem legenda) e **tabela acessível** dos mesmos dados —
     tudo renderizado de um `data.json` (zero lógica no frontend). Compartilha
-    os MESMOS tokens do `viz-panel`.
+    os MESMOS tokens do `studio-panel`.
 
     ```bash
     aptdata scaffold meu_dash --template dashboard

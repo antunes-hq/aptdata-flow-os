@@ -2,7 +2,7 @@
 
 O setup é o primeiro contato do usuário com o ecossistema: mostra com
 transparência o que está pronto (agents.yaml, router, política, Telegram,
-observabilidade, viz) e configura o canal Telegram em poucos passos.
+observabilidade, studio) e configura o canal Telegram em poucos passos.
 
 Modos:
 - ``aptdata setup``            → wizard interativo (questionary/typer).
@@ -147,8 +147,8 @@ def run_checks(file: str | None) -> dict[str, Any]:
     except Exception as exc:  # noqa: BLE001
         check("observability", False, f"event store indisponível: {exc}")
 
-    static = Path(__file__).resolve().parents[2] / "viz" / "static" / "index.html"
-    check("viz", static.is_file(), "frontend do aptdata-viz embarcado")
+    static = Path(__file__).resolve().parents[2] / "studio" / "static" / "index.html"
+    check("studio", static.is_file(), "frontend do aptdata studio embarcado")
 
     return {"ok": all(c["ok"] for c in checks if c["required"]), "checks": checks}
 
@@ -175,7 +175,7 @@ def _wizard(console: SmartConsole, file: str | None) -> None:
 
     console.print("\n[bold]Próximos passos[/bold]")
     console.print(f"  aptdata converse 'oi' -f {path}     # conversa headless")
-    console.print(f"  aptdata viz -f {path}               # painel + traço ao vivo")
+    console.print(f"  aptdata studio -f {path}           # painel + traço ao vivo")
     console.print("  aptdata telegram                     # sobe o bot fino")
     console.print("  aptdata obs tail                     # traço de eventos")
 
@@ -237,7 +237,7 @@ def setup_command(
     ),
     json_mode: bool = typer.Option(False, "--json", help="Emit JSON lines."),
 ) -> None:
-    """Diagnose and configure the aptdata ecosystem (agents, Telegram, viz)."""
+    """Diagnose and configure the aptdata ecosystem (agents, Telegram, studio)."""
     console = SmartConsole(json_mode=json_mode)
 
     if check:

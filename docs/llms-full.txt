@@ -104,7 +104,7 @@ Open the interactive TUI dashboard with three tabs:
 
 Generate a project from a scaffold template (hello-world, medallion,
 rag-ingestion, data-quality-test, job-wheel, docker-compose-app,
-viz-panel, dashboard).
+studio-panel, dashboard).
 
 ### `aptdata schema export --output PATH`
 
@@ -177,9 +177,9 @@ Multi-task projects (YAML) routed task-by-task through the Router.
 - `project run PROJECT_FILE [--json]` – execute; JSON results carry
   `{task_id, agent_id, mode, ok, text, skipped, error}`
 
-### `aptdata viz [--file PATH] [--host HOST] [--port PORT]`
+### `aptdata studio [--file PATH] [--host HOST] [--port PORT]`
 
-Serve the aptdata-viz web view (read-only HTTP API + thin frontend):
+Serve the aptdata studio web view (read-only HTTP API + thin frontend):
 `/api/agents`, `/api/health`, `/api/route?text=`, `/api/observability`
 (event-store summary) and `/api/events` (live SSE trace feed).
 

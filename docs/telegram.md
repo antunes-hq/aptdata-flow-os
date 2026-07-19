@@ -46,7 +46,7 @@ Sessões seguem o chat (`tg-<chat_id>`) e persistem em
 `~/.aptdata/sessions`. Cada decisão, confirmação (`permission.requested` /
 `permission.resolved`) e dispatch entra no
 [traço de observabilidade](observability.md) — visível no
-`aptdata obs tail`, no painel `aptdata viz` (SSE ao vivo) e na TUI.
+`aptdata obs tail`, no painel `aptdata studio` (SSE ao vivo) e na TUI.
 
 ## Configuração
 
