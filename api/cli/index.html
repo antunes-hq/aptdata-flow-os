@@ -1629,6 +1629,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#agent-execution-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent execution modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#aptdata-agents" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1652,10 +1663,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#aptdata-agents-send-agent_id-prompt-file-path-json" class="md-nav__link">
+  <a href="#aptdata-agents-send-agent_id-prompt-file-path-mode-mode-dry-run-json" class="md-nav__link">
     <span class="md-ellipsis">
       
-        aptdata agents send AGENT_ID PROMPT [--file PATH] [--json]
+        aptdata agents send AGENT_ID PROMPT [--file PATH] [--mode MODE] [--dry-run] [--json]
       
     </span>
   </a>
@@ -1663,10 +1674,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#aptdata-agents-route-text-file-path-json" class="md-nav__link">
+  <a href="#aptdata-agents-route-text-file-path-mode-mode-json" class="md-nav__link">
     <span class="md-ellipsis">
       
-        aptdata agents route TEXT [--file PATH] [--json]
+        aptdata agents route TEXT [--file PATH] [--mode MODE] [--json]
       
     </span>
   </a>
@@ -1674,10 +1685,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#aptdata-agents-dispatch-text-file-path-json" class="md-nav__link">
+  <a href="#aptdata-agents-dispatch-text-file-path-mode-mode-dry-run-json" class="md-nav__link">
     <span class="md-ellipsis">
       
-        aptdata agents dispatch TEXT [--file PATH] [--json]
+        aptdata agents dispatch TEXT [--file PATH] [--mode MODE] [--dry-run] [--json]
       
     </span>
   </a>
@@ -1724,10 +1735,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#aptdata-project-plan-project_file-file-path-json" class="md-nav__link">
+  <a href="#aptdata-project-plan-project_file-file-path-mode-mode-json" class="md-nav__link">
     <span class="md-ellipsis">
       
-        aptdata project plan PROJECT_FILE [--file PATH] [--json]
+        aptdata project plan PROJECT_FILE [--file PATH] [--mode MODE] [--json]
       
     </span>
   </a>
@@ -1735,10 +1746,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#aptdata-project-run-project_file-file-path-json" class="md-nav__link">
+  <a href="#aptdata-project-run-project_file-file-path-mode-mode-dry-run-json" class="md-nav__link">
     <span class="md-ellipsis">
       
-        aptdata project run PROJECT_FILE [--file PATH] [--json]
+        aptdata project run PROJECT_FILE [--file PATH] [--mode MODE] [--dry-run] [--json]
       
     </span>
   </a>
@@ -1769,6 +1780,34 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aptdata-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        aptdata modes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="aptdata modes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aptdata-modes-list-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        aptdata modes list [--json]
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2521,38 +2560,110 @@ equivalent <code>mesh.build.*</code> events.</p>
 </span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>aptdata<span class="w"> </span>mesh<span class="w"> </span>run<span class="w"> </span>analytics-job<span class="w"> </span>--dry-run
 </span></code></pre></div>
 <hr />
+<h2 id="agent-execution-modes">Agent execution modes<a class="headerlink" href="#agent-execution-modes" title="Permanent link">&para;</a></h2>
+<p>The aptdata CLI executes in <strong>4 canonical modes</strong> (ADR-002 §2.3), exposed on
+every execution command via <code>--mode</code> and reported in the <code>mode</code> field of
+every <code>--json</code> payload:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Description</th>
+<th>CLI command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>oneshot</code></td>
+<td>Single <code>send</code> to an agent by id</td>
+<td><code>aptdata agents send AGENT_ID PROMPT</code></td>
+</tr>
+<tr>
+<td><code>converse</code></td>
+<td>Multi-turn session (route+confirm)</td>
+<td><code>aptdata converse TEXT</code></td>
+</tr>
+<tr>
+<td><code>project</code></td>
+<td>Routed task plan (<code>depends_on</code>)</td>
+<td><code>aptdata project run PROJECT_FILE</code></td>
+</tr>
+<tr>
+<td><code>orchestrated</code></td>
+<td>Multi-agent routing via <code>Router</code></td>
+<td><code>aptdata agents dispatch TEXT</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>--mode</code> resolution: an explicit <code>--mode &lt;value&gt;</code> always wins; otherwise the
+default comes from <code>.aptdata/agents.yaml</code>'s <code>default_mode</code> (when set); otherwise
+the natural default of each command (<code>send</code>→<code>oneshot</code>, <code>converse</code>→<code>converse</code>,
+<code>project run</code>→<code>project</code>, <code>dispatch</code>/<code>route</code>→<code>orchestrated</code>).</p>
+<p><code>--dry-run</code> (plan-only) is accepted by every execution command (<code>send</code>,
+<code>dispatch</code>, <code>converse</code>, <code>project run</code>): it shows the routing decision + target
+without calling <code>agent.send()</code>. <code>aptdata agents route</code> is the implicit dry-run
+of the <code>orchestrated</code> mode — it never sends.</p>
+<blockquote>
+<p>The <code>ExecutionMode</code> (<code>mode</code>) is a separate axis from <code>RouteDecision.mode</code>
+(<code>routing_mode</code>: <code>prefix</code>/<code>skill</code>/<code>llm</code>/<code>default</code>/<code>none</code>), <code>TaskResult.mode</code>
+and <code>Turn.type</code> — those describe internal routing dimensions; <code>ExecutionMode</code>
+describes the kind of execution the user asked aptdata to perform.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>aptdata<span class="w"> </span>modes<span class="w"> </span>list<span class="w">                       </span><span class="c1"># discover the 4 modes + matching CLI</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>send<span class="w"> </span>zeca<span class="w"> </span><span class="s2">&quot;oi&quot;</span><span class="w"> </span>--dry-run<span class="w">  </span><span class="c1"># oneshot plan-only</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--dry-run<span class="w"> </span>--json<span class="w">   </span><span class="c1"># converse plan-only</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>aptdata<span class="w"> </span>project<span class="w"> </span>run<span class="w"> </span>demo.project.yaml<span class="w"> </span>--dry-run<span class="w">         </span><span class="c1"># project plan-only</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;deploy do painel&quot;</span><span class="w"> </span>--dry-run<span class="w">    </span><span class="c1"># orchestrated plan-only</span>
+</span></code></pre></div>
+<p>To fix the project's default mode, declare it in <code>.aptdata/agents.yaml</code>:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># ADR-002 §2.3 — default of --mode across every execution command.</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="nt">default_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">orchestrated</span>
+</span></code></pre></div>
+<hr />
 <h2 id="aptdata-agents"><code>aptdata agents</code><a class="headerlink" href="#aptdata-agents" title="Permanent link">&para;</a></h2>
 <p>Operate the multi-agent registry/router defined in <code>agents.yaml</code>
 (override the file with <code>--file/-f</code> or <code>APTDATA_AGENTS_FILE</code>).</p>
 <h3 id="aptdata-agents-list-file-path-enabled-json"><code>aptdata agents list [--file PATH] [--enabled] [--json]</code><a class="headerlink" href="#aptdata-agents-list-file-path-enabled-json" title="Permanent link">&para;</a></h3>
 <p>List registered agents (enabled first).</p>
-<h3 id="aptdata-agents-send-agent_id-prompt-file-path-json"><code>aptdata agents send AGENT_ID PROMPT [--file PATH] [--json]</code><a class="headerlink" href="#aptdata-agents-send-agent_id-prompt-file-path-json" title="Permanent link">&para;</a></h3>
-<p>Send a prompt to a specific agent. JSON output is the full
-<code>AgentResponse</code>: <code>{ok, agent_id, text, error, raw}</code>. Failure exits 1.</p>
-<h3 id="aptdata-agents-route-text-file-path-json"><code>aptdata agents route TEXT [--file PATH] [--json]</code><a class="headerlink" href="#aptdata-agents-route-text-file-path-json" title="Permanent link">&para;</a></h3>
+<h3 id="aptdata-agents-send-agent_id-prompt-file-path-mode-mode-dry-run-json"><code>aptdata agents send AGENT_ID PROMPT [--file PATH] [--mode MODE] [--dry-run] [--json]</code><a class="headerlink" href="#aptdata-agents-send-agent_id-prompt-file-path-mode-mode-dry-run-json" title="Permanent link">&para;</a></h3>
+<p>Send a prompt to a specific agent (execution mode: <code>oneshot</code>). JSON output
+adds <code>mode</code> to the full <code>AgentResponse</code>: <code>{mode, ok, agent_id, text, error, raw}</code>.
+<code>--dry-run</code> validates the agent exists and prints the planned send without
+dispatching (JSON: <code>{mode, dry_run, agent_id, prompt, ok, would_send}</code>).
+Failure exits 1.</p>
+<h3 id="aptdata-agents-route-text-file-path-mode-mode-json"><code>aptdata agents route TEXT [--file PATH] [--mode MODE] [--json]</code><a class="headerlink" href="#aptdata-agents-route-text-file-path-mode-mode-json" title="Permanent link">&para;</a></h3>
 <p>Show which agent <em>would</em> handle a prompt and why — prefix, skill, llm or
-default — without sending. JSON output is the <code>RouteDecision</code>:
-<code>{agent_id, mode, confidence, skill, matched_keyword, text}</code>.</p>
-<h3 id="aptdata-agents-dispatch-text-file-path-json"><code>aptdata agents dispatch TEXT [--file PATH] [--json]</code><a class="headerlink" href="#aptdata-agents-dispatch-text-file-path-json" title="Permanent link">&para;</a></h3>
-<p>Route <strong>and</strong> send in one step. Exits 1 when no agent is available or the
-send fails.</p>
+default — without sending (the implicit dry-run of the <code>orchestrated</code> mode).
+JSON output: <code>{mode, routing_mode, agent_id, confidence, skill, matched_keyword, text}</code>
+where <code>mode</code> is the <code>ExecutionMode</code> (<code>orchestrated</code> by default) and
+<code>routing_mode</code> is the <code>RouteDecision.mode</code> (<code>prefix</code>/<code>skill</code>/<code>llm</code>/<code>default</code>/<code>none</code>).</p>
+<h3 id="aptdata-agents-dispatch-text-file-path-mode-mode-dry-run-json"><code>aptdata agents dispatch TEXT [--file PATH] [--mode MODE] [--dry-run] [--json]</code><a class="headerlink" href="#aptdata-agents-dispatch-text-file-path-mode-mode-dry-run-json" title="Permanent link">&para;</a></h3>
+<p>Route <strong>and</strong> send in one step (execution mode: <code>orchestrated</code>). JSON output
+adds <code>mode</code> + <code>routing_mode</code> to the <code>AgentResponse</code>: <code>{mode, routed_to, routing_mode, ok, agent_id, text, error, raw}</code>.
+<code>--dry-run</code> prints the <code>RouteDecision</code> without dispatching. Exits 1 when no
+agent is available or the send fails.</p>
 <h3 id="aptdata-agents-resolve-capability-file-path-json"><code>aptdata agents resolve CAPABILITY [--file PATH] [--json]</code><a class="headerlink" href="#aptdata-agents-resolve-capability-file-path-json" title="Permanent link">&para;</a></h3>
 <p>Resolve the best enabled agent for a capability. No match prints
 <code>{"agent": null}</code> and exits 1.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>route<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
-</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;/zeca deploy do painel&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>route<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;/zeca deploy do painel&quot;</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;deploy do painel&quot;</span><span class="w"> </span>--dry-run<span class="w"> </span>--json
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-project"><code>aptdata project</code><a class="headerlink" href="#aptdata-project" title="Permanent link">&para;</a></h2>
-<p>Run multi-task projects (YAML) where every task is routed to an agent.</p>
+<p>Run multi-task projects (YAML) where every task is routed to an agent
+(execution mode: <code>project</code>).</p>
 <h3 id="aptdata-project-init-name-out-path-json"><code>aptdata project init NAME [--out PATH] [--json]</code><a class="headerlink" href="#aptdata-project-init-name-out-path-json" title="Permanent link">&para;</a></h3>
 <p>Scaffold a starter <code>NAME.project.yaml</code> (refuses to overwrite).</p>
-<h3 id="aptdata-project-plan-project_file-file-path-json"><code>aptdata project plan PROJECT_FILE [--file PATH] [--json]</code><a class="headerlink" href="#aptdata-project-plan-project_file-file-path-json" title="Permanent link">&para;</a></h3>
-<p>Dry-run: show how each task would be routed, without sending.</p>
-<h3 id="aptdata-project-run-project_file-file-path-json"><code>aptdata project run PROJECT_FILE [--file PATH] [--json]</code><a class="headerlink" href="#aptdata-project-run-project_file-file-path-json" title="Permanent link">&para;</a></h3>
-<p>Execute the project. JSON output is <code>{project, ok, total, results}</code> where
+<h3 id="aptdata-project-plan-project_file-file-path-mode-mode-json"><code>aptdata project plan PROJECT_FILE [--file PATH] [--mode MODE] [--json]</code><a class="headerlink" href="#aptdata-project-plan-project_file-file-path-mode-mode-json" title="Permanent link">&para;</a></h3>
+<p>Dry-run: show how each task would be routed, without sending. JSON output:
+<code>{mode, dry_run, project, plan}</code> where each plan row is <code>{task_id, agent_id, mode, ok, ...}</code>.
+<code>plan</code> is always plan-only (the <code>dry_run</code> field is always <code>true</code> here).</p>
+<h3 id="aptdata-project-run-project_file-file-path-mode-mode-dry-run-json"><code>aptdata project run PROJECT_FILE [--file PATH] [--mode MODE] [--dry-run] [--json]</code><a class="headerlink" href="#aptdata-project-run-project_file-file-path-mode-mode-dry-run-json" title="Permanent link">&para;</a></h3>
+<p>Execute the project. JSON output is <code>{mode, project, ok, total, results}</code> where
 each result carries <code>{task_id, agent_id, mode, ok, text, skipped, error}</code>.
-Exits 1 when any task fails.</p>
+<code>--dry-run</code> aliases <code>plan</code> (same payload, no send dispatched). Exits 1 when
+any task fails.</p>
 <hr />
 <h2 id="aptdata-init"><code>aptdata init</code><a class="headerlink" href="#aptdata-init" title="Permanent link">&para;</a></h2>
 <p>Create the <code>.aptdata/</code> dotdir for a project (ADR-002 §2.2). Writes the three
@@ -2562,9 +2673,9 @@ JSON Schemas under <code>.aptdata/schemas/</code>.</p>
 <code>.aptdata/</code> (renaming <code>aptdata.yaml</code> → <code>system.yaml</code>). Per ADR-002 §4.1
 (exceção Q6), migration is <strong>immediate</strong> — there is no dual-read fallback;
 after <code>--migrate</code> only the dotdir is read by the framework.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>aptdata<span class="w"> </span>init<span class="w"> </span><span class="o">[</span>--path/-p<span class="w"> </span>PATH<span class="o">]</span><span class="w">              </span><span class="c1"># create .aptdata/ with starter templates</span>
-</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>aptdata<span class="w"> </span>init<span class="w"> </span>--migrate<span class="w"> </span><span class="o">[</span>--force<span class="o">]</span><span class="w">          </span><span class="c1"># move legacy root YAMLs into .aptdata/</span>
-</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>aptdata<span class="w"> </span>init<span class="w"> </span>--json<span class="w">                       </span><span class="c1"># one JSON line per action taken</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>aptdata<span class="w"> </span>init<span class="w"> </span><span class="o">[</span>--path/-p<span class="w"> </span>PATH<span class="o">]</span><span class="w">              </span><span class="c1"># create .aptdata/ with starter templates</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>aptdata<span class="w"> </span>init<span class="w"> </span>--migrate<span class="w"> </span><span class="o">[</span>--force<span class="o">]</span><span class="w">          </span><span class="c1"># move legacy root YAMLs into .aptdata/</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>aptdata<span class="w"> </span>init<span class="w"> </span>--json<span class="w">                       </span><span class="c1"># one JSON line per action taken</span>
 </span></code></pre></div>
 <p><code>--force</code> overwrites existing starter files (migrated files are always moved;
 existing dotdir files are kept without <code>--force</code>).</p>
@@ -2574,11 +2685,22 @@ existing dotdir files are kept without <code>--force</code>).</p>
 <code>check-jsonschema</code> for each of <code>system.yaml</code>, <code>agents.yaml</code>, <code>config.yaml</code>
 against the matching schema under <code>.aptdata/schemas/</code>. Walks up the tree from
 <code>--path</code> (or the CWD) to find the project's <code>.aptdata/</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>aptdata<span class="w"> </span>doctor<span class="w"> </span><span class="o">[</span>--path/-p<span class="w"> </span>PATH<span class="o">]</span><span class="w">           </span><span class="c1"># rich table output; exit 1 on failure</span>
-</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>aptdata<span class="w"> </span>doctor<span class="w"> </span>--json<span class="w">                     </span><span class="c1"># single JSON line report</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>aptdata<span class="w"> </span>doctor<span class="w"> </span><span class="o">[</span>--path/-p<span class="w"> </span>PATH<span class="o">]</span><span class="w">           </span><span class="c1"># rich table output; exit 1 on failure</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>aptdata<span class="w"> </span>doctor<span class="w"> </span>--json<span class="w">                     </span><span class="c1"># single JSON line report</span>
 </span></code></pre></div>
 <p>Exit codes: <code>0</code> when every required file validates, <code>1</code> otherwise. <code>agents.yaml</code>
 is required; <code>system.yaml</code> and <code>config.yaml</code> are optional (missing → warning).</p>
+<hr />
+<h2 id="aptdata-modes"><code>aptdata modes</code><a class="headerlink" href="#aptdata-modes" title="Permanent link">&para;</a></h2>
+<p>Discover the 4 canonical execution modes (ADR-002 §2.3). Useful for
+onboarding: each mode lists its short description and matching CLI command.</p>
+<h3 id="aptdata-modes-list-json"><code>aptdata modes list [--json]</code><a class="headerlink" href="#aptdata-modes-list-json" title="Permanent link">&para;</a></h3>
+<p>List the four modes — <code>oneshot</code>, <code>converse</code>, <code>project</code>, <code>orchestrated</code> —
+with description and the CLI command that maps to each. JSON output:
+<code>{modes: [{mode, short, description, cli_command}], count}</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>aptdata<span class="w"> </span>modes<span class="w"> </span>list<span class="w">          </span><span class="c1"># text: one block per mode</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>aptdata<span class="w"> </span>modes<span class="w"> </span>list<span class="w"> </span>--json<span class="w">   </span><span class="c1"># machine-readable</span>
+</span></code></pre></div>
 <hr />
 <h2 id="aptdata-setup"><code>aptdata setup</code><a class="headerlink" href="#aptdata-setup" title="Permanent link">&para;</a></h2>
 <p>Diagnose and configure the aptdata ecosystem. The wizard shows every check
@@ -2586,8 +2708,8 @@ transparently, offers to create a starter <code>agents.yaml</code> (with the <co
 policy block) and configures the Telegram channel — the bot token stays in
 the <code>TELEGRAM_BOT_TOKEN</code> env var, <strong>never in a file</strong> (the yaml records only
 <code>token_env</code>).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>aptdata setup [--file/-f PATH]           # wizard interativo
-</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>aptdata setup --check [--json]           # não interativo; exit 1 se incompleto
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>aptdata setup [--file/-f PATH]           # wizard interativo
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>aptdata setup --check [--json]           # não interativo; exit 1 se incompleto
 </span></code></pre></div>
 <p><code>--check</code> reports: <code>agents_file</code><em>, <code>router</code></em> (agents/skills carregados),
 <code>routing_policy</code>, <code>telegram_token</code>, <code>telegram_transport</code>, <code>observability</code>,
@@ -2597,8 +2719,8 @@ the <code>TELEGRAM_BOT_TOKEN</code> env var, <strong>never in a file</strong> (t
 <p>Run the thin Telegram transport (long-polling) over the ConversationEngine —
 text messages become <code>converse</code> turns, inline buttons resolve confirmations.
 No routing logic lives in the transport.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TELEGRAM_BOT_TOKEN</span><span class="o">=</span><span class="m">123</span>:abc
-</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>aptdata<span class="w"> </span>telegram<span class="w"> </span><span class="o">[</span>--file<span class="w"> </span>PATH<span class="o">]</span><span class="w"> </span><span class="o">[</span>--token-env<span class="w"> </span>TELEGRAM_BOT_TOKEN<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TELEGRAM_BOT_TOKEN</span><span class="o">=</span><span class="m">123</span>:abc
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>aptdata<span class="w"> </span>telegram<span class="w"> </span><span class="o">[</span>--file<span class="w"> </span>PATH<span class="o">]</span><span class="w"> </span><span class="o">[</span>--token-env<span class="w"> </span>TELEGRAM_BOT_TOKEN<span class="o">]</span>
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-converse"><code>aptdata converse</code><a class="headerlink" href="#aptdata-converse" title="Permanent link">&para;</a></h2>
@@ -2606,9 +2728,9 @@ No routing logic lives in the transport.</p>
 <code>ConversationEngine</code> (route → dispatch / confirm / clarify per the policy in
 the <code>routing:</code> block of <code>agents.yaml</code>). Sessions are multi-turn ("continua"
 reuses the last agent) and persist under <code>~/.aptdata/sessions</code>
-(<code>$APTDATA_SESSIONS_DIR</code>).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--yes] [--json]
-</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
+(<code>$APTDATA_SESSIONS_DIR</code>). Execution mode: <code>converse</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--mode MODE] [--dry-run] [--yes] [--json]
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
 </span></code></pre></div>
 <ul>
 <li>High-confidence routes (prefix, strong skill match) dispatch directly.</li>
@@ -2620,10 +2742,14 @@ reuses the last agent) and persist under <code>~/.aptdata/sessions</code>
   confidence.</li>
 <li>Every turn is recorded in the observability trace
   (<code>permission.requested</code>/<code>permission.resolved</code>, dispatches).</li>
+<li><code>--json</code> adds <code>mode</code> to the <code>Turn</code> payload: <code>{mode, type, text, decision, response, candidates, decision_id}</code>.</li>
+<li><code>--dry-run</code> shows the <code>RouteDecision</code> and the <code>DecisionPolicy.decide()</code>
+  outcome (<code>action</code>: <code>dispatch</code>/<code>confirm</code>/<code>clarify</code>) without dispatching or
+  persisting a session. JSON: <code>{mode, dry_run, action, decision, session}</code>.</li>
 </ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json<span class="w">         </span><span class="c1"># dispatch direto</span>
-</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;/hermez deploy&quot;</span><span class="w"> </span>-s<span class="w"> </span>ops<span class="w">            </span><span class="c1"># guardrail -&gt; confirmação</span>
-</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>aptdata<span class="w"> </span>converse<span class="w"> </span>--confirm<span class="w"> </span>1a2b3c4d<span class="w"> </span>-s<span class="w"> </span>ops<span class="w">          </span><span class="c1"># aprova e despacha</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json<span class="w">         </span><span class="c1"># dispatch direto</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>aptdata<span class="w"> </span>converse<span class="w"> </span><span class="s2">&quot;/hermez deploy&quot;</span><span class="w"> </span>-s<span class="w"> </span>ops<span class="w">            </span><span class="c1"># guardrail -&gt; confirmação</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>aptdata<span class="w"> </span>converse<span class="w"> </span>--confirm<span class="w"> </span>1a2b3c4d<span class="w"> </span>-s<span class="w"> </span>ops<span class="w">          </span><span class="c1"># aprova e despacha</span>
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-viz"><code>aptdata viz</code><a class="headerlink" href="#aptdata-viz" title="Permanent link">&para;</a></h2>
@@ -2632,7 +2758,7 @@ thin frontend). Endpoints: <code>/api/agents</code>, <code>/api/health</code>, <
 (503 on router failure), <code>/api/observability</code> (event-store summary) and
 <code>/api/events</code> — live <strong>SSE</strong> feed of the observability trace
 (<code>?backlog=N</code> replays the last N events on connect).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>aptdata viz [--file PATH] [--host HOST] [--port PORT]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>aptdata viz [--file PATH] [--host HOST] [--port PORT]
 </span></code></pre></div>
 <table>
 <thead>
@@ -2674,22 +2800,22 @@ success rate and average latency.</p>
 <p>Latest events in chronological order. Filter by kind
 (<code>routing.decision</code>, <code>agent.dispatch</code>, <code>agent.response</code>, <code>app.started</code>, …)
 or correlate a whole run with <code>--run-id</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
-</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span>--json<span class="w">           </span><span class="c1"># decisão + dispatch + response, mesmo run_id</span>
-</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>summary
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>aptdata<span class="w"> </span>agents<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">&quot;mexer no frontend&quot;</span><span class="w"> </span>--json
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>tail<span class="w"> </span>--json<span class="w">           </span><span class="c1"># decisão + dispatch + response, mesmo run_id</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>aptdata<span class="w"> </span>obs<span class="w"> </span>summary
 </span></code></pre></div>
 <hr />
 <h2 id="aptdata-mcp-start"><code>aptdata mcp-start</code><a class="headerlink" href="#aptdata-mcp-start" title="Permanent link">&para;</a></h2>
 <p>Start the MCP (Model Context Protocol) server so AI agents can discover and
 run pipelines. Emits <code>mcp.server.starting</code>; failures emit
 <code>mcp.server.error</code> and exit 1.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>aptdata<span class="w"> </span>mcp-start<span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>stdio<span class="p">|</span>sse<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>aptdata<span class="w"> </span>mcp-start<span class="w"> </span><span class="o">[</span>--transport<span class="w"> </span>stdio<span class="p">|</span>sse<span class="o">]</span>
 </span></code></pre></div>
 <p>See the <a href="../../mcp/">MCP documentation</a> for tools and resources.</p>
 <hr />
 <h2 id="aptdata-interactive"><code>aptdata interactive</code><a class="headerlink" href="#aptdata-interactive" title="Permanent link">&para;</a></h2>
 <p>Launch the guided interactive wizard.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>aptdata<span class="w"> </span>interactive
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>aptdata<span class="w"> </span>interactive
 </span></code></pre></div>
 <p>See <a href="../cli-interactive/">CLI Interactive Wizard</a> for full documentation.</p>
 <hr />
