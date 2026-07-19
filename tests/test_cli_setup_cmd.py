@@ -107,7 +107,8 @@ class TestSetupWizard:
         monkeypatch.setattr(setup_cmd, "_confirm", lambda msg, default=True: True)
         monkeypatch.setattr(setup_cmd, "_text", lambda msg, default="": "4242")
         monkeypatch.setattr(
-            setup_cmd, "_telegram_get_me",
+            setup_cmd,
+            "_telegram_get_me",
             lambda token: {"ok": True, "result": {"username": "meu_bot"}},
         )
         r = runner.invoke(app, ["setup", "-f", agents_file])

@@ -33,9 +33,7 @@ class CLIAgent(BaseAgent):
         """Return the argv list to run for *prompt*. Subclasses implement."""
         raise NotImplementedError
 
-    def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
-        if not self.spec.enabled:
-            return AgentResponse(ok=False, agent_id=self.id, error="agent disabled")
+    def _do_send(self, prompt: str, **kwargs: Any) -> AgentResponse:
         if shutil.which(self.binary) is None:
             return AgentResponse(
                 ok=False, agent_id=self.id, error=f"'{self.binary}' not found in PATH"
@@ -51,9 +49,7 @@ class CLIAgent(BaseAgent):
                 check=False,
             )
         except subprocess.TimeoutExpired:
-            return AgentResponse(
-                ok=False, agent_id=self.id, error="timeout"
-            )
+            return AgentResponse(ok=False, agent_id=self.id, error="timeout")
         except OSError as exc:  # pragma: no cover - defensive
             return AgentResponse(ok=False, agent_id=self.id, error=str(exc))
 
@@ -63,9 +59,7 @@ class CLIAgent(BaseAgent):
                 agent_id=self.id,
                 error=(proc.stderr or proc.stdout or "non-zero exit").strip()[:500],
             )
-        return AgentResponse(
-            ok=True, agent_id=self.id, text=proc.stdout.strip()
-        )
+        return AgentResponse(ok=True, agent_id=self.id, text=proc.stdout.strip())
 
     def health(self) -> AgentHealth:
         if not self.spec.enabled:

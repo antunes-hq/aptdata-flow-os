@@ -71,8 +71,14 @@ class ObservabilityStore:
             self._conn.execute(
                 "INSERT INTO events (ts, run_id, trace_id, kind, agent_id, payload)"
                 " VALUES (?, ?, ?, ?, ?, ?)",
-                (ts if ts is not None else time.time(), run_id, trace_id, kind,
-                 agent_id, body),
+                (
+                    ts if ts is not None else time.time(),
+                    run_id,
+                    trace_id,
+                    kind,
+                    agent_id,
+                    body,
+                ),
             )
             self._conn.commit()
 

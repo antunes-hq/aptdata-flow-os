@@ -1,4 +1,5 @@
 """aptdata.gamification — XP, levels, streaks and habit tracking."""
+
 from aptdata.gamification.streak import get_streak, update_streak
 from aptdata.gamification.xp import (
     LEVELS,

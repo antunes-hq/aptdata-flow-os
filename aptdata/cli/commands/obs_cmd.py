@@ -32,8 +32,10 @@ def obs_summary(
         print(json.dumps(summary, ensure_ascii=False), flush=True)
         return
 
-    console.print(f"[bold]events:[/bold] {summary['total_events']}"
-                  f"  [dim]({summary['db']})[/dim]")
+    console.print(
+        f"[bold]events:[/bold] {summary['total_events']}"
+        f"  [dim]({summary['db']})[/dim]"
+    )
     for kind, count in sorted(summary["by_kind"].items()):
         console.print(f"  {kind}: {count}")
     modes = summary["decisions_by_mode"]
@@ -43,9 +45,7 @@ def obs_summary(
     d = summary["dispatches"]
     if d["total"]:
         latency = f", avg {d['avg_latency_ms']}ms" if d["avg_latency_ms"] else ""
-        console.print(
-            f"[bold]dispatches:[/bold] {d['ok']}/{d['total']} ok{latency}"
-        )
+        console.print(f"[bold]dispatches:[/bold] {d['ok']}/{d['total']} ok{latency}")
 
 
 @obs_app.command("tail")

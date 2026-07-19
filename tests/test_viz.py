@@ -95,6 +95,7 @@ class TestVizServer:
         httpd = ThreadingHTTPServer(("127.0.0.1", 0), _make_handler(st))
         threading.Thread(target=httpd.serve_forever, daemon=True).start()
         base = f"http://127.0.0.1:{httpd.server_address[1]}"
+
         def get(p):
             return json.loads(urllib.request.urlopen(base + p, timeout=5).read())
 
@@ -185,7 +186,7 @@ class TestVizSSE:
             line = resp.readline()
             while line and not line.startswith(b"data:"):
                 line = resp.readline()
-            event = json.loads(line[len(b"data:"):].strip())
+            event = json.loads(line[len(b"data:") :].strip())
             assert event["kind"] == "agent.response"
             assert event["agent_id"] == "zeca"
             resp.close()

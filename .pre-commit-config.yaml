@@ -1,0 +1,28 @@
+# Pre-commit do aptdata (ADR-002 §2.6). Rode `uv run pre-commit install` uma vez.
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.10
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.28.6
+    hooks:
+      # valida os manifestos .aptdata/ contra os JSON Schemas versionados
+      # (os schemas chegam no PR2; por ora valida os YAMLs padrão do CI/GH)
+      - id: check-github-workflows
+      - id: check-github-actions
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+        # mkdocs.yml usa tags custom !!python/name: do mkdocs-material que o
+        # loader safe do check-yaml não parseia; mkdocs as valida no build.
+        exclude: ^mkdocs\.yml$
+      - id: check-toml
+      - id: check-merge-conflict

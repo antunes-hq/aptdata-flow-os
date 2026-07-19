@@ -23,16 +23,22 @@ def test_system_dependency_injection():
     assert system._flows[1].flow_id == "soccer_silver_flow"
     assert system._flows[2].flow_id == "soccer_gold_flow"
 
+
 def test_pydantic_validation_fail_fast(monkeypatch):
-    """Força um schema errado na camada Silver (output_contract) para testar a validação."""
+    """Schema errado na camada Silver (output_contract) testa a validação."""
     flow = SilverFlow(flow_id="test_silver")
-    flow.compile() # Instancia o componente
+    flow.compile()  # Instancia o componente
 
     # Cria um payload "sujo" e "incorreto", que simula uma saida de um componente
     # ou um dataframe que não segue o contrato
     invalid_data = [
         # Missing home_goals and away_goals which are required ints in SilverMatchModel
-        {"match_id": "123", "home_team": "Team A", "away_team": "Team B", "date": "2023-10-01"}
+        {
+            "match_id": "123",
+            "home_team": "Team A",
+            "away_team": "Team B",
+            "date": "2023-10-01",
+        }
     ]
     ds = InMemoryDataset(uri="memory://test")
     ds.write(invalid_data)
@@ -40,7 +46,9 @@ def test_pydantic_validation_fail_fast(monkeypatch):
     # Let's mock `execute` to return an invalid dataset intentionally
     def bad_execute(self_obj, inputs):
         bad_ds = InMemoryDataset(uri="memory://bad")
-        bad_ds.write([{"match_id": "123", "home_team": "Team A"}]) # Missing away_team, goals, date
+        bad_ds.write(
+            [{"match_id": "123", "home_team": "Team A"}]
+        )  # Missing away_team, goals, date
         return [bad_ds]
 
     # Monkeypatch the specific class's execute method
@@ -49,16 +57,31 @@ def test_pydantic_validation_fail_fast(monkeypatch):
     with pytest.raises(DataContractError):
         flow.run([ds])
 
+
 def test_full_pipeline_with_mocked_io(monkeypatch):
     """Mock the ingest component to test the full pipeline in milliseconds."""
 
     from components.soccer_components import IngestMatchDataComponent
 
     def mocked_execute(self, inputs):
-        # Even though we refactored clean logic to drop null match_ids, it handles normal cases too
+        # Refatoramos p/ dropar null match_ids, mas cobre casos normais também
         df = [
-            {"match_id": "1", "home_team": "A", "away_team": "B", "home_goals": 2, "away_goals": 1, "date": "2023-01-01"},  # noqa: E501
-            {"match_id": "2", "home_team": "C", "away_team": "A", "home_goals": 0, "away_goals": 3, "date": "2023-01-02"},  # noqa: E501
+            {
+                "match_id": "1",
+                "home_team": "A",
+                "away_team": "B",
+                "home_goals": 2,
+                "away_goals": 1,
+                "date": "2023-01-01",
+            },  # noqa: E501
+            {
+                "match_id": "2",
+                "home_team": "C",
+                "away_team": "A",
+                "home_goals": 0,
+                "away_goals": 3,
+                "date": "2023-01-02",
+            },  # noqa: E501
         ]
         ds = InMemoryDataset(uri="memory://test")
         ds.write(df)
@@ -67,4 +90,4 @@ def test_full_pipeline_with_mocked_io(monkeypatch):
     monkeypatch.setattr(IngestMatchDataComponent, "execute", mocked_execute)
 
     system = SoccerMedallionSystem(system_id="mocked_pipeline")
-    system.run() # Should succeed without errors and very fast
+    system.run()  # Should succeed without errors and very fast

@@ -6,6 +6,7 @@
 - ``llm_observer`` — tracking de custo/latência de chamadas LLM (legado
   mindflow; migração para o store próprio planejada).
 """
+
 from aptdata.observability.llm_observer import (
     _PRICING,
     get_observability_summary,

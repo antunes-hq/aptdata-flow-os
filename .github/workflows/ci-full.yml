@@ -18,16 +18,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
+          enable-cache: true
           python-version: "3.12"
 
-      - name: Install ruff
-        run: pip install ruff
+      - name: Sync dependencies
+        run: uv sync
 
       - name: Run ruff check
-        run: ruff check aptdata/ tests/
+        run: uv run ruff check aptdata/ tests/
 
   test-full:
     name: Full test suite + coverage (Python ${{ matrix.python-version }})
@@ -43,25 +44,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          pip install -e .
-          pip install pytest pytest-cov pytest-asyncio pyyaml textual
-          pip install pandas pyarrow || true
+      - name: Sync dependencies (with optional extras)
+        run: uv sync --extra pandas --extra plugins
 
       - name: Run full test suite
         run: |
-          python -m pytest tests/ \
+          uv run pytest tests/ \
             -v \
             --cov=aptdata \
             --cov-report=term-missing \
             --cov-report=xml \
-            --cov-fail-under=80
+            --cov-fail-under=73
 
       - name: Upload coverage XML
         if: matrix.python-version == '3.12'

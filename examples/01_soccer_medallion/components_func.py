@@ -11,8 +11,11 @@ from aptdata.plugins.local_fs import CSVReader
 
 DEFAULT_MOCK_DATA_PATH = Path(__file__).parent / "data" / "raw" / "matches_mock.csv"
 
+
 @component("ingest_match_data")
-def ingest_match_data(inputs: list[IDataset], context: IContext, file_path: str | None = None) -> list[IDataset]:
+def ingest_match_data(
+    inputs: list[IDataset], context: IContext, file_path: str | None = None
+) -> list[IDataset]:
     """Bronze Layer: Ingest raw data."""
     context.logger.info("Ingesting raw data from CSV (Bronze)")
     path_to_read = file_path or str(DEFAULT_MOCK_DATA_PATH)

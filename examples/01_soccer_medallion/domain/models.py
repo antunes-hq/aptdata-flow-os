@@ -16,6 +16,7 @@ class SilverMatchModel(BaseModel):
             return 0
         return v
 
+
 class GoldTeamStatsModel(BaseModel):
     team: str
     total_goals_scored: int

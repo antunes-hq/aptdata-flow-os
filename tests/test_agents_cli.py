@@ -28,7 +28,11 @@ class TestCommandBuilding:
     def test_claude_command(self):
         agent = ClaudeCodeAgent(_spec("claude_code", model="claude-opus-4-8"))
         assert agent._build_command("oi") == [
-            "claude", "-p", "oi", "--model", "claude-opus-4-8",
+            "claude",
+            "-p",
+            "oi",
+            "--model",
+            "claude-opus-4-8",
         ]
 
     def test_claude_command_no_model(self):
@@ -38,7 +42,11 @@ class TestCommandBuilding:
     def test_opencode_command(self):
         agent = OpenCodeAgent(_spec("opencode", model="opencode/x"))
         assert agent._build_command("faz") == [
-            "opencode", "run", "faz", "-m", "opencode/x",
+            "opencode",
+            "run",
+            "faz",
+            "-m",
+            "opencode/x",
         ]
 
 

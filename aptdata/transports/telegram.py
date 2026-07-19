@@ -31,13 +31,19 @@ def render_turn(turn: Turn) -> dict[str, Any]:
     """
     payload: dict[str, Any] = {"text": turn.text}
     if turn.type == "needs_confirmation" and turn.decision_id:
-        rows = [[{
-            "text": "✅ Confirmar",
-            "callback_data": f"confirm:{turn.decision_id}",
-        }]]
+        rows = [
+            [
+                {
+                    "text": "✅ Confirmar",
+                    "callback_data": f"confirm:{turn.decision_id}",
+                }
+            ]
+        ]
         alternates = [
-            {"text": f"→ {agent}", "callback_data":
-                f"choose:{turn.decision_id}:{agent}"}
+            {
+                "text": f"→ {agent}",
+                "callback_data": f"choose:{turn.decision_id}:{agent}",
+            }
             for agent in turn.candidates
             if turn.decision is None or agent != turn.decision.agent_id
         ]

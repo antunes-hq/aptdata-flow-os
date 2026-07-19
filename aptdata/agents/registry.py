@@ -14,6 +14,7 @@ from typing import Any
 
 import yaml
 
+from aptdata.agents.anthropic import AnthropicAgent
 from aptdata.agents.base import AgentResponse, AgentSpec, BaseAgent, IAgent
 from aptdata.agents.cli_agents import ClaudeCodeAgent, OpenCodeAgent
 from aptdata.agents.openclaw import OpenClawAgent
@@ -26,6 +27,7 @@ ADAPTERS: dict[str, type[BaseAgent]] = {
     "openclaw": OpenClawAgent,
     "claude_code": ClaudeCodeAgent,
     "opencode": OpenCodeAgent,
+    "anthropic": AnthropicAgent,
 }
 
 
@@ -38,7 +40,7 @@ class _PlaceholderAgent(BaseAgent):
 
     type = "placeholder"
 
-    def send(self, prompt: str, **kwargs: Any) -> AgentResponse:
+    def _do_send(self, prompt: str, **kwargs: Any) -> AgentResponse:
         return AgentResponse(
             ok=False,
             agent_id=self.id,

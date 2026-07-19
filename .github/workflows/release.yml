@@ -81,15 +81,12 @@ jobs:
 
       # --- Steps below run only when a real bump type was determined ----------
 
-      - name: Set up Python
+      - name: Install uv
         if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
-        uses: actions/setup-python@v5
+        uses: astral-sh/setup-uv@v4
         with:
+          enable-cache: true
           python-version: "3.10"
-
-      - name: Install bump-my-version
-        if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
-        run: pip install "bump-my-version>=0.20.0"
 
       - name: Bump on a release branch and open PR
         if: steps.detect.outputs.bump != '' && steps.detect.outputs.bump != 'skip'
@@ -104,7 +101,8 @@ jobs:
 
           # --no-tag: the tag is created by tag-release.yml AFTER the bump lands
           # on main, so it always points at a real main commit (never orphaned).
-          bump-my-version bump ${{ steps.detect.outputs.bump }} --no-tag
+          # --with: ambiente efêmero com só bump-my-version (blast radius mínimo).
+          uv run --with bump-my-version bump-my-version bump ${{ steps.detect.outputs.bump }} --no-tag
 
           NEW=$(grep -m1 '^current_version' .bumpversion.toml | cut -d'"' -f2)
           git push origin "$BRANCH"

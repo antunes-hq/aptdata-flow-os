@@ -78,9 +78,7 @@ def _stub_send(monkeypatch):
 class TestInit:
     def test_creates_file_json(self, tmp_path):
         out = tmp_path / "novo.project.yaml"
-        r = runner.invoke(
-            app, ["project", "init", "novo", "--out", str(out), "--json"]
-        )
+        r = runner.invoke(app, ["project", "init", "novo", "--out", str(out), "--json"])
         assert r.exit_code == 0
         assert out.exists()
         data = json.loads(r.stdout)
@@ -110,9 +108,7 @@ class TestPlan:
         assert data["project"] == "demo" and len(data["plan"]) >= 1
 
     def test_text(self, project_file, agents_file):
-        r = runner.invoke(
-            app, ["project", "plan", project_file, "--file", agents_file]
-        )
+        r = runner.invoke(app, ["project", "plan", project_file, "--file", agents_file])
         assert r.exit_code == 0
         assert "demo" in r.stdout
 
@@ -138,9 +134,7 @@ class TestRun:
         assert any(item["text"] for item in data["results"])
 
     def test_text(self, project_file, agents_file):
-        r = runner.invoke(
-            app, ["project", "run", project_file, "--file", agents_file]
-        )
+        r = runner.invoke(app, ["project", "run", project_file, "--file", agents_file])
         assert r.exit_code == 0
         assert "demo" in r.stdout
 
@@ -154,7 +148,5 @@ class TestRun:
                 ok=False, agent_id=self.id, error="boom"
             ),
         )
-        r = runner.invoke(
-            app, ["project", "run", project_file, "--file", agents_file]
-        )
+        r = runner.invoke(app, ["project", "run", project_file, "--file", agents_file])
         assert r.exit_code == 1

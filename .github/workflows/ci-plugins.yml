@@ -45,24 +45,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Install core dependencies
-        run: |
-          pip install -e .
-          pip install pytest pytest-cov pytest-asyncio
-
-      - name: Install optional plugin dependencies
-        run: |
-          pip install pandas pyarrow || true
-          pip install httpx sqlalchemy || true
+      - name: Sync dependencies (with plugin extras)
+        run: uv sync --extra pandas --extra plugins
 
       - name: Run plugin tests
         run: |
-          python -m pytest \
+          uv run pytest \
             tests/test_plugins.py \
             tests/test_quality.py \
             tests/test_transform.py \

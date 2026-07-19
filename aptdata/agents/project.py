@@ -95,7 +95,9 @@ class ProjectRunner:
         if task.agent:
             if task.agent in self.router.registry:
                 return RouteDecision(
-                    agent_id=task.agent, mode="explicit", text=task.prompt,
+                    agent_id=task.agent,
+                    mode="explicit",
+                    text=task.prompt,
                     confidence=1.0,
                 )
             return RouteDecision(agent_id=None, mode="none", text=task.prompt)
@@ -103,7 +105,9 @@ class ProjectRunner:
             agent = self.router.registry.resolve(task.capability)
             if agent:
                 return RouteDecision(
-                    agent_id=agent.id, mode="capability", text=task.prompt,
+                    agent_id=agent.id,
+                    mode="capability",
+                    text=task.prompt,
                     confidence=0.9,
                 )
         return self.router.route(task.prompt)
@@ -138,24 +142,27 @@ class ProjectRunner:
         results: dict[str, TaskResult] = {}
         for task in self.project.tasks:
             failed_dep = next(
-                (
-                    d
-                    for d in task.depends_on
-                    if d not in results or not results[d].ok
-                ),
+                (d for d in task.depends_on if d not in results or not results[d].ok),
                 None,
             )
             if failed_dep is not None:
                 results[task.id] = TaskResult(
-                    task_id=task.id, agent_id=None, mode="skipped", ok=False,
-                    skipped=True, error=f"dependency '{failed_dep}' unmet",
+                    task_id=task.id,
+                    agent_id=None,
+                    mode="skipped",
+                    ok=False,
+                    skipped=True,
+                    error=f"dependency '{failed_dep}' unmet",
                 )
                 continue
 
             decision = self._route_task(task)
             if decision.agent_id is None:
                 results[task.id] = TaskResult(
-                    task_id=task.id, agent_id=None, mode=decision.mode, ok=False,
+                    task_id=task.id,
+                    agent_id=None,
+                    mode=decision.mode,
+                    ok=False,
                     error="no agent could be routed",
                 )
                 continue
@@ -180,13 +187,28 @@ def scaffold_project(name: str) -> Project:
         name=name,
         description=f"Projeto {name} — orquestrado pelo aptdata.",
         tasks=[
-            Task(id="planejar", prompt=f"Faz o plano técnico do {name}.",
-                 capability="planning"),
-            Task(id="backend", prompt="Implementa o backend / API.",
-                 capability="backend", depends_on=["planejar"]),
-            Task(id="frontend", prompt="Implementa a interface.",
-                 capability="frontend", depends_on=["planejar"]),
-            Task(id="deploy", prompt="Sobe em produção.",
-                 capability="deploy", depends_on=["backend", "frontend"]),
+            Task(
+                id="planejar",
+                prompt=f"Faz o plano técnico do {name}.",
+                capability="planning",
+            ),
+            Task(
+                id="backend",
+                prompt="Implementa o backend / API.",
+                capability="backend",
+                depends_on=["planejar"],
+            ),
+            Task(
+                id="frontend",
+                prompt="Implementa a interface.",
+                capability="frontend",
+                depends_on=["planejar"],
+            ),
+            Task(
+                id="deploy",
+                prompt="Sobe em produção.",
+                capability="deploy",
+                depends_on=["backend", "frontend"],
+            ),
         ],
     )

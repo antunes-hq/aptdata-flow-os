@@ -94,6 +94,7 @@ class DefaultExecutor(IExecutor):
                 else:
                     try:
                         import nest_asyncio
+
                         nest_asyncio.apply()
                     except ImportError:
                         pass
@@ -268,7 +269,7 @@ class BaseComponent(IComponent):
                     ComponentExecutionEvent(
                         event_type="pre_execute",
                         component_id=self.component_id,
-                        status="pending"
+                        status="pending",
                     )
                 )
 
@@ -297,7 +298,7 @@ class BaseComponent(IComponent):
                             component_id=self.component_id,
                             status="success",
                             execution_time=exec_time,
-                            io_uris=io_uris
+                            io_uris=io_uris,
                         )
                     )
                 return outputs
@@ -311,7 +312,7 @@ class BaseComponent(IComponent):
                             component_id=self.component_id,
                             status="failed",
                             execution_time=exec_time,
-                            error_message=str(e)
+                            error_message=str(e),
                         )
                     )
                 raise
@@ -321,7 +322,7 @@ class BaseComponent(IComponent):
                         ComponentExecutionEvent(
                             event_type="post_execute",
                             component_id=self.component_id,
-                            status="completed"
+                            status="completed",
                         )
                     )
 

@@ -1,4 +1,5 @@
 """Memory Lab — analytics e métricas da segunda mente."""
+
 from __future__ import annotations
 
 import json
@@ -13,13 +14,25 @@ def calc_memory_stats(store, vstore) -> dict:
             "SELECT id, text, meta, created_at FROM notes"
         ).fetchall()
     except Exception:
-        return {"total_notes": 0, "freshness_pct": 0, "topic_count": 0,
-                "stale_pct": 0, "growth_weekly": {}, "top_keywords": []}
+        return {
+            "total_notes": 0,
+            "freshness_pct": 0,
+            "topic_count": 0,
+            "stale_pct": 0,
+            "growth_weekly": {},
+            "top_keywords": [],
+        }
 
     total = len(rows)
     if total == 0:
-        return {"total_notes": 0, "freshness_pct": 0, "topic_count": 0,
-                "stale_pct": 0, "growth_weekly": {}, "top_keywords": []}
+        return {
+            "total_notes": 0,
+            "freshness_pct": 0,
+            "topic_count": 0,
+            "stale_pct": 0,
+            "growth_weekly": {},
+            "top_keywords": [],
+        }
 
     cutoff = (now - timedelta(days=30)).isoformat()
     fresh = sum(1 for r in rows if (r[3] or "") >= cutoff)
@@ -41,6 +54,7 @@ def calc_memory_stats(store, vstore) -> dict:
 
     texts = [r[1] for r in rows if r[1]]
     from aptdata.analytics.tfidf import tfidf_keywords
+
     keywords = tfidf_keywords(texts, top_n=20) if texts else []
 
     events_total = 0

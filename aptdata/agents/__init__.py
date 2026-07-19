@@ -7,6 +7,7 @@ backend kind.
 
 from __future__ import annotations
 
+from aptdata.agents.anthropic import AnthropicAgent
 from aptdata.agents.base import (
     AgentHealth,
     AgentResponse,
@@ -38,6 +39,7 @@ __all__ = [
     "AgentRegistry",
     "AgentResponse",
     "AgentSpec",
+    "AnthropicAgent",
     "BaseAgent",
     "CLIAgent",
     "ClaudeCodeAgent",

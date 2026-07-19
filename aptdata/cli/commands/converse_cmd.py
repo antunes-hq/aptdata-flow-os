@@ -56,8 +56,7 @@ def converse_command(
         if turn.type == "needs_confirmation":
             console.print(
                 f"[dim]confirme com:[/dim] aptdata converse --confirm"
-                f" {turn.decision_id} -s {session}"
-                + (f" -f {file}" if file else "")
+                f" {turn.decision_id} -s {session}" + (f" -f {file}" if file else "")
             )
 
     if turn.response is not None and not turn.response.ok:

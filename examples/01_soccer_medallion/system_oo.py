@@ -22,7 +22,10 @@ class SoccerMedallionSystem(BaseSystem):
 
         # Observabilidade via Event Bus nativo
         def log_event(event):
-            print(f"[{event.timestamp.isoformat()}] [{event.event_type}] {event.component_id} -> {event.status}")
+            print(
+                f"[{event.timestamp.isoformat()}] [{event.event_type}] "
+                f"{event.component_id} -> {event.status}"
+            )
 
         self._context.event_bus.subscribe("on_success", log_event)
         self._context.event_bus.subscribe("on_failure", log_event)
@@ -35,8 +38,10 @@ class SoccerMedallionSystem(BaseSystem):
     def on_complete(self, context: IContext):
         context.logger.info("Execução do sistema finalizada.")
 
+
 if __name__ == "__main__":
     import logging
+
     logging.basicConfig(level=logging.INFO)
 
     system = SoccerMedallionSystem(system_id="medallion_system_01")

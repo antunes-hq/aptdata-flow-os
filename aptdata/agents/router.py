@@ -91,9 +91,7 @@ class Router:
     # -- construction -------------------------------------------------------
 
     @classmethod
-    def from_yaml(
-        cls, path: str | Path, *, llm: LLMRouter | None = None
-    ) -> Router:
+    def from_yaml(cls, path: str | Path, *, llm: LLMRouter | None = None) -> Router:
         path = Path(path)
         raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         registry = AgentRegistry.from_yaml(path)

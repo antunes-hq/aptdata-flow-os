@@ -40,8 +40,16 @@ DEFAULT_SESSIONS_DIR = "~/.aptdata/sessions"
 
 #: follow-ups que reusam o último agente da sessão sem re-rotear
 _FOLLOWUP_PHRASES = frozenset(
-    {"continua", "continue", "segue", "e agora", "de novo", "manda de novo",
-     "pro mesmo", "mesmo"}
+    {
+        "continua",
+        "continue",
+        "segue",
+        "e agora",
+        "de novo",
+        "manda de novo",
+        "pro mesmo",
+        "mesmo",
+    }
 )
 
 
@@ -103,9 +111,7 @@ class SessionStore:
     """Estado multi-turno por sessão, persistido em JSON (StateBackend)."""
 
     def __init__(self, base_dir: str | Path | None = None):
-        directory = (
-            base_dir or os.getenv(SESSIONS_ENV) or DEFAULT_SESSIONS_DIR
-        )
+        directory = base_dir or os.getenv(SESSIONS_ENV) or DEFAULT_SESSIONS_DIR
         self._backend = StateBackend(Path(directory).expanduser())
 
     def get(self, session_id: str) -> dict[str, Any]:
@@ -186,7 +192,9 @@ class ConversationEngine:
             ):
                 return Turn(type="reply", text=f"Agente '{choice}' indisponível.")
             decision = RouteDecision(
-                agent_id=choice, mode="override", text=pending["text"],
+                agent_id=choice,
+                mode="override",
+                text=pending["text"],
                 confidence=1.0,
             )
         else:
@@ -244,12 +252,12 @@ class ConversationEngine:
         session["last_agent"] = decision.agent_id
         self.store.put(session_id, session)
         prefix = f"[{decision.agent_id}]"
-        text = f"{prefix} {response.text}" if response.ok else (
-            f"{prefix} erro: {response.error}"
+        text = (
+            f"{prefix} {response.text}"
+            if response.ok
+            else (f"{prefix} erro: {response.error}")
         )
-        return Turn(
-            type="dispatched", text=text, decision=decision, response=response
-        )
+        return Turn(type="dispatched", text=text, decision=decision, response=response)
 
     def _ask_confirmation(
         self, session_id: str, session: dict[str, Any], decision: RouteDecision

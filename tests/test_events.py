@@ -17,12 +17,14 @@ class _DummyComponent(BaseComponent):
         ds.write([{"dummy": 1}])
         return [ds]
 
+
 class _FailingComponent(BaseComponent):
     def validate_inputs(self, inputs: list[IDataset]) -> bool:
         return True
 
     def execute(self, inputs: list[IDataset]) -> list[IDataset]:
         raise ValueError("Simulated component failure")
+
 
 def test_event_bus_dispatch_success_chronology():
     bus = EventBus()
@@ -39,6 +41,7 @@ def test_event_bus_dispatch_success_chronology():
 
     class MockContext:
         event_bus = bus
+
     comp.context = MockContext()
 
     comp.execute([])
@@ -67,6 +70,7 @@ def test_event_bus_dispatch_failure_chronology():
 
     class MockContext:
         event_bus = bus
+
     comp.context = MockContext()
 
     with pytest.raises(ValueError, match="Simulated component failure"):
@@ -91,8 +95,10 @@ def test_event_bus_fault_tolerance(caplog):
     bus.subscribe("pre_execute", bad_listener)
 
     comp = _DummyComponent(component_id="faulty_listener_test")
+
     class MockContext:
         event_bus = bus
+
     comp.context = MockContext()
 
     # Should not raise
@@ -112,7 +118,7 @@ def test_event_payload_json_serialization():
         component_id="c_1",
         status="done",
         execution_time=1.5,
-        io_uris=["s3://bucket/out"]
+        io_uris=["s3://bucket/out"],
     )
 
     json_str = event.model_dump_json()
