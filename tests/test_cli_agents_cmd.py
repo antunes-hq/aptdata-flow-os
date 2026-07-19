@@ -116,7 +116,87 @@ class TestSend:
             app, ["agents", "send", "zeca", "oi", "--file", agents_file, "--json"]
         )
         assert r.exit_code == 0
-        assert json.loads(r.stdout)["ok"] is True
+        data = json.loads(r.stdout)
+        assert data["ok"] is True
+        # PR3 — ExecutionMode exposto no JSON (oneshot é o default natural de send)
+        assert data["mode"] == "oneshot"
+
+    def test_mode_override_to_orchestrated(self, agents_file):
+        """--mode explícito vence o default do comando."""
+        r = runner.invoke(
+            app,
+            [
+                "agents",
+                "send",
+                "zeca",
+                "oi",
+                "--file",
+                agents_file,
+                "--json",
+                "--mode",
+                "orchestrated",
+            ],
+        )
+        assert r.exit_code == 0
+        assert json.loads(r.stdout)["mode"] == "orchestrated"
+
+    def test_dry_run_does_not_send(self, agents_file):
+        r = runner.invoke(
+            app,
+            [
+                "agents",
+                "send",
+                "zeca",
+                "oi",
+                "--file",
+                agents_file,
+                "--dry-run",
+                "--json",
+            ],
+        )
+        assert r.exit_code == 0, r.stdout
+        data = json.loads(r.stdout)
+        assert data["mode"] == "oneshot"
+        assert data["dry_run"] is True
+        assert data["agent_id"] == "zeca"
+        assert data["prompt"] == "oi"
+        assert data["would_send"] is True
+        # nada despachado: sem `text` (resposta), `raw`, `error` de AgentResponse.
+        assert "raw" not in data
+        assert data.get("error") in (None,)
+        assert "text" not in data or data.get("text") in ("", None)
+
+    def test_dry_run_text_mode(self, agents_file):
+        r = runner.invoke(
+            app,
+            ["agents", "send", "zeca", "oi", "--file", agents_file, "--dry-run"],
+        )
+        assert r.exit_code == 0
+        assert "dry-run" in r.stdout
+        assert "zeca" in r.stdout
+
+    def test_dry_run_unknown_agent_exits_1(self, agents_file):
+        r = runner.invoke(
+            app,
+            ["agents", "send", "ninguem", "oi", "--file", agents_file, "--dry-run"],
+        )
+        assert r.exit_code == 1
+
+    def test_invalid_mode_exits_nonzero(self, agents_file):
+        r = runner.invoke(
+            app,
+            [
+                "agents",
+                "send",
+                "zeca",
+                "oi",
+                "--file",
+                agents_file,
+                "--mode",
+                "bogus",
+            ],
+        )
+        assert r.exit_code != 0
 
     def test_json_exposes_raw_diagnostics(self, agents_file, monkeypatch):
         from aptdata.agents.openclaw import OpenClawAgent
@@ -157,7 +237,27 @@ class TestRoute:
             ["agents", "route", "mexer no frontend", "--file", agents_file, "--json"],
         )
         assert r.exit_code == 0
+        data = json.loads(r.stdout)
         assert "ondina" in r.stdout
+        # PR3 — route expõe mode=orchestrated no JSON
+        assert data["mode"] == "orchestrated"
+
+    def test_mode_override_to_oneshot(self, agents_file):
+        r = runner.invoke(
+            app,
+            [
+                "agents",
+                "route",
+                "mexer no frontend",
+                "--file",
+                agents_file,
+                "--json",
+                "--mode",
+                "oneshot",
+            ],
+        )
+        assert r.exit_code == 0
+        assert json.loads(r.stdout)["mode"] == "oneshot"
 
     def test_text_mode(self, agents_file):
         r = runner.invoke(
@@ -175,6 +275,84 @@ class TestDispatch:
         assert r.exit_code == 0
         data = json.loads(r.stdout)
         assert data["routed_to"] == "ondina" and data["ok"] is True
+        # PR3 — dispatch expõe mode=orchestrated
+        assert data["mode"] == "orchestrated"
+        # routing_mode preserva o RouteDecision.mode (skill/prefix/...)
+        assert data["routing_mode"] == "skill"
+
+    def test_mode_override_to_project(self, agents_file):
+        r = runner.invoke(
+            app,
+            [
+                "agents",
+                "dispatch",
+                "tela nova",
+                "--file",
+                agents_file,
+                "--json",
+                "--mode",
+                "project",
+            ],
+        )
+        assert r.exit_code == 0
+        assert json.loads(r.stdout)["mode"] == "project"
+
+    def test_dry_run_does_not_send(self, agents_file):
+        r = runner.invoke(
+            app,
+            [
+                "agents",
+                "dispatch",
+                "tela nova",
+                "--file",
+                agents_file,
+                "--dry-run",
+                "--json",
+            ],
+        )
+        assert r.exit_code == 0, r.stdout
+        data = json.loads(r.stdout)
+        assert data["mode"] == "orchestrated"
+        assert data["routing_mode"] == "skill"
+        assert data["dry_run"] is True
+        assert data["agent_id"] == "ondina"
+        assert data["would_send"] is True
+        # nada foi despachado: não há `raw`, `error`, `ok` de AgentResponse.
+        assert "raw" not in data
+        assert data.get("error") in (None,)
+        assert data["ok"] is True
+
+    def test_dry_run_text_mode(self, agents_file):
+        r = runner.invoke(
+            app,
+            ["agents", "dispatch", "tela nova", "--file", agents_file, "--dry-run"],
+        )
+        assert r.exit_code == 0
+        assert "dry-run" in r.stdout
+        assert "ondina" in r.stdout
+
+    def test_dry_run_no_agent_exits_1(self, agents_file):
+        # Um agents.yaml sem nenhum agent habilitado → route devolve agent_id=None.
+        from pathlib import Path
+
+        empty_path = Path(agents_file).parent / "empty.yaml"
+        empty_path.write_text("agents: {}\nskills: []\n", encoding="utf-8")
+        r = runner.invoke(
+            app,
+            [
+                "agents",
+                "dispatch",
+                "tela nova",
+                "--file",
+                str(empty_path),
+                "--dry-run",
+                "--json",
+            ],
+        )
+        assert r.exit_code == 1
+        data = json.loads(r.stdout)
+        assert data["dry_run"] is True
+        assert data["ok"] is False
 
     def test_text_mode(self, agents_file):
         r = runner.invoke(

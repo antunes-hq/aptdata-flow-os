@@ -9,6 +9,7 @@ on:
       - "tests/test_cli_*.py"
       - "tests/test_scaffold_templates.py"
       - "tests/test_docs.py"
+      - "tests/test_cli_modes_cmd.py"
       - "tests/conftest.py"
   pull_request:
     branches: ["main"]
@@ -18,6 +19,7 @@ on:
       - "tests/test_cli_*.py"
       - "tests/test_scaffold_templates.py"
       - "tests/test_docs.py"
+      - "tests/test_cli_modes_cmd.py"
       - "tests/conftest.py"
   workflow_dispatch:
 
@@ -59,6 +61,7 @@ jobs:
             tests/test_cli_telemetry_cmd.py \
             tests/test_cli_agents_cmd.py \
             tests/test_cli_project_cmd.py \
+            tests/test_cli_modes_cmd.py \
             tests/test_scaffold_templates.py \
             tests/test_docs.py \
             -v \

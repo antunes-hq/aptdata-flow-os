@@ -5,6 +5,7 @@ from aptdata.cli.commands.config_cmd import config_app
 from aptdata.cli.commands.doctor_cmd import doctor_app
 from aptdata.cli.commands.init_cmd import init_app
 from aptdata.cli.commands.mesh_cmd import mesh_app
+from aptdata.cli.commands.modes_cmd import modes_app
 from aptdata.cli.commands.obs_cmd import obs_app
 from aptdata.cli.commands.plugin_cmd import plugin_app, plugins_app
 from aptdata.cli.commands.project_cmd import project_app
@@ -23,4 +24,5 @@ __all__ = [
     "obs_app",
     "init_app",
     "doctor_app",
+    "modes_app",
 ]

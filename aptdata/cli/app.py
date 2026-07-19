@@ -206,6 +206,7 @@ from aptdata.cli.commands import (  # noqa: E402
     doctor_app,
     init_app,
     mesh_app,
+    modes_app,
     obs_app,
     plugin_app,
     plugins_app,
@@ -230,6 +231,8 @@ app.add_typer(obs_app, name="obs")
 # ADR-002 §2.2/§2.4 — .aptdata/ dotdir scaffolding + schema validation.
 app.add_typer(init_app, name="init")
 app.add_typer(doctor_app, name="doctor")
+# ADR-002 §2.3 — descoberta dos 4 modos de execução canônicos.
+app.add_typer(modes_app, name="modes")
 
 from aptdata.cli.commands.converse_cmd import converse_command  # noqa: E402
 from aptdata.cli.commands.setup_cmd import setup_command  # noqa: E402

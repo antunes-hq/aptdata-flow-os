@@ -155,17 +155,18 @@ aptdata mesh list [--dir DIR] [--json]
 aptdata mesh run COMPONENT [--dir DIR] [--dry-run] [--json]
 aptdata mesh build COMPONENT [--dir DIR] [--json]
 aptdata agents list [--file PATH] [--enabled] [--json]
-aptdata agents send AGENT_ID PROMPT [--file PATH] [--json]
-aptdata agents route TEXT [--file PATH] [--json]
-aptdata agents dispatch TEXT [--file PATH] [--json]
+aptdata agents send AGENT_ID PROMPT [--file PATH] [--mode MODE] [--dry-run] [--json]
+aptdata agents route TEXT [--file PATH] [--mode MODE] [--json]
+aptdata agents dispatch TEXT [--file PATH] [--mode MODE] [--dry-run] [--json]
 aptdata agents resolve CAPABILITY [--file PATH] [--json]
 aptdata project init NAME [--out PATH] [--json]
-aptdata project plan PROJECT_FILE [--file PATH] [--json]
-aptdata project run PROJECT_FILE [--file PATH] [--json]
+aptdata project plan PROJECT_FILE [--file PATH] [--mode MODE] [--json]
+aptdata project run PROJECT_FILE [--file PATH] [--mode MODE] [--dry-run] [--json]
 aptdata setup [--file PATH]            # wizard de diagnóstico + configuração
 aptdata setup --check [--json]         # diagnóstico não interativo (CI)
-aptdata converse TEXT [--session ID] [--file PATH] [--yes] [--json]
+aptdata converse TEXT [--session ID] [--file PATH] [--mode MODE] [--dry-run] [--yes] [--json]
 aptdata converse --confirm DECISION_ID [--choose AGENT] [--session ID]
+aptdata modes list [--json]            # descoberta dos 4 modos de execução
 aptdata telegram [--file PATH] [--token-env VAR]
 aptdata viz [--file PATH] [--host HOST] [--port PORT]
 aptdata obs summary [--json]
@@ -274,6 +275,42 @@ O token do Telegram **nunca é gravado em arquivo** — fica na env
 `TELEGRAM_BOT_TOKEN`; o `agents.yaml` guarda só o nome da variável. Depois do
 setup: `aptdata converse` (conversa headless), `aptdata viz` (painel + traço
 ao vivo), `aptdata telegram` (bot fino). Veja [docs/telegram.md](docs/telegram.md).
+
+---
+
+## Agent execution modes
+
+O aptdata executa em 4 modos canônicos (ADR-002 §2.3), todos expostos no
+CLI com `--mode` (default deduzido do comando ou de `.aptdata/agents.yaml`'s
+`default_mode`) e reportados no campo `mode` de toda saída `--json`:
+
+| Mode          | Descrição                          | Comando CLI                       |
+|---------------|------------------------------------|-----------------------------------|
+| `oneshot`     | Send único a um agente por id      | `aptdata agents send AGENT_ID PROMPT` |
+| `converse`    | Sessão multi-turno (route+confirm) | `aptdata converse TEXT`           |
+| `project`     | Plano de tarefas roteadas (depends_on) | `aptdata project run PROJECT_FILE` |
+| `orchestrated`| Roteamento multi-agente pelo Router | `aptdata agents dispatch TEXT`    |
+
+Todos os comandos de execução aceitam `--dry-run` (plan-only: mostra o que
+faria sem despachar nenhum `send()`) e `--json` (inclui o campo `mode`).
+`aptdata agents route` é o dry-run implícito do modo `orchestrated`.
+
+```bash
+aptdata modes list                      # descoberta: lista os 4 modos + comandos
+aptdata agents send zeca "oi" --dry-run # oneshot plan-only
+aptdata converse "mexer no frontend" --dry-run --json  # converse plan-only
+aptdata project run demo.project.yaml --dry-run         # project plan-only
+aptdata agents dispatch "deploy do painel" --dry-run   # orchestrated plan-only
+```
+
+Para fixar o modo default do projeto, declare em `.aptdata/agents.yaml`:
+
+```yaml
+# ADR-002 §2.3 — default do --mode em todos os comandos de execução.
+default_mode: orchestrated
+```
+
+Veja [CLI reference](docs/api/cli.md) para o contrato JSON de cada modo.
 
 ---
 

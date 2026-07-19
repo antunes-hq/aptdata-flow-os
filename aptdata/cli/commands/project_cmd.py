@@ -2,16 +2,20 @@
 
 ``aptdata project`` turns a declarative ``*.project.yaml`` into real work:
 scaffold one, preview how each task routes, then run it across agents.
+
+Execution mode: ``project`` (ADR-002 §2.3). ``--mode`` override + ``--dry-run``
+em ``run`` que mostra o plano sem executar (alias de ``plan``).
 """
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import typer
 
-from aptdata.cli.commands.agents_cmd import _resolve_file
+from aptdata.cli.commands.agents_cmd import _resolve_file, _resolve_mode
 from aptdata.cli.rendering.console import SmartConsole
 
 project_app = typer.Typer(name="project", help="Orchestrate projects across agents.")
@@ -61,22 +65,32 @@ def project_init(
 def project_plan(
     project_file: str = typer.Argument(..., help="Path to *.project.yaml."),
     file: str = typer.Option(None, "--file", "-f", help="Path to agents.yaml."),
+    mode: str = typer.Option(
+        None,
+        "--mode",
+        help=("ExecutionMode override. Default: project or .aptdata/ default_mode."),
+    ),
     json_mode: bool = typer.Option(False, "--json", help="Emit JSON lines."),
 ) -> None:
-    """Dry-run: show which agent each task routes to (nothing is sent)."""
+    """Dry-run: show which agent each task routes to (nothing is sent).
+
+    ``plan`` é o dry-run nativo do modo ``project`` — sempre plan-only.
+    """
     from aptdata.agents import ProjectRunner  # noqa: PLC0415
 
+    resolved_mode = _resolve_mode(file, mode, "project", "plan")
     project = _load_project(project_file)
     runner = ProjectRunner(project, _router(file))
     results = runner.plan()
 
     if json_mode:
-        print(
-            json.dumps(
-                {"project": project.name, "plan": [r.to_dict() for r in results]}
-            ),
-            flush=True,
-        )
+        payload: dict[str, Any] = {
+            "mode": str(resolved_mode),
+            "dry_run": True,
+            "project": project.name,
+            "plan": [r.to_dict() for r in results],
+        }
+        print(json.dumps(payload, ensure_ascii=False), flush=True)
         return
     print(f"📋 {project.name} — {len(results)} tasks")
     for r in results:
@@ -88,28 +102,61 @@ def project_plan(
 def project_run(
     project_file: str = typer.Argument(..., help="Path to *.project.yaml."),
     file: str = typer.Option(None, "--file", "-f", help="Path to agents.yaml."),
+    mode: str = typer.Option(
+        None,
+        "--mode",
+        help=(
+            "ExecutionMode override (oneshot | converse | project | "
+            "orchestrated). Default: project or .aptdata/ default_mode."
+        ),
+    ),
+    dry_run: bool = typer.Option(
+        False,
+        "--dry-run",
+        help="Plan-only: show the routed tasks without executing any send.",
+    ),
     json_mode: bool = typer.Option(False, "--json", help="Emit JSON lines."),
 ) -> None:
-    """Execute every task, routing and sending to the chosen agents."""
+    """Execute every task, routing and sending to the chosen agents.
+
+    Execution mode: ``project`` (default). ``--dry-run`` aliases ``plan``
+    (mesmo output, sem despachar nenhum send).
+    """
     from aptdata.agents import ProjectRunner  # noqa: PLC0415
 
+    resolved_mode = _resolve_mode(file, mode, "project", "run")
     project = _load_project(project_file)
     runner = ProjectRunner(project, _router(file))
+
+    if dry_run:
+        results = runner.plan()
+        if json_mode:
+            payload = {
+                "mode": str(resolved_mode),
+                "dry_run": True,
+                "project": project.name,
+                "plan": [r.to_dict() for r in results],
+            }
+            print(json.dumps(payload, ensure_ascii=False), flush=True)
+        else:
+            print(f"📋 [dry-run] {project.name} — {len(results)} tasks")
+            for r in results:
+                target = r.agent_id or "(sem rota)"
+                print(f"  {r.task_id:<12} → {target:<10} [{r.mode}]")
+        return
+
     results = runner.run()
     ok = sum(1 for r in results if r.ok)
 
     if json_mode:
-        print(
-            json.dumps(
-                {
-                    "project": project.name,
-                    "ok": ok,
-                    "total": len(results),
-                    "results": [r.to_dict() for r in results],
-                }
-            ),
-            flush=True,
-        )
+        payload = {
+            "mode": str(resolved_mode),
+            "project": project.name,
+            "ok": ok,
+            "total": len(results),
+            "results": [r.to_dict() for r in results],
+        }
+        print(json.dumps(payload, ensure_ascii=False), flush=True)
     else:
         print(f"▶ {project.name} — {ok}/{len(results)} ok")
         for r in results:

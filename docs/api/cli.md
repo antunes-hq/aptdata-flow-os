@@ -350,6 +350,51 @@ aptdata mesh run analytics-job --dry-run
 
 ---
 
+## Agent execution modes
+
+The aptdata CLI executes in **4 canonical modes** (ADR-002 §2.3), exposed on
+every execution command via `--mode` and reported in the `mode` field of
+every `--json` payload:
+
+| Mode          | Description                       | CLI command                          |
+|---------------|-----------------------------------|--------------------------------------|
+| `oneshot`     | Single `send` to an agent by id   | `aptdata agents send AGENT_ID PROMPT`|
+| `converse`    | Multi-turn session (route+confirm)| `aptdata converse TEXT`              |
+| `project`     | Routed task plan (`depends_on`)   | `aptdata project run PROJECT_FILE`   |
+| `orchestrated`| Multi-agent routing via `Router`  | `aptdata agents dispatch TEXT`       |
+
+`--mode` resolution: an explicit `--mode <value>` always wins; otherwise the
+default comes from `.aptdata/agents.yaml`'s `default_mode` (when set); otherwise
+the natural default of each command (`send`→`oneshot`, `converse`→`converse`,
+`project run`→`project`, `dispatch`/`route`→`orchestrated`).
+
+`--dry-run` (plan-only) is accepted by every execution command (`send`,
+`dispatch`, `converse`, `project run`): it shows the routing decision + target
+without calling `agent.send()`. `aptdata agents route` is the implicit dry-run
+of the `orchestrated` mode — it never sends.
+
+> The `ExecutionMode` (`mode`) is a separate axis from `RouteDecision.mode`
+> (`routing_mode`: `prefix`/`skill`/`llm`/`default`/`none`), `TaskResult.mode`
+> and `Turn.type` — those describe internal routing dimensions; `ExecutionMode`
+> describes the kind of execution the user asked aptdata to perform.
+
+```bash
+aptdata modes list                       # discover the 4 modes + matching CLI
+aptdata agents send zeca "oi" --dry-run  # oneshot plan-only
+aptdata converse "mexer no frontend" --dry-run --json   # converse plan-only
+aptdata project run demo.project.yaml --dry-run         # project plan-only
+aptdata agents dispatch "deploy do painel" --dry-run    # orchestrated plan-only
+```
+
+To fix the project's default mode, declare it in `.aptdata/agents.yaml`:
+
+```yaml
+# ADR-002 §2.3 — default of --mode across every execution command.
+default_mode: orchestrated
+```
+
+---
+
 ## `aptdata agents`
 
 Operate the multi-agent registry/router defined in `agents.yaml`
@@ -359,21 +404,28 @@ Operate the multi-agent registry/router defined in `agents.yaml`
 
 List registered agents (enabled first).
 
-### `aptdata agents send AGENT_ID PROMPT [--file PATH] [--json]`
+### `aptdata agents send AGENT_ID PROMPT [--file PATH] [--mode MODE] [--dry-run] [--json]`
 
-Send a prompt to a specific agent. JSON output is the full
-`AgentResponse`: `{ok, agent_id, text, error, raw}`. Failure exits 1.
+Send a prompt to a specific agent (execution mode: `oneshot`). JSON output
+adds `mode` to the full `AgentResponse`: `{mode, ok, agent_id, text, error, raw}`.
+`--dry-run` validates the agent exists and prints the planned send without
+dispatching (JSON: `{mode, dry_run, agent_id, prompt, ok, would_send}`).
+Failure exits 1.
 
-### `aptdata agents route TEXT [--file PATH] [--json]`
+### `aptdata agents route TEXT [--file PATH] [--mode MODE] [--json]`
 
 Show which agent *would* handle a prompt and why — prefix, skill, llm or
-default — without sending. JSON output is the `RouteDecision`:
-`{agent_id, mode, confidence, skill, matched_keyword, text}`.
+default — without sending (the implicit dry-run of the `orchestrated` mode).
+JSON output: `{mode, routing_mode, agent_id, confidence, skill, matched_keyword, text}`
+where `mode` is the `ExecutionMode` (`orchestrated` by default) and
+`routing_mode` is the `RouteDecision.mode` (`prefix`/`skill`/`llm`/`default`/`none`).
 
-### `aptdata agents dispatch TEXT [--file PATH] [--json]`
+### `aptdata agents dispatch TEXT [--file PATH] [--mode MODE] [--dry-run] [--json]`
 
-Route **and** send in one step. Exits 1 when no agent is available or the
-send fails.
+Route **and** send in one step (execution mode: `orchestrated`). JSON output
+adds `mode` + `routing_mode` to the `AgentResponse`: `{mode, routed_to, routing_mode, ok, agent_id, text, error, raw}`.
+`--dry-run` prints the `RouteDecision` without dispatching. Exits 1 when no
+agent is available or the send fails.
 
 ### `aptdata agents resolve CAPABILITY [--file PATH] [--json]`
 
@@ -383,27 +435,32 @@ Resolve the best enabled agent for a capability. No match prints
 ```bash
 aptdata agents route "mexer no frontend" --json
 aptdata agents dispatch "/zeca deploy do painel"
+aptdata agents dispatch "deploy do painel" --dry-run --json
 ```
 
 ---
 
 ## `aptdata project`
 
-Run multi-task projects (YAML) where every task is routed to an agent.
+Run multi-task projects (YAML) where every task is routed to an agent
+(execution mode: `project`).
 
 ### `aptdata project init NAME [--out PATH] [--json]`
 
 Scaffold a starter `NAME.project.yaml` (refuses to overwrite).
 
-### `aptdata project plan PROJECT_FILE [--file PATH] [--json]`
+### `aptdata project plan PROJECT_FILE [--file PATH] [--mode MODE] [--json]`
 
-Dry-run: show how each task would be routed, without sending.
+Dry-run: show how each task would be routed, without sending. JSON output:
+`{mode, dry_run, project, plan}` where each plan row is `{task_id, agent_id, mode, ok, ...}`.
+`plan` is always plan-only (the `dry_run` field is always `true` here).
 
-### `aptdata project run PROJECT_FILE [--file PATH] [--json]`
+### `aptdata project run PROJECT_FILE [--file PATH] [--mode MODE] [--dry-run] [--json]`
 
-Execute the project. JSON output is `{project, ok, total, results}` where
+Execute the project. JSON output is `{mode, project, ok, total, results}` where
 each result carries `{task_id, agent_id, mode, ok, text, skipped, error}`.
-Exits 1 when any task fails.
+`--dry-run` aliases `plan` (same payload, no send dispatched). Exits 1 when
+any task fails.
 
 ---
 
@@ -446,6 +503,24 @@ is required; `system.yaml` and `config.yaml` are optional (missing → warning).
 
 ---
 
+## `aptdata modes`
+
+Discover the 4 canonical execution modes (ADR-002 §2.3). Useful for
+onboarding: each mode lists its short description and matching CLI command.
+
+### `aptdata modes list [--json]`
+
+List the four modes — `oneshot`, `converse`, `project`, `orchestrated` —
+with description and the CLI command that maps to each. JSON output:
+`{modes: [{mode, short, description, cli_command}], count}`.
+
+```bash
+aptdata modes list          # text: one block per mode
+aptdata modes list --json   # machine-readable
+```
+
+---
+
 ## `aptdata setup`
 
 Diagnose and configure the aptdata ecosystem. The wizard shows every check
@@ -484,10 +559,10 @@ One conversation turn against the multi-agent ecosystem, via the
 `ConversationEngine` (route → dispatch / confirm / clarify per the policy in
 the `routing:` block of `agents.yaml`). Sessions are multi-turn ("continua"
 reuses the last agent) and persist under `~/.aptdata/sessions`
-(`$APTDATA_SESSIONS_DIR`).
+(`$APTDATA_SESSIONS_DIR`). Execution mode: `converse`.
 
 ```
-aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--yes] [--json]
+aptdata converse TEXT [--session/-s ID] [--file/-f PATH] [--mode MODE] [--dry-run] [--yes] [--json]
 aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
 ```
 
@@ -500,6 +575,10 @@ aptdata converse --confirm DECISION_ID [--choose AGENT] [--session/-s ID]
   confidence.
 - Every turn is recorded in the observability trace
   (`permission.requested`/`permission.resolved`, dispatches).
+- `--json` adds `mode` to the `Turn` payload: `{mode, type, text, decision, response, candidates, decision_id}`.
+- `--dry-run` shows the `RouteDecision` and the `DecisionPolicy.decide()`
+  outcome (`action`: `dispatch`/`confirm`/`clarify`) without dispatching or
+  persisting a session. JSON: `{mode, dry_run, action, decision, session}`.
 
 ```bash
 aptdata converse "mexer no frontend" --json         # dispatch direto

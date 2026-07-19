@@ -61,6 +61,11 @@ routing:
   dispatch_above: 0.75
   guarded_capabilities: [deploy, ssh, docker, ops]
 transports: {}
+# ADR-002 §2.3 — modo de execução canônico do projeto. Quando setado, é o
+# default do --mode em todos os comandos de execução do CLI (oneshot |
+# converse | project | orchestrated). Omita para usar o default de cada
+# comando (send=oneshot, converse=converse, project run=project, dispatch=orchestrated).
+# default_mode: oneshot
 """
 
 _STARTER_CONFIG_YAML = """\
