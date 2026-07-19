@@ -22,6 +22,13 @@ from aptdata.agents.conversation import (
     SessionStore,
     Turn,
 )
+from aptdata.agents.modes import (
+    MODE_DOCS,
+    ExecutionMode,
+    ModeDoc,
+    mode_for_command,
+    resolve_mode,
+)
 from aptdata.agents.openclaw import OpenClawAgent
 from aptdata.agents.project import (
     Project,
@@ -45,7 +52,10 @@ __all__ = [
     "ClaudeCodeAgent",
     "ConversationEngine",
     "DecisionPolicy",
+    "ExecutionMode",
     "IAgent",
+    "MODE_DOCS",
+    "ModeDoc",
     "SessionStore",
     "Turn",
     "OpenClawAgent",
@@ -57,5 +67,7 @@ __all__ = [
     "Skill",
     "Task",
     "TaskResult",
+    "mode_for_command",
+    "resolve_mode",
     "scaffold_project",
 ]

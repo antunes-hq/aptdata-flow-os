@@ -21,6 +21,7 @@ from pydantic import BaseModel, Field, TypeAdapter
 
 from aptdata.agents.base import AgentSpec
 from aptdata.agents.conversation import DecisionPolicy
+from aptdata.agents.modes import ExecutionMode
 from aptdata.agents.router import Skill
 from aptdata.config.parser import ParsedConfig
 
@@ -36,6 +37,11 @@ class AgentsFile(BaseModel):
     (``skills:``) and the routing policy thresholds (``routing:``). The JSON
     Schema generated from this model is what ``aptdata doctor`` validates
     the file against.
+
+    ``default_mode`` (ADR-002 §2.3) — quando setado, é o modo de execução
+    canônico do projeto: um ``--mode`` omitido em qualquer comando de execução
+    do CLI cai nele (ex.: ``default_mode: orchestrated`` faz ``aptdata
+    converse`` sem ``--mode`` reportar ``mode: orchestrated`` no ``--json``).
     """
 
     model_config = {"extra": "forbid"}
@@ -44,6 +50,14 @@ class AgentsFile(BaseModel):
     skills: list[Skill] = Field(default_factory=list)
     routing: DecisionPolicy = Field(default_factory=DecisionPolicy)
     transports: dict[str, Any] = Field(default_factory=dict)
+    default_mode: ExecutionMode | None = Field(
+        default=None,
+        description=(
+            "Modo de execução canônico do projeto (oneshot | converse | "
+            "project | orchestrated). Quando setado, é o default do --mode "
+            "em todos os comandos de execução do CLI."
+        ),
+    )
 
 
 # ---------------------------------------------------------------------------

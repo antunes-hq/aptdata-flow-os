@@ -26,10 +26,13 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import yaml
 from pydantic import BaseModel, ConfigDict
+
+if TYPE_CHECKING:
+    from aptdata.agents.modes import ExecutionMode
 
 logger = logging.getLogger(__name__)
 
@@ -191,6 +194,32 @@ def load_yaml_file(path: Path) -> Any:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
+def load_default_mode(agents_yaml: Path) -> ExecutionMode | None:
+    """Lê só o campo ``default_mode`` de um ``.aptdata/agents.yaml``.
+
+    Lê o YAML cru (sem instanciar :class:`~aptdata.config.schema.AgentsFile`)
+    para evitar validar specs inteiros quando o caller só quer saber o modo
+    default do projeto. Retorna ``None`` quando o arquivo não existe ou
+    o campo não está presente.
+
+    Usado pelo CLI para resolver o ``--mode`` default de cada comando de
+    execução (ADR-002 §2.3).
+    """
+    if not agents_yaml.is_file():
+        return None
+    # Import local: o módulo modes só precisa entrar no runtime quando alguém
+    # pergunta pelo default — evita ciclo import-time entre config/ e agents/.
+    from aptdata.agents.modes import ExecutionMode  # noqa: PLC0415
+
+    raw = load_yaml_file(agents_yaml)
+    if not isinstance(raw, dict):
+        return None
+    value = raw.get("default_mode")
+    if value is None:
+        return None
+    return ExecutionMode.from_str(value)
+
+
 __all__ = [
     "APTDATA_DIR_NAME",
     "LEGACY_TO_DOTDIR",
@@ -198,6 +227,7 @@ __all__ = [
     "ProjectNotFoundError",
     "SCHEMA_FILES",
     "detect_legacy_files",
+    "load_default_mode",
     "load_yaml_file",
     "locate_project",
     "locate_project_optional",
