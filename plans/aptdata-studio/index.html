@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://strondata.github.io/smart-data/plans/aptdata-viz/">
+        <link rel="canonical" href="https://strondata.github.io/smart-data/plans/aptdata-studio/">
       
       
       
@@ -23,7 +23,7 @@
     
     
       
-        <title>Plano — aptdata-viz (camada de visualização do aptdata) - aptdata</title>
+        <title>Plano — aptdata studio (camada de visualização do aptdata) - aptdata</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#plano-aptdata-viz-camada-de-visualizacao-do-aptdata" class="md-skip">
+        <a href="#plano-aptdata-studio-camada-de-visualizacao-do-aptdata" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Plano — aptdata-viz (camada de visualização do aptdata)
+              Plano — aptdata studio (camada de visualização do aptdata)
             
           </span>
         </div>
@@ -1403,7 +1403,7 @@
   
 
 
-<h1 id="plano-aptdata-viz-camada-de-visualizacao-do-aptdata">Plano — aptdata-viz (camada de visualização do aptdata)<a class="headerlink" href="#plano-aptdata-viz-camada-de-visualizacao-do-aptdata" title="Permanent link">&para;</a></h1>
+<h1 id="plano-aptdata-studio-camada-de-visualizacao-do-aptdata">Plano — aptdata studio (camada de visualização do aptdata)<a class="headerlink" href="#plano-aptdata-studio-camada-de-visualizacao-do-aptdata" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Status: Fases 1–2 entregues (API + view ecossistema); Fase 4 parcial
 (<code>/api/observability</code> real + <code>/api/events</code> SSE + feed ao vivo no painel
@@ -1417,10 +1417,10 @@ espalhado (TUI monitor + painel multiverso) sobre uma única API de dados.</p>
 <li><strong>Painel multiverso</strong> (<code>multiverso/</code>): FastAPI (<code>vps-api.py</code>) + <code>painel.html</code> (vanilla JS). Já lê <code>docker.sock</code> (status de container), <code>multiverso.json</code>/DEFAULT_CONFIG (bots VPS+locais: nome/modelo/handle/capabilities/tipo) e devlog/sessao. É o dashboard do ecossistema de bots.</li>
 <li><strong>aptdata/mcp/server.py</strong>: expõe <code>list_agents</code>, <code>dispatch</code>, <code>run_flow</code> (+ ~5 tools).</li>
 <li><strong>aptdata/observability/llm_observer.py</strong>: <code>get_observability_summary</code> → <code>total_calls, total_tokens, total_cost_usd, avg_latency_ms, by_routine[], recent[]</code>.</li>
-<li><strong>aptdata/tui/monitor.py</strong>: <code>_DAGPanel</code> (grafo do flow), <code>_StatusTable</code> (status por step), barra de memória — já é uma "viz" no terminal.</li>
+<li><strong>aptdata/tui/monitor.py</strong>: <code>_DAGPanel</code> (grafo do flow), <code>_StatusTable</code> (status por step), barra de memória — já é uma "studio" no terminal.</li>
 <li><strong>Planos irmãos</strong> (dependências): <code>observability.md</code> (Observer no-throw + event store SQLite + correlação <code>run_id</code> System→Flow→Component e Router→Agent→Task) e <code>telegram-orchestration.md</code> (ConversationEngine/decisões).</li>
 </ul>
-<p><strong>Princípio:</strong> aptdata-viz é <strong>consumidor</strong>, não dono de lógica. Zero regra de negócio no viz — ele só lê a mesma fonte da observability e do registry e renderiza. Absorve o painel multiverso e espelha a TUI (paridade web).</p>
+<p><strong>Princípio:</strong> aptdata studio é <strong>consumidor</strong>, não dono de lógica. Zero regra de negócio no studio — ele só lê a mesma fonte da observability e do registry e renderiza. Absorve o painel multiverso e espelha a TUI (paridade web).</p>
 <h2 id="views-o-que-visualizar">Views (o que visualizar)<a class="headerlink" href="#views-o-que-visualizar" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Ecossistema de agentes</strong> (absorve o painel multiverso) — registry (<code>list_agents</code>/<code>agents.yaml</code>): agente, tipo, location, capabilities, <strong>modelo</strong>, health, e a <strong>decisão de roteamento</strong> do Router (mode/skill/confidence — por que caiu naquele agente). Valor imediato, não depende de observability completa.</li>
@@ -1431,17 +1431,17 @@ espalhado (TUI monitor + painel multiverso) sobre uma única API de dados.</p>
 </ol>
 <h2 id="arquitetura">Arquitetura<a class="headerlink" href="#arquitetura" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Backend</strong>: novo módulo <code>aptdata/viz/</code> — servidor (FastAPI, já usado no multiverso; ou stdlib pra manter leve) expondo API de LEITURA:</li>
+<li><strong>Backend</strong>: novo módulo <code>aptdata/studio/</code> — servidor (FastAPI, já usado no multiverso; ou stdlib pra manter leve) expondo API de LEITURA:</li>
 <li><code>GET /api/flows</code> (grafo), <code>GET /api/runs</code>, <code>GET /api/runs/{id}/trace</code>, <code>GET /api/agents</code>, <code>GET /api/observability</code>, <code>GET /api/events</code> (<strong>SSE</strong> ao vivo).</li>
 <li>Fonte: o <strong>event store da observability.md</strong> (SQLite) + o registry do MCP. Ao vivo via <strong>SSE</strong> plugado no EventBus (backbone da observability).</li>
-<li>CLI: <code>aptdata viz</code> sobe o servidor (paridade com <code>aptdata monitor</code> da TUI).</li>
-<li><strong>Frontend</strong>: single-page <strong>vanilla JS</strong> (mesmo estilo leve do painel/Aconchego, sem build), DAG com <strong>Mermaid</strong> ou <strong>vis-network</strong> via CDN, live via <strong>EventSource (SSE)</strong>. Uma viz, dois frontends (TUI no terminal + web no browser) sobre a MESMA API.</li>
-<li><strong>Deploy</strong>: Docker na VPS atrás do Traefik (como o painel), domínio <code>aptdata-viz.srv1723096.hstgr.cloud</code> — <strong>substitui</strong> o multiverso painel a médio prazo.</li>
+<li>CLI: <code>aptdata studio</code> sobe o servidor (paridade com <code>aptdata monitor</code> da TUI).</li>
+<li><strong>Frontend</strong>: single-page <strong>vanilla JS</strong> (mesmo estilo leve do painel/Aconchego, sem build), DAG com <strong>Mermaid</strong> ou <strong>vis-network</strong> via CDN, live via <strong>EventSource (SSE)</strong>. Um studio, dois frontends (TUI no terminal + web no browser) sobre a MESMA API.</li>
+<li><strong>Deploy</strong>: Docker na VPS atrás do Traefik (como o painel), domínio <code>aptdata-studio.srv1723096.hstgr.cloud</code> — <strong>substitui</strong> o multiverso painel a médio prazo.</li>
 </ul>
 <h2 id="fases-cada-uma-entregavel">Fases (cada uma entregável)<a class="headerlink" href="#fases-cada-uma-entregavel" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Contrato de dados</strong> — definir as shapes da API de leitura (flows/runs/traces/agents/observability + evento SSE). Pré-req: observability.md Fase 1–3 (Observer + persistência + <code>run_id</code>).</li>
-<li><strong>Backend read API</strong> (<code>aptdata/viz</code>, FastAPI) sobre o event store + registry MCP. CLI <code>aptdata viz</code>. Deploy Docker/Traefik.</li>
+<li><strong>Backend read API</strong> (<code>aptdata/studio</code>, FastAPI) sobre o event store + registry MCP. CLI <code>aptdata studio</code>. Deploy Docker/Traefik.</li>
 <li><strong>View Ecossistema de agentes</strong> (absorve o painel) — agentes/health/capabilities/modelo + decisão de roteamento. <strong>Primeiro a entregar</strong> (não depende de observability completa).</li>
 <li><strong>View Flow DAG</strong> ao vivo (status por nó) — paridade web da TUI.</li>
 <li><strong>View Observabilidade</strong> (custo/tokens/latência/erros por routine/agente + alertas).</li>
@@ -1453,7 +1453,7 @@ espalhado (TUI monitor + painel multiverso) sobre uma única API de dados.</p>
 <li><strong>Não forkar</strong>: absorver o painel multiverso, reusar o event store da observability, espelhar a TUI. Uma fonte de dados só.</li>
 <li><strong>Dependência forte da observability.md</strong>: as views 3/4/5 (DAG live, obs, trace) precisam do <code>run_id</code> e do event store. A view 2 (ecossistema) ship primeiro, standalone.</li>
 <li><strong>Stack leve</strong> (vanilla JS + CDN) casa com o resto do ecossistema (painel/Aconchego são vanilla) e evita build.</li>
-<li><strong>Fable 5</strong>: o viz é agnóstico de modelo, mas expõe o <code>modelo</code> por agente — útil pra ver quem está no <code>claude-fable-5</code> no teste de fluxo geral.</li>
+<li><strong>Fable 5</strong>: o studio é agnóstico de modelo, mas expõe o <code>modelo</code> por agente — útil pra ver quem está no <code>claude-fable-5</code> no teste de fluxo geral.</li>
 </ul>
 <h2 id="ordem-recomendada">Ordem recomendada<a class="headerlink" href="#ordem-recomendada" title="Permanent link">&para;</a></h2>
 <p>Fase 1 (API) + Fase 2 (ecossistema, valor imediato substituindo o painel) → depois plugar nas fases da observability.md conforme ela entrega <code>run_id</code>/event store (Fases 3–5) → Console (Fase 6).</p>

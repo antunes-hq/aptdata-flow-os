@@ -1530,7 +1530,7 @@
 </table>
 <hr />
 <h2 id="templates-disponiveis">Templates Disponíveis<a class="headerlink" href="#templates-disponiveis" title="Permanent link">&para;</a></h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:8"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><input id="__tabbed_1_6" name="__tabbed_1" type="radio" /><input id="__tabbed_1_7" name="__tabbed_1" type="radio" /><input id="__tabbed_1_8" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">hello-world (Default)</label><label for="__tabbed_1_2">medallion</label><label for="__tabbed_1_3">rag-ingestion</label><label for="__tabbed_1_4">data-quality-test</label><label for="__tabbed_1_5">job-wheel</label><label for="__tabbed_1_6">docker-compose-app</label><label for="__tabbed_1_7">viz-panel</label><label for="__tabbed_1_8">dashboard</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:8"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><input id="__tabbed_1_6" name="__tabbed_1" type="radio" /><input id="__tabbed_1_7" name="__tabbed_1" type="radio" /><input id="__tabbed_1_8" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">hello-world (Default)</label><label for="__tabbed_1_2">medallion</label><label for="__tabbed_1_3">rag-ingestion</label><label for="__tabbed_1_4">data-quality-test</label><label for="__tabbed_1_5">job-wheel</label><label for="__tabbed_1_6">docker-compose-app</label><label for="__tabbed_1_7">studio-panel</label><label for="__tabbed_1_8">dashboard</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Pipeline minimalista em Pandas. Lê um JSON, aplica uma transformação simples e salva um CSV. Ideal para testes iniciais.</p>
@@ -1585,10 +1585,10 @@
 <div class="tabbed-block">
 <p>Painel web <strong>fino</strong> com o design system aptdata (sem build, sem CDN):
 cards de agentes com badges de status (dot + texto — cor nunca carrega o
-estado sozinha), consumindo uma API de leitura no padrão do aptdata-viz
+estado sozinha), consumindo uma API de leitura no padrão do aptdata studio
 (<code>/api/agents</code>, <code>/api/health</code>). <code>assets/tokens.css</code> é a fonte única de
 design (claro + escuro), com paleta validada para daltonismo/contraste.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>meu_painel<span class="w"> </span>--template<span class="w"> </span>viz-panel
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>meu_painel<span class="w"> </span>--template<span class="w"> </span>studio-panel
 </span></code></pre></div>
 <p><strong>Arquivos Gerados:</strong>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>meu_painel/
@@ -1604,7 +1604,7 @@ design (claro + escuro), com paleta validada para daltonismo/contraste.</p>
 finas, topo arredondado na baseline, label direto seletivo, tooltip no
 hover, 1 série sem legenda) e <strong>tabela acessível</strong> dos mesmos dados —
 tudo renderizado de um <code>data.json</code> (zero lógica no frontend). Compartilha
-os MESMOS tokens do <code>viz-panel</code>.</p>
+os MESMOS tokens do <code>studio-panel</code>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aptdata<span class="w"> </span>scaffold<span class="w"> </span>meu_dash<span class="w"> </span>--template<span class="w"> </span>dashboard
 </span></code></pre></div>
 <p><strong>Arquivos Gerados:</strong>

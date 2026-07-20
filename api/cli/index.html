@@ -1845,10 +1845,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#aptdata-viz" class="md-nav__link">
+  <a href="#aptdata-studio" class="md-nav__link">
     <span class="md-ellipsis">
       
-        aptdata viz
+        aptdata studio
       
     </span>
   </a>
@@ -2713,7 +2713,7 @@ the <code>TELEGRAM_BOT_TOKEN</code> env var, <strong>never in a file</strong> (t
 </span></code></pre></div>
 <p><code>--check</code> reports: <code>agents_file</code><em>, <code>router</code></em> (agents/skills carregados),
 <code>routing_policy</code>, <code>telegram_token</code>, <code>telegram_transport</code>, <code>observability</code>,
-<code>viz</code> (* = obrigatórios para o exit 0). See <a href="../../telegram/">Telegram</a>.</p>
+<code>studio</code> (* = obrigatórios para o exit 0). See <a href="../../telegram/">Telegram</a>.</p>
 <hr />
 <h2 id="aptdata-telegram"><code>aptdata telegram</code><a class="headerlink" href="#aptdata-telegram" title="Permanent link">&para;</a></h2>
 <p>Run the thin Telegram transport (long-polling) over the ConversationEngine —
@@ -2752,13 +2752,13 @@ reuses the last agent) and persist under <code>~/.aptdata/sessions</code>
 </span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>aptdata<span class="w"> </span>converse<span class="w"> </span>--confirm<span class="w"> </span>1a2b3c4d<span class="w"> </span>-s<span class="w"> </span>ops<span class="w">          </span><span class="c1"># aprova e despacha</span>
 </span></code></pre></div>
 <hr />
-<h2 id="aptdata-viz"><code>aptdata viz</code><a class="headerlink" href="#aptdata-viz" title="Permanent link">&para;</a></h2>
-<p>Serve the aptdata-viz web view of the agent ecosystem (read-only API +
+<h2 id="aptdata-studio"><code>aptdata studio</code><a class="headerlink" href="#aptdata-studio" title="Permanent link">&para;</a></h2>
+<p>Serve the aptdata studio web view of the agent ecosystem (read-only API +
 thin frontend). Endpoints: <code>/api/agents</code>, <code>/api/health</code>, <code>/api/route?text=</code>
 (503 on router failure), <code>/api/observability</code> (event-store summary) and
 <code>/api/events</code> — live <strong>SSE</strong> feed of the observability trace
 (<code>?backlog=N</code> replays the last N events on connect).</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>aptdata viz [--file PATH] [--host HOST] [--port PORT]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>aptdata studio [--file PATH] [--host HOST] [--port PORT]
 </span></code></pre></div>
 <table>
 <thead>

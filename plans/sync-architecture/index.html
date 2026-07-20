@@ -23,7 +23,7 @@
     
     
       
-        <title>Sincronização CLI ↔ viz ↔ UI ↔ docs — north star + working agreement - aptdata</title>
+        <title>Sincronização CLI ↔ studio ↔ UI ↔ docs — north star + working agreement - aptdata</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sincronizacao-cli-viz-ui-docs-north-star-working-agreement" class="md-skip">
+        <a href="#sincronizacao-cli-studio-ui-docs-north-star-working-agreement" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sincronização CLI ↔ viz ↔ UI ↔ docs — north star + working agreement
+              Sincronização CLI ↔ studio ↔ UI ↔ docs — north star + working agreement
             
           </span>
         </div>
@@ -1403,22 +1403,22 @@
   
 
 
-<h1 id="sincronizacao-cli-viz-ui-docs-north-star-working-agreement">Sincronização CLI ↔ viz ↔ UI ↔ docs — north star + working agreement<a class="headerlink" href="#sincronizacao-cli-viz-ui-docs-north-star-working-agreement" title="Permanent link">&para;</a></h1>
+<h1 id="sincronizacao-cli-studio-ui-docs-north-star-working-agreement">Sincronização CLI ↔ studio ↔ UI ↔ docs — north star + working agreement<a class="headerlink" href="#sincronizacao-cli-studio-ui-docs-north-star-working-agreement" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Brief de direção para agentes trabalhando neste repositório. A meta não é só
-"não ter bug": é ter <strong>tecnologia suficiente para manter CLI, viz, UI e docs
+"não ter bug": é ter <strong>tecnologia suficiente para manter CLI, studio, UI e docs
 sincronizados</strong> a partir de uma fonte única — que uma mudança na fonte se
 propague (ou quebre o CI) em todas as superfícies.</p>
 </blockquote>
 <h2 id="1-north-star">1. North star<a class="headerlink" href="#1-north-star" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Uma fonte única de verdade por domínio.</strong> CLI, viz, UI e docs são <strong>projeções</strong>
+<li><strong>Uma fonte única de verdade por domínio.</strong> CLI, studio, UI e docs são <strong>projeções</strong>
   dessa fonte, nunca cópias que divergem. (Ecoa o problema dos "3 registros
   divergentes" que o <code>agents.yaml</code> resolveu — não recriar essa dor em outra camada.)</li>
 <li><strong>Contrato antes de superfície.</strong> Os shapes canônicos (<code>AgentSpec</code>, <code>RouteDecision</code>,
-  os payloads da API do viz, os eventos de observabilidade) são o contrato. Toda
+  os payloads da API do studio, os eventos de observabilidade) são o contrato. Toda
   superfície lê o MESMO contrato — não redefine.</li>
-<li><strong>Sincronização é verificável.</strong> Divergência entre código, CLI, viz e docs deve
+<li><strong>Sincronização é verificável.</strong> Divergência entre código, CLI, studio e docs deve
   <strong>falhar o CI</strong>, não passar silenciosa. "Docs drift" é bug.</li>
 </ul>
 <h2 id="2-as-camadas-e-como-se-ligam">2. As camadas (e como se ligam)<a class="headerlink" href="#2-as-camadas-e-como-se-ligam" title="Permanent link">&para;</a></h2>
@@ -1427,12 +1427,12 @@ propague (ou quebre o CI) em todas as superfícies.</p>
 <li><strong>aptdata (núcleo)</strong>: System/Flow/Component, <code>agents/</code> (Registry/Router/Project),
   MCP, observability.</li>
 <li><strong>CLI</strong> (<code>aptdata/cli</code>): projeção operável do núcleo. Todo comando com <code>--json</code>.</li>
-<li><strong>viz/UI</strong> (<code>aptdata/viz</code>): projeção visual — API de leitura (contrato) + frontends
+<li><strong>studio/UI</strong> (<code>aptdata/studio</code>): projeção visual — API de leitura (contrato) + frontends
   finos (web + TUI) que só consomem. Adicionar view = endpoint + consumidor, sem
   duplicar lógica.</li>
 <li><strong>docs</strong> (<code>docs/**</code>, docstrings, README): projeção textual — deve refletir o código
   atual, com exemplos que rodam.</li>
-<li>Planos vivos em <code>docs/plans/</code>: observability, cli-tdd, telegram-orchestration, aptdata-viz.</li>
+<li>Planos vivos em <code>docs/plans/</code>: observability, cli-tdd, telegram-orchestration, aptdata-studio.</li>
 </ul>
 <h2 id="3-tdd-disciplina-inegociavel">3. TDD (disciplina inegociável)<a class="headerlink" href="#3-tdd-disciplina-inegociavel" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1449,10 +1449,10 @@ propague (ou quebre o CI) em todas as superfícies.</p>
   <code>tests/test_cli_agents_cmd.py</code> — <code>monkeypatch</code> em <code>OpenClawAgent.send</code>).</li>
 <li><strong>Um comportamento por teste</strong>, com assert claro; nome que diz o que garante.</li>
 </ul>
-<h2 id="5-painel-vizui-bem-definido-e-escalavel">5. Painel (viz/UI) bem definido e escalável<a class="headerlink" href="#5-painel-vizui-bem-definido-e-escalavel" title="Permanent link">&para;</a></h2>
+<h2 id="5-painel-studioui-bem-definido-e-escalavel">5. Painel (studio/UI) bem definido e escalável<a class="headerlink" href="#5-painel-studioui-bem-definido-e-escalavel" title="Permanent link">&para;</a></h2>
 <ul>
-<li>A <strong>API de leitura do viz é o contrato</strong>; os frontends (web/TUI) são clientes finos.</li>
-<li><strong>Zero lógica de negócio no viz</strong> — ele lê a mesma fonte (registry/observability) e
+<li>A <strong>API de leitura do studio é o contrato</strong>; os frontends (web/TUI) são clientes finos.</li>
+<li><strong>Zero lógica de negócio no studio</strong> — ele lê a mesma fonte (registry/observability) e
   renderiza. Escala adicionando view = endpoint + consumidor.</li>
 <li>Uma view nova só entra com: contrato do endpoint + teste do endpoint + consumidor.</li>
 </ul>

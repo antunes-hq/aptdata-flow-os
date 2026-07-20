@@ -1671,7 +1671,7 @@ um modelo de orquestração no qual (a) qualquer framework/ferramenta pluga por 
 </tr>
 <tr>
 <td>Camada web</td>
-<td><code>aptdata viz</code> já no CLI (<code>aptdata/viz/static/</code>); o plano de viz já a define como consumidora que absorve o painel</td>
+<td><code>aptdata studio</code> já no CLI (<code>aptdata/studio/static/</code>); o plano do studio já a define como consumidora que absorve o painel</td>
 <td>os dashboards ainda não convergiram</td>
 </tr>
 <tr>
@@ -1748,7 +1748,7 @@ que já existem — cada modo com entrada clara no CLI e no <code>.aptdata/</cod
 <p>Isso responde diretamente ao pedido de "colocar alguns modos de agente, como é executado": os modos
 deixam de ser conhecimento implícito no código e viram vocabulário de primeira classe.</p>
 <h3 id="24-cli-como-produto">2.4. CLI como produto<a class="headerlink" href="#24-cli-como-produto" title="Permanent link">&para;</a></h3>
-<p>O surface do CLI já é amplo (<code>run</code>, <code>agents</code>, <code>project</code>, <code>mesh</code>, <code>converse</code>, <code>mcp</code>, <code>obs</code>, <code>viz</code>, …).
+<p>O surface do CLI já é amplo (<code>run</code>, <code>agents</code>, <code>project</code>, <code>mesh</code>, <code>converse</code>, <code>mcp</code>, <code>obs</code>, <code>studio</code>, …).
 Fechar as pontas que faltam para tratá-lo como produto completo:</p>
 <ul>
 <li><code>aptdata init</code> — cria o <code>.aptdata/</code> do projeto a partir de um template.</li>
@@ -1782,11 +1782,11 @@ um só espaço de trabalho:</p>
 <p>A lógica de negócio (registries, orquestração, observabilidade) vive <strong>só no núcleo</strong>. As camadas de
 cima são consumidoras da superfície de leitura do <code>aptdata</code>:</p>
 <ul>
-<li><strong>Camada web (o repo hoje chamado <code>aptdata-viz</code>)</strong> passa a ser a <strong>única</strong> superfície web —
+<li><strong>Camada web (historicamente <code>aptdata-viz</code>)</strong> passa a ser a <strong>única</strong> superfície web —
   consumidora da read-API do <code>aptdata</code> (event store da observability + registry via MCP; ao vivo via
-  SSE plugado no <code>EventBus</code>), <strong>absorvendo os dashboards existentes</strong> num só. Como o escopo cresceu
-  além de "visualização", o nome "viz" fica apertado; sugere-se renome (ex.: <code>aptdata-console</code> /
-  <code>aptdata-hub</code> / <code>aptdata-studio</code>) — a decisão de nome fica para a revisão.</li>
+  SSE plugado no <code>EventBus</code>), <strong>absorvendo os dashboards existentes</strong> num só. O rename para
+  <code>aptdata studio</code> foi implementado no PR4 (2026-07-19): módulo <code>aptdata/viz/</code> → <code>aptdata/studio/</code>,
+  comando <code>aptdata viz</code> → <code>aptdata studio</code>, template <code>viz-panel</code> → <code>studio-panel</code>.</li>
 <li><strong>O Lab (<code>ai-labs</code>)</strong> segue como fábrica de kits + o <code>lab</code> CLI; seu painel deixa de ser dono da
   lógica de agentes/observabilidade e passa a <strong>consumir o <code>aptdata</code> como biblioteca</strong> (ou é
   absorvido pela camada web). O <code>agents.yaml</code> do Lab converge no formato de <code>.aptdata/agents.yaml</code>.</li>

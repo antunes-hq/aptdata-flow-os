@@ -1540,7 +1540,7 @@
 <p>O aptdata grava um <strong>traço de eventos</strong> de tudo que acontece na orquestração
 multi-agente: por que o Router escolheu um agente, quando um prompt saiu,
 quanto demorou a resposta, quando um app subiu. O traço é a <strong>fonte única</strong>
-que todas as superfícies leem — CLI (<code>aptdata obs</code>), viz e TUI — seguindo a
+que todas as superfícies leem — CLI (<code>aptdata obs</code>), studio e TUI — seguindo a
 north star de sincronização (<code>docs/plans/sync-architecture.md</code>).</p>
 <h2 id="como-funciona">Como funciona<a class="headerlink" href="#como-funciona" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1582,12 +1582,12 @@ mesmo <code>run_id</code>:</p>
 <tbody>
 <tr>
 <td><code>app.started</code></td>
-<td>viz (e demais apps ao subir)</td>
+<td>studio (e demais apps ao subir)</td>
 <td><code>{app, host, port}</code></td>
 </tr>
 <tr>
 <td><code>routing.decision</code></td>
-<td><code>Router.route()</code> — toda superfície (CLI, viz, MCP, projects)</td>
+<td><code>Router.route()</code> — toda superfície (CLI, studio, MCP, projects)</td>
 <td><code>RouteDecision</code> completo: <code>{agent_id, mode, confidence, skill, matched_keyword, text}</code></td>
 </tr>
 <tr>
@@ -1616,12 +1616,12 @@ mesmo <code>run_id</code>:</p>
 </span></code></pre></div>
 </li>
 <li>
-<p><strong>viz (web)</strong>: <code>GET /api/observability</code> devolve o <code>summary()</code>; o painel
+<p><strong>studio (web)</strong>: <code>GET /api/observability</code> devolve o <code>summary()</code>; o painel
   mostra o <strong>traço ao vivo</strong> via <code>GET /api/events</code> (<strong>SSE</strong>, <code>?backlog=N</code>
   reemite os últimos N ao conectar) — sem polling.</p>
 </li>
 <li><strong>TUI</strong> (<code>aptdata monitor</code>): a aba <em>Agent Trace</em> lê incrementalmente o
-  mesmo store (cursor <code>Observer.since</code>), com paridade ao feed do viz.</li>
+  mesmo store (cursor <code>Observer.since</code>), com paridade ao feed do studio.</li>
 </ul>
 <h2 id="configuracao">Configuração<a class="headerlink" href="#configuracao" title="Permanent link">&para;</a></h2>
 <table>
@@ -1646,7 +1646,7 @@ mesmo <code>run_id</code>:</p>
 <ul>
 <li><strong>No-throw</strong>: <code>Observer.emit()</code> engole qualquer erro (payload não
   serializável, disco cheio, store quebrado) e loga em <code>DEBUG</code>.</li>
-<li><strong>Thread-safe</strong>: o store serializa escritas/leituras com lock (o viz é
+<li><strong>Thread-safe</strong>: o store serializa escritas/leituras com lock (o studio é
   thread-per-request).</li>
 <li><strong>Isolado em testes</strong>: a suite aponta <code>APTDATA_OBS_DB</code> para um banco
   temporário (fixture autouse em <code>tests/conftest.py</code>).</li>
