@@ -55,6 +55,11 @@ Flow OS
 │   ├── My Universe / Nuvem planetary PWA
 │   ├── capture · timeline · constellation · galaxies
 │   └── resume-oriented spatial navigation
+├── Delivery Layer
+│   ├── Telegram event notifier
+│   ├── durable outbox
+│   ├── browser session grants
+│   └── deep links to runs/evidence
 ├── Semantic Layer
 │   ├── ontology
 │   ├── capability registry
@@ -284,6 +289,21 @@ Gate:
 - o ledger não copia bancos de domínio: mantém referências/projeções.
 - o My Universe renderiza a projeção sem perder a experiência planetária;
 - uma estrela/planeta consegue abrir o WorkPacket e voltar à origem.
+
+Entrega de acompanhamento:
+
+- envelope de eventos por `run_id`;
+- outbox durável para Telegram;
+- notificações de início, checkpoint, bloqueio, aprovação e encerramento;
+- Browser Session Grant temporário e one-shot para abrir o run no navegador;
+- link profundo My Universe/flow-viz com escopo read-only por padrão.
+
+Gate de entrega:
+
+- falha do Telegram não perde o evento;
+- nenhuma mensagem contém segredo ou token de infraestrutura;
+- grant expira, é revogável e não é repassado a upstream;
+- navegador revalida `workspace_id`, `run_id` e scopes no servidor.
 
 ### Fase 4 — Hygiene e governança
 

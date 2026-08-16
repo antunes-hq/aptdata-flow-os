@@ -52,6 +52,7 @@ retired
 | F0.4 | 0 | Fronteira SDK + Control Plane + MCP + Runner e security threat model inicial | verified | `docs/decisions/0002-sdk-api-mcp-cloud-boundary.md` | contrato versionado; MCP atual explicitamente não aprovado como gateway cloud | transformar em WorkPacket de implementação |
 | F1.0 | 1 | Context Kernel + Translation Layer + Semantic Layer + SquadDefinition agnóstica de executor + pool/fallback | planned | — | — | modelar ContextTranslation, Capability Registry e vertical slice captura → tradução → WorkPacket → retomada |
 | F1.1 | 1 | Continuidade My Universe/Nuvem como superfície planetária humana | planned | `docs/decisions/0005-my-universe-planetary-surface.md` | contrato real do repo `antunes-hq/nuvem`, flow.db e cloud.json legado auditados | integrar refs aditivas sem recriar PWA |
+| F1.2 | 1 | Telegram event notifier + outbox + Browser Session Grant temporário | planned | `docs/decisions/0006-telegram-notifications-and-browser-session.md` | protocolo versionado; Nuvem atual 401 sem Bearer confirmado; grant ainda não implementado | criar envelope/outbox sem enviar token de infraestrutura |
 | F2.0 | 2 | Run Ledger correlacionado ao `run_id` do aptdata | planned | — | — | definir eventos e receipts |
 | F3.0 | 3 | Studio com Definition View e Run View explícitas | planned | — | — | contrato de read API + consumidor |
 | F3.1 | 3 | Control View com actions/approvals/audit | planned | — | — | policy engine read/dry-run primeiro |
