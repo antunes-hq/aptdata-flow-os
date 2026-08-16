@@ -52,7 +52,7 @@ retired
 | F0.4 | 0 | Fronteira SDK + Control Plane + MCP + Runner e security threat model inicial | verified | `docs/decisions/0002-sdk-api-mcp-cloud-boundary.md` | contrato versionado; MCP atual explicitamente não aprovado como gateway cloud | transformar em WorkPacket de implementação |
 | F1.0 | 1 | Context Kernel + Translation Layer + Semantic Layer + SquadDefinition agnóstica de executor + pool/fallback | planned | — | — | modelar ContextTranslation, Capability Registry e vertical slice captura → tradução → WorkPacket → retomada |
 | F1.1 | 1 | Continuidade My Universe/Nuvem como superfície planetária humana | planned | `docs/decisions/0005-my-universe-planetary-surface.md` | contrato real do repo `antunes-hq/nuvem`, flow.db e cloud.json legado auditados | integrar refs aditivas sem recriar PWA |
-| F1.2 | 1 | Telegram event notifier + outbox + Browser Session Grant temporário | in_progress | `docs/decisions/0006-telegram-notifications-and-browser-session.md` | protocolo versionado; Nuvem atual 401 sem Bearer confirmado; grant ainda não implementado | F1.2a concluída; executar F1.2b notifier read-only e F1.2c browser grant |
+| F1.2 | 1 | Telegram event notifier + outbox + Browser Session Grant temporário | in_progress | `docs/decisions/0006-telegram-notifications-and-browser-session.md` | protocolo versionado; Nuvem atual 401 sem Bearer confirmado; grant ainda não implementado | F1.2a/F1.2b verified; F1.2c browser grant depois |
 | F2.0 | 2 | Run Ledger correlacionado ao `run_id` do aptdata | planned | — | — | definir eventos e receipts |
 | F3.0 | 3 | Studio com Definition View e Run View explícitas | planned | — | — | contrato de read API + consumidor |
 | F3.1 | 3 | Control View com actions/approvals/audit | planned | — | — | policy engine read/dry-run primeiro |
@@ -88,6 +88,20 @@ Full verification: uv run pytest -q → 752 passed, 10 skipped in 18.09s
 Lint: uv run ruff check aptdata/events/ aptdata/delivery/ tests/test_events_outbox.py → All checks passed
 Independent scope check: aptdata/mcp/server.py untouched; no network/tokens/credentials
 Residual risk: no backoff/max-retry policy; same-instance thread safety is not guaranteed. Next delivery layer owns these concerns.
+Status: verified
+```
+
+### F1.2b — Telegram notifier read-only
+
+```text
+WorkPacket: docs/contracts/f12b-telegram-notifier-workpacket.md
+Implementation commit: c426b30 feat(delivery): add Telegram outbox notifier
+Files: aptdata/delivery/telegram_notifier.py; aptdata/delivery/__init__.py; tests/test_telegram_notifier.py
+Focused verification: uv run pytest tests/test_telegram_notifier.py -v → 33 passed in 0.19s
+Full verification: uv run pytest -q → 785 passed, 10 skipped in 18.17s
+Lint: uv run ruff check aptdata/delivery/telegram_notifier.py aptdata/delivery/__init__.py tests/test_telegram_notifier.py → All checks passed
+Independent scope check: no Nuvem, MCP server, production, credentials or network tests touched
+Residual risk: existing outbox claim bumps attempts for non-Telegram channels; no exponential backoff/dead-letter queue; approval callbacks/browser grant remain F1.2c
 Status: verified
 ```
 
