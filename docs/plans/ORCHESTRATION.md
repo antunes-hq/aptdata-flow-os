@@ -228,7 +228,7 @@ O caminho padrão é **squad + skills + executor pool**, não Claude Code.
 PO → Tech Lead + UI/UX → QA → Judge → Integrator
 ```
 
-Cada papel é executado por um backend disponível no pool. Claude Code pode ser escolhido quando houver cota, mas sua indisponibilidade nunca bloqueia o Flow.
+Cada papel é executado por um backend disponível no pool. Se o executor preferido estiver indisponível, o Router aplica fallback por capability, custo e health. Claude Code pode ser escolhido quando houver cota, mas sua indisponibilidade nunca bloqueia o Flow.
 
 Subagente free pode executar código quando o WorkPacket está fechado. O subagente deve retornar:
 
