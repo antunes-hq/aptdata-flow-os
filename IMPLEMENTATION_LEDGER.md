@@ -52,7 +52,7 @@ retired
 | F0.4 | 0 | Fronteira SDK + Control Plane + MCP + Runner e security threat model inicial | verified | `docs/decisions/0002-sdk-api-mcp-cloud-boundary.md` | contrato versionado; MCP atual explicitamente não aprovado como gateway cloud | transformar em WorkPacket de implementação |
 | F1.0 | 1 | Context Kernel + Translation Layer + Semantic Layer + SquadDefinition agnóstica de executor + pool/fallback | planned | — | — | modelar ContextTranslation, Capability Registry e vertical slice captura → tradução → WorkPacket → retomada |
 | F1.1 | 1 | Continuidade My Universe/Nuvem como superfície planetária humana | planned | `docs/decisions/0005-my-universe-planetary-surface.md` | contrato real do repo `antunes-hq/nuvem`, flow.db e cloud.json legado auditados | integrar refs aditivas sem recriar PWA |
-| F1.2 | 1 | Telegram event notifier + outbox + Browser Session Grant temporário | verified | `docs/decisions/0006-telegram-notifications-and-browser-session.md` | protocolo versionado; integração HTTP/browser real ainda não publicada | F1.2a/F1.2b/F1.2c verified; F1.3 verified |
+| F1.2 | 1 | Telegram event notifier + outbox + Browser Session Grant temporário | verified | `docs/decisions/0006-telegram-notifications-and-browser-session.md` | protocolo versionado; integração Telegram real ainda não publicada | F1.2a/F1.2b/F1.2c verified; F1.3/F1.4 verified |
 | F2.0 | 2 | Run Ledger correlacionado ao `run_id` do aptdata | planned | — | — | definir eventos e receipts |
 | F3.0 | 3 | Studio com Definition View e Run View explícitas | planned | — | — | contrato de read API + consumidor |
 | F3.1 | 3 | Control View com actions/approvals/audit | planned | — | — | policy engine read/dry-run primeiro |
@@ -134,6 +134,24 @@ Lint: uv run ruff check aptdata/auth/ aptdata/delivery/session_response.py tests
 Independent scope check: no Nuvem, MCP server, production, credentials, FastAPI/Starlette or network tests touched
 Security evidence: one-shot redeem; 303 URL without grant; HttpOnly cookie; Secure policy; no-store/no-referrer/nosniff; mutable scopes rejected; workspace/project/run binding; raw URL/hash/exception message not logged
 Residual risk: HTTP framework mounting, CSRF/rate-limit policy and Telegram grant issuance remain future layers; production must set secure=True
+Status: verified
+```
+
+### F1.4 — Control Plane HTTP + browser link
+
+```text
+WorkPacket: docs/contracts/f14-control-plane-browser-link-workpacket.md
+SDK extension commit: da592f5 feat(auth): support dynamic project/run and base_url in browser grant HTTP adapter
+SDK contract commit: e4fc6f5 docs(contracts): add F1.4 control plane browser link workpacket
+Control Plane commit: visu d656641 feat(control-plane): complete browser grant integration
+Files: flow-viz FastAPI adapter + browser_link issuer + SDK Git dependency/lock + tests
+Focused verification: .venv/bin/python -m pytest tests/ -q → 20 passed in 0.58s
+Full SDK verification: uv run pytest -q → 899 passed, 10 skipped in 18.39s
+Lint: uvx ruff check flow-viz F1.4 slice → All checks passed
+Build/config: docker compose config --quiet → ok
+Security evidence: flow-viz delegates redeem/cookie/headers/redirect to SDK; separate browser-grants DB; dynamic project/run binding; one-shot 303; read-only scope rejection; no Telegram/VPS/Nuvem change
+Independent scope check: flow-viz central-map.json remained local-only and was excluded from commit
+Residual risk: flow-viz has two pre-existing warnings (Starlette httpx deprecation and Pydantic class Config deprecation); Telegram emission remains F1.5; no deploy performed
 Status: verified
 ```
 
