@@ -71,6 +71,11 @@ Flow OS
 │   ├── retries
 │   ├── rollback
 │   └── audit trail
+├── SDK / API / MCP Boundary
+│   ├── flowos-core SDK
+│   ├── Control Plane API
+│   ├── safe MCP adapter
+│   └── local/VPS/self-hosted runners
 └── Adapters
     ├── chat/Telegram/Hermes (optional surfaces)
     ├── Claude Code / Agent SDK
@@ -225,6 +230,8 @@ Entregas:
 - receipts de comando, teste, commit, deploy e decisão;
 - correlação com `run_id` existente do aptdata;
 - Run View consumidora do ledger.
+- SDK local capaz de operar sem cloud;
+- receipts que não carregam segredos nem bancos brutos.
 
 Gate:
 
@@ -279,6 +286,8 @@ Para cada connector:
 discovery → read-only → dry-run → approval → action → verification → rollback
 ```
 
+O MCP é uma projeção segura da API, não a fonte de verdade. A primeira versão cloud expõe apenas leitura e planejamento; ações mutáveis entram após policy, scope e approval.
+
 Gate:
 
 - credenciais ficam no vault/keyring/env do usuário;
@@ -314,6 +323,12 @@ Gate:
 - outro usuário consegue configurar seu workspace;
 - nenhum segredo ou dado do Lucas entra no pacote genérico;
 - instalação limpa reproduz o caminho documentado.
+
+Distribuições previstas:
+
+```text
+local-only · self-hosted · cloud-hosted · hybrid (Control Plane cloud + runner local)
+```
 
 ## Não-goals atuais
 
