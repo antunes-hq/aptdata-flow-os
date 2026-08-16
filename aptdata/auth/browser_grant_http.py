@@ -132,11 +132,20 @@ class BrowserGrantHttpAdapter:
         adapter = BrowserGrantHttpAdapter(
             store=store,
             expected_workspace="ws-main",
-            expected_project="proj-alpha",
-            expected_run="run-42",
+            # expected_project and expected_run are optional — when omitted
+            # the values stored in the grant are used, enabling a single
+            # endpoint to serve grants for any project/run.
+            expected_project=None,
+            expected_run=None,
             secure=True,
+            base_url="https://flow.example.com",
         )
         response = adapter.redeem_access_request(request)
+
+    When ``expected_project`` and ``expected_run`` are both ``None``, the
+    adapter uses the project and run encoded in the grant itself (dynamic
+    resolution).  When either is given, the adapter validates the grant's
+    value against it (static binding, same as before).
 
     The adapter is stateless with respect to the request — all persistent
     state lives in the ``BrowserSessionGrantStore``.
@@ -147,22 +156,20 @@ class BrowserGrantHttpAdapter:
         store: BrowserSessionGrantStore,
         *,
         expected_workspace: str,
-        expected_project: str,
-        expected_run: str,
+        expected_project: str | None = None,
+        expected_run: str | None = None,
         secure: bool = False,
+        base_url: str | None = None,
     ) -> None:
         if not expected_workspace:
             raise ValueError("expected_workspace is required")
-        if not expected_project:
-            raise ValueError("expected_project is required")
-        if not expected_run:
-            raise ValueError("expected_run is required")
 
         self._store = store
         self._expected_workspace = expected_workspace
         self._expected_project = expected_project
         self._expected_run = expected_run
         self._secure = secure
+        self._base_url = base_url
 
     # ------------------------------------------------------------------
     # Public API
@@ -220,12 +227,28 @@ class BrowserGrantHttpAdapter:
         )
         max_age = max(max_age, 1)
 
-        # Build the redirect Location — grant removed from URL
+        # Resolve project/run — when the adapter was constructed without
+        # a static binding, use the values encoded in the grant itself.
+        resolved_project = (
+            self._expected_project
+            if self._expected_project is not None
+            else session.project_id
+        )
+        resolved_run = (
+            self._expected_run
+            if self._expected_run is not None
+            else session.run_id
+        )
+
+        # Build the redirect Location — absolute when base_url is given,
+        # relative otherwise.
         location = (
             f"/universe/{self._expected_workspace}"
-            f"/{self._expected_project}"
-            f"/{self._expected_run}"
+            f"/{resolved_project}"
+            f"/{resolved_run}"
         )
+        if self._base_url:
+            location = f"{self._base_url.rstrip('/')}{location}"
 
         cookie = SessionCookie.from_session_value(
             session.session_id,
