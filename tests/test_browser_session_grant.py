@@ -544,6 +544,30 @@ class TestDeliveryResponse:
         assert "Max-Age=900" in header
         assert "Path=/" in header
 
+    def test_session_cookie_with_domain(self):
+        """Set-Cookie includes Domain when domain is configured."""
+        cookie = SessionCookie.from_session_value(
+            session_id="test-session-id",
+            max_age=900,
+            domain=".example.com",
+        )
+        header = cookie.to_set_cookie_header()
+        assert "Domain=.example.com" in header, (
+            f"Expected Domain in header, got: {header}"
+        )
+
+    def test_session_cookie_domain_default_empty(self):
+        """Default domain is empty — host-only cookie."""
+        cookie = SessionCookie.from_session_value(
+            session_id="sid",
+            max_age=300,
+        )
+        assert cookie.domain == ""
+        header = cookie.to_set_cookie_header()
+        assert "Domain=" not in header, (
+            f"Expected no Domain in header, got: {header}"
+        )
+
     def test_browser_session_response_construction(self):
         """BrowserSessionResponse builds correctly from session data."""
         response = BrowserSessionResponse.from_session(

@@ -24,6 +24,7 @@ class SessionCookie:
     name: str = "browser_session_id"
     value: str = ""
     path: str = "/"
+    domain: str = ""  # empty = no Domain attribute (host-only cookie)
     httponly: bool = True
     samesite: Literal["Lax", "Strict", "None"] = "Lax"
     secure: bool = False  # True in production over HTTPS
@@ -36,21 +37,29 @@ class SessionCookie:
         max_age: int,
         *,
         secure: bool = False,
+        domain: str = "",
     ) -> SessionCookie:
         return cls(
             value=session_id,
             max_age=max_age,
             secure=secure,
+            domain=domain,
         )
 
     def to_set_cookie_header(self) -> str:
         """Return the ``Set-Cookie`` header string.
 
-        Example output::
+        Example output without Domain::
 
             browser_session_id=abc...; Path=/; HttpOnly; SameSite=Lax
+
+        Example output with Domain::
+
+            browser_session_id=abc...; Path=/; Domain=.example.com; HttpOnly; SameSite=Lax
         """
         parts = [f"{self.name}={self.value}", f"Path={self.path}"]
+        if self.domain:
+            parts.append(f"Domain={self.domain}")
         if self.httponly:
             parts.append("HttpOnly")
         if self.secure:

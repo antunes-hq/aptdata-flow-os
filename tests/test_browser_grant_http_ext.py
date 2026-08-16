@@ -244,3 +244,89 @@ class TestBaseUrl:
         location = response.headers.get("Location", "")
         expected = "https://flow.example.com/universe/ws-main/proj-dynamic/run-dynamic-99"
         assert location == expected, f"Expected {expected}, got {location}"
+
+
+# ---------------------------------------------------------------------------
+# cookie_domain tests
+# ---------------------------------------------------------------------------
+
+
+class TestCookieDomain:
+    """cookie_domain adds Domain attribute to Set-Cookie."""
+
+    def test_cookie_domain_present_in_set_cookie(
+        self,
+        store: BrowserSessionGrantStore,
+    ):
+        raw = store.issue(
+            workspace_id="ws-main",
+            project_id="proj-alpha",
+            run_id="run-42",
+            scopes=("run:read",),
+        )
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+            cookie_domain=".example.com",
+        )
+        response = adapter.redeem_access_request(
+            _get(f"/access/{raw}")
+        )
+        set_cookie = response.headers.get("Set-Cookie", "")
+        assert "Domain=.example.com" in set_cookie, (
+            f"Expected Domain in Set-Cookie, got: {set_cookie}"
+        )
+
+    def test_cookie_domain_default_absent(
+        self,
+        store: BrowserSessionGrantStore,
+    ):
+        raw = store.issue(
+            workspace_id="ws-main",
+            project_id="proj-alpha",
+            run_id="run-42",
+            scopes=("run:read",),
+        )
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+        )
+        response = adapter.redeem_access_request(
+            _get(f"/access/{raw}")
+        )
+        set_cookie = response.headers.get("Set-Cookie", "")
+        assert "Domain=" not in set_cookie, (
+            f"Expected no Domain in Set-Cookie, got: {set_cookie}"
+        )
+
+    def test_cookie_domain_with_base_url(
+        self,
+        store: BrowserSessionGrantStore,
+    ):
+        raw = store.issue(
+            workspace_id="ws-main",
+            project_id="proj-alpha",
+            run_id="run-42",
+            scopes=("run:read",),
+        )
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+            base_url="https://flow.example.com",
+            cookie_domain=".example.com",
+        )
+        response = adapter.redeem_access_request(
+            _get(f"/access/{raw}")
+        )
+        set_cookie = response.headers.get("Set-Cookie", "")
+        assert "Domain=.example.com" in set_cookie, (
+            f"Expected Domain in Set-Cookie, got: {set_cookie}"
+        )
+        location = response.headers.get("Location", "")
+        assert location.startswith("https://flow.example.com/")

@@ -160,6 +160,7 @@ class BrowserGrantHttpAdapter:
         expected_run: str | None = None,
         secure: bool = False,
         base_url: str | None = None,
+        cookie_domain: str = "",
     ) -> None:
         if not expected_workspace:
             raise ValueError("expected_workspace is required")
@@ -170,6 +171,7 @@ class BrowserGrantHttpAdapter:
         self._expected_run = expected_run
         self._secure = secure
         self._base_url = base_url
+        self._cookie_domain = cookie_domain
 
     # ------------------------------------------------------------------
     # Public API
@@ -254,6 +256,7 @@ class BrowserGrantHttpAdapter:
             session.session_id,
             max_age=max_age,
             secure=self._secure,
+            domain=self._cookie_domain,
         )
         set_cookie = cookie.to_set_cookie_header()
 
