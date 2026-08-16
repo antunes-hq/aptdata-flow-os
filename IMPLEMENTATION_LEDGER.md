@@ -49,7 +49,7 @@ retired
 | F0.1 | 0 | Universe Registry inicial de repos, apps, skills, executors e providers | planned | — | — | inventariar fontes reais e registrar objetos |
 | F0.2 | 0 | Contratos `WorkPacket`, identidade universal e Definition/Run/Control | planned | — | — | escrever schemas + contract tests |
 | F0.3 | 0 | Check anti-duplicação para demanda/artefato antes de implementação | planned | — | — | definir matching por ID, path, símbolo e comportamento |
-| F1.0 | 1 | Context Kernel 5W2H com round-trip preservando intenção | planned | — | — | modelar pacote e testes |
+| F1.0 | 1 | Context Kernel 5W2H + SquadDefinition agnóstica de executor + pool/fallback | planned | — | — | modelar pacote, roles e testes de fallback |
 | F2.0 | 2 | Run Ledger correlacionado ao `run_id` do aptdata | planned | — | — | definir eventos e receipts |
 | F3.0 | 3 | Studio com Definition View e Run View explícitas | planned | — | — | contrato de read API + consumidor |
 | F3.1 | 3 | Control View com actions/approvals/audit | planned | — | — | policy engine read/dry-run primeiro |

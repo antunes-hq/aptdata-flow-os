@@ -26,6 +26,7 @@ Se uma conversa pedir novamente uma visão já registrada, o executor deve apont
 | Flow OS | registry, context, definitions/runs, control, hygiene, licensing | substituir provider/executor |
 | executor coder | implementar código e testes em branch/task delimitada | decidir arquitetura sem registrar decisão |
 | executor infra | deploy, VPS, Docker, DNS com approval | alterar produção sem evidence gate |
+| executor pool | oferecer backends substituíveis por capability/custo/health | tornar Claude Code obrigatório |
 | reviewer | verificar requisitos e evidências contra ledger | aceitar relato sem artefato |
 | chat surfaces | capturar, consultar, disparar ações autorizadas | ser fonte de verdade |
 
@@ -220,6 +221,14 @@ Um por vez: GitHub → Vercel → Hostinger → Google → Claude.
 Somente depois dos contratos e de um vertical slice verificável.
 
 ## 9. Delegação
+
+O caminho padrão é **squad + skills + executor pool**, não Claude Code.
+
+```text
+PO → Tech Lead + UI/UX → QA → Judge → Integrator
+```
+
+Cada papel é executado por um backend disponível no pool. Claude Code pode ser escolhido quando houver cota, mas sua indisponibilidade nunca bloqueia o Flow.
 
 Subagente free pode executar código quando o WorkPacket está fechado. O subagente deve retornar:
 

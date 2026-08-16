@@ -199,6 +199,8 @@ Objetivo: carregar intenção humana de forma estruturada e reutilizável.
 Entregas:
 
 - `ContextPacket` 5W2H;
+- `SquadDefinition` com roles agnósticos de executor;
+- pool de executors com fallback por capability/custo/health;
 - critérios de pronto;
 - contexto projetado por estágio;
 - pacote para executor;
@@ -267,8 +269,9 @@ Ordem:
 2. Vercel projects/deploys/domains;
 3. Hostinger inventory + SSH/Docker health;
 4. Google OAuth + Drive/Docs metadata;
-5. Claude Code/Agent SDK executor;
-6. OpenRouter/Anthropic cost and route metadata.
+5. executor Claude Code/Agent SDK opcional;
+6. OpenRouter/Anthropic cost and route metadata;
+7. testar o mesmo Flow com Claude Code desabilitado e fallback ativo.
 
 Para cada connector:
 
