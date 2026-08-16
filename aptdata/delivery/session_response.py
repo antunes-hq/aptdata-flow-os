@@ -55,7 +55,8 @@ class SessionCookie:
 
         Example output with Domain::
 
-            browser_session_id=abc...; Path=/; Domain=.example.com; HttpOnly; SameSite=Lax
+            browser_session_id=abc...; Path=/; Domain=.example.com;
+            HttpOnly; SameSite=Lax
         """
         parts = [f"{self.name}={self.value}", f"Path={self.path}"]
         if self.domain:
@@ -64,8 +65,7 @@ class SessionCookie:
             parts.append("HttpOnly")
         if self.secure:
             parts.append("Secure")
-        parts.append(f"SameSite={self.samesite}")
-        parts.append(f"Max-Age={self.max_age}")
+        parts.extend((f"SameSite={self.samesite}", f"Max-Age={self.max_age}"))
         return "; ".join(parts)
 
 
