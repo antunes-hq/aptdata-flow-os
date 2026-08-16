@@ -56,18 +56,23 @@ O My Universe é uma superfície oficial/adotada do Flow OS. Ele não é uma có
 
 ## Emenda 0005-a — fronteira não-desenvolvimento (2026-08-16)
 
-O My Universe **não é uma superfície de desenvolvimento por padrão**. Ele é uma superfície humana para vida, memória, reflexão, orientação e retomada. A pessoa pode escolher uma jornada relacionada a software/desenvolvimento quando fizer sentido, mas isso é uma escolha explícita — não uma inferência do sistema.
+O My Universe **não é uma superfície de desenvolvimento por padrão**. Seu núcleo é ajudar a pessoa a conhecer e visualizar o próprio conhecimento: o que ocupa sua mente, quais padrões e conexões surgem, o que está esquecido ou parado, como o conhecimento muda e como uma ideia pode ser retomada sem perder sua origem.
+
+Ele não é apenas captura, memória ou produtividade. É uma interface epistemológica pessoal: uma forma espacial e sensível de a pessoa se reconhecer no próprio universo de conhecimento.
+
+Os flows, o kernel semântico, os WorkPackets, runs e evidências continuam existindo por trás como infraestrutura de continuidade. Eles sustentam a experiência, mas não são a linguagem inicial nem o objeto principal da interação.
 
 Regras derivadas:
 
 ```text
-My Universe não converte automaticamente ideia em task, run ou WorkPacket.
+My Universe não converte automaticamente conhecimento em task, run ou WorkPacket.
+My Universe visualiza relações, padrões, evolução e lacunas do conhecimento da pessoa.
 My Universe não mostra jargão de executor, provider, pipeline ou approval como camada inicial.
 Ações de desenvolvimento são opt-in e preservam a origem humana da ideia.
 Flow/flow-viz continuam sendo as superfícies técnicas para Definition, Run e Control.
 ```
 
-Esta emenda corrige a interpretação de "superfície humana": humana não significa necessariamente dev; significa que o domínio pertence ao usuário e só ganha uma lente técnica quando ele a escolhe.
+Esta emenda corrige a interpretação de "superfície humana": humana não significa apenas não-dev; significa tornar o conhecimento da pessoa visível para ela, usando flows e execução como infraestrutura invisível quando necessário.
 
 ## Por que duas superfícies
 
