@@ -197,6 +197,7 @@ class BrowserGrantHttpAdapter:
             session = self._store.redeem(
                 raw_grant,
                 workspace_id=self._expected_workspace,
+                project_id=self._expected_project,
                 run_id=self._expected_run,
             )
         except BrowserGrantHttpError:
@@ -262,6 +263,7 @@ class BrowserGrantHttpAdapter:
         from aptdata.auth.session_grant import (  # type: ignore[import-untyped]
             GrantExpiredError,
             GrantNotFoundError,
+            GrantProjectError,
             GrantRevokedError,
             GrantRunError,
             GrantScopeError,
@@ -272,13 +274,13 @@ class BrowserGrantHttpAdapter:
             return _error(401, "Unauthorized: grant is invalid or revoked")
         if isinstance(exc, GrantExpiredError):
             return _error(401, "Unauthorized: grant has expired")
-        if isinstance(exc, GrantWorkspaceError | GrantRunError):
+        if isinstance(exc, GrantWorkspaceError | GrantProjectError | GrantRunError):
             return _error(403, "Forbidden: context mismatch")
         if isinstance(exc, GrantScopeError):
             return _error(403, "Forbidden: scope mismatch")
         # Unexpected — log at debug level (not error, because we don't
         # know the severity) and return a generic 401.
-        logger.debug("Unexpected redeem error: %s", exc)
+        logger.debug("Unexpected redeem error type: %s", type(exc).__name__)
         return _error(401, "Unauthorized")
 
 

@@ -391,6 +391,25 @@ class TestAc9ContextMismatchReturns403:
             f"Expected 403 for run mismatch, got {response.status_code}"
         )
 
+    def test_wrong_project_returns_403(
+        self,
+        store: BrowserSessionGrantStore,
+    ):
+        raw = store.issue(
+            workspace_id="ws-main",
+            project_id="proj-other",
+            run_id="run-42",
+            scopes=_VALID_SCOPES,
+        )
+        adapter_project = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+        )
+        response = adapter_project.redeem_access_request(_get(f"/access/{raw}"))
+        assert response.status_code == 403
+
 
 class TestAc10NonGetReturns405:
     """Criterion 10: método diferente de GET retorna 405."""
@@ -585,6 +604,22 @@ class TestAc13UrlNotLogged:
         assert fake not in combined_log, (
             "Fake grant leaked in log output"
         )
+
+    def test_unexpected_error_message_not_in_logs(
+        self,
+        adapter: BrowserGrantHttpAdapter,
+        caplog: pytest.LogCaptureFixture,
+        valid_grant: str,
+    ):
+        class SensitiveStore:
+            def redeem(self, *args: object, **kwargs: object):
+                raise RuntimeError("sensitive-internal-value")
+
+        adapter._store = SensitiveStore()  # type: ignore[assignment]
+        with caplog.at_level(logging.DEBUG):
+            response = adapter.redeem_access_request(_get(f"/access/{valid_grant}"))
+        assert response.status_code == 401
+        assert "sensitive-internal-value" not in caplog.text
 
 
 class TestAc14NoNetworkNoFrameworkNoCredentials:

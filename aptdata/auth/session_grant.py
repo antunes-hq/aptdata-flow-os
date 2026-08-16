@@ -53,6 +53,10 @@ class GrantWorkspaceError(BrowserSessionGrantError):
     """Workspace mismatch between the grant and the redeem request."""
 
 
+class GrantProjectError(BrowserSessionGrantError):
+    """Project mismatch between the grant and the redeem request."""
+
+
 class GrantRunError(BrowserSessionGrantError):
     """Run mismatch between the grant and the redeem request."""
 
@@ -276,6 +280,7 @@ class BrowserSessionGrantStore:
         raw_grant: str,
         *,
         workspace_id: str,
+        project_id: str | None = None,
         run_id: str | None = None,
         required_scopes: Sequence[str] = (),
     ) -> BrowserSession:
@@ -287,6 +292,7 @@ class BrowserSessionGrantStore:
         Args:
             raw_grant: The raw grant string returned by issue().
             workspace_id: Must match the grant's workspace.
+            project_id: If provided, must match the grant's project.
             run_id: If provided, must match the grant's run.
             required_scopes: All of these scopes must be present.
 
@@ -338,6 +344,15 @@ class BrowserSessionGrantStore:
                 raise GrantWorkspaceError(
                     f"Workspace mismatch: expected {row['workspace_id']!r}"
                 )
+
+            # Check project when the caller supplies the expected project.
+            # The grant itself always carries a project binding; callers that
+            # need project isolation should pass this value explicitly.
+            if project_id is not None and not hmac.compare_digest(
+                str(row["project_id"]), str(project_id)
+            ):
+                self._conn.execute("ROLLBACK;")
+                raise GrantProjectError("Project mismatch")
 
             # Check run
             if run_id is not None and not hmac.compare_digest(
@@ -413,6 +428,7 @@ class BrowserSessionGrantStore:
         except (
             GrantNotFoundError,
             GrantWorkspaceError,
+            GrantProjectError,
             GrantRunError,
             GrantScopeError,
             GrantExpiredError,
