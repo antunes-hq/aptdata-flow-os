@@ -30,6 +30,7 @@ from aptdata.governance.models import (
     Verdict,
     WorkPacket,
 )
+from aptdata.governance.rehearsal import run_read_only_rehearsal
 from aptdata.governance.store import GovernanceStore
 
 __all__ = [
@@ -60,6 +61,7 @@ __all__ = [
     "GateReport",
     "check_integration",
     "check_ready_for_judging",
+    "run_read_only_rehearsal",
 ]
 
 __version__ = "0.1"
