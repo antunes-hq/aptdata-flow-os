@@ -24,6 +24,7 @@ from aptdata.governance.models import (
     Verdict,
     WorkPacket,
 )
+from aptdata.governance.store import GovernanceStore
 
 __all__ = [
     "AcceptanceCriterion",
@@ -48,6 +49,7 @@ __all__ = [
     "SquadRole",
     "Verdict",
     "WorkPacket",
+    "GovernanceStore",
 ]
 
 __version__ = "0.1"
