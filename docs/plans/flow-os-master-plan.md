@@ -51,6 +51,12 @@ Flow OS
 │   ├── decisions
 │   ├── policies
 │   └── lessons/evals
+├── Semantic Layer
+│   ├── ontology
+│   ├── capability registry
+│   ├── context translation
+│   ├── provenance
+│   └── learning proposals
 ├── Flow Layer
 │   ├── ContextPacket 5W2H
 │   ├── FlowDefinition
@@ -205,6 +211,7 @@ Entregas:
 
 - `ContextPacket` 5W2H;
 - `ContextTranslation` versionada e auditável;
+- ontology mínima e capability registry;
 - camadas Capture/Meaning/Journey/Execution/Evidence/Learning Translator;
 - `SquadDefinition` com roles agnósticos de executor;
 - pool de executors com fallback por capability/custo/health;
@@ -226,6 +233,21 @@ Gate:
 - uma execução pode ser retomada com próximo passo único;
 - teste de round-trip comprova preservação e registra perdas assumidas;
 - o mesmo slice roda sem Claude Code, este chat ou provider específico.
+
+Métricas obrigatórias da camada:
+
+```text
+context_continuity_rate
+context_restatement_count
+resume_success_rate
+translation_loss_rate
+evidence_completeness
+verified_outcome_rate
+capability_reuse_rate
+framework_substitutability
+learning_conversion_rate
+cost_per_verified_outcome
+```
 
 ### Fase 3 — Run Ledger e evidência
 
