@@ -1,5 +1,11 @@
 """Durable governance contracts for trusted squad execution."""
 
+from aptdata.governance.gates import (
+    GateFinding,
+    GateReport,
+    check_integration,
+    check_ready_for_judging,
+)
 from aptdata.governance.models import (
     AcceptanceCriterion,
     Assignment,
@@ -50,6 +56,10 @@ __all__ = [
     "Verdict",
     "WorkPacket",
     "GovernanceStore",
+    "GateFinding",
+    "GateReport",
+    "check_integration",
+    "check_ready_for_judging",
 ]
 
 __version__ = "0.1"
