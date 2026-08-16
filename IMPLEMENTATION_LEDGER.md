@@ -52,7 +52,7 @@ retired
 | F0.4 | 0 | Fronteira SDK + Control Plane + MCP + Runner e security threat model inicial | verified | `docs/decisions/0002-sdk-api-mcp-cloud-boundary.md` | contrato versionado; MCP atual explicitamente não aprovado como gateway cloud | transformar em WorkPacket de implementação |
 | F1.0 | 1 | Context Kernel + Translation Layer + Semantic Layer + SquadDefinition agnóstica de executor + pool/fallback | planned | — | — | modelar ContextTranslation, Capability Registry e vertical slice captura → tradução → WorkPacket → retomada |
 | F1.1 | 1 | Continuidade My Universe/Nuvem como superfície planetária humana | planned | `docs/decisions/0005-my-universe-planetary-surface.md` | contrato real do repo `antunes-hq/nuvem`, flow.db e cloud.json legado auditados | integrar refs aditivas sem recriar PWA |
-| F1.2 | 1 | Telegram event notifier + outbox + Browser Session Grant temporário | verified | `docs/decisions/0006-telegram-notifications-and-browser-session.md` | protocolo versionado; integração Telegram real ainda não publicada | F1.2a/F1.2b/F1.2c verified; F1.3/F1.4 verified |
+| F1.2 | 1 | Telegram event notifier + outbox + Browser Session Grant temporário | verified | `docs/decisions/0006-telegram-notifications-and-browser-session.md` | protocolo versionado; integração Telegram real ainda não publicada | F1.2a/F1.2b/F1.2c verified; F1.3/F1.4/F1.5 verified |
 | F2.0 | 2 | Run Ledger correlacionado ao `run_id` do aptdata | planned | — | — | definir eventos e receipts |
 | F3.0 | 3 | Studio com Definition View e Run View explícitas | planned | — | — | contrato de read API + consumidor |
 | F3.1 | 3 | Control View com actions/approvals/audit | planned | — | — | policy engine read/dry-run primeiro |
@@ -152,6 +152,21 @@ Build/config: docker compose config --quiet → ok
 Security evidence: flow-viz delegates redeem/cookie/headers/redirect to SDK; separate browser-grants DB; dynamic project/run binding; one-shot 303; read-only scope rejection; no Telegram/VPS/Nuvem change
 Independent scope check: flow-viz central-map.json remained local-only and was excluded from commit
 Residual risk: flow-viz has two pre-existing warnings (Starlette httpx deprecation and Pydantic class Config deprecation); Telegram emission remains F1.5; no deploy performed
+Status: verified
+```
+
+### F1.5 — Browser Session Consumer Bridge
+
+```text
+WorkPacket: docs/contracts/f15-browser-session-consumer-bridge-workpacket.md
+SDK commits: 246b6bb feat(auth): support shared browser session cookie domain; 6701f4a chore(auth): format shared session cookie header
+Nuvem commits: 04e0053 feat(browser): consume read-only session grants; 0d581a2 fix(browser): share grant WAL directory
+Control Plane commits: e0c637d feat(control-plane): share browser session with My Universe; 9efe9fe fix(control-plane): share browser grant WAL directory
+Local verification: SDK 904 passed/10 skipped; flow-capture 28 passed; PWA 16 passed; PWA build OK; flow-viz lint/config OK
+Runtime verification: grant → 303 + Domain=.srv1723096.hstgr.cloud + HttpOnly/Secure; flow /cloud with cookie → 200 (39,530 bytes); cookie capture → 401; grant reuse → 401; browser PWA rendered 83 stars; localStorage/document.cookie exposed no session
+Security evidence: browser session is read-only and requires flow:read; CAPTURE_TOKEN remains required for capture/pending/ack/POST cloud; shared SQLite directory includes WAL/SHM; flow.db untouched
+Deploy evidence: flow-capture and flow-viz-central recreated with SDK and shared `/opt/flow-capture-data/browser-grants-shared.db`; no Telegram change
+Residual risk: first browser navigation showed onboarding until reload while async cookie boot completed; subsequent reload rendered PWA correctly; improve loading state before calling this a UX-polished flow
 Status: verified
 ```
 
