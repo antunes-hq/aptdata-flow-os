@@ -86,6 +86,8 @@ class BrowserGrantHttpResponse:
 # ---------------------------------------------------------------------------
 
 _GRANT_PATH_RE = re.compile(r"^/access/([0-9a-f]{64})$")
+# Raw grant value must be exactly 64 lowercase hex chars.
+_GRANT_VALUE_RE = re.compile(r"^[0-9a-f]{64}$")
 
 # Scopes that are NEVER accepted via the browser grant HTTP boundary.
 # The contract explicitly lists approval:respond, deploy, and mutable
@@ -177,6 +179,29 @@ class BrowserGrantHttpAdapter:
     # Public API
     # ------------------------------------------------------------------
 
+    def redeem_grant(
+        self,
+        raw_grant: str,
+    ) -> BrowserGrantHttpResponse:
+        """Redeem an already-extracted raw grant and produce a 303 response.
+
+        Unlike ``redeem_access_request``, this method takes the raw grant
+        directly rather than extracting it from a request path.  It is the
+        safe entry point for POST-based (fragment) redemption flows where
+        the grant arrives in a JSON body instead of the URL path.
+
+        The returned response includes Set-Cookie, security headers, and
+        a Location redirect — exactly like ``redeem_access_request``.
+
+        This method does **not** raise exceptions — every error path
+        produces an appropriate HTTP response.
+        """
+        # --- 400: grant format check --------------------------------------
+        if not _GRANT_VALUE_RE.fullmatch(raw_grant):
+            return _error(400, "Bad Request: invalid grant format")
+
+        return self._do_redeem(raw_grant)
+
     def redeem_access_request(
         self,
         request: BrowserGrantHttpRequest,
@@ -201,6 +226,22 @@ class BrowserGrantHttpAdapter:
         if not _GRANT_PATH_RE.fullmatch(request.path):
             return _error(400, "Bad Request: invalid grant format")
 
+        return self._do_redeem(raw_grant)
+
+    # ------------------------------------------------------------------
+    # Internal: shared redeem logic
+    # ------------------------------------------------------------------
+
+    def _do_redeem(
+        self,
+        raw_grant: str,
+    ) -> BrowserGrantHttpResponse:
+        """Redeem a validated raw grant and build the HTTP response.
+
+        Shared by ``redeem_access_request`` (path-extracted grant) and
+        ``redeem_grant`` (direct grant).  Assumes *raw_grant* has already
+        passed format validation.
+        """
         # --- Redeem -------------------------------------------------------
         try:
             session = self._store.redeem(

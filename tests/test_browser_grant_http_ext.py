@@ -1,4 +1,4 @@
-""""Extension tests: dynamic project/run resolution and base_url for F1.4.
+"""Extension tests: dynamic project/run resolution and base_url for F1.4.
 
 These tests verify the new features added to BrowserGrantHttpAdapter for
 the Control Plane browser link workpacket.
@@ -306,7 +306,7 @@ class TestCookieDomain:
     def test_cookie_domain_with_base_url(
         self,
         store: BrowserSessionGrantStore,
-    ):
+    ) -> None:
         raw = store.issue(
             workspace_id="ws-main",
             project_id="proj-alpha",
@@ -330,3 +330,131 @@ class TestCookieDomain:
         )
         location = response.headers.get("Location", "")
         assert location.startswith("https://flow.example.com/")
+        assert location == "https://flow.example.com/universe/ws-main/proj-alpha/run-42"
+
+
+# ---------------------------------------------------------------------------
+# redeem_grant tests — anti-preview fragment flow
+# ---------------------------------------------------------------------------
+
+
+class TestRedeemGrant:
+    """Tests for the public redeem_grant method (POST/fragment flow)."""
+
+    def test_redeem_grant_valid_returns_303(
+        self,
+        store: BrowserSessionGrantStore,
+    ) -> None:
+        """Valid raw grant directly -> 303 with cookie and location."""
+        raw = store.issue(
+            workspace_id="ws-main",
+            project_id="proj-alpha",
+            run_id="run-42",
+            scopes=("run:read",),
+        )
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+            base_url="https://flow.example.com",
+        )
+        response = adapter.redeem_grant(raw)
+        assert response.status_code == 303
+        set_cookie = response.headers.get("Set-Cookie", "")
+        assert "HttpOnly" in set_cookie
+        location = response.headers.get("Location", "")
+        assert location.startswith("https://flow.example.com/")
+
+    def test_redeem_grant_malformed_returns_400(
+        self,
+        store: BrowserSessionGrantStore,
+    ) -> None:
+        """Malformed raw grant (short, non-hex, empty, uppercase) -> 400."""
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+        )
+        assert adapter.redeem_grant("abc123").status_code == 400
+        assert adapter.redeem_grant("z" + "0" * 63).status_code == 400
+        assert adapter.redeem_grant("").status_code == 400
+        assert adapter.redeem_grant("A" + "0" * 63).status_code == 400
+
+    def test_redeem_grant_invalid_returns_401(
+        self,
+        store: BrowserSessionGrantStore,
+    ) -> None:
+        """Non-existent grant -> 401."""
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+        )
+        assert adapter.redeem_grant("0" * 64).status_code == 401
+
+    def test_redeem_grant_second_use_returns_401(
+        self,
+        store: BrowserSessionGrantStore,
+    ) -> None:
+        """Second redeem_grant with same grant -> 401 (one-shot)."""
+        raw = store.issue(
+            workspace_id="ws-main",
+            project_id="proj-alpha",
+            run_id="run-42",
+            scopes=("run:read",),
+        )
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+        )
+        assert adapter.redeem_grant(raw).status_code == 303
+        assert adapter.redeem_grant(raw).status_code == 401
+
+    def test_redeem_grant_workspace_mismatch_returns_403(
+        self,
+        store: BrowserSessionGrantStore,
+    ) -> None:
+        """Wrong workspace -> 403."""
+        raw = store.issue(
+            workspace_id="ws-other",
+            project_id="proj-alpha",
+            run_id="run-42",
+            scopes=("run:read",),
+        )
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+        )
+        assert adapter.redeem_grant(raw).status_code == 403
+
+    def test_redeem_grant_no_grant_in_body_or_log(
+        self,
+        store: BrowserSessionGrantStore,
+    ) -> None:
+        """Response body and headers never contain the raw grant."""
+        raw = store.issue(
+            workspace_id="ws-main",
+            project_id="proj-alpha",
+            run_id="run-42",
+            scopes=("run:read",),
+        )
+        adapter = BrowserGrantHttpAdapter(
+            store=store,
+            expected_workspace="ws-main",
+            expected_project="proj-alpha",
+            expected_run="run-42",
+        )
+        response = adapter.redeem_grant(raw)
+        body_str = response.body.decode() if response.body else ""
+        for header_value in response.headers.values():
+            assert raw not in header_value, (
+                f"Raw grant leaked in header: {header_value}"
+            )
+        assert raw not in body_str, f"Raw grant leaked in body: {body_str}"
