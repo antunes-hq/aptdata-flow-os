@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/antunes-hq/aptdata-flow-os/schemas/governance/squad-confiavel-v0.1.schema.json",
+  "title": "Trusted Squad Governance Contract v0.1",
+  "description": "Schema anchor for ContextPacket, SquadDefinition, WorkPacket, EvidenceRecord, JudgeResult and MaestroDecision. Runtime models are canonical; this schema is a published interchange contract.",
+  "type": "object",
+  "required": ["contract", "version", "resources"],
+  "properties": {
+    "contract": {"const": "trusted-squad-governance"},
+    "version": {"const": "0.1"},
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["ContextPacket", "SquadDefinition", "WorkPacket", "EvidenceRecord", "JudgeResult", "MaestroDecision"]
+      },
+      "minItems": 6,
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}

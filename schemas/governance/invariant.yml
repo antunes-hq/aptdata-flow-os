@@ -1,0 +1,55 @@
+version: "0.1"
+contract: trusted-squad-governance
+invariants:
+  - id: SQUAD-001
+    severity: BLOCKER
+    description: Every required squad role has an assignment before execution.
+    enforcement: model_and_gate
+  - id: SQUAD-002
+    severity: BLOCKER
+    description: The Judge is independent from the Executor when independence is required.
+    enforcement: JudgeResult.independence_check
+  - id: SQUAD-003
+    severity: HIGH
+    description: A fallback or agent substitution is explicit and recorded.
+    enforcement: WorkPacket.assignments_and_decisions
+  - id: PACKET-001
+    severity: BLOCKER
+    description: A WorkPacket preserves its ContextPacket and SquadDefinition references.
+    enforcement: WorkPacket.context_packet_id_and_squad_definition_id
+  - id: PACKET-002
+    severity: HIGH
+    description: WorkPacket state transitions follow the declared directed graph; integrated is terminal.
+    enforcement: WorkPacket.transition
+  - id: EVID-001
+    severity: BLOCKER
+    description: Pass/fail evidence has a verifiable output digest and source revision.
+    enforcement: EvidenceRecord.model_validator
+  - id: EVID-002
+    severity: HIGH
+    description: Inconclusive evidence cannot close a gate.
+    enforcement: gate_policy
+  - id: JUDGE-001
+    severity: BLOCKER
+    description: JudgeResult requires an explicit independent=true check.
+    enforcement: JudgeResult.model_validator
+  - id: JUDGE-002
+    severity: BLOCKER
+    description: no_go requires findings; go_with_conditions requires conditions.
+    enforcement: JudgeResult.model_validator
+  - id: MAESTRO-001
+    severity: HIGH
+    description: Human approval is a separate MaestroDecision and never gets inferred from a Judge verdict.
+    enforcement: MaestroDecision
+  - id: TRACE-001
+    severity: HIGH
+    description: Every execution record links run, WorkPacket, SquadDefinition, ContextPacket and evidence.
+    enforcement: durable_store_gate
+  - id: SAFETY-001
+    severity: BLOCKER
+    description: v0.1 has no destructive autonomy or silent approval.
+    enforcement: scope_policy
+  - id: SAFETY-002
+    severity: HIGH
+    description: Secrets and raw credentials are forbidden in context and evidence records.
+    enforcement: sanitization_gate
