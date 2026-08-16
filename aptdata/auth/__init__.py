@@ -16,6 +16,13 @@ No network calls, real credentials, OAuth, or production dependencies.
 
 from __future__ import annotations
 
+from aptdata.auth.browser_grant_http import (
+    BrowserGrantHttpAdapter,
+    BrowserGrantHttpError,
+    BrowserGrantHttpRequest,
+    BrowserGrantHttpResponse,
+    GrantPathInvalid,
+)
 from aptdata.auth.session_grant import (
     BrowserSession,
     BrowserSessionGrantError,
@@ -33,11 +40,16 @@ from aptdata.auth.session_grant import (
 )
 
 __all__ = [
+    "BrowserGrantHttpAdapter",
+    "BrowserGrantHttpError",
+    "BrowserGrantHttpRequest",
+    "BrowserGrantHttpResponse",
     "BrowserSession",
     "BrowserSessionGrantError",
     "BrowserSessionGrantStore",
     "GrantExpiredError",
     "GrantNotFoundError",
+    "GrantPathInvalid",
     "GrantRevokedError",
     "GrantRedeemedError",
     "GrantScopeError",
