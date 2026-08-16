@@ -51,6 +51,7 @@ retired
 | F0.3 | 0 | Check anti-duplicação para demanda/artefato antes de implementação | planned | — | — | definir matching por ID, path, símbolo e comportamento |
 | F0.4 | 0 | Fronteira SDK + Control Plane + MCP + Runner e security threat model inicial | verified | `docs/decisions/0002-sdk-api-mcp-cloud-boundary.md` | contrato versionado; MCP atual explicitamente não aprovado como gateway cloud | transformar em WorkPacket de implementação |
 | F1.0 | 1 | Context Kernel + Translation Layer + Semantic Layer + SquadDefinition agnóstica de executor + pool/fallback | planned | — | — | modelar ContextTranslation, Capability Registry e vertical slice captura → tradução → WorkPacket → retomada |
+| F1.1 | 1 | Continuidade My Universe/Nuvem como superfície planetária humana | planned | `docs/decisions/0005-my-universe-planetary-surface.md` | contrato real do repo `antunes-hq/nuvem`, flow.db e cloud.json legado auditados | integrar refs aditivas sem recriar PWA |
 | F2.0 | 2 | Run Ledger correlacionado ao `run_id` do aptdata | planned | — | — | definir eventos e receipts |
 | F3.0 | 3 | Studio com Definition View e Run View explícitas | planned | — | — | contrato de read API + consumidor |
 | F3.1 | 3 | Control View com actions/approvals/audit | planned | — | — | policy engine read/dry-run primeiro |

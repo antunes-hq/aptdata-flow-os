@@ -51,6 +51,10 @@ Flow OS
 │   ├── decisions
 │   ├── policies
 │   └── lessons/evals
+├── Human Surface Layer
+│   ├── My Universe / Nuvem planetary PWA
+│   ├── capture · timeline · constellation · galaxies
+│   └── resume-oriented spatial navigation
 ├── Semantic Layer
 │   ├── ontology
 │   ├── capability registry
@@ -94,6 +98,13 @@ Flow OS
 ```
 
 ## As três visões obrigatórias
+
+Além das visões técnicas, o Flow OS preserva a superfície humana planetária do My Universe/Nuvem. Ela é complementar às três visões abaixo.
+
+```text
+My Universe = orientação, memória, padrões e retomada
+flow-viz = arquitetura, execução e controle
+```
 
 ### Definition View
 
@@ -262,6 +273,8 @@ Entregas:
 - Run View consumidora do ledger.
 - SDK local capaz de operar sem cloud;
 - receipts que não carregam segredos nem bancos brutos.
+- integração aditiva de `context_refs`, `journey_refs` e `evidence_refs` no payload consumido pelo My Universe;
+- linhagem estrela/planeta/galáxia → evento/task/run/evidence.
 
 Gate:
 
@@ -269,6 +282,8 @@ Gate:
 - `resolved` exige evidência;
 - falha e intervenção humana também são eventos;
 - o ledger não copia bancos de domínio: mantém referências/projeções.
+- o My Universe renderiza a projeção sem perder a experiência planetária;
+- uma estrela/planeta consegue abrir o WorkPacket e voltar à origem.
 
 ### Fase 4 — Hygiene e governança
 
