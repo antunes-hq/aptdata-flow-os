@@ -197,27 +197,35 @@ Gate:
 - nenhum item é `adopted` sem teste ou evidência de uso;
 - inventário cru não é confundido com arquitetura adotada.
 
-### Fase 2 — Context Kernel
+### Fase 1 — Context Kernel e Translation Layer
 
-Objetivo: carregar intenção humana de forma estruturada e reutilizável.
+Objetivo: traduzir intenção humana entre superfícies sem perder origem, autoria, lacunas ou critério de sucesso.
 
 Entregas:
 
 - `ContextPacket` 5W2H;
+- `ContextTranslation` versionada e auditável;
+- camadas Capture/Meaning/Journey/Execution/Evidence/Learning Translator;
 - `SquadDefinition` com roles agnósticos de executor;
 - pool de executors com fallback por capability/custo/health;
 - critérios de pronto;
 - contexto projetado por estágio;
 - pacote para executor;
-- validação de campos e origem;
+- resumo de retomada após interrupção;
+- validação de campos, origem e perdas;
 - compatibilidade com `aptdata` agents/projects/modes.
 
 Gate:
 
+- uma ideia incompleta pode ser capturada sem formulário perfeito;
+- a tradução explicita lacunas e não inventa fatos;
 - uma intenção vira pacote serializável;
+- a origem é recuperável a partir do WorkPacket;
 - o pacote atravessa router, task e executor;
 - o executor recebe contexto sem Lucas reexplicar;
-- teste de round-trip comprova preservação.
+- uma execução pode ser retomada com próximo passo único;
+- teste de round-trip comprova preservação e registra perdas assumidas;
+- o mesmo slice roda sem Claude Code, este chat ou provider específico.
 
 ### Fase 3 — Run Ledger e evidência
 
