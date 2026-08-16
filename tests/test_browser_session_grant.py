@@ -21,6 +21,9 @@ from aptdata.auth import (
     GrantRunError,
     GrantScopeError,
     GrantWorkspaceError,
+    SessionExpiredError,
+    SessionNotFoundError,
+    SessionRevokedError,
 )
 from aptdata.delivery.session_response import (
     BrowserSessionResponse,
@@ -287,6 +290,104 @@ class TestRevokeSession:
     ):
         """Revoking a never-issued session returns False."""
         assert store.revoke_session("no-such-session") is False
+
+
+class TestGetSession:
+    """Acceptance criteria 10-11: get_session validates sessions at lookup time."""
+
+    def test_get_session_nonexistent_fails(
+        self, store: BrowserSessionGrantStore,
+    ):
+        """Criterion supplement: nonexistent session_id raises SessionNotFoundError."""
+        with pytest.raises(SessionNotFoundError, match="Session not found"):
+            store.get_session("no-such-session", workspace_id="ws-main")
+
+    def test_get_session_expired_fails(
+        self, store: BrowserSessionGrantStore, grant: str,
+    ):
+        """Criterion 10: get_session rejects expired sessions.
+
+        Redeem a grant with a normal TTL, then manually set the session's
+        expires_at to a past timestamp to simulate expiry.
+        """
+        session = store.redeem(grant, workspace_id="ws-main")
+        # Manually expire the session row
+        store._conn.execute(
+            "UPDATE browser_sessions SET expires_at = 0 WHERE session_id = ?",
+            (session.session_id,),
+        )
+        store._conn.commit()
+        with pytest.raises(SessionExpiredError, match="Session has expired"):
+            store.get_session(
+                session.session_id,
+                workspace_id="ws-main",
+            )
+
+    def test_get_session_revoked_fails(
+        self, store: BrowserSessionGrantStore, grant: str,
+    ):
+        """Criterion 11: get_session rejects revoked sessions."""
+        session = store.redeem(grant, workspace_id="ws-main")
+        assert store.revoke_session(session.session_id) is True
+        with pytest.raises(SessionRevokedError, match="Session has been revoked"):
+            store.get_session(
+                session.session_id,
+                workspace_id="ws-main",
+            )
+
+    def test_get_session_workspace_mismatch(
+        self, store: BrowserSessionGrantStore, grant: str,
+    ):
+        """Workspace mismatch raises GrantWorkspaceError."""
+        session = store.redeem(grant, workspace_id="ws-main")
+        with pytest.raises(GrantWorkspaceError, match="Workspace mismatch"):
+            store.get_session(
+                session.session_id,
+                workspace_id="ws-other",
+            )
+
+    def test_get_session_run_mismatch(
+        self, store: BrowserSessionGrantStore, grant: str,
+    ):
+        """Run mismatch (when provided) raises GrantRunError."""
+        session = store.redeem(grant, workspace_id="ws-main")
+        with pytest.raises(GrantRunError, match="Run mismatch"):
+            store.get_session(
+                session.session_id,
+                workspace_id="ws-main",
+                run_id="run-wrong",
+            )
+
+    def test_get_session_missing_scope(
+        self, store: BrowserSessionGrantStore, grant: str,
+    ):
+        """Missing required scope raises GrantScopeError."""
+        session = store.redeem(grant, workspace_id="ws-main")
+        with pytest.raises(GrantScopeError, match="Missing required scopes"):
+            store.get_session(
+                session.session_id,
+                workspace_id="ws-main",
+                required_scopes=("capture:read", "admin"),
+            )
+
+    def test_get_session_success(
+        self, store: BrowserSessionGrantStore, grant: str,
+    ):
+        """Happy path: valid session with correct context returns BrowserSession."""
+        session = store.redeem(grant, workspace_id="ws-main", required_scopes=SCOPES)
+        got = store.get_session(
+            session.session_id,
+            workspace_id="ws-main",
+            required_scopes=SCOPES,
+        )
+        assert isinstance(got, BrowserSession)
+        assert got.session_id == session.session_id
+        assert got.workspace_id == "ws-main"
+        assert got.project_id == "proj-alpha"
+        assert got.run_id == "run-42"
+        assert got.scopes == SCOPES
+        assert got.created_at == session.created_at
+        assert got.expires_at == session.expires_at
 
 
 class TestSanitization:

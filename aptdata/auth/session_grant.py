@@ -65,6 +65,14 @@ class SessionExpiredError(BrowserSessionGrantError):
     """Session has expired and is no longer valid."""
 
 
+class SessionNotFoundError(BrowserSessionGrantError):
+    """Session ID not found in store."""
+
+
+class SessionRevokedError(BrowserSessionGrantError):
+    """Session was explicitly revoked."""
+
+
 # ---------------------------------------------------------------------------
 # Domain models
 # ---------------------------------------------------------------------------
@@ -418,6 +426,91 @@ class BrowserSessionGrantStore:
             # then re-raise.
             self._conn.execute("ROLLBACK;")
             raise
+
+    def get_session(
+        self,
+        session_id: str,
+        *,
+        workspace_id: str,
+        run_id: str | None = None,
+        required_scopes: Sequence[str] = (),
+    ) -> BrowserSession:
+        """Retrieve and validate an existing browser session.
+
+        Re-validates workspace, run, scopes, expiry and revocation at
+        lookup time — the caller must pass the expected context so that
+        a compromised session_id cannot be used outside its bindings.
+
+        Args:
+            session_id: The opaque session identifier.
+            workspace_id: Must match the session's workspace.
+            run_id: If provided, must match the session's run.
+            required_scopes: All of these scopes must be present.
+
+        Returns:
+            A BrowserSession with metadata.
+
+        Raises:
+            SessionNotFoundError: session_id does not exist.
+            SessionExpiredError: Session has expired.
+            SessionRevokedError: Session was revoked.
+            GrantWorkspaceError: workspace_id does not match.
+            GrantRunError: run_id does not match.
+            GrantScopeError: required_scopes not satisfied.
+        """
+        row = self._conn.execute(
+            "SELECT * FROM browser_sessions WHERE session_id = ?",
+            (session_id,),
+        ).fetchone()
+
+        if row is None:
+            raise SessionNotFoundError("Session not found")
+
+        now_ts = _now_ts()
+
+        # Check expiry
+        if now_ts >= row["expires_at"]:
+            raise SessionExpiredError("Session has expired")
+
+        # Check revocation
+        if row["revoked"]:
+            raise SessionRevokedError("Session has been revoked")
+
+        # Check workspace
+        if not hmac.compare_digest(str(row["workspace_id"]), str(workspace_id)):
+            raise GrantWorkspaceError(
+                f"Workspace mismatch: expected {row['workspace_id']!r}"
+            )
+
+        # Check run
+        if run_id is not None and not hmac.compare_digest(
+            str(row["run_id"]), str(run_id)
+        ):
+            raise GrantRunError(
+                f"Run mismatch: expected {row['run_id']!r}"
+            )
+
+        # Check scopes
+        session_scopes = set(row["scopes"].split(",")) if row["scopes"] else set()
+        required = set(required_scopes)
+        if required and not required.issubset(session_scopes):
+            missing = required - session_scopes
+            raise GrantScopeError(f"Missing required scopes: {sorted(missing)}")
+
+        scopes_tuple = (
+            tuple(row["scopes"].split(","))
+            if row["scopes"]
+            else ()
+        )
+        return BrowserSession(
+            session_id=row["session_id"],
+            workspace_id=row["workspace_id"],
+            project_id=row["project_id"],
+            run_id=row["run_id"],
+            scopes=scopes_tuple,
+            created_at=datetime.fromtimestamp(row["created_at"], tz=timezone.utc),
+            expires_at=datetime.fromtimestamp(row["expires_at"], tz=timezone.utc),
+        )
 
     def revoke(self, raw_grant: str) -> bool:
         """Revoke a grant by its raw value. Returns True if revoked."""

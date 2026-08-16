@@ -28,6 +28,8 @@ from aptdata.auth.session_grant import (
     GrantScopeError,
     GrantWorkspaceError,
     SessionExpiredError,
+    SessionNotFoundError,
+    SessionRevokedError,
 )
 
 __all__ = [
@@ -42,4 +44,6 @@ __all__ = [
     "GrantWorkspaceError",
     "GrantRunError",
     "SessionExpiredError",
+    "SessionNotFoundError",
+    "SessionRevokedError",
 ]
