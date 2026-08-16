@@ -54,6 +54,21 @@ flow-viz
 
 O My Universe é uma superfície oficial/adotada do Flow OS. Ele não é uma cópia descartável nem um protótipo a ser substituído pelo painel técnico.
 
+## Emenda 0005-a — fronteira não-desenvolvimento (2026-08-16)
+
+O My Universe **não é uma superfície de desenvolvimento por padrão**. Ele é uma superfície humana para vida, memória, reflexão, orientação e retomada. A pessoa pode escolher uma jornada relacionada a software/desenvolvimento quando fizer sentido, mas isso é uma escolha explícita — não uma inferência do sistema.
+
+Regras derivadas:
+
+```text
+My Universe não converte automaticamente ideia em task, run ou WorkPacket.
+My Universe não mostra jargão de executor, provider, pipeline ou approval como camada inicial.
+Ações de desenvolvimento são opt-in e preservam a origem humana da ideia.
+Flow/flow-viz continuam sendo as superfícies técnicas para Definition, Run e Control.
+```
+
+Esta emenda corrige a interpretação de "superfície humana": humana não significa necessariamente dev; significa que o domínio pertence ao usuário e só ganha uma lente técnica quando ele a escolhe.
+
 ## Por que duas superfícies
 
 ### My Universe — orientação humana
