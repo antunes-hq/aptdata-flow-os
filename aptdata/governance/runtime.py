@@ -50,6 +50,36 @@ class GovernanceWorkflowBinding:
         self.workspace_id = workspace_id
         self.project_id = project_id
         self._runs: dict[str, str] = {}
+        self.last_run_id: str | None = None
+
+    def run_flow(
+        self,
+        flow: Any,
+        inputs: list[Any],
+        *,
+        flow_name: str | None = None,
+    ) -> list[Any]:
+        """Run an existing BaseFlow with durable governance correlation."""
+        run_id = f"{flow_name or getattr(flow, 'flow_id', 'flow')}_{uuid4().hex}"
+        self.start(run_id)
+        self.last_run_id = run_id
+        try:
+            result = flow.run(inputs)
+        except Exception as exc:
+            self.finish(
+                run_id,
+                workflow_name=flow_name or getattr(flow, "flow_id", "flow"),
+                success=False,
+                result={"error_type": type(exc).__name__},
+            )
+            raise
+        self.finish(
+            run_id,
+            workflow_name=flow_name or getattr(flow, "flow_id", "flow"),
+            success=True,
+            result=result,
+        )
+        return result
 
     def start(self, run_id: str) -> WorkPacket:
         """Persist context/squad and a running packet; reject unsafe setup."""
