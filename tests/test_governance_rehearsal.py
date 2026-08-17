@@ -12,8 +12,16 @@ def test_read_only_rehearsal_persists_and_recovers(tmp_path) -> None:
     assert result["judge_independent"] is True
     assert result["maestro_action"] == "approve"
     assert result["integration_gate"] is True
-    assert result["persisted_records"] == 10
-    assert result["recovered_records_for_packet"] == 7
+    assert result["persisted_records"] == 15
+    assert result["recovered_records_for_packet"] == 13
+    assert result["transition_history"] == [
+        "proposed",
+        "ready",
+        "running",
+        "judging",
+        "approved",
+        "integrated",
+    ]
     assert "produção" in result["scope_out"]
 
 

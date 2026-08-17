@@ -91,6 +91,8 @@ class GovernanceStore:
         record_id = str(payload["id"])
         version = int(payload.get("version", 1))
         work_packet_id = payload.get("work_packet_id")
+        if record_type is WorkPacket:
+            work_packet_id = record_id
         try:
             self._connection.execute(
                 """

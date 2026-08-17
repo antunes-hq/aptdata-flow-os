@@ -31,8 +31,8 @@ invariants:
     enforcement: gate_policy
   - id: JUDGE-001
     severity: BLOCKER
-    description: JudgeResult requires an explicit independent=true check.
-    enforcement: JudgeResult.model_validator
+    description: JudgeResult must record an explicit independence check; integration requires independent=true.
+    enforcement: JudgeResult.independence_check + integration_gate
   - id: JUDGE-002
     severity: BLOCKER
     description: no_go requires findings; go_with_conditions requires conditions.

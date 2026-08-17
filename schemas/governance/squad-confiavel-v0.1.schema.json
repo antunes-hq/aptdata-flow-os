@@ -2,21 +2,926 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/antunes-hq/aptdata-flow-os/schemas/governance/squad-confiavel-v0.1.schema.json",
   "title": "Trusted Squad Governance Contract v0.1",
-  "description": "Schema anchor for ContextPacket, SquadDefinition, WorkPacket, EvidenceRecord, JudgeResult and MaestroDecision. Runtime models are canonical; this schema is a published interchange contract.",
+  "description": "Generated from the canonical Pydantic governance models.",
   "type": "object",
-  "required": ["contract", "version", "resources"],
+  "required": [
+    "contract",
+    "version",
+    "resources"
+  ],
   "properties": {
-    "contract": {"const": "trusted-squad-governance"},
-    "version": {"const": "0.1"},
+    "contract": {
+      "const": "trusted-squad-governance"
+    },
+    "version": {
+      "const": "0.1"
+    },
     "resources": {
       "type": "array",
       "items": {
-        "type": "string",
-        "enum": ["ContextPacket", "SquadDefinition", "WorkPacket", "EvidenceRecord", "JudgeResult", "MaestroDecision"]
+        "enum": [
+          "ContextPacket",
+          "SquadDefinition",
+          "WorkPacket",
+          "EvidenceRecord",
+          "JudgeResult",
+          "MaestroDecision"
+        ]
       },
       "minItems": 6,
       "uniqueItems": true
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$defs": {
+    "ContextPacket": {
+      "$ref": "#/$defs/ContextPacketModel"
+    },
+    "SquadDefinition": {
+      "$ref": "#/$defs/SquadDefinitionModel"
+    },
+    "WorkPacket": {
+      "$ref": "#/$defs/WorkPacketModel"
+    },
+    "EvidenceRecord": {
+      "$ref": "#/$defs/EvidenceRecordModel"
+    },
+    "JudgeResult": {
+      "$ref": "#/$defs/JudgeResultModel"
+    },
+    "MaestroDecision": {
+      "$ref": "#/$defs/MaestroDecisionModel"
+    },
+    "ContextPacketModel": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "source": {
+          "$ref": "#/$defs/SourceRef"
+        },
+        "intent": {
+          "title": "Intent",
+          "type": "string"
+        },
+        "why": {
+          "title": "Why",
+          "type": "string"
+        },
+        "domain": {
+          "$ref": "#/$defs/Domain"
+        },
+        "desired_experience": {
+          "default": "",
+          "title": "Desired Experience",
+          "type": "string"
+        },
+        "constraints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Constraints",
+          "type": "array"
+        },
+        "unknowns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknowns",
+          "type": "array"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "conflicts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflicts",
+          "type": "array"
+        },
+        "maestro_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Maestro Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "source",
+        "intent",
+        "why",
+        "domain"
+      ],
+      "title": "ContextPacket",
+      "type": "object"
+    },
+    "Domain": {
+      "enum": [
+        "personal",
+        "learning",
+        "creative",
+        "development",
+        "other"
+      ],
+      "title": "Domain",
+      "type": "string"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "title": "Actor",
+          "type": "string"
+        },
+        "channel": {
+          "title": "Channel",
+          "type": "string"
+        },
+        "reference": {
+          "title": "Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "actor",
+        "channel",
+        "reference"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "SquadDefinitionModel": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "roles": {
+          "items": {
+            "$ref": "#/$defs/SquadRole"
+          },
+          "minItems": 1,
+          "title": "Roles",
+          "type": "array"
+        },
+        "executor_policy": {
+          "$ref": "#/$defs/ExecutorPolicy"
+        },
+        "independence": {
+          "$ref": "#/$defs/IndependencePolicy"
+        },
+        "output_contract": {
+          "default": "workpacket_v1",
+          "title": "Output Contract",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "roles",
+        "executor_policy"
+      ],
+      "title": "SquadDefinition",
+      "type": "object"
+    },
+    "ExecutorPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Allowed",
+          "type": "array"
+        },
+        "fallback": {
+          "default": "explicit_only",
+          "title": "Fallback",
+          "type": "string"
+        }
+      },
+      "required": [
+        "allowed"
+      ],
+      "title": "ExecutorPolicy",
+      "type": "object"
+    },
+    "IndependencePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "judge_must_differ_from_executor": {
+          "default": true,
+          "title": "Judge Must Differ From Executor",
+          "type": "boolean"
+        },
+        "judge_must_receive_evidence": {
+          "default": true,
+          "title": "Judge Must Receive Evidence",
+          "type": "boolean"
+        },
+        "maestro_approval_required_for_high_impact": {
+          "default": true,
+          "title": "Maestro Approval Required For High Impact",
+          "type": "boolean"
+        }
+      },
+      "title": "IndependencePolicy",
+      "type": "object"
+    },
+    "SquadRole": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "capability": {
+          "title": "Capability",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "capability"
+      ],
+      "title": "SquadRole",
+      "type": "object"
+    },
+    "WorkPacketModel": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "context_packet_id": {
+          "title": "Context Packet Id",
+          "type": "string"
+        },
+        "squad_definition_id": {
+          "title": "Squad Definition Id",
+          "type": "string"
+        },
+        "objective": {
+          "title": "Objective",
+          "type": "string"
+        },
+        "scope_in": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Scope In",
+          "type": "array"
+        },
+        "scope_out": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Scope Out",
+          "type": "array"
+        },
+        "acceptance_criteria": {
+          "items": {
+            "$ref": "#/$defs/AcceptanceCriterion"
+          },
+          "minItems": 1,
+          "title": "Acceptance Criteria",
+          "type": "array"
+        },
+        "constraints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Constraints",
+          "type": "array"
+        },
+        "files_or_surfaces": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Files Or Surfaces",
+          "type": "array"
+        },
+        "risk": {
+          "$ref": "#/$defs/Risk"
+        },
+        "assignments": {
+          "items": {
+            "$ref": "#/$defs/Assignment"
+          },
+          "title": "Assignments",
+          "type": "array"
+        },
+        "decisions": {
+          "items": {
+            "$ref": "#/$defs/Decision"
+          },
+          "title": "Decisions",
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/$defs/PacketState",
+          "default": "proposed"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "context_packet_id",
+        "squad_definition_id",
+        "objective",
+        "acceptance_criteria",
+        "risk"
+      ],
+      "title": "WorkPacket",
+      "type": "object"
+    },
+    "AcceptanceCriterion": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "verification": {
+          "title": "Verification",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "verification"
+      ],
+      "title": "AcceptanceCriterion",
+      "type": "object"
+    },
+    "Assignment": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "accepted_at": {
+          "format": "date-time",
+          "title": "Accepted At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "agent_id",
+        "accepted_at"
+      ],
+      "title": "Assignment",
+      "type": "object"
+    },
+    "Decision": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "question": {
+          "title": "Question",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Options",
+          "type": "array"
+        },
+        "selected": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected"
+        },
+        "authority": {
+          "title": "Authority",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "question",
+        "authority"
+      ],
+      "title": "Decision",
+      "type": "object"
+    },
+    "PacketState": {
+      "enum": [
+        "proposed",
+        "ready",
+        "running",
+        "blocked",
+        "awaiting_maestro",
+        "judging",
+        "approved",
+        "rejected",
+        "integrated",
+        "cancelled"
+      ],
+      "title": "PacketState",
+      "type": "string"
+    },
+    "Risk": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "title": "Level",
+          "type": "string"
+        },
+        "hazards": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hazards",
+          "type": "array"
+        },
+        "rollback": {
+          "title": "Rollback",
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "rollback"
+      ],
+      "title": "Risk",
+      "type": "object"
+    },
+    "EvidenceRecordModel": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "work_packet_id": {
+          "title": "Work Packet Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/EvidenceKind"
+        },
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "command": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Command"
+        },
+        "output_digest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Digest"
+        },
+        "result": {
+          "$ref": "#/$defs/EvidenceResult"
+        },
+        "source": {
+          "$ref": "#/$defs/EvidenceSource"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "captured_by": {
+          "title": "Captured By",
+          "type": "string"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "artifacts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Artifacts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "work_packet_id",
+        "kind",
+        "claim",
+        "result",
+        "source",
+        "captured_at",
+        "captured_by"
+      ],
+      "title": "EvidenceRecord",
+      "type": "object"
+    },
+    "EvidenceKind": {
+      "enum": [
+        "test",
+        "lint",
+        "build",
+        "runtime",
+        "review",
+        "file",
+        "commit",
+        "deploy",
+        "decision"
+      ],
+      "title": "EvidenceKind",
+      "type": "string"
+    },
+    "EvidenceResult": {
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive"
+      ],
+      "title": "EvidenceResult",
+      "type": "string"
+    },
+    "EvidenceSource": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "revision"
+      ],
+      "title": "EvidenceSource",
+      "type": "object"
+    },
+    "JudgeResultModel": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "work_packet_id": {
+          "title": "Work Packet Id",
+          "type": "string"
+        },
+        "judge_agent_id": {
+          "title": "Judge Agent Id",
+          "type": "string"
+        },
+        "independence_check": {
+          "$ref": "#/$defs/IndependenceCheck"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/JudgeCheck"
+          },
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/Finding"
+          },
+          "title": "Findings",
+          "type": "array"
+        },
+        "verdict": {
+          "$ref": "#/$defs/Verdict"
+        },
+        "conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "residual_risks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Residual Risks",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "work_packet_id",
+        "judge_agent_id",
+        "independence_check",
+        "checks",
+        "verdict",
+        "created_at"
+      ],
+      "title": "JudgeResult",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "severity": {
+          "title": "Severity",
+          "type": "string"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "statement": {
+          "title": "Statement",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "required_action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required Action"
+        }
+      },
+      "required": [
+        "severity",
+        "kind",
+        "statement"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "IndependenceCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "executor_agent_id": {
+          "title": "Executor Agent Id",
+          "type": "string"
+        },
+        "independent": {
+          "title": "Independent",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "executor_agent_id",
+        "independent",
+        "reason"
+      ],
+      "title": "IndependenceCheck",
+      "type": "object"
+    },
+    "JudgeCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "subject": {
+          "title": "Subject",
+          "type": "string"
+        },
+        "result": {
+          "$ref": "#/$defs/EvidenceResult"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "note": {
+          "default": "",
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "subject",
+        "result"
+      ],
+      "title": "JudgeCheck",
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "go",
+        "go_with_conditions",
+        "no_go",
+        "inconclusive"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    },
+    "MaestroDecisionModel": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "work_packet_id": {
+          "title": "Work Packet Id",
+          "type": "string"
+        },
+        "judge_result_id": {
+          "title": "Judge Result Id",
+          "type": "string"
+        },
+        "action": {
+          "$ref": "#/$defs/MaestroAction"
+        },
+        "rationale": {
+          "title": "Rationale",
+          "type": "string"
+        },
+        "accepted_risks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Accepted Risks",
+          "type": "array"
+        },
+        "rejected_risks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rejected Risks",
+          "type": "array"
+        },
+        "scope_change": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scope Change"
+        },
+        "actor": {
+          "title": "Actor",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "work_packet_id",
+        "judge_result_id",
+        "action",
+        "rationale",
+        "actor",
+        "created_at"
+      ],
+      "title": "MaestroDecision",
+      "type": "object"
+    },
+    "MaestroAction": {
+      "enum": [
+        "approve",
+        "approve_with_conditions",
+        "reject",
+        "request_revision",
+        "pause"
+      ],
+      "title": "MaestroAction",
+      "type": "string"
+    }
+  }
 }

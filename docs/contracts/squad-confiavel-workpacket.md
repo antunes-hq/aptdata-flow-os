@@ -239,7 +239,7 @@ judge_result:
 Regras duras:
 
 ```text
-JUDGE-001: Judge sem independence_check não vale.
+JUDGE-001: Judge sem independence_check não vale; integração exige `independent: true`.
 JUDGE-002: no_go se houver falha crítica ou evidência essencial ausente.
 JUDGE-003: go_with_conditions exige conditions explícitas e owner.
 JUDGE-004: Judge não pode apagar ou reescrever evidência do executor.

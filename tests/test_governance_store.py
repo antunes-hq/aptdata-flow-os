@@ -69,7 +69,7 @@ def test_round_trip_and_latest_version(tmp_path) -> None:
         store.append(evidence())
         assert store.count() == 3
         assert store.get(ContextPacket, "cp_store").intent == "testar durabilidade"
-        assert len(store.for_work_packet("wp_store")) == 1
+        assert len(store.for_work_packet("wp_store")) == 2
 
     with GovernanceStore(path) as reopened:
         assert reopened.count() == 3

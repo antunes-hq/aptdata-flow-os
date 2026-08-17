@@ -91,6 +91,14 @@ def run_read_only_rehearsal(path: str | Path = ":memory:") -> dict[str, Any]:
         ],
     )
     packet.transition(PacketState.READY).transition(PacketState.RUNNING)
+    packet_versions = [
+        packet.model_copy(update={"version": version, "state": state})
+        for version, state in (
+            (1, PacketState.PROPOSED),
+            (2, PacketState.READY),
+            (3, PacketState.RUNNING),
+        )
+    ]
 
     evidence = [
         EvidenceRecord(
@@ -114,6 +122,9 @@ def run_read_only_rehearsal(path: str | Path = ":memory:") -> dict[str, Any]:
     if not ready_report.passed:
         raise RuntimeError(f"rehearsal failed before judging: {ready_report.codes}")
     packet.transition(PacketState.JUDGING)
+    packet_versions.append(
+        packet.model_copy(update={"version": 4, "state": PacketState.JUDGING})
+    )
 
     judge = GovernanceJudge("rehearsal_judge").judge(
         packet,
@@ -122,6 +133,9 @@ def run_read_only_rehearsal(path: str | Path = ":memory:") -> dict[str, Any]:
         created_at=now,
     )
     packet.transition(PacketState.APPROVED)
+    packet_versions.append(
+        packet.model_copy(update={"version": 5, "state": PacketState.APPROVED})
+    )
     maestro = MaestroDecision(
         id="md_rehearsal_001",
         work_packet_id=packet.id,
@@ -137,6 +151,9 @@ def run_read_only_rehearsal(path: str | Path = ":memory:") -> dict[str, Any]:
             f"rehearsal failed before integration: {integration_report.codes}"
         )
     packet.transition(PacketState.INTEGRATED)
+    packet_versions.append(
+        packet.model_copy(update={"version": 6, "state": PacketState.INTEGRATED})
+    )
 
     temporary_path: str | None = None
     store_path: str | Path = path
@@ -148,7 +165,9 @@ def run_read_only_rehearsal(path: str | Path = ":memory:") -> dict[str, Any]:
         store_path = temporary_path
     try:
         with GovernanceStore(store_path) as store:
-            store.append_many([context, squad, packet, *evidence, judge, maestro])
+            store.append_many(
+                [context, squad, *packet_versions, *evidence, judge, maestro]
+            )
             persisted_count = store.count()
         with GovernanceStore(store_path) as reopened:
             recovered = reopened.get(WorkPacket, packet.id)
@@ -174,6 +193,7 @@ def run_read_only_rehearsal(path: str | Path = ":memory:") -> dict[str, Any]:
         "persisted_records": persisted_count,
         "recovered_records_for_packet": len(recovered_records),
         "scope_out": packet.scope_out,
+        "transition_history": [item.state.value for item in packet_versions],
     }
 
 

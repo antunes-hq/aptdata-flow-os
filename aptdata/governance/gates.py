@@ -82,6 +82,14 @@ def check_integration(
                 f"judge verdict does not permit integration: {judge.verdict}",
             )
         )
+    if judge.work_packet_id != packet.id:
+        findings.append(
+            GateFinding("TRACE-001", "JudgeResult belongs to another WorkPacket")
+        )
+    if not getattr(judge.independence_check, "independent", False):
+        findings.append(
+            GateFinding("JUDGE-001", "integration requires an independent Judge")
+        )
     if maestro is None:
         findings.append(GateFinding("MAESTRO-001", "MaestroDecision is required"))
     elif maestro.action not in {
@@ -93,6 +101,14 @@ def check_integration(
                 "MAESTRO-001",
                 f"Maestro action does not approve: {maestro.action}",
             )
+        )
+    elif maestro.work_packet_id != packet.id:
+        findings.append(
+            GateFinding("TRACE-001", "MaestroDecision belongs to another WorkPacket")
+        )
+    elif maestro.judge_result_id != judge.id:
+        findings.append(
+            GateFinding("TRACE-001", "MaestroDecision references another JudgeResult")
         )
     return GateReport(not findings, findings)
 
