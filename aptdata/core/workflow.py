@@ -181,10 +181,12 @@ class Workflow:
         *,
         enable_checkpointing: bool = False,
         state_backend: StateBackend | None = None,
+        governance_binding: Any | None = None,
     ) -> None:
         self.name = name
         self.enable_checkpointing = enable_checkpointing
         self.state_backend = state_backend or StateBackend()
+        self.governance_binding = governance_binding
         self._steps: list[_WorkflowStep] = []
 
     def add_step(
@@ -202,7 +204,27 @@ class Workflow:
     def execute(self, data: Any | None = None) -> Any:
         """Execute workflow from the first step."""
         run_id = f"{self.name}_{time_ns()}_{uuid4().hex[:8]}"
-        return self._run(run_id=run_id, start_index=0, data=data)
+        if self.governance_binding is not None:
+            self.governance_binding.start(run_id)
+        try:
+            result = self._run(run_id=run_id, start_index=0, data=data)
+        except Exception as exc:
+            if self.governance_binding is not None:
+                self.governance_binding.finish(
+                    run_id,
+                    workflow_name=self.name,
+                    success=False,
+                    result={"error_type": type(exc).__name__},
+                )
+            raise
+        if self.governance_binding is not None:
+            self.governance_binding.finish(
+                run_id,
+                workflow_name=self.name,
+                success=True,
+                result=result,
+            )
+        return result
 
     def resume(self, run_id: str, data: Any | None = None) -> Any:
         """Resume execution from the last checkpoint for *run_id*."""

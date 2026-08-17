@@ -32,6 +32,7 @@ from aptdata.governance.models import (
     WorkPacket,
 )
 from aptdata.governance.rehearsal import run_read_only_rehearsal
+from aptdata.governance.runtime import GovernanceWorkflowBinding
 from aptdata.governance.store import GovernanceStore
 
 __all__ = [
@@ -64,6 +65,7 @@ __all__ = [
     "check_ready_for_judging",
     "run_read_only_rehearsal",
     "GovernanceJudge",
+    "GovernanceWorkflowBinding",
 ]
 
 __version__ = "0.1"
