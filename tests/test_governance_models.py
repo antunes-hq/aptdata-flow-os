@@ -137,6 +137,15 @@ def test_judge_requires_independence_and_conditions() -> None:
     )
     with pytest.raises(ValidationError, match="conditions"):
         JudgeResult(**base, verdict=Verdict.GO_WITH_CONDITIONS)
+    with pytest.raises(ValidationError, match="non-independent"):
+        invalid = dict(base)
+        invalid["independence_check"] = {
+            "executor_agent_id": "executor",
+            "independent": False,
+            "reason": "same agent",
+        }
+        invalid["verdict"] = Verdict.GO
+        JudgeResult(**invalid)
     result = JudgeResult(
         **base,
         verdict=Verdict.GO_WITH_CONDITIONS,
