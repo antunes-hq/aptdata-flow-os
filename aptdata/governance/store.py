@@ -8,6 +8,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, TypeVar
 
+from aptdata.events.models import FlowEvent
 from aptdata.governance.models import (
     ContextPacket,
     EvidenceRecord,
@@ -67,6 +68,15 @@ class GovernanceStore:
             );
             CREATE INDEX IF NOT EXISTS idx_governance_work_packet
                 ON governance_records(work_packet_id, created_at);
+            CREATE TABLE IF NOT EXISTS flow_events (
+                event_id TEXT PRIMARY KEY,
+                run_id TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                payload TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS idx_flow_events_run
+                ON flow_events(run_id, created_at, event_id);
             """
         )
         self._connection.commit()
@@ -160,6 +170,56 @@ class GovernanceStore:
                 "SELECT COUNT(*) AS count FROM governance_records"
             ).fetchone()["count"]
         )
+
+    def append_event(self, event: FlowEvent) -> None:
+        """Append one immutable FlowEvent, rejecting duplicate event IDs."""
+        payload = event.model_dump(mode="json")
+        try:
+            self._connection.execute(
+                """
+                INSERT INTO flow_events (
+                    event_id, run_id, event_type, payload, created_at
+                ) VALUES (?, ?, ?, ?, ?)
+                """,
+                (
+                    str(event.event_id),
+                    event.run_id,
+                    event.event_type,
+                    json.dumps(payload, sort_keys=True),
+                    event.created_at.isoformat(),
+                ),
+            )
+            self._connection.commit()
+        except sqlite3.IntegrityError as exc:
+            self._connection.rollback()
+            raise ValueError(f"event already exists: {event.event_id}") from exc
+
+    def get_event(self, event_id: object) -> FlowEvent | None:
+        """Load one immutable FlowEvent by UUID."""
+        row = self._connection.execute(
+            "SELECT payload FROM flow_events WHERE event_id = ?",
+            (str(event_id),),
+        ).fetchone()
+        return FlowEvent.model_validate(json.loads(row["payload"])) if row else None
+
+    def for_run(self, run_id: str) -> list[FlowEvent]:
+        """Load all FlowEvents for one run in creation order."""
+        rows = self._connection.execute(
+            """
+            SELECT payload FROM flow_events
+            WHERE run_id = ?
+            ORDER BY created_at, event_id
+            """,
+            (run_id,),
+        ).fetchall()
+        return [FlowEvent.model_validate(json.loads(row["payload"])) for row in rows]
+
+    def events(self) -> list[FlowEvent]:
+        """Load all FlowEvents in creation order."""
+        rows = self._connection.execute(
+            "SELECT payload FROM flow_events ORDER BY created_at, event_id"
+        ).fetchall()
+        return [FlowEvent.model_validate(json.loads(row["payload"])) for row in rows]
 
     def close(self) -> None:
         """Close the SQLite connection."""

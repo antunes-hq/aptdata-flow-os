@@ -85,6 +85,14 @@ def test_workflow_success_records_runtime_evidence(tmp_path) -> None:
         assert evidence.kind.value == "runtime"
         assert packet is not None
         assert packet.state.value == "judging"
+        events = store.events()
+        assert [item.event_type for item in events] == [
+            "workflow.started",
+            "workflow.completed",
+        ]
+        assert events[0].run_id == events[1].run_id
+        assert events[1].evidence_refs == [evidence.id]
+        assert events[1].metadata == {"work_packet_id": packet.id}
         assert store.count() == 6
 
         judge = GovernanceJudge("judge_test").judge(

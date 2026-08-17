@@ -6,7 +6,9 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from typing import Any
+from uuid import uuid4
 
+from aptdata.events.models import FlowEvent
 from aptdata.governance.models import (
     ContextPacket,
     EvidenceKind,
@@ -36,6 +38,8 @@ class GovernanceWorkflowBinding:
         store: GovernanceStore,
         executor_agent_id: str,
         source_revision: str = "working-tree",
+        workspace_id: str = "local",
+        project_id: str = "aptdata-flow-os",
     ) -> None:
         self.context = context
         self.squad = squad
@@ -43,6 +47,8 @@ class GovernanceWorkflowBinding:
         self.store = store
         self.executor_agent_id = executor_agent_id
         self.source_revision = source_revision
+        self.workspace_id = workspace_id
+        self.project_id = project_id
         self._runs: dict[str, str] = {}
 
     def start(self, run_id: str) -> WorkPacket:
@@ -74,6 +80,14 @@ class GovernanceWorkflowBinding:
             update={"version": self.packet.version + 1, "state": PacketState.RUNNING}
         )
         self.store.append(running)
+        self.store.append_event(
+            self._event(
+                event_type="workflow.started",
+                run_id=run_id,
+                severity="info",
+                summary=f"Workflow run {run_id} started",
+            )
+        )
         self._runs[run_id] = self.packet.id
         return running
 
@@ -118,7 +132,45 @@ class GovernanceWorkflowBinding:
             }
         )
         self.store.append(judging)
+        self.store.append_event(
+            self._event(
+                event_type=("workflow.completed" if success else "workflow.failed"),
+                run_id=run_id,
+                severity="info" if success else "error",
+                summary=(
+                    f"Workflow {workflow_name} completed"
+                    if success
+                    else f"Workflow {workflow_name} failed"
+                ),
+                evidence_refs=[evidence.id],
+                metadata={"work_packet_id": packet_id},
+            )
+        )
         return evidence
+
+    def _event(
+        self,
+        *,
+        event_type: str,
+        run_id: str,
+        severity: str,
+        summary: str,
+        evidence_refs: list[str] | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> FlowEvent:
+        return FlowEvent(
+            event_id=uuid4(),
+            schema_version=1,
+            event_type=event_type,
+            workspace_id=self.workspace_id,
+            project_id=self.project_id,
+            run_id=run_id,
+            severity=severity,
+            human_summary=summary,
+            flow_definition_id=self.squad.id,
+            evidence_refs=evidence_refs,
+            metadata=metadata,
+        )
 
     def _append_if_absent(self, record: Any) -> None:
         record_type = type(record)
