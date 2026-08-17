@@ -6,6 +6,7 @@ from aptdata.governance.gates import (
     check_integration,
     check_ready_for_judging,
 )
+from aptdata.governance.judge import GovernanceJudge
 from aptdata.governance.models import (
     AcceptanceCriterion,
     Assignment,
@@ -62,6 +63,7 @@ __all__ = [
     "check_integration",
     "check_ready_for_judging",
     "run_read_only_rehearsal",
+    "GovernanceJudge",
 ]
 
 __version__ = "0.1"

@@ -315,8 +315,11 @@ class JudgeResult(ContractModel):
 
     @model_validator(mode="after")
     def validate_verdict(self) -> JudgeResult:
-        if not self.independence_check.independent:
-            raise ValueError("JudgeResult requires an independent judge")
+        if (
+            not self.independence_check.independent
+            and self.verdict is not Verdict.NO_GO
+        ):
+            raise ValueError("non-independent JudgeResult must be no_go")
         if self.verdict == Verdict.GO_WITH_CONDITIONS and not self.conditions:
             raise ValueError("go_with_conditions requires conditions")
         if self.verdict == Verdict.NO_GO and not self.findings:

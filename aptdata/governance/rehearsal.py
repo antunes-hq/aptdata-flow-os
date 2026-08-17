@@ -8,6 +8,7 @@ from tempfile import NamedTemporaryFile
 from typing import Any
 
 from aptdata.governance.gates import check_integration, check_ready_for_judging
+from aptdata.governance.judge import GovernanceJudge
 from aptdata.governance.models import (
     AcceptanceCriterion,
     Assignment,
@@ -16,9 +17,6 @@ from aptdata.governance.models import (
     EvidenceRecord,
     EvidenceResult,
     EvidenceSource,
-    IndependenceCheck,
-    JudgeCheck,
-    JudgeResult,
     MaestroAction,
     MaestroDecision,
     PacketState,
@@ -26,7 +24,6 @@ from aptdata.governance.models import (
     SourceRef,
     SquadDefinition,
     SquadRole,
-    Verdict,
     WorkPacket,
 )
 from aptdata.governance.store import GovernanceStore
@@ -118,25 +115,10 @@ def run_read_only_rehearsal(path: str | Path = ":memory:") -> dict[str, Any]:
         raise RuntimeError(f"rehearsal failed before judging: {ready_report.codes}")
     packet.transition(PacketState.JUDGING)
 
-    judge = JudgeResult(
-        id="jr_rehearsal_001",
-        work_packet_id=packet.id,
-        judge_agent_id="rehearsal_judge",
-        independence_check=IndependenceCheck(
-            executor_agent_id="rehearsal_executor",
-            independent=True,
-            reason="judge and executor are distinct assignments",
-        ),
-        checks=[
-            JudgeCheck(
-                id="J-REHEARSAL-001",
-                subject="scope_and_evidence",
-                result=EvidenceResult.PASS,
-                evidence_refs=[item.id for item in evidence],
-                note="All evidence is scoped to the synthetic read-only rehearsal.",
-            )
-        ],
-        verdict=Verdict.GO,
+    judge = GovernanceJudge("rehearsal_judge").judge(
+        packet,
+        squad,
+        evidence,
         created_at=now,
     )
     packet.transition(PacketState.APPROVED)
